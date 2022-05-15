@@ -1,0 +1,43 @@
+<odoo>
+    <data>
+        <record id="aly_res_config_purchase_settings_view_form" model="ir.ui.view">
+            <field name="name">aly.res.config.purchase.settings.view.form.inherit</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="50"/>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@data-key='purchase']" position="inside">
+                    <h2>Firnas Shuman - Purchase Order Terms</h2>
+                    <group>
+                        <group>
+                            <div class="row mt16 o_settings_container">
+                                <b>
+                                    <label for="aly_po_scope_schedule"/>
+                                </b>
+                                <field name="aly_po_scope_schedule"/>
+                            </div>
+                        </group>
+                        <group>
+                            <div class="row mt16 o_settings_container">
+                                <b>
+                                    <label for="aly_po_payment_schedule"/>
+                                </b>
+                                <field name="aly_po_payment_schedule"/>
+                            </div>
+                        </group>
+                        <group>
+                            <div class="row mt16 o_settings_container">
+                                <b>
+                                    <label for="aly_po_acceptance"/>
+                                </b>
+                                <field name="aly_po_acceptance"/>
+                            </div>
+                        </group>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>
