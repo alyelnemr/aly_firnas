@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="hr_expense_view_form_limit_inherit" model="ir.ui.view">
+            <field name="name">hr.expense.view.form.limit.inherit</field>
+            <field name="model">hr.expense</field>
+            <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='account_id']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='product_id']" position="before">
+                    <field name="is_employee_advance"/>
+                </xpath>
+                <xpath expr="//field[@name='total_amount']" position="after">
+                    <field name="balance" widget="monetary" attrs="{'invisible':[('is_employee_advance','=',False)]}"/>
+                    <field name="remaining" widget="monetary"
+                           attrs="{'invisible':[('is_employee_advance','=',False)]}"/>
+                </xpath>
+                <xpath expr="//header" position="after">
+                    <field name="show_msg" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

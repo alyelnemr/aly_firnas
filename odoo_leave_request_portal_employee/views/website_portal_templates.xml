@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <template id="portal_my_leave_request" name="Portal My Leave Request: Request entries"
+                  inherit_id="portal.portal_my_home" priority="30">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                    <t t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('odoo_leave_request_portal_employee.group_employee_leave') or request.env['res.users'].browse(request.session.uid).user_has_groups('odoo_leave_request_portal_employee.group_employee_leave_manager')">
+                        <t t-call="portal.portal_docs_entry">
+                            <t t-set="title">Leave Requests</t>
+                            <t t-set="url" t-value="'/my/leave_request'"/>
+                            <t t-set="count" t-value="holidays_count"/>
+                        </t>
+                    </t>
+                </xpath>
+            </xpath>
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="after">
+                <style>
+                    .container {
+                    max-width: 100% !important;
+                    }
+                    .employee-data {
+                    border: 1px solid rgba(0, 0, 0, 0.125);
+                    margin-top: 15px;
+                    padding: 0.75rem 1.25rem !important;
+                    background-color: #FFFFFF;
+                    }
+                </style>
+                <t t-if="employee_data">
+                    <h3 class="mt-4">Employee Data</h3>
+                    <div class="container employee-data">
+                        <div class="row mt-4">
+                            <div class="col-lg-6 col-md-6">
+                                <span style="font-weight: bold; font-size: 18px;">English Name:</span>
+                                <span t-esc="employee_data.name"/>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-lg-6 col-md-6">
+                                <span style="font-weight: bold; font-size: 18px;">Job title:</span>
+                                <span t-esc="employee_data.job_title"/>
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <span style="font-weight: bold; font-size: 18px;">Department:</span>
+                                <span t-field="employee_data.department_id"/>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-lg-6 col-md-6">
+                                <span style="font-weight: bold; font-size: 18px;">Location:</span>
+                                <span t-esc="employee_data.work_location"/>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-lg-6 col-md-6">
+                                <span style="font-weight: bold; font-size: 18px;">Manager:</span>
+                                <span t-field="employee_data.parent_id"/>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-lg-12 col-md-12">
+                                <span style="font-weight: bold; font-size: 18px;">Job Description:</span>
+                                <span t-if="employee_data.job_id" t-esc="employee_data.job_id.description"/>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </xpath>
+        </template>
+
+        <template id="display_leave_request" name="Display Leave Request">
+            <!--<t t-call="website.layout">-->
+            <t t-call="portal.portal_layout">
+                <style>
+                    #myInput {
+                    background-position: 10px 10px;
+                    background-repeat: no-repeat;
+                    width: 100%;
+                    font-size: 16px;
+                    padding: 12px 20px 12px 40px;
+                    border: 1px solid #ddd;
+                    margin-bottom: 12px;
+                    }
+                    .container {
+                    max-width: 100% !important;
+                    }
+
+                    .table {
+                      table-layout: fixed;
+                      width: 100%;
+                    }
+
+                    .table th,
+                    .table td {
+                      word-wrap: break-word;
+
+                     vertical-align: unset !important;
+                     white-space: unset !important;
+                    }
+
+                    a.btn {
+                        display: ruby-text;
+                    }
+                </style>
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Leaves</t>
+                </t>
+                <h3 class="page-header">
+                    Your Leave Requests
+                </h3>
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-sm-6">
+                            <a t-attf-href="/leave_request_form" class="btn btn-info">New Leave Request</a>
+                        </div>
+                    </div>
+                </div>
+                <t t-if="grouped_holidays">
+                    <t t-call="portal.portal_table">
+                        <t t-foreach="grouped_holidays" t-as="gholidays">
+                            <thead>
+                                <tr t-attf-class="{{'thead-light' if not groupby == 'none' else ''}}">
+                                    <th t-if="groupby == 'none'">Employee</th>
+                                    <th t-else="">
+                                        <em class="font-weight-normal text-muted">Leaves For Employee:</em>
+                                        <span t-field="gholidays[0].sudo().employee_id.display_name"/>
+                                    </th>
+                                    <th>Leave Type</th>
+                                    <th>Employee Balance</th>
+                                    <th>Description</th>
+                                    <th>Start Date</th>
+                                    <th>End date</th>
+                                    <th>Days/Hours</th>
+                                    <th>Company</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="gholidays" t-as="holiday">
+                                    <tr>
+                                        <td class="text-left">
+                                            <span t-field="holiday.employee_id"/>
+                                        </td>
+                                        <td class="text-left">
+                                            <span t-field="holiday.holiday_status_id"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="holidays_balance[holiday.id]"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="holiday.name"/>
+                                        </td>
+                                        <td class="text-left">
+                                            <span t-field="holiday.date_from"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="holiday.date_to"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="holiday.duration_display"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="holiday.mode_company_id.display_name"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="holiday.state"/>
+                                        </td>
+                                        <td>
+                                            <t t-if="holiday.state == 'draft'">
+                                                <a class="btn btn-info" style="padding: unset;"
+                                                   t-att-href="'/leave_confirm?id=%s' % (holiday.id)">
+                                                    Confirm
+                                                </a>
+                                            </t>
+                                            <t t-if="holiday.state in ['draft', 'confirm']">
+                                                <a class="btn btn-info" style="padding: unset;"
+                                                   t-att-href="'/leave_delete?id=%s' % (holiday.id)">
+                                                    Delete
+                                                </a>
+                                            </t>
+                                            <t t-if="holiday.state == 'draft'">
+                                                <a class="btn btn-info" style="padding: unset;"
+                                                   t-att-href="'/web#return_label=Website&amp;model=hr.leave&amp;id=%s&amp;view_type=form' % (holiday.id)"
+                                                   groups="odoo_leave_request_portal_employee.group_employee_leave, odoo_leave_request_portal_employee.group_employee_leave_manager">
+                                                    Edit
+                                                </a>
+                                            </t>
+                                            <t t-if="check_approval_update(holiday) and holiday.state in ['confirm', 'validate1']">
+                                                <a class="btn btn-info" style="padding: unset;"
+                                                   t-att-href="'/leave_approve?id=%s' % (holiday.id)">
+                                                    Approve
+                                                </a>
+                                            </t>
+                                        </td>
+                                        <td>
+                                            <t t-if="check_approval_update(holiday) and (holiday.state in ['confirm','validate','validate1'])">
+                                                <div class="row">
+                                                    <form action="/leave_refuse" method="post"
+                                                          enctype="multipart/form-data"
+                                                          data-model_name="crm.leave"
+                                                          data-success_page="/my/home"
+                                                          data-editable-form="false">
+                                                        <input type="hidden" name="csrf_token"
+                                                               t-att-value="request.csrf_token()"/>
+                                                        <input type="hidden" name="id" t-att-value="holiday.id"/>
+                                                        <div class="row">
+                                                            <div class="col-lg-8 col-md-8">
+                                                                <input type="text" class="form-control"
+                                                                       name="description" placeholder="Refuse Reason"
+                                                                       required="1"/>
+                                                            </div>
+                                                            <div class="col-md-4 col-lg-4">
+                                                                <button type="submit" style="padding: unset;"
+                                                                        class="btn btn-info">
+                                                                    Refuse
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </t>
+                                        </td>
+                                        <td>
+                                            <t t-if="holiday.state == 'refuse'">
+                                                <span t-if="holiday.report_note" style="font-weight: bold;">Refuse
+                                                    reason:
+                                                </span>
+                                                <span t-if="holiday.report_note" t-field="holiday.report_note"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </t>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <template id="not_allowed_leave_request" name="Access Denied">
+            <!--<t t-call="website.layout">-->
+            <t t-call="portal.portal_layout">
+                <div id="wrap">
+                    <div class="oe_structure"/>
+                    <div class="container">
+                        <h1>You are not Allowed Access This Document</h1>
+                        <div>
+                            <a t-attf-href="/my/home" class="btn btn-lg btn-primary">
+                                Back
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </t>
+        </template>
+
+        <template id="leave_request_submit" name="Leave: Submit a Leave Request">
+            <t t-call="portal.portal_layout">
+                <h2 class="text-center text-muted">
+                    <span>
+                        Leave Request
+                    </span>
+                </h2>
+                <div id="wrap" class="oe_structure oe_empt">
+                    <div class="container">
+                        <div class="row">
+                            <form action="/leave_request_submit/" method="post"
+                                  class="container-fluid mt32" enctype="multipart/form-data"
+                                  data-model_name="crm.leave"
+                                  data-success_page="/my/home"
+                                  data-editable-form="false">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="company_id">Company</label>
+                                        <select id="company_id" class="form-control" name="company_id">
+                                            <t t-foreach="companies" t-as="company">
+                                                <option t-att-value="company.id">
+                                                    <t t-esc="company.display_name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="leave_type">Leave Type</label>
+                                        <select class="form-control" name="leave_type" required="1" data-init="0">
+                                            <t t-foreach="leave_types" t-as="type">
+                                                <option t-att-value="type.id">
+                                                    <t t-esc="type.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="employee_id">Employee</label>
+                                        <select class="form-control" name="employee_id" required="1">
+                                            <t t-foreach="employees" t-as="employee">
+                                                <option t-att-value="employee.id">
+                                                    <t t-esc="employee.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="date_from">Date From</label>
+                                        <div class="input-append date" id="from_datetime">
+                                            <input type="date" name="date_from" required="1"/>
+                                            <span class="add-on">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="date_to">Date To</label>
+                                        <div class="input-append date" id="to_datetime">
+                                            <input type="date" name="date_to" required="1"/>
+                                            <span class="add-on">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="request_unit_hours">Custom Hours</label>
+                                        <div>
+                                            <input type="checkbox" name="request_unit_hours" id="custom_hours"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row form-field" id="hours_div">
+                                    <div class="col-lg-2 col-md-2">
+                                        <label class="col-form-label" for="request_hour_from">Hour From</label>
+                                        <select class="form-control" id="request_hour_from" name="request_hour_from"
+                                                required="1">
+                                            <t t-foreach="hours" t-as="h">
+                                                <option t-att-value="h[0]">
+                                                    <t t-esc="h[1]"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-2 col-md-2">
+                                    </div>
+                                    <div class="col-lg-2 col-md-2">
+                                        <label class="col-form-label" for="request_hour_to">Hour To</label>
+                                        <select class="form-control" id="request_hour_to" name="request_hour_to"
+                                                required="1">
+                                            <t t-foreach="hours" t-as="h">
+                                                <option t-att-value="h[0]">
+                                                    <t t-esc="h[1]"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="half_day">Half Day</label>
+                                        <div>
+                                            <input type="checkbox" name="half_day"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="description">Description</label>
+                                        <input type="text" class="form-control" name="description"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-8 col-lg-7">
+                                        <button type="submit"
+                                                class="btn btn-primary btn-lg o_website_form_send o_default_snippet_text">
+                                            Submit
+                                        </button>
+                                        <span style="color: red;">
+                                            <t t-if="error_fields" t-esc="error_fields"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="assets_frontend" inherit_id="portal.assets_frontend" name="Portal Assets" priority="15">
+            <xpath expr="//script[last()]" position="after">
+                <script type="text/javascript" src="/odoo_leave_request_portal_employee/static/src/js/website_leave.js"></script>
+                <script type="text/javascript">
+                    $(function () {
+                    var custom_hours = document.querySelector('#custom_hours');
+                    if (custom_hours) {
+                    $(custom_hours).click(function(){
+                    if (custom_hours &amp;&amp; custom_hours.checked) {
+                    var hours_div = document.querySelector('#hours_div');
+                    if (hours_div)
+                    $(hours_div).show()
+                    } else {
+                    var hours_div = document.querySelector('#hours_div');
+                    if (hours_div)
+                    $(hours_div).hide()
+                    }
+                    });
+                    }
+                    if (custom_hours &amp;&amp; custom_hours.checked) {
+                    var hours_div = document.querySelector('#hours_div');
+                    if (hours_div)
+                    $(hours_div).show()
+                    } else {
+                    var hours_div = document.querySelector('#hours_div');
+                    if (hours_div)
+                    $(hours_div).hide()
+                    }
+                    });
+                </script>
+            </xpath>
+        </template>
+
+    </data>
+</odoo>

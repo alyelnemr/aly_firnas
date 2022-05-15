@@ -1,0 +1,4 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_employee_att_portal,hr_employee_att_portal,hr.model_hr_employee,odoo_portal_attendance.portal_user_employee_attendance,1,1,1,0
+access_res_partner_att_portal,res_partner_att_portal,base.model_res_partner,odoo_portal_attendance.portal_user_employee_attendance,1,1,1,0
+access_hr_attendance_att_portal,hr_attendance_att_portal,hr_attendance.model_hr_attendance,odoo_portal_attendance.portal_user_employee_attendance,1,1,1,0

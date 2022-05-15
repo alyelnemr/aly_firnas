@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purchase_lines_transfer_wizard_form_view" model="ir.ui.view">
+        <field name="name">purchase.lines.transfer.wizard.form.view</field>
+        <field name="model">purchase.lines.transfer.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="purchase_order_id" string="Transfer To" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Purchase Lines">
+                            <field name="select_all" nolabel="1"/>
+                            <label for="select_all" string="Select All"/>
+                            <field name="line_ids">
+                                <tree create="0" delete="0" editable="bottom">
+                                    <field name="selected" string="Select"/>
+                                    <field name="product_id"/>
+                                    <field name="name"/>
+                                    <field name="order_id"/>
+                                    <field name="order_state"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+
+                    <footer>
+                        <button string="Confirm" name="action_confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
+

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="account_analytic_view_inherit_form" model="ir.ui.view">
+        <field name="name">account.analytic.line.form</field>
+        <field name="model">account.analytic.line</field>
+        <field name="inherit_id" ref="timesheet_grid.timesheet_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@class='o_row']" position="after">
+                <field name="name"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

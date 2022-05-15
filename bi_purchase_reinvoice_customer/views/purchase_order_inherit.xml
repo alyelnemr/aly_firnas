@@ -1,0 +1,24 @@
+<odoo>
+    <data>
+        <!-- Inherit Form View to Modify it -->
+        <record id="view_inherit_purchase_order_form" model="ir.ui.view">
+            <field name="name">view.inherit.purchase.order.form</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="show_reinvoice_customer" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree" position="inside">
+                    <field name="reinvoiced" invisible="1"/>
+                    <button name="action_reinvoice_customer"
+                            string="Re-Invoice Customer"
+                            type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible':['|', ('parent.show_reinvoice_customer','=',False), ('reinvoiced','=',True)]}"
+                    />
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

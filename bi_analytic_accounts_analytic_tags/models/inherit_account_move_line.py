@@ -1,0 +1,30 @@
+# -*- coding: utf-8 -*-
+
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
+
+
+class InheritAccountMoveLine(models.Model):
+    _inherit = 'account.move.line'
+
+    analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account', index=True,
+                                          required=True)
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True)
+
+    is_origin_so = fields.Boolean(copy=False)
+
+    @api.model_create_multi
+    def create(self, vals):
+        lines = super(InheritAccountMoveLine, self).create(vals)
+        for line in lines:
+            if line.move_id.invoice_line_ids:
+                analytic_account_id = line.move_id.invoice_line_ids[0].analytic_account_id
+                analytic_tag_ids = line.move_id.invoice_line_ids[0].analytic_tag_ids
+
+                if analytic_account_id:
+                    line.analytic_account_id = analytic_account_id.id
+
+                if analytic_tag_ids:
+                    line.analytic_tag_ids = analytic_tag_ids.ids
+
+        return lines

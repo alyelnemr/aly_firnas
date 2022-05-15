@@ -1,0 +1,8 @@
+// fix kanban column header while scrolling
+.o_kanban_header{
+        position: -webkit-sticky; /* Safari & IE */
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background-color: #f9f9f9;
+}

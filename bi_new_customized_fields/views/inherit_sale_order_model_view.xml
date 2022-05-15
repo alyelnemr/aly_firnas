@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="inherited_view_sale_order_new_fields_form123" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit.form123</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group//group[@name='utm_link']//field[@name='source_id']" position="replace">
+                </xpath>
+            </field>
+        </record>
+
+        <record id="inherited_view_sale_order_new_fields_form" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="serial_num" required="0"/>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page name="info" string="Information">
+                        <group>
+                            <group>
+                                <field name="proposals_engineer_id"/>
+                                <field name="rfp_ref_number"/>
+                                <field name="project_number" required="1"/>
+                                <field name="type_custom" required="1"/>
+                                <field name="project_name" required="1"/>
+                                <field name="country" required="1" widget="many2many_tags"/>
+                                <field name="start_date" required="1"/>
+                                <field name="source_id" required="1"/>
+                            </group>
+                            <group>
+                                <field name="sub_date"/>
+                                <field name="sub_type"/>
+                                <field name="fund"/>
+                                <field name="partnership_model"/>
+                                <field name="partner" widget="many2many_tags"/>
+                                <field name="client_name" widget="many2many_tags"/>
+                            </group>
+                            <group>
+                                <field name="document_name" required="1"/>
+                                <field name="file_name" required="1"/>
+                                <field name="standard_payment_schedule" widget="html" required="1"/>
+                                <field name="terms_and_conditions" widget="html" required="1"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+        #filter
+        <record id="view_sale_order_search_view_inherit" model="ir.ui.view">
+            <field name="name">sale.order.search.view</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search/field[@name='partner_id']" position="after">
+                    <field name="project_name" string="Project Name"/>
+                    <field name="project_number" string="Project Number"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

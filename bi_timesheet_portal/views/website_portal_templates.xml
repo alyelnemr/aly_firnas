@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="assets_frontend" inherit_id="web.assets_frontend">
+            <xpath expr="script[last()]" position="after">
+                <script type="text/javascript" src="/bi_timesheet_portal/static/src/js/website_timesheet.js"></script>
+            </xpath>
+        </template>
+
+        <template id="portal_my_home_menu_timesheet" name="Portal layout : timesheet menu entries"
+                  inherit_id="portal.portal_breadcrumbs" priority="25">
+            <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+                <li t-if="page_name == 'timesheets' or timesheet_request"
+                    t-attf-class="breadcrumb-item #{'active ' if not timesheet_request else ''}">
+                    <a t-if="timesheet_request" t-attf-href="/my/timesheets?{{ keep_query() }}">Timesheets</a>
+                    <t t-else="">Timesheets</t>
+                </li>
+                <li t-if="timesheet_request" class="breadcrumb-item active">
+                    <t t-esc="timesheet_request.name"/>
+                </li>
+            </xpath>
+        </template>
+
+        <template id="portal_my_timesheet_request" name="Portal My Timesheet Request: Request Entries"
+                  inherit_id="portal.portal_my_home" priority="3">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                <t t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('bi_timesheet_portal.group_employee_timesheet_portal') or request.env['res.users'].browse(request.session.uid).user_has_groups('bi_timesheet_portal.group_employee_timesheet_manager_portal')">
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="title">Timesheets</t>
+                        <t t-set="url" t-value="'/my/timesheets'"/>
+                        <t t-set="count" t-value="timesheets_count"/>
+                    </t>
+                </t>
+            </xpath>
+        </template>
+
+        <template id="timesheet_portal_table" name="Timesheet Portal Table">
+            <div t-attf-class="table-responsive border rounded border-top-0 #{classes if classes else ''}">
+                <table class="table rounded mb-0 bg-white o_portal_my_doc_table" style="table-layout: fixed;">
+                    <t t-raw="0"/>
+                </table>
+            </div>
+            <div t-if="pager" class="o_portal_pager text-center">
+                <t t-call="portal.pager"/>
+            </div>
+        </template>
+
+        <template id="display_timesheet_requests" name="Display Timesheets">
+            <t t-call="portal.portal_layout">
+                <style>
+                    #myInput {
+                    background-position: 10px 10px;
+                    background-repeat: no-repeat;
+                    width: 100%;
+                    font-size: 16px;
+                    padding: 12px 20px 12px 40px;
+                    border: 1px solid #ddd;
+                    margin-bottom: 12px;
+                    }
+                    .container {
+                    max-width: 100% !important;
+                    }
+                </style>
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Timesheets</t>
+                </t>
+                <h3 class="page-header">
+                    Your Timesheets
+                </h3>
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <a t-attf-href="/timesheet_request_form" class="btn btn-info">Create New Timesheet</a>
+                        </div>
+                    </div>
+                </div>
+
+                <t t-if="not grouped_timesheets">
+                    <div class="alert alert-warning mt8" role="alert">
+                        There are no timesheets.
+                    </div>
+                </t>
+                <t t-if="grouped_timesheets">
+                    <t t-call="bi_timesheet_portal.timesheet_portal_table">
+                        <t t-foreach="grouped_timesheets" t-as="tss">
+                            <thead>
+                                <tr t-attf-class="{{'thead-light' if not groupby == 'none' else ''}}">
+                                    <th t-if="groupby == 'none'" style="width: 30%" scope="col">Project Name</th>
+                                    <th t-else=""
+                                        style="width: 30%;text-overflow:ellipsis;overflow:hidden;white-space:normal;"
+                                        scope="col">
+                                        <em class="font-weight-normal text-muted">Timesheet For Project:</em>
+                                        <span t-field="tss[0].sudo().project_id.display_name"/>
+                                    </th>
+                                    <th style="width: 10%" scope="col">Date</th>
+                                    <th style="width: 15%" scope="col">Task</th>
+                                    <th style="width: 15%" scope="col">Description</th>
+                                    <th style="width: 12%" scope="col">Employee</th>
+                                    <th style="width: 5%" scope="col">Duration</th>
+                                    <th style="width: 10%" scope="col">Company</th>
+                                    <th style="width: 3%" scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="tss" t-as="ts">
+                                    <tr>
+                                        <td class="text-left"
+                                            style="text-overflow:ellipsis;overflow:hidden;white-space:normal;">
+                                            <span t-field="ts.sudo().project_id.display_name"/>
+                                        </td>
+                                        <td class="text-left"
+                                            style="text-overflow:ellipsis;overflow:hidden;white-space:normal;">
+                                            <span t-field="ts.date"/>
+                                        </td>
+                                        <td class="text-left"
+                                            style="text-overflow:ellipsis;overflow:hidden;white-space:normal;">
+                                            <span t-field="ts.sudo().task_id.display_name"/>
+                                        </td>
+                                        <td class="text-left"
+                                            style="text-overflow:ellipsis;overflow:hidden;white-space:normal;">
+                                            <a t-attf-href="/my/timesheets/#{ts.id}?#{keep_query()}">
+                                                <span t-field="ts.name"/>
+                                            </a>
+                                        </td>
+                                        <td class="text-left"
+                                            style="text-overflow:ellipsis;overflow:hidden;white-space:normal;">
+                                            <span t-field="ts.sudo().employee_id.display_name"/>
+                                        </td>
+                                        <td class="text-left"
+                                            style="text-overflow:ellipsis;overflow:hidden;white-space:normal;">
+                                            <span t-field="ts.unit_amount" t-options='{"widget": "float_time"}'/>
+                                        </td>
+                                        <td class="text-left"
+                                            style="text-overflow:ellipsis;overflow:hidden;white-space:normal;">
+                                            <span t-field="ts.sudo().company_id.display_name"/>
+                                        </td>
+                                        <td>
+                                            <a class="fa fa-trash-o"
+                                               t-att-href="'/timesheet_delete?id=%s' % (ts.id)">
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </t>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <template id="display_timesheet_request" name="Portal: My Timesheet Request">
+            <t t-call="portal.portal_layout">
+                <div class="container">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-lg-12 text-center">
+                                    <h4>
+                                        <span t-esc="timesheet_request.name"/>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row" style="margin-bottom: 10px;">
+                                <div class="col-lg-6">
+                                </div>
+                                <div class="col-lg-6 text-right">
+                                </div>
+                            </div>
+                            <div class="mb8">
+                                <strong>Date:</strong>
+                                <span t-field="timesheet_request.date" t-options='{"widget": "date"}'/>
+                            </div>
+                            <div class="mb8">
+                                <strong>Employee:</strong>
+                                <span t-field="timesheet_request.employee_id.display_name"/>
+                            </div>
+                            <div class="mb8">
+                                <strong>Description:</strong>
+                                <span t-field="timesheet_request.name"/>
+                            </div>
+                            <hr/>
+                            <div class="row">
+                                <div class="col-lg-6 text-left">
+                                    <strong>Project</strong>
+                                </div>
+                                <div class="col-lg-2 text-left">
+                                    <strong>Task</strong>
+                                </div>
+                                <div class="col-lg-2 text-left">
+                                    <strong>Duration:</strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 text-left">
+                                    <span t-esc="timesheet_request.project_id.display_name"/>
+                                </div>
+                                <div id='project_name' class="col-lg-2 text-left">
+                                    <span t-esc="timesheet_request.task_id.display_name"/>
+                                </div>
+                                <div class="col-lg-2 text-left">
+                                    <span t-field="timesheet_request.unit_amount"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="oe_structure mb32"/>
+            </t>
+        </template>
+
+        <template id="timesheet_request_submit" name="Timesheet: Submit an Timesheet">
+            <t t-call="portal.portal_layout">
+                <t t-set="additional_title">Timesheets</t>
+                <div id="wrap" class="container">
+                    <h1 class="text-center mt-2">
+                        Timesheet Form
+                    </h1>
+                    <div class="row mt-3">
+                        <section id="forms" class="col">
+                            <form action="/timesheet_request_submit/" method="post" class="checkout_autoformat"
+                                  enctype="multipart/form-data">
+<!--                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>-->
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-8 col-md-8">
+                                        <label class="col-form-label" for="description">Description</label>
+                                        <input type="text" class="form-control" name="name" required="1"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="employee_id">Employee</label>
+                                        <select class="form-control" name="employee_id" required="1">
+                                            <t t-foreach="employees" t-as="employee">
+                                                <option t-att-value="employee.id">
+                                                    <t t-esc="employee.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="date">Date</label>
+                                        <div class="input-append date">
+                                            <input type="date" name="date" required="1"/>
+                                            <span class="add-on">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="company_id">Company</label>
+                                        <select id="company_id" class="form-control" name="company_id">
+                                            <t t-foreach="companies" t-as="company">
+                                                <option t-att-value="company.id">
+                                                    <t t-esc="company.display_name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="project_id">Project</label>
+                                        <select id="project_id" class="form-control" name="project_id" data-init="0">
+                                            <t t-foreach="projects" t-as="project">
+                                                <option t-att-value="project.id">
+                                                    <t t-esc="project.display_name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="task_id">Task</label>
+                                        <select class="form-control" name="task_id" data-init="0">
+                                            <t t-foreach="tasks" t-as="task">
+                                                <option t-att-value="task.id">
+                                                    <t t-esc="task.display_name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="unit_amount">Duration</label>
+                                        <input type="number" step="0.01" class="form-control" name="unit_amount"
+                                               required="1"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-8 col-lg-7">
+                                        <button type="submit"
+                                                class="btn btn-primary btn-lg o_website_form_send o_default_snippet_text">
+                                            Submit
+                                        </button>
+                                        <span style="color: red;">
+                                            <t t-if="error_fields" t-esc="error_fields"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </form>
+                        </section>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="not_allowed_timesheet_request" name="Access Denied">
+            <t t-call="portal.portal_layout">
+                <div id="wrap">
+                    <div class="oe_structure"/>
+                    <div class="container">
+                        <h1>You are not allowed to access this document.</h1>
+                        <div>
+                            <a t-attf-href="/my/home" class="btn btn-lg btn-primary">
+                                Back
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </t>
+        </template>
+
+        <template id="thankyou_page">
+            <t t-call="portal.portal_layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h1 class="text-center">Done!</h1>
+                                    <p class="text-center">
+                                        Your timesheet has been created successfully.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</odoo>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="purchase_qty_received_wizard_view" model="ir.ui.view">
+            <field name="name">purchase_qty_received_wizard_view</field>
+            <field name="model">purchase.qty.received.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="qty_received"/>
+                        <field name="purchase_line_id" invisible="1"/>
+                    </group>
+                    <footer>
+                        <button name="action_update_qty_received" type="object" string="Confirm"
+                                class="btn btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

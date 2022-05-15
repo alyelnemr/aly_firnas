@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="inherited_view_project_project_state" model="ir.ui.view">
+            <field name="name">project.project.form.view</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.edit_project"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <field name="stage_id" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}" required="1"/>
+                </xpath>
+                <xpath expr="//h1" position="replace">
+                    <h1 class="d-flex flex-row justify-content-between">
+                        <field name="priority" widget="priority" class="mr-3"/>
+                        <field name="name" class="o_task_name text-truncate" placeholder="Project Title..."/>
+                        <field name="kanban_state" widget="state_selection" class="ml-auto"/>
+                    </h1>
+                </xpath>
+                <xpath expr="//div/div[@name='options_active']" position="after">
+                    <group>
+                        <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+        <record id="quick_create_project_form" model="ir.ui.view">
+            <field name="name">project.project.form.quick_create</field>
+            <field name="model">project.project</field>
+            <field name="priority">1000</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="name" string="Project Title"/>
+                        <field name="user_id" options="{'no_open': True,'no_create': True}"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <record id="bi_view_inherit_project_search" model="ir.ui.view">
+            <field name="name">project.project.view.search</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.view_project_project_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search/group" position="inside">
+                    <field name="tag_ids"/>
+                    <filter string="Stage" name="stage" context="{'group_by': 'stage_id'}"/>
+                    <separator/>
+                    <filter string="Starred" name="starred" domain="[('priority', 'in', [1, 2])]"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="bi_view_inherit_project_kanban" model="ir.ui.view">
+            <field name="name">project.project.view.kanban</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.view_project_kanban"/>
+            <field name="arch" type="xml">
+                <xpath expr="//kanban" position="attributes">
+                    <attribute name="default_group_by">stage_id</attribute>
+                    <!--                    <attribute name="on_create">quick_create</attribute>-->
+                    <attribute name="quick_create_view">bi_status_of_project.quick_create_project_form</attribute>
+                </xpath>
+                <xpath expr="//kanban" position="inside">
+                    <field name="priority"/>
+                    <field name="stage_id" options='{"group_by_tooltip": {"description": "Description"}}' required="1"/>
+                    <field name="sequence"/>
+                    <progressbar field="kanban_state" colors='{"done": "success", "blocked": "danger", "normal": "muted"}'/>
+                </xpath>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="project_tag_form_view">
+            <field name="name">Project Tags</field>
+            <field name="model">project.tag</field>
+            <field name="arch" type="xml">
+                <form string="Tags">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="project_tag_tree_view">
+            <field name="name">Project Tags</field>
+            <field name="model">project.tag</field>
+            <field name="arch" type="xml">
+                <tree string="Tags" editable="bottom">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="project_tag_action" model="ir.actions.act_window">
+            <field name="name">Project Tags</field>
+            <field name="res_model">project.tag</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new tag
+                </p>
+            </field>
+        </record>
+        <record id="view_project_stage_form" model="ir.ui.view">
+            <field name="name">project.stage.form</field>
+            <field name="model">project.stage</field>
+            <field name="arch" type="xml">
+                <form string="Project Stage">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="mail_template_id"/>
+                            </group>
+                            <group>
+                                <field name="fold"/>
+                                <!--                                <field name="project_ids" widget="many2many_tags" groups="base.group_no_one"/>-->
+                                <field name="sequence" groups="base.group_no_one"/>
+                            </group>
+                        </group>
+                        <group string="Stage Description and Tooltips">
+                            <p class="text-muted" colspan="2">
+                                At each stage employees can block or make project ready for next stage.
+                                You can define here labels that will be displayed for the state instead
+                                of the default labels.
+                            </p>
+                            <label for="legend_normal" string=" " class="o_status oe_project_kanban_legend" title="Project in progress. Click to block or set as done." aria-label="Project in progress. Click to block or set as done." role="img"/>
+                            <field name="legend_normal" nolabel="1"/>
+                            <label for="legend_blocked" string=" " class="o_status o_status_red oe_project_kanban_legend" title="Project is blocked. Click to unblock or set as done." aria-label="Project is blocked. Click to unblock or set as done." role="img"/>
+                            <field name="legend_blocked" nolabel="1"/>
+                            <label for="legend_done" string=" " class="o_status o_status_green oe_project_kanban_legend" title="This step is done. Click to block or set in progress." aria-label="This step is done. Click to block or set in progress." role="img"/>
+                            <field name="legend_done" nolabel="1"/>
+                            <field name="description" placeholder="Add a description..." nolabel="1" colspan="2"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="project_stage_tree" model="ir.ui.view">
+            <field name="name">project.stage.tree</field>
+            <field name="model">project.stage</field>
+            <field name="arch" type="xml">
+                <tree string="Project Stage">
+                    <field name="sequence" widget="handle" groups="base.group_no_one"/>
+                    <field name="name"/>
+                    <field name="fold"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+        <record id="open_project_stage_form" model="ir.actions.act_window">
+            <field name="name">Project Stages</field>
+            <field name="res_model">project.stage</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new stage in the Project pipeline
+                </p>
+            </field>
+        </record>
+        <menuitem action="project_tag_action" id="menu_project_tag_act" parent="project.menu_project_config"/>
+        <menuitem action="open_project_stage_form" id="menu_project_config_project" name="Project Stages" parent="project.menu_project_config" groups="base.group_no_one"/>
+
+    </data>
+</odoo>

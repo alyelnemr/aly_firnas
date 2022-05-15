@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="inherit_expenses_form_view" model="ir.ui.view">
+            <field name="name">inherit.hr.expense.form.view</field>
+            <field name="model">hr.expense</field>
+            <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group/group/field[@name='product_id']" position="attributes">
+                    <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}
+                    </attribute>
+                </xpath>
+                <xpath expr="//group/group/field[@name='analytic_account_id']" position="attributes">
+                    <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}
+                    </attribute>
+                </xpath>
+                <xpath expr="//group/group/field[@name='analytic_tag_ids']" position="attributes">
+                    <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}
+                    </attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

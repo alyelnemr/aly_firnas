@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <!--
+        Chatter (mail_thread widget) buttons
+    -->
+    <t t-extend="mail.chatter.Buttons">
+        <t t-jquery='.o_chatter_button_new_message' t-operation='replace'>
+            <button t-if="newMessageButton" type="button" class="btn btn-link o_chatter_button_new_message"
+                    title="Send a message" disabled="disabled" style="display: none;">
+                Send message
+            </button>
+        </t>
+    </t>
+</templates>

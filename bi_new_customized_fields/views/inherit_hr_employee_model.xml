@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="inherited_view_employee_new_fields" model="ir.ui.view">
+            <field name="name">hr.employee.form.view</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page name="other_info" string="Other Information">
+                        <group>
+                            <group>
+                                <field name="emp_ar_name"/>
+                                <field name="medical_id_num"/>
+                                <field name="home_address"/>
+                                <field name="personal_mail"/>
+                            </group>
+                            <group>
+                                <field name="personal_mobile" widget="phone"/>
+                                <field name="can_drive_a_car"/>
+                                <field name="have_driving_license"/>
+                                <field name="languages"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+                <xpath expr="//notebook/page/group/group/field[@name='emergency_contact']" position="after">
+                    <field name="first_emergency_phone"/>
+                    <field name="second_emergency_contact"/>
+                    <field name="second_emergency_phone"/>
+                    <field name="third_emergency_contact"/>
+                    <field name="third_emergency_phone"/>
+                </xpath>
+                <xpath expr="//notebook/page/group/group/field[@name='emergency_phone']" position="replace">
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

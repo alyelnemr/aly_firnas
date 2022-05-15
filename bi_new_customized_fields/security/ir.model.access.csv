@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_project_source,access.project.source,model_project_source,bi_new_customized_fields.group_project_source,1,1,1,1
+access_project_fund,access.project.fund,model_project_fund,bi_new_customized_fields.group_project_fund,1,1,1,1
+access_project_submission,access.project.submission,model_project_submission,bi_new_customized_fields.group_project_submission,1,1,1,1
+access_project_partnership,access.project.partnership,model_project_partnership,bi_new_customized_fields.group_project_partnership,1,1,1,1
+access_client_name,access.client.name,model_client_name,,1,1,1,1

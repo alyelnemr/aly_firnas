@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="inherited_view_project_project_new_fields" model="ir.ui.view">
+            <field name="name">project.project.form.view</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.project_project_view_form_simplified"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="stage_id" required="1"/>
+                    <field name="project_num" required="1"/>
+                    <field name="type" required="1"/>
+                    <field name="country" required="1" widget="many2many_tags"/>
+                    <field name="partner" widget="many2many_tags"
+                           options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"/>
+                </xpath>
+                <xpath expr="//group" position="inside">
+                    <group>
+                        <field name="start_date" required="1"/>
+                        <field name="end_date"/>
+                        <field name="source" required="1"/>
+                        <field name="fund"/>
+                        <field name="partnership_model"/>
+                        <field name="company_id" invisible="1"/>
+                        <field name="partner_id" required="1"
+                               options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+        <record id="inherited_form_view_project_project_new_fields" model="ir.ui.view">
+            <field name="name">project.project.form.view</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.edit_project"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page name="other_info" string="Other Information">
+                        <group>
+                            <group>
+                                <field name="project_num" required="1"/>
+                                <field name="type"/>
+                                <field name="country" widget="many2many_tags"/>
+                                <field name="partner" widget="many2many_tags"
+                                       options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"/>
+                                <!--                                <field name="client_name" widget="many2many_tags"/>-->
+                            </group>
+                            <group>
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                                <field name="source"/>
+                                <field name="fund"/>
+                                <field name="partnership_model"/>
+                                <field name="company_id" invisible="1"/>
+                                <field name="partner_id"
+                                       options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+                <xpath expr="//notebook/page/group/group/field[@name='partner_id']" position="replace">
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

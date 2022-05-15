@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        
+        <record id="portal_user_employee_attendance" model="res.groups">
+            <field name="name">Portal Employee Attendance</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="share" eval="True"/>
+        </record>
+        
+    </data>
+</odoo>

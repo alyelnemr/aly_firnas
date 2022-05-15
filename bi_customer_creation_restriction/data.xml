@@ -1,0 +1,7 @@
+<odoo>
+    <data>
+        <record id="customer_creation_group" model="res.groups">
+           <field name="name">Customer Creation Group</field>
+        </record>
+    </data>
+</odoo>

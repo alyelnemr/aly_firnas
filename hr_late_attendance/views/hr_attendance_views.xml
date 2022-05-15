@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_attendance_tree_inherit" model="ir.ui.view">
+        <field name="name">hr.attendance.tree.inherit</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.view_attendance_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='check_out']" position="after">
+                <field name="working_schedule_id" invisible="1"/>
+                <field name="employee_timezone" invisible="1"/>
+                <field name="check_in_date" invisible="1"/>
+                <field name="check_in_time" widget="float_time" invisible="1"/>
+                <field name="planned_check_in_date" invisible="1"/>
+                <field name="planned_check_in_time" widget="float_time" invisible="1"/>
+                <field name="total_delay_in" widget="float_time" sum="total_delay"/>
+                <field name="is_late"/>
+                <field name="is_late_approved" readonly="1" force_save="1" attrs="{'invisible': [('is_late', '=', False)]}"/>
+                <button name="approve_late" type="object" string="Approve Lateness" class="oe_highlight" groups="hr_attendance.group_hr_attendance_manager" attrs="{'invisible': ['|', ('is_late_approved', '=', True), ('is_late', '=', False)]}"/>
+                <button name="approve_late" type="object" string="Revert Lateness Approval" groups="hr_attendance.group_hr_attendance_manager" attrs="{'invisible': ['|', ('is_late_approved', '=', False), ('is_late', '=', False)]}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!--approve all at once-->
+
+    <record id="late_attendance_approve_wizard_view" model="ir.ui.view">
+        <field name="name">hr.late.attendance.approve.form</field>
+        <field name="model">hr.late.attendance.approve</field>
+        <field name="arch" type="xml">
+            <form string="Approve Late Attendances">
+                <p class="oe_grey">
+                    Are you sure you want to approve the selected records?
+                </p>
+                <footer>
+                    <button string="Confirm" name="approve" type="object" default_focus="1"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <act_window id="action_late_approve"
+            name="Approve late attendances"
+            view_id="late_attendance_approve_wizard_view"
+            res_model="hr.late.attendance.approve"
+            binding_model="hr.attendance"
+            view_mode="form" target="new"/>
+
+</odoo>

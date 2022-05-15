@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="group_create_product" model="res.groups">
+            <field name="name">Create Products</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="group_create_product_category" model="res.groups">
+            <field name="name">Create Product Categories</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="group_create_partners" model="res.groups">
+            <field name="name">Create Customers and Vendors</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="group_create_analytic_account" model="res.groups">
+            <field name="name">Create Analytic Accounts</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="group_create_analytic_tags" model="res.groups">
+            <field name="name">Create Analytic Tags</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+    </data>
+</odoo>

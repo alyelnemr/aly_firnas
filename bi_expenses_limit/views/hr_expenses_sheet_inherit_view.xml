@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_hr_expense_sheet_form_limit_inherit" model="ir.ui.view">
+            <field name="name">view.hr.expense.sheet.form.limit.inherit</field>
+            <field name="model">hr.expense.sheet</field>
+            <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header/button[@name='approve_expense_sheets']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//header/button[@name='approve_expense_sheets']" position="after">
+                    <field name="need_approval" invisible="1"/>
+                    <field name="can_approve" invisible="1"/>
+                    <button name="approve_expense_sheets"
+                            string="Approve" type="object" class="oe_highlight o_expense_sheet_approve"
+                            attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', '!=', 'submit')]}"
+                    />
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="employee_advance_currency_id" invisible="1"/>
+                    <field name="is_employee_advance" invisible="1"/>
+                    <field name="balance" widget="monetary" attrs="{'invisible':[('is_employee_advance','=',False)]}"
+                           options="{'currency_field': 'employee_advance_currency_id'}"/>
+                    <field name="remaining" widget="monetary" attrs="{'invisible':[('is_employee_advance','=',False)]}"
+                           options="{'currency_field': 'employee_advance_currency_id'}"/>
+                </xpath>
+                <xpath expr="//header" position="after">
+                    <field name="show_msg" invisible="1"/>
+                    <div class="alert alert-info" role="alert" style="margin-bottom:0px;"
+                         attrs="{'invisible': [('show_msg', '=' , False)]}">
+                        <b>This Sheet Exceeds The limit.</b>
+                    </div>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="hr_expense.action_hr_expense_sheet_all_to_approve" model="ir.actions.act_window">
+            <field name="domain">['|', ('user_id', '=', uid), ('general_manager_id', '=', uid)]</field>
+        </record>
+
+        <function model="hr.expense.sheet" name="deactivate_rules"/>
+
+        <record id="hr_expense_sheet_view_form_inherit_expense_limit" model="ir.ui.view">
+            <field name="name">hr.expense.sheet.view.form.payroll</field>
+            <field name="model">hr.expense.sheet</field>
+            <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form"/>
+            <field name="arch" type="xml">
+                <button name="action_sheet_move_create" position="attributes">
+                    <attribute name="context">{'sheet_id': id}</attribute>
+                </button>
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="general_manager_id" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

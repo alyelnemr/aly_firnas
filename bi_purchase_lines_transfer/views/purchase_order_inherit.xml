@@ -1,0 +1,56 @@
+<odoo>
+    <data>
+        <record id="purchase_order_form_inherit" model="ir.ui.view">
+            <field name="name">purchase.order.form.inherit</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button name="button_transfer_lines" type="object" states="draft" string="Transfer Lines"
+                            class="oe_highlight"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="purchase_order_lines_list_view">
+            <field name="name">purchase.order.lines.list.view</field>
+            <field name="model">purchase.order.line</field>
+            <field name="arch" type="xml">
+                <tree create="0">
+                    <field name="product_id"/>
+                    <field name="name"/>
+                    <field name="date_planned" optional="hide"/>
+                    <field name="account_analytic_id" optional="hide" groups="analytic.group_analytic_accounting"/>
+                    <field name="analytic_tag_ids" optional="hide" groups="analytic.group_analytic_tags"
+                           widget="many2many_tags"/>
+                    <field name="product_qty"/>
+                    <field name="qty_received"/>
+                    <field name="qty_invoiced"/>
+                    <field name="product_uom"/>
+                    <field name="price_unit"/>
+                    <field name="taxes_id"/>
+                    <field name="price_subtotal"/>
+                    <field name="order_id"/>
+                    <field name="order_state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="purchase_order_lines_action" model="ir.actions.act_window">
+            <field name="name">Purchase Order Line</field>
+            <field name="res_model">purchase.order.line</field>
+            <field name="view_mode">list</field>
+        </record>
+
+        <record model="ir.actions.server" id="transfer_purchase_lines_action">
+            <field name="name">Transfer Lines</field>
+            <field name="model_id" ref="purchase.model_purchase_order_line"/>
+            <field name="binding_model_id" ref="purchase.model_purchase_order_line"/>
+            <field name="state">code</field>
+            <field name="code">action = records.action_transfer_purchase_lines()</field>
+        </record>
+
+        <menuitem id="purchase_order_lines_menu" name="Purchase Order Lines" sequence="7"
+                  parent="purchase.menu_procurement_management" action="purchase_order_lines_action"/>
+    </data>
+</odoo>

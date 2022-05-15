@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="reinvoice_customer_wizard_view" model="ir.ui.view">
+            <field name="name">reinvoice_customer_wizard_view</field>
+            <field name="model">reinvoice.customer.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="sale_order_id" domain="[('state','not in',['done','cancel'])]"
+                               options="{'no_create_edit': True, 'no_open': True}"/>
+                    </group>
+                    <footer>
+                        <button name="action_update_order_lines" type="object" string="Confirm"
+                                class="btn btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

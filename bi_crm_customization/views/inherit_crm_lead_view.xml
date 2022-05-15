@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_crm_lead_inherit_form" model="ir.ui.view">
+        <field name="name">crm.lead.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group/group/field[@name='date_deadline']" position="before">
+                <field name="currency_id"/>
+                <field name="forecast"/>
+            </xpath>
+            <xpath expr="//div/h2/div[1]" position="replace"></xpath>
+            <xpath expr="//div/h2/div[@class='col']" position="replace"></xpath>
+        </field>
+    </record>
+    <record id="view_crm_lead_inherit_tree" model="ir.ui.view">
+        <field name="name">crm.lead.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='planned_revenue']" position="replace">
+                <field name="currency_id"/>
+                <field name="forecast" sum="Total Forecast"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_crm_lead_inherit_kanban" model="ir.ui.view">
+        <field name="name">crm.lead.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//progressbar" position="before">
+                <field name="currency_id"/>
+                <field name="forecast"/>
+            </xpath>
+            <xpath expr="//progressbar[@field='activity_state']" position="attributes">
+                <attribute name="sum_field"/>
+            </xpath>
+            <xpath expr="//t/div/div[@class='oe_kanban_content']/div[3]" position="replace">
+                <t t-if="record.forecast">
+                    <field name="forecast" widget="float"/>
+                    <field name="currency_id"/>
+                </t>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_crm_lead_inherit_search" model="ir.ui.view">
+        <field name="name">crm.lead.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group/filter[@name='source']" position="after">
+                <field name="currency_id" string="Currency" domain="[]" context="{'group_by':'currency_id'}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

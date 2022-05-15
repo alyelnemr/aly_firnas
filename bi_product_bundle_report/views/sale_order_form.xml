@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="inherit_view_sale_order_add_report_fields" model="ir.ui.view">
+            <field name="name">inherit.view.sale.order.add.report.fields</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header/field[@name='state']" position="before">
+                    <button name="print_bundled_quotation" type="object" string="Print Bundled"
+                            class="oe_highlight" invisible="1"/>
+                </xpath>
+                <xpath expr="//group/group[2]" position="inside">
+                    <field name="split_page"/>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_id']"
+                       position="before">
+                    <field name="is_printed" context="{'changed_id': id}"/>
+                    <field name="is_offer_product"/>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_uom']"
+                       position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'in', ('sale','done', 'cancel'))], 'required': False}</attribute>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="after">
+                    <field name="section" required="1" />
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_unit']"
+                       position="before">
+                    <field name="item_price"/>
+                </xpath>
+                <xpath expr="//notebook/page[@name='other_information']" position="before">
+                    <page string="Additional Products" name="additional">
+                        <field name="sale_order_additional_ids" mode="tree,form,kanban">
+                            <form string="Additional Products">
+                                <group>
+                                    <field name="product_id"
+                                           domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"/>
+                                    <field name="name"/>
+                                    <field name="quantity"/>
+                                    <field name="product_uom_category_id" invisible="1"/>
+                                    <field name="uom_id" groups="uom.group_uom"/>
+                                    <field name="price_unit"/>
+                                    <field name="price_note"/>
+                                    <field name="discount" groups="product.group_discount_per_so_line"/>
+                                    <field name="is_present"/>
+                                </group>
+                            </form>
+                            <kanban class="o_kanban_mobile">
+                                <field name="product_id"/>
+                                <field name="quantity"/>
+                                <field name="uom_id" groups="uom.group_uom"/>
+                                <field name="price_unit"/>
+                                <field name="is_present"/>
+                                <templates>
+                                    <t t-name="kanban-box">
+                                        <div class="oe_kanban_card oe_kanban_global_click">
+                                            <div class="row">
+                                                <div class="col-10">
+                                                    <strong>
+                                                        <span>
+                                                            <t t-esc="record.product_id.value"/>
+                                                        </span>
+                                                    </strong>
+                                                </div>
+                                                <div class="col-2">
+                                                    <button name="button_add_to_order"
+                                                            class="btn btn-link oe_link fa fa-shopping-cart"
+                                                            title="Add to order lines" type="object"
+                                                            attrs="{'invisible': [('is_present', '=', True)]}"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 text-muted">
+                                                    <span>
+                                                        Quantity:
+                                                        <t t-esc="record.quantity.value"/>
+                                                        <t t-esc="record.uom_id.value"/>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 text-muted">
+                                                    <span>
+                                                        Unit Price:
+                                                        <t t-esc="record.price_unit.value"/>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </templates>
+                            </kanban>
+                            <tree string="Sales Quotation Template Lines" editable="bottom"
+                                  delete="true"
+                                  decoration-success="is_present == True">
+                                <control>
+                                    <create name="add_product_control" string="Add a product"/>
+                                </control>
+                                <field name="sequence" widget="handle"/>
+                                <field name="section"/>
+                                <field name="product_id"
+                                       domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"/>
+                                <field name="name" optional="show"/>
+                                <field name="quantity"/>
+                                <field name="uom_id" string="UoM" groups="uom.group_uom" optional="show"/>
+                                <field name="product_uom_category_id" invisible="1"/>
+                                <field name="price_unit"/>
+                                <field name="price_note"/>
+                                <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line"
+                                       optional="show"/>
+                                <field name="is_present" invisible="1"/>
+                                <button name="button_add_to_order" class="oe_link" icon="fa-shopping-cart"
+                                        title="Add to order lines" type="object"
+                                        attrs="{'invisible': [('is_present', '=', True)]}"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="inherit_view_sale_order_add_section_fields" model="ir.ui.view">
+            <field name="name">inherit.view.sale.order.add.section.fields</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_management.sale_order_form_quote"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='sale_order_option_ids']/tree//field[@name='sequence']" position="after">
+                    <field name="section"/>
+                </xpath>
+                <xpath expr="//field[@name='sale_order_option_ids']/tree//field[@name='price_unit']" position="after">
+                    <field name="price_note"/>
+                </xpath>
+                <xpath expr="//field[@name='payment_term_id']" position="after">
+                    <field name="show_component_price"/>
+                </xpath>
+                <xpath expr="//field[@name='sale_order_option_ids']/tree//field[@name='product_id']" position="attributes">
+                    <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}
+                    </attribute>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
