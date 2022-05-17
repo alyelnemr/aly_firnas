@@ -425,10 +425,8 @@
                                     </h5>
                                 </div>
                                 <div>
-                                    <t t-if="o.partner_id.name" t-raw="o.partner_id.name"
-                                       style="font-family: verdana !important; font-size: 15px !important;"/>
                                     <p style="font-size: 15px !important; font-family: verdana !important;">
-                                        <t t-raw="o.po_scope_schedule"
+                                        <t t-raw="o.po_scope_schedule.replace('[$vendor_name$]', o.partner_id.name)"
                                            style="font-family: verdana !important; font-size: 15px !important;"/>
                                     </p>
                                 </div>
@@ -453,7 +451,7 @@
                                                        style="font-family: verdana !important; font-size: 15px !important;"/>
                                                 </t>
                                             </t>
-                                            <t t-if="not o.po_payment_schedule">
+                                            <t t-if="o.po_payment_schedule">
                                                 <t t-raw="o.po_payment_schedule"
                                                    style="font-family: verdana !important; font-size: 15px !important;"/>
                                             </t>
@@ -470,7 +468,7 @@
                                 </div>
                                 <div>
                                     <p style="font-size: 15px !important; font-family: verdana !important;">
-                                        <t t-raw="o.po_payment_schedule"
+                                        <t t-raw="o.po_acceptance"
                                            style="font-family: verdana !important; font-size: 15px !important;"/>
                                     </p>
                                 </div>
