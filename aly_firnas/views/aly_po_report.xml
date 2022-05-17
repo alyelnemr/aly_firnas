@@ -253,7 +253,7 @@
                     <tr>
                         <td style="width:50%;" rowspan="2" colspan="2">
                             <t t-if="o.dest_address_id">
-                                <div t-field="o.dest_address_id.partner_id" style="font-weight: normal;"
+                                <div t-field="o.dest_address_id" style="font-weight: normal;"
                                      t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True, "phone_icons": False}'/>
                             </t>
                         </td>
