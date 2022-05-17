@@ -494,6 +494,11 @@
                         </th>
                     </tr>
                     <tr>
+                        <td>
+                            <br/>
+                        </td>
+                    </tr>
+                    <tr>
                         <t t-if="o.is_print_firnas_signature">
                             <th style="color:rgb(86, 56, 90); ">Signature</th>
                         </t>
