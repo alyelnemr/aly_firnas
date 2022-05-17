@@ -53,10 +53,10 @@
             <table style="width:50%;border: 0px;margin-left: 10px;">
                 <t t-if="o.user_id.name">
                     <tr>
-                        <th style="width:30%;color:rgb(86, 56, 90); font-weight: bold;">Contact Person</th>
+                        <th style="width:30%;color:rgb(86, 56, 90); font-weight: bold;">Contact</th>
                         <td style="width:70%;">
                             <span t-field="o.user_id.name"
-                                  style="padding-left: 15px; font-family: Open Sans !important;"
+                                  style="font-family: Open Sans !important;"
                                   class="text-left"/>
                         </td>
                     </tr>
@@ -66,7 +66,7 @@
                         <th style="width:30%;color:rgb(86, 56, 90); font-weight: bold;">Phone</th>
                         <td style="width:70%;">
                             <span t-field="o.user_id.phone"
-                                  style="padding-left: 15px; font-family: Open Sans !important;"
+                                  style="font-family: Open Sans !important;word-wrap: break-word;"
                                   class="text-left"/>
                         </td>
                     </tr>
@@ -76,7 +76,7 @@
                         <th style="width:30%;color:rgb(86, 56, 90); font-weight: bold;">Email</th>
                         <td style="width:70%;">
                             <span t-field="o.user_id.email"
-                                  style="padding-left: 15px; font-family: Open Sans !important;"
+                                  style="font-family: Open Sans !important;word-wrap: break-word;"
                                   class="text-left"/>
                         </td>
                     </tr>
@@ -109,19 +109,19 @@
                     <t t-foreach="o.order_line" t-as="line">
                         <tr>
                             <td id="sn" class="text-center"
-                                style="padding-left: 15px; font-family: Open Sans !important;">
+                                style="padding-left: 5px; font-family: Open Sans !important;">
                                 <span t-field="line.line_rank"/>
                             </td>
                             <td id="product" class="text-left"
-                                style="padding-left: 15px; font-family: Open Sans !important;">
+                                style="padding-left: 5px; font-family: Open Sans !important;">
                                 <span t-field="line.name"/>
                             </td>
                             <td class="text-right"
-                                style="padding-left: 15px; font-family: Open Sans !important;">
+                                style="padding-left: 5px; font-family: Open Sans !important;">
                                 <span t-field="line.product_qty"/>
                             </td>
                             <td class="text-right"
-                                style="padding-left: 15px; font-family: Open Sans !important;">
+                                style="padding-left: 5px; font-family: Open Sans !important;">
                                 <span t-field="line.product_uom.name"/>
                             </td>
                         </tr>
@@ -169,11 +169,11 @@
             </table>
             <table style="width:100%;border: 0px;margin-left: 10px;">
                 <tr>
-                    <th style="color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.user_id.name">Contact Person</t></th>
+                    <th style="color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.user_id.name">Contact</t></th>
                     <td style="">
                         <span t-field="o.user_id.name" style="font-weight: normal;" class="text-left"/>
                     </td>
-                    <th style="color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.vendor_contact.name">Contact Person</t></th>
+                    <th style="color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.vendor_contact.name">Contact</t></th>
                     <td style="">
                         <span t-field="o.vendor_contact.name" style="font-weight: normal;" class="text-left"/>
                     </td>
@@ -191,11 +191,11 @@
                 <tr>
                     <th style="color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.user_id.email">Email</t></th>
                     <td style="">
-                        <span t-field="o.user_id.email" style="font-weight: normal;" class="text-left"/>
+                        <span t-field="o.user_id.email" style="font-weight: normal;word-wrap: break-word;" class="text-left"/>
                     </td>
                     <th style="color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.vendor_contact.email">Email</t></th>
                     <td style="">
-                        <span t-field="o.vendor_contact.email" style="font-weight: normal;" class="text-left"/>
+                        <span t-field="o.vendor_contact.email" style="font-weight: normal;word-wrap: break-word;" class="text-left"/>
                     </td>
                 </tr>
                 <tr>
@@ -293,35 +293,35 @@
                     <t t-foreach="o.order_line" t-as="line">
                         <tr>
                             <td id="sn" class="text-center"
-                                style="padding-left: 15px; font-family: Open Sans !important;">
+                                style="padding-left: 5px; font-family: Open Sans !important;">
                                 <span t-field="line.line_rank"/>
                             </td>
                             <td id="product" class="text-left"
-                                style="padding-left: 15px; font-family: Open Sans !important;">
+                                style="padding-left: 5px; font-family: Open Sans !important;">
                                 <span t-field="line.name"/>
                             </td>
                             <td class="text-right"
-                                style="padding-left: 15px; font-family: Open Sans !important;">
+                                style="padding-left: 5px; font-family: Open Sans !important;">
                                 <span t-field="line.product_qty"/>
                             </td>
                             <td class="text-right"
-                                style="padding-left: 15px; font-family: Open Sans !important;">
+                                style="padding-left: 5px; font-family: Open Sans !important;">
                                 <span t-field="line.product_uom.name"/>
                             </td>
                             <td class="text-right"
-                                style="padding-left: 15px; font-family: Open Sans !important;">
+                                style="padding-left: 5px; font-family: Open Sans !important;">
                                 <span t-field="line.price_unit"/>
                             </td>
                             <td class="text-right"
-                                style="padding-left: 15px; font-family: Open Sans !important;">
+                                style="padding-left: 5px; font-family: Open Sans !important;">
                                 <span t-field="line.discount"/>
                             </td>
                             <td class="text-right"
-                                style="padding-left: 15px; font-family: Open Sans !important;">
+                                style="padding-left: 5px; font-family: Open Sans !important;">
                                 <span t-esc="', '.join(map(lambda x: x.name, line.taxes_id))"/>
                             </td>
                             <td class="text-right"
-                                style="padding-left: 15px; font-family: Open Sans !important;">
+                                style="padding-left: 5px; font-family: Open Sans !important;">
                                 <span t-field="line.price_subtotal"/>
                             </td>
                         </tr>
