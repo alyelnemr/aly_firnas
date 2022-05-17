@@ -294,7 +294,7 @@
                             <strong>Discount</strong>
                         </th>
                         <th name="th_taxes" class="text-right"
-                            style="font-family: Open Sans !important; width:40px; font-size: 15px;">
+                            style="font-family: Open Sans !important; width:50px; font-size: 15px;">
                             <strong>Taxes</strong>
                         </th>
                         <th name="th_subtotal" class="text-right"
@@ -358,20 +358,20 @@
                 <tr>
                     <th style="color:rgb(86, 56, 90); font-weight: bold; "></th>
                     <td style="">
-                    </td>
-                    <th style="color:rgb(86, 56, 90); ">Discounts</th>
-                    <td style="">
-                        <span t-field="o.ks_amount_discount" class="text-left"/>
-                    </td>
-                </tr>
-                <tr>
-                    <th style="color:rgb(86, 56, 90); font-weight: bold; "></th>
-                    <td style="">
 
                     </td>
                     <th style="color:rgb(86, 56, 90); font-weight: bold; ">Taxes</th>
                     <td style="">
                         <span t-field="o.amount_tax" class="text-left"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th style="color:rgb(86, 56, 90); font-weight: bold; "></th>
+                    <td style="">
+                    </td>
+                    <th style="color:rgb(86, 56, 90); ">Discounts</th>
+                    <td style="">
+                        <span t-field="o.ks_amount_discount" class="text-left"/>
                     </td>
                 </tr>
                 <tr>
@@ -480,15 +480,26 @@
             </table>
             <br/>
             <br/>
-            <t t-if="o.is_print_firnas_signature">
-                <table style="width:50%;border: 0px;margin-left: 10px;">
+                <table style="width:100%;border: 0px;margin-left: 10px;">
                     <tr>
-                        <th style="color:rgb(86, 56, 90); ">
-                            <span t-field="o.company_id.name" class="text-left"/>
+                        <th style="width:50%;color:rgb(86, 56, 90); ">
+                            <t t-if="o.is_print_firnas_signature">
+                                <span t-field="o.company_id.name" class="text-left"/>
+                            </t>
+                        </th>
+                        <th style="width:50%;color:rgb(86, 56, 90); ">
+                            <t t-if="o.is_print_vendor_signature">
+                                <span t-field="o.partner_id.name" class="text-left"/>
+                            </t>
                         </th>
                     </tr>
                     <tr>
-                        <th style="color:rgb(86, 56, 90); ">Signature</th>
+                        <t t-if="o.is_print_firnas_signature">
+                            <th style="color:rgb(86, 56, 90); ">Signature</th>
+                        </t>
+                        <t t-if="o.is_print_vendor_signature">
+                            <th style="color:rgb(86, 56, 90); ">Signature</th>
+                        </t>
                     </tr>
                     <tr>
                         <td>
@@ -496,30 +507,14 @@
                         </td>
                     </tr>
                     <tr>
-                        <th style="color:rgb(86, 56, 90); ">Name and Title</th>
+                        <t t-if="o.is_print_firnas_signature">
+                            <th style="color:rgb(86, 56, 90); ">Name and Title</th>
+                        </t>
+                        <t t-if="o.is_print_vendor_signature">
+                            <th style="color:rgb(86, 56, 90); ">Name and Title</th>
+                        </t>
                     </tr>
                 </table>
-            </t>
-            <t t-if="o.is_print_vendor_signature">
-                <table style="width:50%;border: 0px;position: absolute; right: 0px;">
-                    <tr>
-                        <th style="color:rgb(86, 56, 90); ">
-                            <span t-field="o.partner_id.name" class="text-left"/>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th style="color:rgb(86, 56, 90); ">Signature</th>
-                    </tr>
-                    <tr>
-                        <td>
-                            <br/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th style="color:rgb(86, 56, 90); ">Name and Title</th>
-                    </tr>
-                </table>
-            </t>
 
         </div>
     </template>
@@ -574,7 +569,7 @@
                     <div class="footer">
                         <div class="row" style="width: 100% !important; margin: auto auto; padding-top: 35px;">
                             <br/>
-                            <div class="text-left" style="width: 100%;">
+                            <div class="text-right" style="width: 100%;">
                                 <h5 style="font-family: Open Sans !important; font-size: 15px;color:rgb(166, 166, 166);">
                                     Page
                                     <span class="page"/>
