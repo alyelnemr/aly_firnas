@@ -168,53 +168,53 @@
                 </tr>
             </table>
             <table style="width:100%;border: 0px;margin-left: 10px;">
-                <tr>
-                    <th style="color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.user_id.name">Contact</t></th>
-                    <td style="">
+                <tr style="width:100%;">
+                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.user_id.name">Contact</t></th>
+                    <td style="width:35%;">
                         <span t-field="o.user_id.name" style="font-weight: normal;" class="text-left"/>
                     </td>
-                    <th style="color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.vendor_contact.name">Contact</t></th>
-                    <td style="">
+                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.vendor_contact.name">Contact</t></th>
+                    <td style="width:35%;">
                         <span t-field="o.vendor_contact.name" style="font-weight: normal;" class="text-left"/>
                     </td>
                 </tr>
                 <tr>
-                    <th style="color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.user_id.phone" >Phone</t></th>
-                    <td style="">
+                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.user_id.phone" >Phone</t></th>
+                    <td style="width:35%;">
                         <span t-field="o.user_id.phone" style="font-weight: normal;" class="text-left"/>
                     </td>
-                    <th style="color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.user_id.phone">Phone</t></th>
-                    <td style="">
+                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.user_id.phone">Phone</t></th>
+                    <td style="width:35%;">
                         <span t-field="o.vendor_contact.phone" style="font-weight: normal;" class="text-left"/>
                     </td>
                 </tr>
                 <tr>
-                    <th style="color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.user_id.email">Email</t></th>
-                    <td style="">
+                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.user_id.email">Email</t></th>
+                    <td style="width:35%;">
                         <span t-field="o.user_id.email" style="font-weight: normal;word-wrap: break-word;" class="text-left"/>
                     </td>
-                    <th style="color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.vendor_contact.email">Email</t></th>
-                    <td style="">
+                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.vendor_contact.email">Email</t></th>
+                    <td style="width:35%;">
                         <span t-field="o.vendor_contact.email" style="font-weight: normal;word-wrap: break-word;" class="text-left"/>
                     </td>
                 </tr>
                 <tr>
-                    <th style="color:rgb(86, 56, 90); "></th>
-                    <td style="">
+                    <th style="width:15%;color:rgb(86, 56, 90); "></th>
+                    <td style="width:35%;">
 
                     </td>
-                    <th style="color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.partner_ref">Reference</t></th>
-                    <td style="">
+                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.partner_ref">Reference</t></th>
+                    <td style="width:35%;">
                         <span t-field="o.partner_ref" style="font-weight: normal;" class="text-left"/>
                     </td>
                 </tr>
                 <tr>
-                    <th style="color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.date_order">Order Date</t></th>
-                    <td style="">
+                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.date_order">Order Date</t></th>
+                    <td style="width:35%;">
                         <span t-field="o.date_order" style="font-weight: normal;" class="text-left"/>
                     </td>
-                    <th style="color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.currency_id.name">Currency</t></th>
-                    <td style="">
+                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.currency_id.name">Currency</t></th>
+                    <td style="width:35%;">
                         <span t-field="o.currency_id.name" style="font-weight: normal;" class="text-left"/>
                     </td>
                 </tr>
