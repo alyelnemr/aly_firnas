@@ -203,9 +203,23 @@
                     <td style="width:35%;">
 
                     </td>
-                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.partner_ref">Reference</t></th>
+                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
+                        <t t-if="o.partner_ref">Reference</t>
+                    </th>
                     <td style="width:35%;">
                         <span t-field="o.partner_ref" style="font-weight: normal;" class="text-left"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th style="width:15%;color:rgb(86, 56, 90); "></th>
+                    <td style="width:35%;">
+                        <br/>
+                    </td>
+                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
+
+                    </th>
+                    <td style="width:35%;">
+
                     </td>
                 </tr>
                 <tr>
@@ -272,7 +286,7 @@
                             <strong>UOM</strong>
                         </th>
                         <th name="th_unit_price" class="text-right"
-                            style="font-family: Open Sans !important; width:30px; font-size: 15px;">
+                            style="font-family: Open Sans !important; width:35px; font-size: 15px;">
                             <strong>Unit Price</strong>
                         </th>
                         <th name="th_discount" class="text-right"
@@ -280,7 +294,7 @@
                             <strong>Discount</strong>
                         </th>
                         <th name="th_taxes" class="text-right"
-                            style="font-family: Open Sans !important; width:30px; font-size: 15px;">
+                            style="font-family: Open Sans !important; width:40px; font-size: 15px;">
                             <strong>Taxes</strong>
                         </th>
                         <th name="th_subtotal" class="text-right"
