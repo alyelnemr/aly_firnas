@@ -31,7 +31,7 @@
 
     <template id="aly_rfq_template">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"/>
-        <div class="page" style="z-index:1000 !important;font-weight: normal;font-family: Open Sans; font-size: 12px;">
+        <div class="page" style="z-index:1000 !important;font-weight: normal;font-family: Open Sans; font-size: 15px;">
             <div class="oe_structure"/>
             <div style="margin-left: 10px; margin-right: 10px; margin-top: 10px; margin-bottom: 10px;
             font-family: Open Sans !important;">
@@ -66,7 +66,7 @@
                         <th style="width:30%;color:rgb(86, 56, 90); font-weight: bold;">Phone</th>
                         <td style="width:70%;">
                             <span t-field="o.user_id.phone"
-                                  style="font-family: Open Sans !important;word-wrap: break-word;"
+                                  style="font-family: Open Sans !important;word-wrap: break-word !important;"
                                   class="text-left"/>
                         </td>
                     </tr>
@@ -76,7 +76,7 @@
                         <th style="width:30%;color:rgb(86, 56, 90); font-weight: bold;">Email</th>
                         <td style="width:70%;">
                             <span t-field="o.user_id.email"
-                                  style="font-family: Open Sans !important;word-wrap: break-word;"
+                                  style="font-family: Open Sans !important;word-wrap: break-word !important;"
                                   class="text-left"/>
                         </td>
                     </tr>
@@ -134,7 +134,7 @@
 
     <template id="aly_po_template">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:wght@300" rel="stylesheet"/>
-        <div class="page" style="z-index:1000 !important;font-weight: normal;font-family: Open Sans; font-size: 12px;">
+        <div class="page" style="z-index:1000 !important;font-weight: normal; font-family: Open Sans; font-size: 15px;">
             <div class="oe_structure" />
             <div style="margin-left: 10px; margin-right: 10px; margin-top: 10px; margin-bottom: 10px;
             font-family: Open Sans !important;">
@@ -191,7 +191,7 @@
                 <tr>
                     <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.user_id.email">Email</t></th>
                     <td style="width:35%;">
-                        <span t-field="o.user_id.email" style="font-weight: normal;word-wrap: break-word;" class="text-left"/>
+                        <span t-field="o.user_id.email" style="font-weight: normal; word-wrap: break-word;" class="text-left"/>
                     </td>
                     <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.vendor_contact.email">Email</t></th>
                     <td style="width:35%;">
@@ -369,7 +369,7 @@
                     <th style="color:rgb(86, 56, 90); font-weight: bold; "></th>
                     <td style="">
                     </td>
-                    <th style="color:rgb(86, 56, 90); ">Discounts</th>
+                    <th style="color:rgb(86, 56, 90); font-weight: bold; ">Discounts</th>
                     <td style="">
                         <span t-field="o.ks_amount_discount" class="text-left"/>
                     </td>
@@ -418,42 +418,42 @@
                         <div>
                             <div class="text-left">
                                 <div>
-                                    <h5 style="color:rgb(86, 56, 90); font-size: 22px !important; font-weight: bold; font-family: Open Sans !important;">
+                                    <h5 style="color:rgb(86, 56, 90); font-size: 15px !important; font-weight: bold; font-family: Open Sans !important;">
                                         Scope and Schedule
                                     </h5>
                                 </div>
                                 <div>
                                     <t t-if="o.partner_id.name" t-raw="o.partner_id.name"
-                                       style="font-family: verdana !important; font-size: 10px !important;"/>
-                                    <p style="font-size: 10px !important; font-family: verdana !important;">
+                                       style="font-family: verdana !important; font-size: 15px !important;"/>
+                                    <p style="font-size: 15px !important; font-family: verdana !important;">
                                         <t t-raw="o.po_scope_schedule"
-                                           style="font-family: verdana !important; font-size: 10px !important;"/>
+                                           style="font-family: verdana !important; font-size: 15px !important;"/>
                                     </p>
                                 </div>
                             </div>
                             <br/>
                             <div class="text-left">
                                 <div>
-                                    <h5 style="color:rgb(86, 56, 90); font-size: 22px !important; font-weight: bold; font-family: Open Sans !important;">
+                                    <h5 style="color:rgb(86, 56, 90); font-size: 15px !important; font-weight: bold; font-family: Open Sans !important;">
                                         Payment Schedule and Term
                                     </h5>
                                 </div>
                                 <div>
-                                    <p style="font-size: 10px !important; font-family: verdana !important;">
+                                    <p style="font-size: 15px !important; font-family: verdana !important;">
                                         <t t-if="o.po_payment_schedule">
                                             <t t-if="'[$p_term$]' in o.po_payment_schedule">
                                                 <t t-if="o.payment_term_id">
                                                     <t t-raw="o.po_payment_schedule.replace('[$p_term$]', o.payment_term_id.name)"
-                                                       style="font-family: verdana !important; font-size: 10px !important;"/>
+                                                       style="font-family: verdana !important; font-size: 15px !important;"/>
                                                 </t>
                                                 <t t-if="not o.payment_term_id">
                                                     <t t-raw="o.po_payment_schedule.replace('[$p_term$]', '')"
-                                                       style="font-family: verdana !important; font-size: 10px !important;"/>
+                                                       style="font-family: verdana !important; font-size: 15px !important;"/>
                                                 </t>
                                             </t>
                                             <t t-if="not o.po_payment_schedule">
                                                 <t t-raw="o.po_payment_schedule"
-                                                   style="font-family: verdana !important; font-size: 10px !important;"/>
+                                                   style="font-family: verdana !important; font-size: 15px !important;"/>
                                             </t>
                                         </t>
                                     </p>
@@ -462,14 +462,14 @@
                             <br/>
                             <div class="text-left">
                                 <div>
-                                    <h5 style="color:rgb(86, 56, 90); font-size: 22px !important; font-weight: bold; font-family: Open Sans !important;">
+                                    <h5 style="color:rgb(86, 56, 90); font-size: 15px !important; font-weight: bold; font-family: Open Sans !important;">
                                         Acceptance
                                     </h5>
                                 </div>
                                 <div>
-                                    <p style="font-size: 10px !important; font-family: verdana !important;">
+                                    <p style="font-size: 15px !important; font-family: verdana !important;">
                                         <t t-raw="o.po_payment_schedule"
-                                           style="font-family: verdana !important; font-size: 10px !important;"/>
+                                           style="font-family: verdana !important; font-size: 15px !important;"/>
                                     </p>
                                 </div>
                             </div>
@@ -484,12 +484,12 @@
                     <tr>
                         <th style="width:50%;color:rgb(86, 56, 90); ">
                             <t t-if="o.is_print_firnas_signature">
-                                <span t-field="o.company_id.name" class="text-left"/>
+                                <span t-field="o.company_id.name" style="font-weight: bold; font-size: 15px !important;" class="text-left"/>
                             </t>
                         </th>
                         <th style="width:50%;color:rgb(86, 56, 90); ">
                             <t t-if="o.is_print_vendor_signature">
-                                <span t-field="o.partner_id.name" class="text-left"/>
+                                <span t-field="o.partner_id.name" style="font-weight: bold; font-size: 15px !important;" class="text-left"/>
                             </t>
                         </th>
                     </tr>
@@ -500,10 +500,10 @@
                     </tr>
                     <tr>
                         <t t-if="o.is_print_firnas_signature">
-                            <th style="color:rgb(86, 56, 90); ">Signature</th>
+                            <th style="color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Signature</th>
                         </t>
                         <t t-if="o.is_print_vendor_signature">
-                            <th style="color:rgb(86, 56, 90); ">Signature</th>
+                            <th style="color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Signature</th>
                         </t>
                     </tr>
                     <tr>
@@ -513,10 +513,10 @@
                     </tr>
                     <tr>
                         <t t-if="o.is_print_firnas_signature">
-                            <th style="color:rgb(86, 56, 90); ">Name and Title</th>
+                            <th style="color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Name and Title</th>
                         </t>
                         <t t-if="o.is_print_vendor_signature">
-                            <th style="color:rgb(86, 56, 90); ">Name and Title</th>
+                            <th style="color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Name and Title</th>
                         </t>
                     </tr>
                 </table>
