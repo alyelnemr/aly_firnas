@@ -414,10 +414,10 @@
                                     <p style="font-size: 10px !important; font-family: verdana !important;">
                                         <t t-raw="o.po_scope_schedule"
                                            style="font-family: verdana !important; font-size: 10px !important;"/>
-                                        <br/>
                                     </p>
                                 </div>
                             </div>
+                            <br/>
                             <div class="text-left">
                                 <div>
                                     <h5 style="color:rgb(86, 56, 90); font-size: 22px !important; font-weight: bold; font-family: Open Sans !important;">
@@ -431,23 +431,21 @@
                                                 <t t-if="o.payment_term_id">
                                                     <t t-raw="o.po_payment_schedule.replace('[$p_term$]', o.payment_term_id.name)"
                                                        style="font-family: verdana !important; font-size: 10px !important;"/>
-                                                    <br/>
                                                 </t>
                                                 <t t-if="not o.payment_term_id">
                                                     <t t-raw="o.po_payment_schedule.replace('[$p_term$]', '')"
                                                        style="font-family: verdana !important; font-size: 10px !important;"/>
-                                                    <br/>
                                                 </t>
                                             </t>
                                             <t t-if="not o.po_payment_schedule">
                                                 <t t-raw="o.po_payment_schedule"
                                                    style="font-family: verdana !important; font-size: 10px !important;"/>
-                                                <br/>
                                             </t>
                                         </t>
                                     </p>
                                 </div>
                             </div>
+                            <br/>
                             <div class="text-left">
                                 <div>
                                     <h5 style="color:rgb(86, 56, 90); font-size: 22px !important; font-weight: bold; font-family: Open Sans !important;">
@@ -458,10 +456,10 @@
                                     <p style="font-size: 10px !important; font-family: verdana !important;">
                                         <t t-raw="o.po_payment_schedule"
                                            style="font-family: verdana !important; font-size: 10px !important;"/>
-                                        <br/>
                                     </p>
                                 </div>
                             </div>
+                            <br/>
                         </div>
                     </div>
                 </tr>
