@@ -246,7 +246,7 @@
 
                         </td>
                         <th style="color:rgb(86, 56, 90);font-weight: bold; ">Incoterms</th>
-                        <td style="">
+                        <td style="width:35%;">
                             <span t-field="o.incoterm_id.name" style="font-weight: normal;" class="text-left"/>
                         </td>
                     </tr>
@@ -260,7 +260,7 @@
                     </tr>
                     <tr>
                         <th style="color:rgb(86, 56, 90);font-weight: bold; ">Receipt Date</th>
-                        <td style="">
+                        <td style="width:35%;">
                             <span t-field="o.date_planned" style="font-weight: normal;"/>
                         </td>
                     </tr>
