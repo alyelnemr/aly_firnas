@@ -20,7 +20,7 @@ class PurchaseOrder(models.Model):
     po_scope_schedule = fields.Html(string="Scope and Schedule", default=_get_default_po_scope_schedule)
     po_payment_schedule = fields.Html(string="Payment Schedule and Term", default=_get_default_po_payment_schedule)
     po_acceptance = fields.Html(string="Acceptance", default=_get_default_po_acceptance)
-    date_order = fields.Date('Order Date', readonly=True, help="Date on which this document has been created")
+    date_order = fields.Date('Order Date', readonly=False, help="Date on which this document has been created")
     date_planned = fields.Date(string='Receipt Date', index=True)
 
 
