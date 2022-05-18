@@ -200,7 +200,7 @@
                             </t>
                         </t>
                     </td>
-                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.user_id.phone">Phone</t></th>
+                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.vendor_contact.phone">Phone</t></th>
                     <td style="width:35%;">
                         <span t-field="o.vendor_contact.phone" style="font-weight: normal;" class="text-left"/>
                     </td>
