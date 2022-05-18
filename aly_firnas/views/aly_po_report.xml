@@ -21,7 +21,10 @@
                 <br/>
                 <div class="text-right" style="width: 100%;">
                     <h5 style="font-family: Open Sans !important; font-size: 15px;color:rgb(166, 166, 166);">
-                        Page <span class="page"/> of <span class="topage"/>
+                        Page
+                        <span class="page"/>
+                        of
+                        <span class="topage"/>
                     </h5>
                 </div>
             </div>
@@ -65,7 +68,7 @@
                     <tr>
                         <th style="width:30%;color:rgb(86, 56, 90); font-weight: bold;">Phone</th>
                         <td style="width:70%;">
-                            <t t-if="o.user_id.employee_id.mobile_phone" >
+                            <t t-if="o.user_id.employee_id.mobile_phone">
                                 <span t-field="o.user_id.employee_id.mobile_phone"
                                       style="font-family: Open Sans !important;word-wrap: break-word !important;"
                                       class="text-left"/>
@@ -137,7 +140,7 @@
     <template id="aly_po_template">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:wght@300" rel="stylesheet"/>
         <div class="page" style="z-index:1000 !important;font-weight: normal; font-family: Open Sans; font-size: 15px;">
-            <div class="oe_structure" />
+            <div class="oe_structure"/>
             <div style="margin-left: 10px; margin-right: 10px; margin-top: 10px; margin-bottom: 10px;
             font-family: Open Sans !important;">
                 <div>
@@ -171,11 +174,15 @@
             </table>
             <table style="width:100%;border: 0px;margin-left: 10px;">
                 <tr style="width:100%;">
-                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.user_id.name">Contact</t></th>
+                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
+                        <t t-if="o.user_id.name">Contact</t>
+                    </th>
                     <td style="width:35%;">
                         <span t-field="o.user_id.name" style="font-weight: normal;" class="text-left"/>
                     </td>
-                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.vendor_contact.name">Contact</t></th>
+                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
+                        <t t-if="o.vendor_contact.name">Contact</t>
+                    </th>
                     <td style="width:35%;">
                         <span t-field="o.vendor_contact.name" style="font-weight: normal;" class="text-left"/>
                     </td>
@@ -200,19 +207,26 @@
                             </t>
                         </t>
                     </td>
-                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.vendor_contact.phone">Phone</t></th>
+                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
+                        <t t-if="o.vendor_contact.phone">Phone</t>
+                    </th>
                     <td style="width:35%;">
                         <span t-field="o.vendor_contact.phone" style="font-weight: normal;" class="text-left"/>
                     </td>
                 </tr>
                 <tr>
-                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.user_id.email">Email</t></th>
+                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
+                        <t t-if="o.user_id.email">Email</t>
+                    </th>
                     <td style="width:35%;">
                         <span t-field="o.user_id.email" style="font-weight: normal; word-wrap: break-word;" class="text-left"/>
                     </td>
-                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.vendor_contact.email">Email</t></th>
+                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
+                        <t t-if="o.vendor_contact.email">Email</t>
+                    </th>
                     <td style="width:35%;">
-                        <span t-field="o.vendor_contact.email" style="font-weight: normal;word-wrap: break-word;" class="text-left"/>
+                        <span t-field="o.vendor_contact.email" style="font-weight: normal;word-wrap: break-word;"
+                              class="text-left"/>
                     </td>
                 </tr>
                 <tr>
@@ -240,11 +254,15 @@
                     </td>
                 </tr>
                 <tr>
-                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.date_order">Order Date</t></th>
+                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
+                        <t t-if="o.date_order">Order Date</t>
+                    </th>
                     <td style="width:35%;">
                         <span t-field="o.date_order" style="font-weight: normal;" class="text-left"/>
                     </td>
-                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.currency_id.name">Currency</t></th>
+                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
+                        <t t-if="o.currency_id.name">Currency</t>
+                    </th>
                     <td style="width:35%;">
                         <span t-field="o.currency_id.name" style="font-weight: normal;" class="text-left"/>
                     </td>
@@ -363,8 +381,8 @@
             </table>
             <br/>
             <br/>
-            <table style="width:40%;border: 0px; margin-right: 0px; margin-left: auto;">
-                <tr>
+            <table style="width:auto; border: 0px !important; margin-right: 0px; margin-left: auto;">
+                <tr style="width:auto;">
                     <th style="color:rgb(86, 56, 90); "></th>
                     <td style="">
 
@@ -374,7 +392,7 @@
                         <span t-field="o.amount_untaxed" class="text-left"/>
                     </td>
                 </tr>
-                <tr>
+                <tr style="width:auto;">
                     <th style="color:rgb(86, 56, 90); font-weight: bold; "></th>
                     <td style="">
 
@@ -384,7 +402,7 @@
                         <span t-field="o.amount_tax" class="text-left"/>
                     </td>
                 </tr>
-                <tr>
+                <tr style="width:auto;">
                     <th style="color:rgb(86, 56, 90); font-weight: bold; "></th>
                     <td style="">
                     </td>
@@ -393,7 +411,7 @@
                         <span t-field="o.ks_amount_discount" class="text-left"/>
                     </td>
                 </tr>
-                <tr>
+                <tr style="width:auto;">
                     <th style="color:rgb(86, 56, 90); "></th>
                     <td style="">
                     </td>
@@ -424,7 +442,7 @@
                 <tr>
                     <th style="color:rgb(86, 56, 90); "></th>
                     <td style="">
-                        <span  class="text-left"/>
+                        <span class="text-left"/>
                     </td>
                 </tr>
             </table>
@@ -505,46 +523,48 @@
             </table>
             <br/>
             <br/>
-                <table style="width:100%;border: 0px;margin-left: 10px;">
-                    <tr>
-                        <th style="width:50%;color:rgb(86, 56, 90); ">
-                            <t t-if="o.is_print_firnas_signature">
-                                <span t-field="o.company_id.name" style="font-weight: bold; font-size: 15px !important;" class="text-left"/>
-                            </t>
-                        </th>
-                        <th style="width:50%;color:rgb(86, 56, 90); ">
-                            <t t-if="o.is_print_vendor_signature">
-                                <span t-field="o.partner_id.name" style="font-weight: bold; font-size: 15px !important;" class="text-left"/>
-                            </t>
-                        </th>
-                    </tr>
-                    <tr>
-                        <td>
-                            <br/>
-                        </td>
-                    </tr>
-                    <tr>
+            <table style="width:100%;border: 0px;margin-left: 10px;">
+                <tr>
+                    <th style="width:50%;color:rgb(86, 56, 90); ">
                         <t t-if="o.is_print_firnas_signature">
-                            <th style="color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Signature</th>
+                            <span t-field="o.company_id.name" style="font-weight: bold; font-size: 15px !important;"
+                                  class="text-left"/>
                         </t>
+                    </th>
+                    <th style="width:50%;color:rgb(86, 56, 90); ">
                         <t t-if="o.is_print_vendor_signature">
-                            <th style="color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Signature</th>
+                            <span t-field="o.partner_id.name" style="font-weight: bold; font-size: 15px !important;"
+                                  class="text-left"/>
                         </t>
-                    </tr>
-                    <tr>
-                        <td>
-                            <br/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <t t-if="o.is_print_firnas_signature">
-                            <th style="color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Name and Title</th>
-                        </t>
-                        <t t-if="o.is_print_vendor_signature">
-                            <th style="color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Name and Title</th>
-                        </t>
-                    </tr>
-                </table>
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        <br/>
+                    </td>
+                </tr>
+                <tr>
+                    <t t-if="o.is_print_firnas_signature">
+                        <th style="color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Signature</th>
+                    </t>
+                    <t t-if="o.is_print_vendor_signature">
+                        <th style="color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Signature</th>
+                    </t>
+                </tr>
+                <tr>
+                    <td>
+                        <br/>
+                    </td>
+                </tr>
+                <tr>
+                    <t t-if="o.is_print_firnas_signature">
+                        <th style="color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Name and Title</th>
+                    </t>
+                    <t t-if="o.is_print_vendor_signature">
+                        <th style="color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Name and Title</th>
+                    </t>
+                </tr>
+            </table>
 
         </div>
     </template>
@@ -554,14 +574,16 @@
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <div class="header" style="height: 100px !important; z-index:0 !important;">
-                    <div class="row" style="margin: 0 auto; padding-top: 0px; padding-left: 0px; height: 100px !important; width: 100%;">
+                    <div class="row"
+                         style="margin: 0 auto; padding-top: 0px; padding-left: 0px; height: 100px !important; width: 100%;">
                         <div style="width: 50% !important;" class="col-4 mb4 text-left">
                             <img src="/aly_firnas/static/src/img/firnas_logo_full.jpg"
                                  style="height: 90px !important;" alt="Logo"/>
                         </div>
                         <div class="col-8 text-right" style="justify-content: center;">
                             <div style="width: 50% !important; padding-right: 4px; display: inline-block !important;">
-                                <span style="font-family: Open Sans !important; font-size: 15px;" t-esc="o.analytic_account_id.name[0:10]"/>
+                                <span style="font-family: Open Sans !important; font-size: 15px;"
+                                      t-esc="o.analytic_account_id.name[0:10]"/>
                             </div>
                         </div>
                     </div>
