@@ -23,6 +23,12 @@ class PurchaseOrder(models.Model):
     date_order = fields.Date('Order Date', readonly=True, help="Date on which this document has been created")
     date_planned = fields.Date(string='Receipt Date', index=True)
 
+    def write(self, vals):
+        res = super(PurchaseOrder, self).write(vals)
+        if vals.get('date_planned'):
+            self.order_line.filtered(lambda line: not line.display_type).date_planned = vals['date_planned']
+        return res
+
 
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
