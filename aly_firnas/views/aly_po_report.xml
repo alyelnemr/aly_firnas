@@ -61,13 +61,15 @@
                         </td>
                     </tr>
                 </t>
-                <t t-if="o.user_id.phone">
+                <t t-if="o.user_id.employee_id">
                     <tr>
                         <th style="width:30%;color:rgb(86, 56, 90); font-weight: bold;">Phone</th>
                         <td style="width:70%;">
-                            <span t-field="o.user_id.phone"
-                                  style="font-family: Open Sans !important;word-wrap: break-word !important;"
-                                  class="text-left"/>
+                            <t t-if="o.user_id.employee_id.mobile_phone" >
+                                <span t-field="o.user_id.employee_id.mobile_phone"
+                                      style="font-family: Open Sans !important;word-wrap: break-word !important;"
+                                      class="text-left"/>
+                            </t>
                         </td>
                     </tr>
                 </t>
@@ -178,10 +180,28 @@
                         <span t-field="o.vendor_contact.name" style="font-weight: normal;" class="text-left"/>
                     </td>
                 </tr>
+                <t t-if="o.user_id.employee_id">
+                    <tr>
+                        <th style="width:30%;color:rgb(86, 56, 90); font-weight: bold;">Phone</th>
+                        <td style="width:70%;">
+                            <t t-if="o.user_id.employee_id.mobile_phone">
+                                <span t-field="o.user_id.employee_id.mobile_phone"
+                                      style="font-family: Open Sans !important;word-wrap: break-word !important;"
+                                      class="text-left"/>
+                            </t>
+                        </td>
+                    </tr>
+                </t>
                 <tr>
-                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.user_id.phone" >Phone</t></th>
+                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
+                        <t t-if="o.user_id.employee_id">
+                            Phone
+                        </t>
+                    </th>
                     <td style="width:35%;">
-                        <span t-field="o.user_id.phone" style="font-weight: normal;" class="text-left"/>
+                        <t t-if="o.user_id.employee_id">
+                            <span t-field="o.user_id.employee_id.mobile_phone" style="font-weight: normal;" class="text-left"/>
+                        </t>
                     </td>
                     <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.user_id.phone">Phone</t></th>
                     <td style="width:35%;">
@@ -426,8 +446,16 @@
                                 </div>
                                 <div>
                                     <p style="font-size: 15px !important; font-family: verdana !important;">
-                                        <t t-raw="o.po_scope_schedule.replace('[$vendor_name$]', o.partner_id.name)"
-                                           style="font-family: verdana !important; font-size: 15px !important;"/>
+                                        <t t-if="o.po_scope_schedule">
+                                            <t t-if="'[$vendor_name$]' in o.po_scope_schedule">
+                                                <t t-raw="o.po_scope_schedule.replace('[$vendor_name$]', o.partner_id.name)"
+                                                   style="font-family: verdana !important; font-size: 15px !important;"/>
+                                            </t>
+                                            <t else="">
+                                                <t t-raw="o.po_scope_schedule"
+                                                   style="font-family: verdana !important; font-size: 15px !important;"/>
+                                            </t>
+                                        </t>
                                     </p>
                                 </div>
                             </div>
@@ -451,7 +479,7 @@
                                                        style="font-family: verdana !important; font-size: 15px !important;"/>
                                                 </t>
                                             </t>
-                                            <t t-if="o.po_payment_schedule">
+                                            <t else="">
                                                 <t t-raw="o.po_payment_schedule"
                                                    style="font-family: verdana !important; font-size: 15px !important;"/>
                                             </t>
@@ -533,6 +561,11 @@
                         <div class="col-4 mb4 text-left">
                             <img src="/aly_firnas/static/src/img/firnas_logo_full.jpg"
                                  style="height: 90px !important;" alt="Logo"/>
+                        </div>
+                        <div class="col-8 text-right" style="justify-content: center; padding: 15px 0px 15px 0px !important;">
+                            <div style="width: 90% !important; border-right: 1px solid black; padding-right: 4px; display: inline-block !important;">
+                                <span style="font-family: verdana !important; font-size: 15px;" t-esc="o.analytic_account_id.name[0:10]"/>
+                            </div>
                         </div>
                     </div>
                 </div>
