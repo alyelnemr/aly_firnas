@@ -388,6 +388,9 @@
 
                     </td>
                     <th style="color:rgb(86, 56, 90); font-weight: bold; ">Untaxed Amount</th>
+                    <td style="width: 35px">
+
+                    </td>
                     <td style="">
                         <span t-field="o.amount_untaxed" class="text-left"/>
                     </td>
@@ -398,6 +401,9 @@
 
                     </td>
                     <th style="color:rgb(86, 56, 90); font-weight: bold; ">Taxes</th>
+                    <td style="width: 35px">
+
+                    </td>
                     <td style="">
                         <span t-field="o.amount_tax" class="text-left"/>
                     </td>
@@ -407,6 +413,9 @@
                     <td style="">
                     </td>
                     <th style="color:rgb(86, 56, 90); font-weight: bold; ">Discounts</th>
+                    <td style="width: 35px">
+
+                    </td>
                     <td style="">
                         <span t-field="o.ks_amount_discount" class="text-left"/>
                     </td>
@@ -416,6 +425,9 @@
                     <td style="">
                     </td>
                     <th style="color:rgb(86, 56, 90); font-weight: bold; ">Total</th>
+                    <td style="width: 35px">
+
+                    </td>
                     <td style="">
                         <span t-field="o.amount_total" class="text-left"/>
                     </td>
