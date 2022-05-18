@@ -448,7 +448,7 @@
                                                 <t t-raw="o.po_scope_schedule.replace('[$vendor_name$]', o.partner_id.name)"
                                                    style="font-family: verdana !important; font-size: 15px !important;"/>
                                             </t>
-                                            <t else="">
+                                            <t t-if="'[$vendor_name$]' not in o.po_scope_schedule">
                                                 <t t-raw="o.po_scope_schedule"
                                                    style="font-family: verdana !important; font-size: 15px !important;"/>
                                             </t>
