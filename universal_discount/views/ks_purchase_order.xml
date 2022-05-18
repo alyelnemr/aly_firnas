@@ -18,7 +18,7 @@
                     </div>
                 </xpath>
                 <xpath expr="//field[@name='amount_tax']" position="after">
-                    <field name="ks_amount_discount" string="Discount:" attrs="{'invisible':[('ks_enable_discount','!=',True),('ks_amount_discount','=',0)]}" />
+                    <field name="ks_amount_discount" string="Discount" attrs="{'invisible':[('ks_enable_discount','!=',True),('ks_amount_discount','=',0)]}" />
                 </xpath>
             </field>
         </record>
