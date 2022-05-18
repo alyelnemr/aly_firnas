@@ -97,9 +97,11 @@ class InheritBankStatement(models.Model):
                 if not payment_vals['partner_id']:
                     payment_vals['partner_id'] = partner_id.id
                 if 'analytic_tag_ids' not in payment_vals:
-                    payment_vals['analytic_tag_ids'] = new_aml_dicts[0]['analytic_tag_ids']
+                    if len(new_aml_dicts) > 0 and 'analytic_tag_ids' in new_aml_dicts[0]:
+                        payment_vals['analytic_tag_ids'] = new_aml_dicts[0]['analytic_tag_ids']
                 if 'analytic_account_id' not in payment_vals:
-                    payment_vals['analytic_account_id'] = new_aml_dicts[0]['analytic_account_id']
+                    if len(new_aml_dicts) > 0 and 'analytic_account_id' in new_aml_dicts[0]:
+                        payment_vals['analytic_account_id'] = new_aml_dicts[0]['analytic_account_id']
                 if payment_vals['partner_id'] and len(account_types) == 1:
                     payment_vals['partner_type'] = 'customer' if account_types == receivable_account_type else 'supplier'
                 payment = payment.create(payment_vals)
