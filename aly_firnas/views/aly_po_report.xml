@@ -180,27 +180,24 @@
                         <span t-field="o.vendor_contact.name" style="font-weight: normal;" class="text-left"/>
                     </td>
                 </tr>
-                <t t-if="o.user_id.employee_id">
-                    <tr>
-                        <th style="width:30%;color:rgb(86, 56, 90); font-weight: bold;">Phone</th>
-                        <td style="width:70%;">
-                            <t t-if="o.user_id.employee_id.mobile_phone">
-                                <span t-field="o.user_id.employee_id.mobile_phone"
-                                      style="font-family: Open Sans !important;word-wrap: break-word !important;"
-                                      class="text-left"/>
-                            </t>
-                        </td>
-                    </tr>
-                </t>
                 <tr>
                     <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
-                        <t t-if="o.user_id.employee_id">
-                            Phone
+                        <t t-if="o.user_id">
+                            <t t-if="o.user_id.employee_id">
+                                <t t-if="o.user_id.employee_id.mobile_phone">
+                                    Phone
+                                </t>
+                            </t>
                         </t>
                     </th>
                     <td style="width:35%;">
-                        <t t-if="o.user_id.employee_id">
-                            <span t-field="o.user_id.employee_id.mobile_phone" style="font-weight: normal;" class="text-left"/>
+                        <t t-if="o.user_id">
+                            <t t-if="o.user_id.employee_id">
+                                <t t-if="o.user_id.employee_id.mobile_phone">
+                                    <span t-field="o.user_id.employee_id.mobile_phone" style="font-weight: normal;"
+                                          class="text-left"/>
+                                </t>
+                            </t>
                         </t>
                     </td>
                     <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; "><t t-if="o.user_id.phone">Phone</t></th>
