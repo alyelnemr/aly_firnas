@@ -10,8 +10,48 @@
                     <field name="vendor_contact"/>
                 </xpath>
                 <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="before">
-                    <field name="line_rank" string="Serial" readonly="1"/>
+                    <field name="line_rank" string="Sn" readonly="1"/>
                 </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="after">
+                    <field name="discount"/>
+                </xpath>
+                <xpath expr="//page[@name='purchase_delivery_invoice']/group/group/field[last()]" position="before"><field string="Delivery Section" name="is_print_delivery_section"/>
+                </xpath>
+                <xpath expr="//page[@name='purchase_delivery_invoice']/group/group/field[last()]" position="after">
+                    <field string="Firnas Shuman Signature" name="is_print_firnas_signature"/>
+                    <field string="Vendor Signature" name="is_print_vendor_signature"/>
+                </xpath>
+                <notebook position="inside">
+                    <page string="Terms">
+                        <group>
+                            <group>
+                                <div class="row mt16 o_settings_container">
+                                    <b>
+                                        <label for="po_scope_schedule"/>
+                                    </b>
+                                    <field name="po_scope_schedule"/>
+                                </div>
+                            </group>
+                            <group>
+                                <div class="row mt16 o_settings_container">
+                                    <b>
+                                        <label for="po_payment_schedule"/>
+                                    </b>
+                                    <field name="po_payment_schedule"/>
+                                </div>
+                            </group>
+                            <group>
+                                <div class="row mt16 o_settings_container">
+                                    <b>
+                                        <label for="po_acceptance"/>
+                                    </b>
+                                    <field name="po_acceptance"/>
+                                </div>
+                            </group>
+                        </group>
+                        <div class="oe_clear"/>
+                    </page>
+                </notebook>
             </field>
         </record>
     </data>

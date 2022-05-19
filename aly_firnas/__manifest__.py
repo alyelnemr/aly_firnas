@@ -7,7 +7,12 @@
     'depends': ['purchase'],
 
     'data': [
+        'views/aly_po_report.xml',
+        # 'views/reconcile_inherit.xml',
+        'views/purchase_order_line.xml',
         'views/purchase_order_views.xml',
+        'views/purchase_order_report.xml',
+        'views/purchase_settings.xml',
         'security/groups.xml',
     ],
     'installable': True,

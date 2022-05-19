@@ -1,24 +1,22 @@
-# -*- coding: utf-8 -*-
-
 from odoo import api, fields, models, _
 
 
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
-    # vendor_contact = fields.Many2one('res.partner', string='Vendor Contact', domain="[('type', '=', 'contact')]")
-    vendor_contact = fields.Many2one('res.partner', string='Vendor Contacts', required=True, domain="[('parent_id', '=', partner_id)]")
 
+    def _get_default_po_scope_schedule(self):
+        return self.env['ir.config_parameter'].sudo().get_param('aly_po_scope_schedule')
 
-class PurchaseOrderLine(models.Model):
-    _inherit = 'purchase.order.line'
+    def _get_default_po_payment_schedule(self):
+        return self.env['ir.config_parameter'].sudo().get_param('aly_po_payment_schedule')
 
-    def _get_line_numbers(self):
-        if self.ids:
-            first_line_rec = self.browse(self.ids[0])
-            x = 1
-            self.line_rank = len(first_line_rec.order_id.order_line)
-            for line in first_line_rec.order_id.order_line:
-                line.line_rank = x
-                x += 1
+    def _get_default_po_acceptance(self):
+        return self.env['ir.config_parameter'].sudo().get_param('aly_po_acceptance')
 
-    line_rank = fields.Integer('Serial', compute='_get_line_numbers', store=False, default=1)
+    is_print_delivery_section = fields.Boolean(string='Delivery Section', default=False, required=False)
+    is_print_firnas_signature = fields.Boolean(string='Firnas Shuman Signature', default=False, required=False)
+    is_print_vendor_signature = fields.Boolean(string='Vendor Signature', default=False, required=False)
+    vendor_contact = fields.Many2one('res.partner', string='Vendor Contacts', required=False, domain="[('parent_id', '=', partner_id)]")
+    po_scope_schedule = fields.Html(string="Scope and Schedule", default=_get_default_po_scope_schedule)
+    po_payment_schedule = fields.Html(string="Payment Schedule and Term", default=_get_default_po_payment_schedule)
+    po_acceptance = fields.Html(string="Acceptance", default=_get_default_po_acceptance)
