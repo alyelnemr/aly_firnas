@@ -20,11 +20,3 @@ class PurchaseOrder(models.Model):
     po_scope_schedule = fields.Html(string="Scope and Schedule", default=_get_default_po_scope_schedule)
     po_payment_schedule = fields.Html(string="Payment Schedule and Term", default=_get_default_po_payment_schedule)
     po_acceptance = fields.Html(string="Acceptance", default=_get_default_po_acceptance)
-    date_order = fields.Date('Order Date', readonly=False, default = fields.Datetime.now)
-    date_planned = fields.Date(string='Receipt Date', index=True)
-
-
-class PurchaseOrderLine(models.Model):
-    _inherit = 'purchase.order.line'
-
-    date_order = fields.Date(related='order_id.date_order', string='Order Date', readonly=False, default=fields.Datetime.now)
