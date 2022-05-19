@@ -27,4 +27,4 @@ class PurchaseOrder(models.Model):
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
-    date_order = fields.Date(related='order_id.date_order', string='Order Date', readonly=False)
+    date_order = fields.Date(related='order_id.date_order', string='Order Date', readonly=False, default=fields.Datetime.now)
