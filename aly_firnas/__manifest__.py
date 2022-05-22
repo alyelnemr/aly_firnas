@@ -8,7 +8,7 @@
 
     'data': [
         'views/aly_po_report.xml',
-        # 'views/reconcile_inherit.xml',
+        'views/products.xml',
         'views/purchase_order_line.xml',
         'views/purchase_order_views.xml',
         'views/purchase_order_report.xml',
