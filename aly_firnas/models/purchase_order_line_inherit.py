@@ -47,4 +47,3 @@ class PurchaseOrderLine(models.Model):
 
     line_rank = fields.Integer('Sn', compute='_get_line_numbers', store=False, default=1)
     discount = fields.Float(string="Discount (%)", digits="Discount")
-    date_order = fields.Date(related='order_id.date_order', string='Order Date', readonly=False, default=fields.Datetime.now)
