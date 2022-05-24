@@ -17,4 +17,4 @@ class AcountMove(models.Model):
                 sign = -1
             move.amount_line = sign * total
 
-    amount_line = fields.Monetary(string='Amount (Line)', store=True, readonly=True, compute='_get_amount_from_line')
+    amount_line = fields.Monetary(string='Amount (Line)', store=False, readonly=True, compute='_get_amount_from_line')
