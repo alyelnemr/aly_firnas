@@ -12,6 +12,12 @@
                     <field name="analytic_tag_ids" widget="many2many_tags"
                            options="{'no_create': False, 'no_quick_create': False, 'no_create_edit':False}"/>
                 </xpath>
+                <xpath expr="//field[@name='line_ids']/tree/field[@name='amount']" position="after">
+                    <field name="analytic_account_id"
+                           options="{'no_create': False, 'no_quick_create': False, 'no_create_edit':False}"/>
+                    <field name="analytic_tag_ids" widget="many2many_tags"
+                           options="{'no_create': False, 'no_quick_create': False, 'no_create_edit':False}"/>
+                </xpath>
             </field>
         </record>
     </data>
