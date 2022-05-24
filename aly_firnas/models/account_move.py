@@ -8,7 +8,7 @@ class AcountMove(models.Model):
         for move in self:
             total = 0
             for line in move.line_ids:
-                if line.debit:
+                if line.debit >= 0:
                     total += line.debit
 
             if move.type == 'entry' or move.is_outbound():
