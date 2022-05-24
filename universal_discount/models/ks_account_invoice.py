@@ -351,7 +351,7 @@ class KsGlobalDiscountInvoice(models.Model):
                             lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))
                         already_exists = self.line_ids.filtered(
                             lambda line: line.name and line.name.find('Global Discount') == 0)
-                        total_balance = sum(other_lines.mapped('balance')) + amount
+                        total_balance = sum(other_lines.mapped('balance')) #+ amount
                         total_amount_currency = sum(other_lines.mapped('amount_currency'))
                         dict1 = {
                                     'debit': amount > 0.0 and amount or 0.0,
