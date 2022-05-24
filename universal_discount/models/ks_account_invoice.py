@@ -296,9 +296,7 @@ class KsGlobalDiscountInvoice(models.Model):
                                 })
                                 self.line_ids = [(0, 0, dict)]
 
-                        if self.ks_purchase_discount_account\
-                                and (self.type == "in_invoice"
-                                     or self.type == "in_refund"):
+                        if self.ks_purchase_discount_account and (self.type == "in_invoice" or self.type == "in_refund"):
                             amount = self.ks_amount_discount
                             dict = {
                                     'move_name': self.name,
@@ -346,6 +344,7 @@ class KsGlobalDiscountInvoice(models.Model):
                                     'credit': total_balance > 0.0 and total_balance or 0.0,
                                 })
                     else:
+                        amount = rec.ks_amount_discount
                         terms_lines = self.line_ids.filtered(
                             lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
                         other_lines = self.line_ids.filtered(
