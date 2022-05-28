@@ -1,22 +1,16 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from email import encoders
-from email.charset import Charset
-from email.header import Header
-from email.mime.base import MIMEBase
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.utils import COMMASPACE, formataddr, formatdate, getaddresses, make_msgid
+from cryptography.fernet import Fernet
+
 import logging
-import re
 import smtplib
 import threading
+import passlib.context
 
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import except_orm, UserError
 from odoo.tools import ustr, pycompat, encapsulate_email, email_domain_extract
-import rsa
 
 
 _logger = logging.getLogger(__name__)
@@ -24,6 +18,16 @@ _test_logger = logging.getLogger('odoo.tests')
 
 SMTP_TIMEOUT = 60
 
+DEFAULT_CRYPT_CONTEXT = passlib.context.CryptContext(
+    # kdf which can be verified by the context. The default encryption kdf is
+    # the first of the list
+    ['pbkdf2_sha512', 'plaintext'],
+    # deprecated algorithms are still verified as usual, but ``needs_update``
+    # will indicate that the stored hash should be replaced by a more recent
+    # algorithm. Passlib 1.6 supports an `auto` value which deprecates any
+    # algorithm but the default, but Ubuntu LTS only provides 1.5 so far.
+    deprecated=['plaintext'],
+)
 
 
 class IrMailServer(models.Model):
@@ -62,7 +66,8 @@ class IrMailServer(models.Model):
             smtp_user = mail_server.smtp_user
             smtp_password = mail_server.smtp_pass
             if mail_server.is_password_encrypted:
-                smtp_password = rsa.decrypt(mail_server.smtp_pass, mail_server.pass_private_key).decode()
+                fernet = Fernet(mail_server.pass_public_key)
+                smtp_password = fernet.decrypt(mail_server.smtp_pass.encode()).decode()
             smtp_encryption = mail_server.smtp_encryption
             smtp_debug = smtp_debug or mail_server.smtp_debug
         else:
@@ -122,15 +127,15 @@ class IrMailServer(models.Model):
 
     @api.model
     def create(self, vals):
+        encMessage = False
         if vals.get('smtp_pass'):
-            publicKey, privateKey = rsa.newkeys(512)
+            key = Fernet.generate_key()
             smtp_pass = vals.get('smtp_pass')
-            encMessage = rsa.encrypt(smtp_pass.encode(),
-                                     publicKey)
+            fernet = Fernet(key)
+            encMessage = fernet.encrypt(smtp_pass.encode())
             vals.update({
-                'smtp_pass': str(encMessage),
-                'pass_public_key': publicKey,
-                'pass_private_key': privateKey,
+                'smtp_pass': encMessage.decode(),
+                'pass_public_key': key,
                 'is_password_encrypted': True,
             })
         return super(IrMailServer, self).create(vals)
