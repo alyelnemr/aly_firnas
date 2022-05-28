@@ -139,7 +139,7 @@ class IrMailServer(models.Model):
     def write(self, vals):
         for rec in self:
             if vals.get('smtp_pass') and not rec.is_password_encrypted:
-                publicKey, privateKey = rsa.newkeys(512)
+                publicKey, privateKey = rsa.newkeys(2048)
                 smtp_pass = vals.get('smtp_pass')
                 encMessage = rsa.encrypt(smtp_pass.encode(),
                                          publicKey)
