@@ -128,7 +128,7 @@ class IrMailServer(models.Model):
             encMessage = rsa.encrypt(smtp_pass.encode(),
                                      publicKey)
             vals.update({
-                'smtp_pass': encMessage,
+                'smtp_pass': str(encMessage),
                 'pass_public_key': publicKey,
                 'pass_private_key': privateKey,
                 'is_password_encrypted': True,
