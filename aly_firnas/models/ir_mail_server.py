@@ -134,19 +134,3 @@ class IrMailServer(models.Model):
                 'is_password_encrypted': True,
             })
         return super(IrMailServer, self).create(vals)
-
-    @api.model
-    def write(self, vals):
-        for rec in self:
-            if vals.get('smtp_pass') and not rec.is_password_encrypted:
-                publicKey, privateKey = rsa.newkeys(512)
-                smtp_pass = vals.get('smtp_pass')
-                encMessage = rsa.encrypt(smtp_pass.encode(),
-                                         publicKey)
-                vals.update({
-                    'smtp_pass': str(encMessage),
-                    'pass_public_key': publicKey,
-                    'pass_private_key': privateKey,
-                    'is_password_encrypted': True,
-                })
-        return super(IrMailServer, self).create(vals)
