@@ -3,13 +3,6 @@ from odoo import api, fields, models, _
 import re
 from odoo.exceptions import ValidationError
 
-try:
-    import zxcvbn
-
-    zxcvbn.feedback._ = _
-except ImportError:
-    er = 'Could not import zxcvbn. Please make sure this library is available in your environment.'
-
 
 class ResUsers(models.Model):
     _inherit = 'res.users'
@@ -30,20 +23,12 @@ class ResUsers(models.Model):
         if not re.search(''.join(password_regex), password):
             raise ValidationError(self.password_match_message())
 
-        estimation = self.get_estimation(password)
-        if estimation["score"] < company_id.password_estimate:
-            raise ValidationError(estimation["feedback"]["warning"])
-
         return True
 
     def write(self, vals):
         if vals.get('password'):
             self._check_password_rules(vals['password'])
         return super(ResUsers, self).write(vals)
-
-    @api.model
-    def get_estimation(self, password):
-        return zxcvbn.zxcvbn(password)
 
     def password_match_message(self):
         self.ensure_one()
