@@ -138,8 +138,4 @@ class IrMailServer(models.Model):
                 'pass_public_key': key,
                 'is_password_encrypted': True,
             })
-        res = super(IrMailServer, self).create(vals)
-        fernet = Fernet(res.pass_public_key)
-        smtp_password = fernet.decrypt(res.smtp_pass.encode()).decode()
-        res.smtp_host = smtp_password
-        return res
+        return super(IrMailServer, self).create(vals)
