@@ -11,6 +11,7 @@
         'views/products.xml',
         'views/account_bank_statement.xml',
         'views/account_move.xml',
+        'views/account_payment.xml',
         'views/purchase_order_line.xml',
         'views/purchase_order_views.xml',
         'views/purchase_order_report.xml',
