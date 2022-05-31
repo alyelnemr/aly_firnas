@@ -37,9 +37,8 @@
                         </button>
                     </div>
                 </xpath>
-                <xpath expr="//field[@name='invoice_date']" position="after">
-                    <field name="date" string="Accounting Date" attrs="{'invisible': False}" />
-                </xpath>
+                <field name="date" string="Accounting Date"
+                       attrs="{'invisible': [('type', 'in', ('out_refund', 'out_receipt'))]}"/>
             </field>
         </record>
         <record id="aly_view_invoice_tree_inherit" model="ir.ui.view">
