@@ -8,7 +8,7 @@
 
     'data': [
         'views/aly_po_report.xml',
-        'views/products.xml',
+        'views/product.xml',
         'views/account_bank_statement.xml',
         'views/account_move.xml',
         'views/account_payment.xml',
