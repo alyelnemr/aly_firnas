@@ -37,8 +37,8 @@
                         </button>
                     </div>
                 </xpath>
-                <xpath expr="//field[@name='date']" position="attributes">
-                    <attribute name="invisible">False</attribute>
+                <xpath expr="//field[@name='invoice_date']" position="after">
+                    <field name="date" string="Accounting Date" attrs="{'invisible': False}" />
                 </xpath>
             </field>
         </record>
