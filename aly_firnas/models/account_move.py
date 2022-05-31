@@ -18,7 +18,7 @@ class AcountMove(models.Model):
                 sign = 1
             else:
                 sign = -1
-            move.amount_line = total / count
+            move.amount_line = total / count if count > 0 else 0
 
     amount_line = fields.Monetary(string='Amount (Line)', store=False, readonly=True, compute='_get_amount_from_line')
 
