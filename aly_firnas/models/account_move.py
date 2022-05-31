@@ -8,15 +8,17 @@ class AcountMove(models.Model):
     def _get_amount_from_line(self):
         for move in self:
             total = 0
+            count = 0
             for line in move.line_ids:
-                if line.debit >= 0:
-                    total += line.debit
+                if line.amount_currency:
+                    total += abs(line.amount_currency)
+                    count += 1
 
             if move.type == 'entry' or move.is_outbound():
                 sign = 1
             else:
                 sign = -1
-            move.amount_line = sign * total
+            move.amount_line = total / count
 
     amount_line = fields.Monetary(string='Amount (Line)', store=False, readonly=True, compute='_get_amount_from_line')
 
