@@ -37,8 +37,12 @@
                         </button>
                     </div>
                 </xpath>
-                <field name="date" string="Accounting Date"
-                       attrs="{'invisible': [('type', 'in', ('out_refund', 'out_receipt'))]}"/>
+                <xpath expr="//field[@name='date']" position="attributes">
+                    <attribute name="attrs">{'invisible': False}</attribute>
+                    <attribute name="modifiers">
+                        {'invisible':False,'readonly':[['state','not
+                        in',['draft']]],'required':true}</attribute>
+                </xpath>
             </field>
         </record>
         <record id="aly_view_invoice_tree_inherit" model="ir.ui.view">
