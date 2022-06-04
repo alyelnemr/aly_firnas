@@ -202,9 +202,9 @@
 
     <template id="aly_po_template">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:wght@300" rel="stylesheet"/>
-        <div class="page" style="z-index:1000 !important;font-weight: normal; border-color: red;font-family: Open Sans; font-size: 15px;">
+        <div class="page" style="z-index:1000 !important;font-weight: normal; border-color: red;border-style: solid;font-family: Open Sans; font-size: 15px;">
 <!--            <div class="oe_structure"/>-->
-            <div style="margin-left: 10px;border-color: coral; margin-right: 10px; margin-top: 0px; margin-bottom: 10px;
+            <div style="margin-left: 10px;border-color: coral; border-style: solid;margin-right: 10px; margin-top: 0px; margin-bottom: 10px;
             font-family: Open Sans !important;">
                 <div>
                     <h4 style="color:rgb(86, 56, 90); font-size: 22px !important;
