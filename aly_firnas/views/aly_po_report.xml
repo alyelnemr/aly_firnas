@@ -687,7 +687,7 @@
                          style="margin: 0 auto; padding-top: 0px; padding-left: 0px; height: 100px !important; width: 100%;">
                         <div style="width: 50% !important;" class="col-4 mb4 text-left">
                             <img src="/aly_firnas/static/src/img/firnas_logo_full.jpg"
-                                 style="height: 90px !important;" alt="Logo"/>
+                                 style="height: 50px !important;" alt="Logo"/>
                         </div>
                         <div class="col-8 text-right" style="justify-content: center;">
                             <div style="width: 50% !important; padding-right: 4px; padding-top: 35px; display: inline-block !important;">
@@ -697,7 +697,8 @@
                         </div>
                     </div>
                 </div>
-                <div style="margin-left: 10px;border-color: coral; border-style: solid;margin-right: 10px; margin-top: 0px; margin-bottom: 10px;
+                <br/>ssss
+                <div style="margin-left: 10px;border-color: coral; border-style: solid;margin-right: 10px; margin-bottom: 10px;
             font-family: Open Sans !important;">
                     <div>
                         <h4 style="color:rgb(86, 56, 90); font-size: 22px !important;
@@ -705,7 +706,7 @@
                             <span t-field="o.name"/>
                         </h4>
                     </div>
-                </div>
+                </div>wwwwwww
                 <t t-call="web.internal_layout">
                     <t t-call="aly_firnas.aly_po_template"
                        t-lang="o.partner_id.lang"/>
