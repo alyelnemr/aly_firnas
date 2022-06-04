@@ -133,6 +133,69 @@
                     </t>
                 </tbody>
             </table>
+            <br/>
+            <br/>
+            <table style="margin-left: 10px;">
+                <tr>
+                    <div style="margin-left: 10px; margin-right: 10px; margin-top: 10px; margin-bottom: 10px;
+                    font-family: Open Sans !important;">
+                        <div>
+                            <t t-if="o.is_print_scope_schedule">
+                                <div class="text-left">
+                                    <div>
+                                        <h5 style="color:rgb(86, 56, 90); font-size: 15px !important; font-weight: bold; font-family: Open Sans !important;">
+                                            Scope and Schedule
+                                        </h5>
+                                    </div>
+                                    <div>
+                                        <p style="font-size: 15px !important; font-family: verdana !important;">
+                                            <t t-if="o.po_scope_schedule">
+                                                <t t-raw="o.po_scope_schedule.replace('[$vendor_name$]', o.partner_id.name).replace('[$payment_terms$]', o.payment_term_id.name).replace('[$vendor_reference$]', o.partner_ref)"
+                                                   style="font-family: verdana !important; font-size: 15px !important;"/>
+                                            </t>
+                                        </p>
+                                    </div>
+                                </div>
+                                <br/>
+                            </t>
+                            <t t-if="o.is_print_payment_schedule">
+                                <div class="text-left">
+                                    <div>
+                                        <h5 style="color:rgb(86, 56, 90); font-size: 15px !important; font-weight: bold; font-family: Open Sans !important;">
+                                            Payment Schedule and Term
+                                        </h5>
+                                    </div>
+                                    <div>
+                                        <p style="font-size: 15px !important; font-family: verdana !important;">
+                                            <t t-if="o.po_payment_schedule">
+                                                <t t-raw="o.po_payment_schedule.replace('[$vendor_name$]', o.partner_id.name).replace('[$payment_terms$]', o.payment_term_id.name).replace('[$vendor_reference$]', o.partner_ref)"
+                                                   style="font-family: verdana !important; font-size: 15px !important;"/>
+                                            </t>
+                                        </p>
+                                    </div>
+                                </div>
+                                <br/>
+                            </t>
+                            <t t-if="o.is_print_acceptance">
+                                <div class="text-left">
+                                    <div>
+                                        <h5 style="color:rgb(86, 56, 90); font-size: 15px !important; font-weight: bold; font-family: Open Sans !important;">
+                                            Acceptance
+                                        </h5>
+                                    </div>
+                                    <div>
+                                        <p style="font-size: 15px !important; font-family: verdana !important;">
+                                            <t t-raw="o.po_acceptance.replace('[$vendor_name$]', o.partner_id.name).replace('[$payment_terms$]', o.payment_term_id.name).replace('[$vendor_reference$]', o.partner_ref)"
+                                               style="font-family: verdana !important; font-size: 15px !important;"/>
+                                        </p>
+                                    </div>
+                                </div>
+                                <br/>
+                            </t>
+                        </div>
+                    </div>
+                </tr>
+            </table>
 
         </div>
     </template>
@@ -208,10 +271,10 @@
                         </t>
                     </td>
                     <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
-                        <t t-if="o.vendor_contact.phone">Phone</t>
+                        <t t-if="o.vendor_contact.mobile">Phone</t>
                     </th>
                     <td style="width:35%;">
-                        <span t-field="o.vendor_contact.phone" style="font-weight: normal;" class="text-left"/>
+                        <span t-field="o.vendor_contact.mobile" style="font-weight: normal;" class="text-left"/>
                     </td>
                 </tr>
                 <tr>
@@ -290,6 +353,13 @@
                             <t t-if="o.dest_address_id">
                                 <div t-field="o.dest_address_id" style="font-weight: normal;"
                                      t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True, "phone_icons": False}'/>
+                            </t>
+                            <t t-else="">
+                                <div t-if="o.picking_type_id and o.picking_type_id.warehouse_id">
+                                    <span t-field="o.picking_type_id.warehouse_id.name"/>
+                                    <div t-field="o.picking_type_id.warehouse_id.partner_id"
+                                         t-options='{"widget": "contact", "fields": ["address", "phone"], "no_marker": True, "phone_icons": True}'/>
+                                </div>
                             </t>
                         </td>
                     </tr>
@@ -465,70 +535,58 @@
                     <div style="margin-left: 10px; margin-right: 10px; margin-top: 10px; margin-bottom: 10px;
                     font-family: Open Sans !important;">
                         <div>
-                            <div class="text-left">
-                                <div>
-                                    <h5 style="color:rgb(86, 56, 90); font-size: 15px !important; font-weight: bold; font-family: Open Sans !important;">
-                                        Scope and Schedule
-                                    </h5>
-                                </div>
-                                <div>
-                                    <p style="font-size: 15px !important; font-family: verdana !important;">
-                                        <t t-if="o.po_scope_schedule">
-                                            <t t-if="'[$vendor_name$]' in o.po_scope_schedule">
-                                                <t t-raw="o.po_scope_schedule.replace('[$vendor_name$]', o.partner_id.name)"
+                            <t t-if="o.is_print_scope_schedule">
+                                <div class="text-left">
+                                    <div>
+                                        <h5 style="color:rgb(86, 56, 90); font-size: 15px !important; font-weight: bold; font-family: Open Sans !important;">
+                                            Scope and Schedule
+                                        </h5>
+                                    </div>
+                                    <div>
+                                        <p style="font-size: 15px !important; font-family: verdana !important;">
+                                            <t t-if="o.po_scope_schedule">
+                                                <t t-raw="o.po_scope_schedule.replace('[$vendor_name$]', o.partner_id.name).replace('[$payment_terms$]', o.payment_term_id.name).replace('[$vendor_reference$]', o.partner_ref)"
                                                    style="font-family: verdana !important; font-size: 15px !important;"/>
                                             </t>
-                                            <t t-if="'[$vendor_name$]' not in o.po_scope_schedule">
-                                                <t t-raw="o.po_scope_schedule"
+                                        </p>
+                                    </div>
+                                </div>
+                                <br/>
+                            </t>
+                            <t t-if="o.is_print_payment_schedule">
+                                <div class="text-left">
+                                    <div>
+                                        <h5 style="color:rgb(86, 56, 90); font-size: 15px !important; font-weight: bold; font-family: Open Sans !important;">
+                                            Payment Schedule and Term
+                                        </h5>
+                                    </div>
+                                    <div>
+                                        <p style="font-size: 15px !important; font-family: verdana !important;">
+                                            <t t-if="o.po_payment_schedule">
+                                                <t t-raw="o.po_payment_schedule.replace('[$vendor_name$]', o.partner_id.name).replace('[$payment_terms$]', o.payment_term_id.name).replace('[$vendor_reference$]', o.partner_ref)"
                                                    style="font-family: verdana !important; font-size: 15px !important;"/>
                                             </t>
-                                        </t>
-                                    </p>
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                            <br/>
-                            <div class="text-left">
-                                <div>
-                                    <h5 style="color:rgb(86, 56, 90); font-size: 15px !important; font-weight: bold; font-family: Open Sans !important;">
-                                        Payment Schedule and Term
-                                    </h5>
+                                <br/>
+                            </t>
+                            <t t-if="o.is_print_acceptance">
+                                <div class="text-left">
+                                    <div>
+                                        <h5 style="color:rgb(86, 56, 90); font-size: 15px !important; font-weight: bold; font-family: Open Sans !important;">
+                                            Acceptance
+                                        </h5>
+                                    </div>
+                                    <div>
+                                        <p style="font-size: 15px !important; font-family: verdana !important;">
+                                            <t t-raw="o.po_acceptance.replace('[$vendor_name$]', o.partner_id.name).replace('[$payment_terms$]', o.payment_term_id.name).replace('[$vendor_reference$]', o.partner_ref)"
+                                               style="font-family: verdana !important; font-size: 15px !important;"/>
+                                        </p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p style="font-size: 15px !important; font-family: verdana !important;">
-                                        <t t-if="o.po_payment_schedule">
-                                            <t t-if="'[$p_term$]' in o.po_payment_schedule">
-                                                <t t-if="o.payment_term_id">
-                                                    <t t-raw="o.po_payment_schedule.replace('[$p_term$]', o.payment_term_id.name)"
-                                                       style="font-family: verdana !important; font-size: 15px !important;"/>
-                                                </t>
-                                                <t t-if="not o.payment_term_id">
-                                                    <t t-raw="o.po_payment_schedule.replace('[$p_term$]', '')"
-                                                       style="font-family: verdana !important; font-size: 15px !important;"/>
-                                                </t>
-                                            </t>
-                                            <t else="">
-                                                <t t-raw="o.po_payment_schedule"
-                                                   style="font-family: verdana !important; font-size: 15px !important;"/>
-                                            </t>
-                                        </t>
-                                    </p>
-                                </div>
-                            </div>
-                            <br/>
-                            <div class="text-left">
-                                <div>
-                                    <h5 style="color:rgb(86, 56, 90); font-size: 15px !important; font-weight: bold; font-family: Open Sans !important;">
-                                        Acceptance
-                                    </h5>
-                                </div>
-                                <div>
-                                    <p style="font-size: 15px !important; font-family: verdana !important;">
-                                        <t t-raw="o.po_acceptance"
-                                           style="font-family: verdana !important; font-size: 15px !important;"/>
-                                    </p>
-                                </div>
-                            </div>
-                            <br/>
+                                <br/>
+                            </t>
                         </div>
                     </div>
                 </tr>
@@ -593,7 +651,7 @@
                                  style="height: 90px !important;" alt="Logo"/>
                         </div>
                         <div class="col-8 text-right" style="justify-content: center;">
-                            <div style="width: 50% !important; padding-right: 4px; display: inline-block !important;">
+                            <div style="width: 50% !important; padding-right: 4px; padding-top: 20px; display: inline-block !important;">
                                 <span style="font-family: Open Sans !important; font-size: 15px;"
                                       t-esc="o.analytic_account_id.name[0:10]"/>
                             </div>
