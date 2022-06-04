@@ -53,8 +53,13 @@
                 <xpath expr="//field[@name='name']" position="after">
                     <field name="partner_id"/>
                 </xpath>
+                <xpath expr="//field[@name='amount_total_signed']" position="before">
+                    <field name="amount_line_currency_field" invisible="1"/>
+                    <field name="amount_line" widget="monetary" options="{'currency_field': 'amount_line_currency_field'}"/>
+                </xpath>
                 <xpath expr="//field[@name='amount_untaxed_signed']" position="after">
-                    <field name="amount_line"/>
+                    <field name="amount_currency_field" invisible="1"/>
+                    <field name="amount_in_currency" widget="monetary" options="{'currency_field': 'amount_currency_field'}"/>
                 </xpath>
             </field>
         </record>

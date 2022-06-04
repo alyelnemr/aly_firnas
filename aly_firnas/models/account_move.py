@@ -8,19 +8,43 @@ class AcountMove(models.Model):
     def _get_amount_from_line(self):
         for move in self:
             total = 0
-            count = 0
             for line in move.line_ids:
-                if line.amount_currency:
-                    total += abs(line.amount_currency)
-                    count += 1
+                if line.debit >= 0:
+                    total += line.debit
+                move.amount_line_currency_field = line.company_currency_id.id
 
             if move.type == 'entry' or move.is_outbound():
                 sign = 1
             else:
                 sign = -1
-            move.amount_line = total / count if count > 0 else 0
+            move.amount_line = sign * total
 
-    amount_line = fields.Monetary(string='Amount (Line)', store=False, readonly=True, compute='_get_amount_from_line')
+    def _get_amount_from_currency(self):
+        for move in self:
+            total = 0
+            count = 0
+            for line in move.line_ids:
+                if line.amount_currency:
+                    total += abs(line.amount_currency)
+                    count += 1
+                if line.amount_currency:
+                    move.amount_currency_field = line.currency_id.id
+
+            if move.type == 'entry' or move.is_outbound():
+                sign = 1
+            else:
+                sign = -1
+            move.amount_in_currency = total / count if count > 0 else 0
+
+    amount_in_currency = fields.Monetary(string='Amount in Currency',
+                                         currency_field='amount_currency_field', store=False, readonly=True,
+                                         compute='_get_amount_from_currency')
+    amount_currency_field = fields.Many2one('res.currency', 'Currency', required=False,
+                                            readonly=True)
+    amount_line_currency_field = fields.Many2one('res.currency', 'Currency', required=False,
+                                            default=lambda self: self.company_id.currency_id.id, readonly=True)
+    amount_line = fields.Monetary(string='Amount (Line)', store=False, readonly=True, compute='_get_amount_from_line',
+                                  currency_field='amount_line_currency_field')
 
     manual_currency = fields.Boolean()
     is_manual = fields.Boolean(compute="_compute_currency")
