@@ -605,12 +605,12 @@
                     </td>
                 </tr>
                 <tr>
-                    <t t-if="o.is_print_firnas_signature">
-                        <th style="width:50%;color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Signature</th>
-                    </t>
-                    <t t-if="o.is_print_vendor_signature">
-                        <th style="width:50%;color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Signature</th>
-                    </t>
+                    <th style="width:50%;color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">
+                        <t t-if="o.is_print_firnas_signature">Signature</t>
+                    </th>
+                    <th style="width:50%;color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">
+                        <t t-if="o.is_print_vendor_signature">Signature</t>
+                    </th>
                 </tr>
                 <tr>
                     <td>
@@ -618,12 +618,12 @@
                     </td>
                 </tr>
                 <tr>
-                    <t t-if="o.is_print_firnas_signature">
-                        <th style="width:50%;color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Name and Title</th>
-                    </t>
-                    <t t-if="o.is_print_vendor_signature">
-                        <th style="width:50%;color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Name and Title</th>
-                    </t>
+                    <th style="width:50%;color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">
+                        <t t-if="o.is_print_firnas_signature">Name and Title</t>
+                    </th>
+                    <th style="width:50%;color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">
+                        <t t-if="o.is_print_vendor_signature">Name and Title</t>
+                    </th>
                 </tr>
             </table>
 
