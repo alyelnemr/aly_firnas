@@ -606,10 +606,10 @@
                 </tr>
                 <tr>
                     <t t-if="o.is_print_firnas_signature">
-                        <th style="color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Signature</th>
+                        <th style="width:50%;color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Signature</th>
                     </t>
                     <t t-if="o.is_print_vendor_signature">
-                        <th style="color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Signature</th>
+                        <th style="width:50%;color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Signature</th>
                     </t>
                 </tr>
                 <tr>
@@ -619,10 +619,10 @@
                 </tr>
                 <tr>
                     <t t-if="o.is_print_firnas_signature">
-                        <th style="color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Name and Title</th>
+                        <th style="width:50%;color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Name and Title</th>
                     </t>
                     <t t-if="o.is_print_vendor_signature">
-                        <th style="color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Name and Title</th>
+                        <th style="width:50%;color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">Name and Title</th>
                     </t>
                 </tr>
             </table>
