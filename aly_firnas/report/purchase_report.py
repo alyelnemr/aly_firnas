@@ -49,9 +49,9 @@ class PurchaseReportTemplatePrimary(models.AbstractModel):
         is_taxed = docs.amount_tax > 0
         order_date = docs.date_order.date() if docs.date_order else False
         receipt_date = docs.date_planned.date() if docs.date_planned else False
-        docs.po_scope_schedule = docs.po_scope_schedule.replace('</p><p>', '') if docs.po_scope_schedule else False
-        docs.po_payment_schedule = docs.po_payment_schedule.replace('</p><p>', '') if docs.po_payment_schedule else False
-        docs.po_acceptance = docs.po_acceptance.replace('</p><p>', '') if docs.po_acceptance else False
+        docs.po_scope_schedule = docs.po_scope_schedule.replace('</p><p>', '<br />') if docs.po_scope_schedule else False
+        docs.po_payment_schedule = docs.po_payment_schedule.replace('</p><p>', '<br />') if docs.po_payment_schedule else False
+        docs.po_acceptance = docs.po_acceptance.replace('</p><p>', '<br />') if docs.po_acceptance else False
         return {
             'data': data,
             'doc_ids': docids,
