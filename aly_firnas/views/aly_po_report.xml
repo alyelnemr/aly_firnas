@@ -696,12 +696,12 @@
     <template id="aly_po_main_template">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
-                <div class="header" style="z-index:0 !important;">
+                <div class="header" style="height: 40px !important; z-index:0 !important;">
                     <div class="row"
                          style="margin: 0 auto; padding-top: 0px; padding-left: 0px; width: 100%;">
                         <div style="width: 50% !important;" class="col-4 mb4 text-left">
                             <img src="/aly_firnas/static/src/img/firnas_logo_full.jpg"
-                                 style="" alt="Logo"/>
+                                 style="height: 40px !important;" alt="Logo"/>
                         </div>
                         <div class="col-8 text-right" style="justify-content: center;">
                             <div style="width: 50% !important; padding-right: 4px; padding-top: 35px; display: inline-block !important;">
