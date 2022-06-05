@@ -699,30 +699,27 @@
                     </div>
                     <br />
                 </div>
-                <div style="margin-left: 10px; margin-right: 10px; margin-top: 0px; margin-bottom: 10px;
-            font-family: Open Sans !important;">
-                    <div>
-                        <h4 style="color:rgb(86, 56, 90); font-size: 22px !important;
+                <t t-call="web.internal_layout">
+                    <h4 style="color:rgb(86, 56, 90); font-size: 22px !important;
                         font-weight: bold; font-family: Open Sans !important;">Purchase Order #
-                            <span t-field="o.name"/>
-                        </h4>
-                    </div>
-                </div>
-                <t t-call="aly_firnas.aly_po_template"
-                   t-lang="o.partner_id.lang"/>
-                <div class="footer">
-                    <div class="row" style="width: 100% !important; margin: auto auto; padding-top: 35px;">
-                        <br/>
-                        <div class="text-right" style="width: 100%;">
-                            <h5 style="font-family: Open Sans !important; font-size: 15px;color:rgb(166, 166, 166);">
-                                Page
-                                <span class="page"/>
-                                of
-                                <span class="topage"/>
-                            </h5>
+                        <span t-field="o.name"/>
+                    </h4>
+                    <t t-call="aly_firnas.aly_po_template"
+                       t-lang="o.partner_id.lang"/>
+                    <div class="footer">
+                        <div class="row" style="width: 100% !important; margin: auto auto; padding-top: 35px;">
+                            <br/>
+                            <div class="text-right" style="width: 100%;">
+                                <h5 style="font-family: Open Sans !important; font-size: 15px;color:rgb(166, 166, 166);">
+                                    Page
+                                    <span class="page"/>
+                                    of
+                                    <span class="topage"/>
+                                </h5>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </t>
             </t>
         </t>
     </template>
