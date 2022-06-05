@@ -458,54 +458,54 @@
             <br/>
             <br/>
             <table style="width:auto; border: 0px !important; margin-right: 0px; margin-left: auto;">
-                <tr style="width:auto;">
+                <tr style="width:auto;" class="text-right">
                     <th style="color:rgb(86, 56, 90); "></th>
                     <td style="">
 
                     </td>
-                    <th style="color:rgb(86, 56, 90); font-weight: bold; ">Untaxed Amount</th>
+                    <th style="color:rgb(86, 56, 90); font-weight: bold; " class="text-right">Untaxed Amount</th>
                     <td style="width: 35px">
 
                     </td>
                     <td style="">
-                        <span t-field="o.amount_untaxed" class="text-left"/>
+                        <span t-field="o.amount_untaxed" class="text-right"/>
                     </td>
                 </tr>
-                <tr style="width:auto;">
+                <tr style="width:auto;" class="text-right">
                     <th style="color:rgb(86, 56, 90); font-weight: bold; "></th>
                     <td style="">
 
                     </td>
-                    <th style="color:rgb(86, 56, 90); font-weight: bold; ">Taxes</th>
+                    <th style="color:rgb(86, 56, 90); font-weight: bold; " class="text-right">Taxes</th>
                     <td style="width: 35px">
 
                     </td>
                     <td style="">
-                        <span t-field="o.amount_tax" class="text-left"/>
+                        <span t-field="o.amount_tax" class="text-right"/>
                     </td>
                 </tr>
-                <tr style="width:auto;">
+                <tr style="width:auto;" class="text-right">
                     <th style="color:rgb(86, 56, 90); font-weight: bold; "></th>
                     <td style="">
                     </td>
-                    <th style="color:rgb(86, 56, 90); font-weight: bold; ">Discounts</th>
+                    <th style="color:rgb(86, 56, 90); font-weight: bold; " class="text-right">Discounts</th>
                     <td style="width: 35px">
 
                     </td>
                     <td style="">
-                        <span t-field="o.ks_amount_discount" class="text-left"/>
+                        <span t-field="o.ks_amount_discount" class="text-right"/>
                     </td>
                 </tr>
-                <tr style="width:auto;">
+                <tr style="width:auto;" class="text-right">
                     <th style="color:rgb(86, 56, 90); "></th>
                     <td style="">
                     </td>
-                    <th style="color:rgb(86, 56, 90); font-weight: bold; ">Total</th>
+                    <th style="color:rgb(86, 56, 90); font-weight: bold; " class="text-right">Total</th>
                     <td style="width: 35px">
 
                     </td>
-                    <td style="">
-                        <span t-field="o.amount_total" class="text-left"/>
+                    <td style="" class="text-right">
+                        <span t-field="o.amount_total" class="text-right"/>
                     </td>
                 </tr>
             </table>
@@ -534,8 +534,7 @@
                     </td>
                 </tr>
             </table>
-            <br/>
-            <br/>
+            <div style="page-break-after: always;"/>
             <table style="margin-left: 10px;">
                 <tr>
                     <div style="margin-left: 10px; margin-right: 10px; margin-top: 10px; margin-bottom: 10px;
