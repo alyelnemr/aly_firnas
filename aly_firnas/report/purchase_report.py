@@ -2,8 +2,7 @@
 # Copyright 2017-2019 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import fields, models
-
+from odoo import api, fields, models, _
 
 class PurchaseReport(models.Model):
     _inherit = "purchase.report"
@@ -32,3 +31,32 @@ class PurchaseReport(models.Model):
         :return: SQL expression for discounted unit price.
         """
         return "(1.0 - COALESCE(l.discount, 0.0) / 100.0) * l.price_unit"
+
+
+class PurchaseReportTemplatePrimary(models.AbstractModel):
+    _name = 'report.aly_firnas.aly_po_main_template'
+    _description = 'description'
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        model = 'purchase.order'
+        active_id = self.env.context.get('active_id')
+        docs = self.env[model].sudo().browse(docids)
+        discount = 0
+        for line in docs.order_line:
+            discount += line.discount
+        is_discounted = discount > 0
+        is_taxed = docs.amount_tax > 0
+        order_date = docs.date_order.date() if docs.date_order else False
+        receipt_date = docs.date_planned.date() if docs.date_planned else False
+        return {
+            'data': data,
+            'doc_ids': docids,
+            'doc_model': model,
+            'docs': docs,
+            'is_discounted': is_discounted,
+            'is_taxed': is_taxed,
+            'order_date': order_date,
+            'receipt_date': receipt_date,
+            'report_title': 'Purchase Order'
+        }
