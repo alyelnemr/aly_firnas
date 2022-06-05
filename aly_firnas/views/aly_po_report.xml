@@ -707,23 +707,23 @@
                         </h4>
                     </div>
                 </div>wwwwwww
-                <t t-call="web.internal_layout">
-                    <t t-call="aly_firnas.aly_po_template"
-                       t-lang="o.partner_id.lang"/>
-                    <div class="footer">
-                        <div class="row" style="width: 100% !important; margin: auto auto; padding-top: 35px;">
-                            <br/>
-                            <div class="text-right" style="width: 100%;">
-                                <h5 style="font-family: Open Sans !important; font-size: 15px;color:rgb(166, 166, 166);">
-                                    Page
-                                    <span class="page"/>
-                                    of
-                                    <span class="topage"/>
-                                </h5>
-                            </div>
-                        </div>
-                    </div>
-                </t>
+<!--                <t t-call="web.internal_layout">-->
+<!--                    <t t-call="aly_firnas.aly_po_template"-->
+<!--                       t-lang="o.partner_id.lang"/>-->
+<!--                    <div class="footer">-->
+<!--                        <div class="row" style="width: 100% !important; margin: auto auto; padding-top: 35px;">-->
+<!--                            <br/>-->
+<!--                            <div class="text-right" style="width: 100%;">-->
+<!--                                <h5 style="font-family: Open Sans !important; font-size: 15px;color:rgb(166, 166, 166);">-->
+<!--                                    Page-->
+<!--                                    <span class="page"/>-->
+<!--                                    of-->
+<!--                                    <span class="topage"/>-->
+<!--                                </h5>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </t>-->
             </t>
         </t>
     </template>
