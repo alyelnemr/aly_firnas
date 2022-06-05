@@ -124,8 +124,7 @@
                     </t>
                 </tbody>
             </table>
-            <br/>
-            <br/>
+            <div style="page-break-after: always;"/>
             <table style="margin-left: 10px;">
                 <tr>
                     <div style="margin-left: 10px; margin-right: 10px; margin-top: 10px; margin-bottom: 10px;
@@ -712,6 +711,8 @@
                         </div>
                     </div>
                     <br />
+                </div>
+                <t t-call="web.internal_layout">
                     <div style="margin-left: 10px;border-color: coral; border-style: solid;margin-right: 10px; margin-top: 0px; margin-bottom: 10px;
             font-family: Open Sans !important;">
                         <div>
@@ -721,8 +722,6 @@
                             </h4>
                         </div>
                     </div>
-                </div>
-                <t t-call="web.internal_layout">
                     <t t-call="aly_firnas.aly_po_template"
                        t-lang="o.partner_id.lang"/>
                     <div class="footer">
