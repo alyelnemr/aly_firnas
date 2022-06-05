@@ -35,16 +35,7 @@
     <template id="aly_rfq_template">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"/>
         <div class="page" style="z-index:1000 !important;font-weight: normal;font-family: Open Sans; font-size: 15px;">
-            <div class="oe_structure"/>
-            <div style="margin-left: 10px; margin-right: 10px; margin-top: 0px; margin-bottom: 10px;
-            font-family: Open Sans !important;">
-                <div>
-                    <h4 style="color:rgb(86, 56, 90); font-size: 22px !important;
-                        font-weight: bold; font-family: Open Sans !important;">Request for Quotation #
-                        <span t-field="o.name"/>
-                    </h4>
-                </div>
-            </div>
+<!--            <div class="oe_structure"/>-->
             <br/>
             <div style="margin-left: 10px; margin-right: 10px; margin-top: 10px; margin-bottom: 10px;
             font-family: Open Sans !important;">
@@ -204,6 +195,7 @@
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:wght@300" rel="stylesheet"/>
         <div class="page" style="z-index:1000 !important;font-weight: normal; font-family: Open Sans; font-size: 15px;">
 <!--            <div class="oe_structure"/>-->
+            <br />
             <table style="width:100%;border: 0px;margin-left: 10px;">
                 <tr>
                     <th style="width:50%;color:rgb(86, 56, 90); font-weight: bold;">Invoice To (Buyer)</th>
@@ -237,21 +229,21 @@
             </table>
             <table style="width:100%;border: 0px;margin-left: 10px;">
                 <tr style="width:100%;">
-                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
+                    <th style="width:10%;color:rgb(86, 56, 90);font-weight: bold; ">
                         <t t-if="o.user_id.name">Contact</t>
                     </th>
-                    <td style="width:35%;">
+                    <td style="width:40%;">
                         <span t-field="o.user_id.name" style="font-weight: normal;" class="text-left"/>
                     </td>
-                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
+                    <th style="width:10%;color:rgb(86, 56, 90);font-weight: bold; ">
                         <t t-if="o.vendor_contact.name">Contact</t>
                     </th>
-                    <td style="width:35%;">
+                    <td style="width:40%;">
                         <span t-field="o.vendor_contact.name" style="font-weight: normal;" class="text-left"/>
                     </td>
                 </tr>
                 <tr>
-                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
+                    <th style="width:10%;color:rgb(86, 56, 90);font-weight: bold; ">
                         <t t-if="o.user_id">
                             <t t-if="o.user_id.employee_id">
                                 <t t-if="o.user_id.employee_id.mobile_phone">
@@ -260,7 +252,7 @@
                             </t>
                         </t>
                     </th>
-                    <td style="width:35%;">
+                    <td style="width:40%;">
                         <t t-if="o.user_id">
                             <t t-if="o.user_id.employee_id">
                                 <t t-if="o.user_id.employee_id.mobile_phone">
@@ -270,63 +262,63 @@
                             </t>
                         </t>
                     </td>
-                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
+                    <th style="width:10%;color:rgb(86, 56, 90);font-weight: bold; ">
                         <t t-if="o.vendor_contact.mobile">Phone</t>
                     </th>
-                    <td style="width:35%;">
+                    <td style="width:40%;">
                         <span t-field="o.vendor_contact.mobile" style="font-weight: normal;" class="text-left"/>
                     </td>
                 </tr>
                 <tr>
-                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
+                    <th style="width:10%;color:rgb(86, 56, 90);font-weight: bold; ">
                         <t t-if="o.user_id.email">Email</t>
                     </th>
-                    <td style="width:35%;">
+                    <td style="width:40%;">
                         <span t-field="o.user_id.email" style="font-weight: normal; word-wrap: break-word;" class="text-left"/>
                     </td>
-                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
+                    <th style="width:10%;color:rgb(86, 56, 90);font-weight: bold; ">
                         <t t-if="o.vendor_contact.email">Email</t>
                     </th>
-                    <td style="width:35%;">
+                    <td style="width:40%;">
                         <span t-field="o.vendor_contact.email" style="font-weight: normal;word-wrap: break-word;"
                               class="text-left"/>
                     </td>
                 </tr>
                 <tr>
-                    <th style="width:15%;color:rgb(86, 56, 90); "></th>
-                    <td style="width:35%;">
+                    <th style="width:10%;color:rgb(86, 56, 90); "></th>
+                    <td style="width:40%;">
 
                     </td>
-                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
+                    <th style="width:10%;color:rgb(86, 56, 90);font-weight: bold; ">
                         <t t-if="o.partner_ref">Reference</t>
                     </th>
-                    <td style="width:35%;">
+                    <td style="width:40%;">
                         <span t-field="o.partner_ref" style="font-weight: normal;" class="text-left"/>
                     </td>
                 </tr>
                 <tr>
-                    <th style="width:15%;color:rgb(86, 56, 90); "></th>
-                    <td style="width:35%;">
+                    <th style="width:10%;color:rgb(86, 56, 90); "></th>
+                    <td style="width:40%;">
                         <br/>
                     </td>
-                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
+                    <th style="width:10%;color:rgb(86, 56, 90);font-weight: bold; ">
 
                     </th>
-                    <td style="width:35%;">
+                    <td style="width:40%;">
 
                     </td>
                 </tr>
                 <tr>
-                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
+                    <th style="width:10%;color:rgb(86, 56, 90);font-weight: bold; ">
                         <t t-if="o.date_order">Order Date</t>
                     </th>
-                    <td style="width:35%;">
+                    <td style="width:40%;">
                         <span t-field="o.date_order" style="font-weight: normal;" class="text-left"/>
                     </td>
-                    <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
+                    <th style="width:10%;color:rgb(86, 56, 90);font-weight: bold; ">
                         <t t-if="o.currency_id.name">Currency</t>
                     </th>
-                    <td style="width:35%;">
+                    <td style="width:40%;">
                         <span t-field="o.currency_id.name" style="font-weight: normal;" class="text-left"/>
                     </td>
                 </tr>
@@ -655,6 +647,16 @@
                                 <span style="font-family: Open Sans !important; font-size: 15px;"
                                       t-esc="o.analytic_account_id.name[0:10]"/>
                             </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div style="margin-left: 10px; margin-right: 10px; margin-top: 0px; margin-bottom: 10px;
+            font-family: Open Sans !important;">
+                        <div>
+                            <h4 style="color:rgb(86, 56, 90); font-size: 22px !important;
+                        font-weight: bold; font-family: Open Sans !important;">Request for Quotation #
+                                <span t-field="o.name"/>
+                            </h4>
                         </div>
                     </div>
                 </div>
