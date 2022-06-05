@@ -4,6 +4,14 @@ from odoo import api, fields, models, _
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
+    def get_report_filename(self, report_type):
+        x = self
+        project_name = self.analytic_account_id.name[0:10]
+        po_name = self.name
+        report_type_string = ' PO' if report_type == 'po' else ' RFQ'
+        file_name = project_name + '- ' + po_name + ' - ' + self.company_id.name + report_type_string
+        return file_name
+
     def _get_default_po_scope_schedule(self):
         return self.env['ir.config_parameter'].sudo().get_param('aly_po_scope_schedule')
 

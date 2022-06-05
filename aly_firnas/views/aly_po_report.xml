@@ -735,6 +735,7 @@
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">aly_firnas.aly_rfq_main_template</field>
         <field name="report_file">aly_firnas.aly_rfq_main_template</field>
+        <field name="print_report_name">(object.get_report_filename('rfq'))</field>
         <field name="binding_model_id" ref="purchase.model_purchase_order"/>
         <field name="binding_type">report</field>
     </record>
@@ -746,6 +747,7 @@
         <field name="report_name">aly_firnas.aly_po_main_template</field>
         <field name="report_file">aly_firnas.aly_po_main_template</field>
         <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+        <field name="print_report_name">(object.get_report_filename('po'))</field>
         <field name="binding_type">report</field>
     </record>
 
