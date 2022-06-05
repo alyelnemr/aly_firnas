@@ -313,7 +313,9 @@
                         <t t-if="o.date_order">Order Date</t>
                     </th>
                     <td style="width:40%;">
-                        <span t-field="o.date_order" style="font-weight: normal;" class="text-left"/>
+                        <t t-if="o.date_order">
+                            <span t-field="o.date_order.date()" style="font-weight: normal;" class="text-left"/>
+                        </t>
                     </td>
                     <th style="width:10%;color:rgb(86, 56, 90);font-weight: bold; ">
                         <t t-if="o.currency_id.name">Currency</t>
@@ -335,8 +337,8 @@
                         <td style="">
 
                         </td>
-                        <th style="color:rgb(86, 56, 90);font-weight: bold; ">Incoterms</th>
-                        <td style="width:35%;">
+                        <th style="width:10%;color:rgb(86, 56, 90);font-weight: bold; ">Incoterms</th>
+                        <td style="width:40%;">
                             <span t-field="o.incoterm_id.name" style="font-weight: normal;" class="text-left"/>
                         </td>
                     </tr>
@@ -356,9 +358,11 @@
                         </td>
                     </tr>
                     <tr>
-                        <th style="color:rgb(86, 56, 90);font-weight: bold; ">Receipt Date</th>
-                        <td style="width:35%;">
-                            <span t-field="o.date_planned" style="font-weight: normal;"/>
+                        <th style="width:10%;color:rgb(86, 56, 90);font-weight: bold; ">Receipt Date</th>
+                        <td style="width:40%;">
+                            <t t-if="o.date_planned">
+                                <span t-field="o.date_planned.date()" style="font-weight: normal;"/>
+                            </t>
                         </td>
                     </tr>
                 </table>
