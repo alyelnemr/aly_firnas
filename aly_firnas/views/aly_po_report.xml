@@ -536,7 +536,7 @@
                                     <div>
                                         <p style="font-size: 15px !important; font-family: verdana !important;">
                                             <t t-if="o.po_scope_schedule">
-                                                <t t-raw="o.po_scope_schedule.replace('</p><p>', '').replace('[$vendor_name$]', o.partner_id.name).replace('[$payment_terms$]', o.payment_term_id.name).replace('[$vendor_reference$]', o.partner_ref)"
+                                                <t t-raw="o.po_scope_schedule.replace('[$vendor_name$]', o.partner_id.name).replace('[$payment_terms$]', o.payment_term_id.name).replace('[$vendor_reference$]', o.partner_ref)"
                                                    style="font-family: verdana !important; font-size: 15px !important;"/>
                                             </t>
                                         </p>
@@ -554,7 +554,7 @@
                                     <div>
                                         <p style="font-size: 15px !important; font-family: verdana !important;">
                                             <t t-if="o.po_payment_schedule">
-                                                <t t-raw="o.po_payment_schedule.replace('</p><p>', '').replace('[$vendor_name$]', o.partner_id.name).replace('[$payment_terms$]', o.payment_term_id.name).replace('[$vendor_reference$]', o.partner_ref)"
+                                                <t t-raw="o.po_payment_schedule.replace('[$vendor_name$]', o.partner_id.name).replace('[$payment_terms$]', o.payment_term_id.name).replace('[$vendor_reference$]', o.partner_ref)"
                                                    style="font-family: verdana !important; font-size: 15px !important;"/>
                                             </t>
                                         </p>
@@ -571,7 +571,7 @@
                                     </div>
                                     <div>
                                         <p style="font-size: 15px !important; font-family: verdana !important;">
-                                            <t t-raw="o.po_acceptance.replace('</p><p>', '').replace('[$vendor_name$]', o.partner_id.name).replace('[$payment_terms$]', o.payment_term_id.name).replace('[$vendor_reference$]', o.partner_ref)"
+                                            <t t-raw="o.po_acceptance.replace('[$vendor_name$]', o.partner_id.name).replace('[$payment_terms$]', o.payment_term_id.name).replace('[$vendor_reference$]', o.partner_ref)"
                                                style="font-family: verdana !important; font-size: 15px !important;"/>
                                         </p>
                                     </div>
