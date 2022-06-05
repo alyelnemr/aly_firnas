@@ -314,7 +314,7 @@
                     </th>
                     <td style="width:40%;">
                         <t t-if="o.date_order">
-                            <span t-field="o.date_order.date()" style="font-weight: normal;" class="text-left"/>
+                            <span t-esc="order_date" style="font-weight: normal;" class="text-left"/>
                         </t>
                     </td>
                     <th style="width:10%;color:rgb(86, 56, 90);font-weight: bold; ">
@@ -361,7 +361,7 @@
                         <th style="width:10%;color:rgb(86, 56, 90);font-weight: bold; ">Receipt Date</th>
                         <td style="width:40%;">
                             <t t-if="o.date_planned">
-                                <span t-field="o.date_planned.date()" style="font-weight: normal;"/>
+                                <span t-esc="receipt_date" style="font-weight: normal;"/>
                             </t>
                         </td>
                     </tr>
@@ -392,14 +392,18 @@
                             style="font-family: Open Sans !important; width:30px; font-size: 15px;">
                             <strong>Unit Price</strong>
                         </th>
-                        <th name="th_discount" class="text-right"
-                            style="font-family: Open Sans !important; width:20px; font-size: 15px;">
-                            <strong>Discount</strong>
-                        </th>
-                        <th name="th_taxes" class="text-right"
-                            style="font-family: Open Sans !important; width:60px; font-size: 15px;">
-                            <strong>Taxes</strong>
-                        </th>
+                        <t t-if="is_discounted">
+                            <th name="th_discount" class="text-right"
+                                style="font-family: Open Sans !important; width:20px; font-size: 15px;">
+                                <strong>Discount</strong>
+                            </th>
+                        </t>
+                        <t t-if="is_taxed">
+                            <th name="th_taxes" class="text-right"
+                                style="font-family: Open Sans !important; width:60px; font-size: 15px;">
+                                <strong>Taxes</strong>
+                            </th>
+                        </t>
                         <th name="th_subtotal" class="text-right"
                             style="font-family: Open Sans !important; width:30px; font-size: 15px;">
                             <strong>Subtotal</strong>
@@ -429,14 +433,18 @@
                                 style="padding-left: 5px; font-family: Open Sans !important;">
                                 <span t-field="line.price_unit"/>
                             </td>
-                            <td class="text-right"
-                                style="padding-left: 5px; font-family: Open Sans !important;">
-                                <span t-field="line.discount"/>
-                            </td>
-                            <td class="text-right"
-                                style="padding-left: 5px; font-family: Open Sans !important;">
-                                <span t-esc="', '.join(map(lambda x: x.name, line.taxes_id))"/>
-                            </td>
+                            <t t-if="is_discounted">
+                                <td class="text-right"
+                                    style="padding-left: 5px; font-family: Open Sans !important;">
+                                    <span t-field="line.discount"/>
+                                </td>
+                            </t>
+                            <t t-if="is_taxed">
+                                <td class="text-right"
+                                    style="padding-left: 5px; font-family: Open Sans !important;">
+                                    <span t-esc="', '.join(map(lambda x: x.name, line.taxes_id))"/>
+                                </td>
+                            </t>
                             <td class="text-right"
                                 style="padding-left: 5px; font-family: Open Sans !important;">
                                 <span t-field="line.price_subtotal"/>
