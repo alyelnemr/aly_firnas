@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="view_move_form_currency_rate_inherit">
+            <field name="name">view.move.form.currency.rate.inherit</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='currency_id']" position="after">
+                    <field name="is_manual" invisible="1"/>
+                    <label
+                            for="manual_currency"
+                            groups="base.group_multi_currency"
+                            attrs="{'invisible': [('is_manual', '=', False)]}"
+                    />
+                    <div groups="base.group_multi_currency" attrs="{'invisible': [('is_manual', '=', False)]}">
+                        <field
+                                name="manual_currency"
+                                attrs="{'invisible': [('is_manual', '=', False)], 'readonly': [('state', '!=', 'draft')]}"
+                        />
+                        <field
+                                name="custom_rate"
+                                attrs="{'invisible': [('manual_currency', '=', False)], 'readonly': [('state', '!=', 'draft')]}"
+                        />
+                        <button
+                                aria-label="Opened"
+                                type="object"
+                                name="action_refresh_currency"
+                                class="btn-link"
+                                states="draft"
+                        >
+                            <i
+                                    title="Update Currency"
+                                    class="fa fa-fw fa-refresh"
+                                    attrs="{'invisible': [('manual_currency', '=', False)]}"
+                            />
+                        </button>
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='date']" position="attributes">
+                    <attribute name="attrs">{'invisible': False}</attribute>
+                    <attribute name="modifiers">
+                        {'invisible':False,'readonly':[['state','not
+                        in',['draft']]],'required':true}</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="aly_view_invoice_tree_inherit" model="ir.ui.view">
+            <field name="name">view.invoice.tree.inherit</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_invoice_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="partner_id"/>
+                </xpath>
+                <xpath expr="//field[@name='amount_total_signed']" position="before">
+                    <field name="amount_line_currency_field" invisible="1"/>
+                    <field name="amount_line" widget="monetary" options="{'currency_field': 'amount_line_currency_field'}"/>
+                </xpath>
+                <xpath expr="//field[@name='amount_untaxed_signed']" position="after">
+                    <field name="amount_currency_field" invisible="1"/>
+                    <field name="amount_in_currency" widget="monetary" options="{'currency_field': 'amount_currency_field'}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

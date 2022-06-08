@@ -16,6 +16,34 @@ import base64
 class InheritBankStatement(models.Model):
     _inherit = "account.bank.statement.line"
 
+    analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account', index=True,
+                                          required=True)
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True)
+
+    def _prepare_reconciliation_move(self, move_ref):
+        """ Prepare the dict of values to create the move from a statement line. This method may be overridden to adapt domain logic
+            through model inheritance (make sure to call super() to establish a clean extension chain).
+
+           :param char move_ref: will be used as the reference of the generated account move
+           :return: dict of value to create() the account.move
+        """
+        ref = move_ref or ''
+        if self.ref:
+            ref = move_ref + ' - ' + self.ref if move_ref else self.ref
+        data = {
+            'type': 'entry',
+            'journal_id': self.statement_id.journal_id.id,
+            'currency_id': self.statement_id.currency_id.id,
+            'date': self.statement_id.accounting_date or self.date,
+            'partner_id': self.partner_id.id,
+            'analytic_account_id': self.analytic_account_id.id,
+            'analytic_tag_ids': self.analytic_tag_ids,
+            'ref': ref,
+        }
+        if self.move_name:
+            data.update(name=self.move_name)
+        return data
+
     def process_reconciliation(self, counterpart_aml_dicts=None, payment_aml_rec=None, new_aml_dicts=None):
         payable_account_type = self.env.ref('account.data_account_type_payable')
         receivable_account_type = self.env.ref('account.data_account_type_receivable')
@@ -86,6 +114,14 @@ class InheritBankStatement(models.Model):
             if suspense_moves_mode:
                 self.button_cancel_reconciliation()
             move = self.env['account.move'].with_context(default_journal_id=move_vals['journal_id']).create(move_vals)
+            if self.analytic_account_id and not move.analytic_account_id:
+                move.write({
+                    'analytic_account_id': self.analytic_account_id
+                })
+            if self.analytic_tag_ids and not move.analytic_tag_ids:
+                move.write({
+                    'analytic_tag_ids': self.analytic_tag_ids
+                })
             counterpart_moves = (counterpart_moves | move)
 
             # Create The payment
@@ -97,15 +133,16 @@ class InheritBankStatement(models.Model):
                 if not payment_vals['partner_id']:
                     payment_vals['partner_id'] = partner_id.id
                 if 'analytic_tag_ids' not in payment_vals:
-                    if len(new_aml_dicts) > 0 and 'analytic_tag_ids' in new_aml_dicts[0]:
+                    if len(new_aml_dicts) > 0 and 'analytic_tag_ids' in new_aml_dicts[0] and \
+                            new_aml_dicts[0]['analytic_tag_ids'][0][1] != None:
                         payment_vals['analytic_tag_ids'] = new_aml_dicts[0]['analytic_tag_ids']
-                    elif self.statement_id.analytic_tag_ids:
-                        payment_vals['analytic_tag_ids'] = self.statement_id.analytic_tag_ids
+                    elif self.analytic_tag_ids:
+                        payment_vals['analytic_tag_ids'] = self.analytic_tag_ids
                 if 'analytic_account_id' not in payment_vals:
                     if len(new_aml_dicts) > 0 and 'analytic_account_id' in new_aml_dicts[0]:
                         payment_vals['analytic_account_id'] = new_aml_dicts[0]['analytic_account_id']
-                    elif self.statement_id.analytic_account_id:
-                        payment_vals['analytic_account_id'] = self.statement_id.analytic_account_id.id
+                    elif self.analytic_account_id:
+                        payment_vals['analytic_account_id'] = self.analytic_account_id.id
                 if payment_vals['partner_id'] and len(account_types) == 1:
                     payment_vals['partner_type'] = 'customer' if account_types == receivable_account_type else 'supplier'
                 payment = payment.create(payment_vals)
@@ -117,6 +154,8 @@ class InheritBankStatement(models.Model):
                 aml_dict['move_id'] = move.id
                 aml_dict['partner_id'] = self.partner_id.id
                 aml_dict['statement_line_id'] = self.id
+                aml_dict['analytic_tag_ids'] = self.analytic_tag_ids
+                aml_dict['analytic_account_id'] = self.analytic_account_id.id
                 self._prepare_move_line_for_currency(aml_dict, date)
 
             # Create write-offs

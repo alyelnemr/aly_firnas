@@ -2,11 +2,10 @@
 from odoo import api, fields, models
 
 
-class BankStatementAccountInherit(models.Model):
-    _inherit = 'account.bank.statement'
+class BankStatementAccountLineInherit(models.Model):
+    _inherit = 'account.bank.statement.line'
 
-    check_number = fields.Integer(string="Check Number")
     analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account', index=True,
-                                          required=False)
-    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=False)
+                                          required=True)
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True)
 

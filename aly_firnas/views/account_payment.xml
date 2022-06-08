@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="view_payment_form_currency_rate_inherit">
+            <field name="name">view.payment.form.currency.rate.inherit</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='payment_date']" position="before">
+                    <field name="is_manual" invisible="1"/>
+                    <label
+                            for="manual_currency"
+                            groups="base.group_multi_currency"
+                            attrs="{'invisible': [('is_manual', '=', False)]}"
+                    />
+                    <div groups="base.group_multi_currency" attrs="{'invisible': [('is_manual', '=', False)]}">
+                        <field
+                                name="manual_currency"
+                                attrs="{'invisible': [('is_manual', '=', False)], 'readonly': [('state', '!=', 'draft')]}"
+                        />
+                        <field
+                                name="custom_rate"
+                                attrs="{'invisible': [('manual_currency', '=', False)], 'readonly': [('state', '!=', 'draft')]}"
+                        />
+                        <button
+                                aria-label="Opened"
+                                type="object"
+                                name="action_refresh_currency"
+                                class="btn-link"
+                                states="draft"
+                        >
+                            <i
+                                    title="Update Currency"
+                                    class="fa fa-fw fa-refresh"
+                                    attrs="{'invisible': [('manual_currency', '=', False)]}"
+                            />
+                        </button>
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='partner_type']" position="replace">
+                    <field name="partner_type" widget="selection"
+                           attrs="{'required': [('state', '=', 'draft')], 'invisible': False}"/>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="replace">
+                    <field name="partner_id"
+                           attrs="{'required': [('state', '=', 'draft')], 'invisible': False}"
+                           context="{'default_is_company': True}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
