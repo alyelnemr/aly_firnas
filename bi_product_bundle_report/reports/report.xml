@@ -54,7 +54,7 @@
         </template>
 
         <template id="external_layout_standard_new" inherit_id="web.external_layout_standard" primary="True">
-            <xpath expr="//div[contains(@t-attf-class, 'header')]" position="replace">
+            <xpath expr="//div[@class='header']" position="replace">
 
                 <div t-attf-class="header" style="height: 100px !important; z-index:0 !important;">
                     <div class="row" style="margin: 0 auto; padding-top: 10px; height: 100px !important; width: 90%;">
