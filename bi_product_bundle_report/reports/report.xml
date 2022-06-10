@@ -186,8 +186,12 @@
 
             <tr style="font-size:10px !important; font-family: verdana !important; width: 30px !important;">
                 <td class="text-left" colspan="2" style="font-family: verdana !important;"/>
+                <td class="text-left" style="padding-left: 30px; font-family: verdana !important;">
+                                                        -
+                    <t t-esc="sub_line['name']" style="font-family: verdana !important;"/>
+                </td>
                 <td class="text-left" style="font-size:10px !important; font-family: verdana !important;">
-                    <t t-raw="sub_line['desc']" style="padding-left: 30px; font-family: verdana !important;"/>
+                    <t t-raw="sub_line['desc']" style="font-family: verdana !important;"/>
                 </td>
                 <td class="text-center" style="font-family: verdana !important;">
                     <t t-esc="sub_line['qty']" style="font-family: verdana !important;"/>
