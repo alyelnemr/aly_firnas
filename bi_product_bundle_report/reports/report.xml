@@ -186,18 +186,14 @@
 
             <tr style="font-size:10px !important; font-family: verdana !important; width: 30px !important;">
                 <td class="text-left" colspan="2" style="font-family: verdana !important;"/>
-                <td class="text-left" style="padding-left: 30px; font-family: verdana !important;">
-                                                        -
-                    <t t-esc="sub_line['name']" style="font-family: verdana !important;"/>
-                </td>
                 <td class="text-left" style="font-size:10px !important; font-family: verdana !important;">
-                    <t t-raw="sub_line['desc']" style="font-family: verdana !important;"/>
+                    <t t-raw="sub_line['desc']" style="padding-left: 30px; font-family: verdana !important;"/>
                 </td>
                 <td class="text-center" style="font-family: verdana !important;">
                     <t t-esc="sub_line['qty']" style="font-family: verdana !important;"/>
                 </td>
                 <td class="text-left" style="font-family: verdana !important;">
-                    <t t-if="sub_line['show_price']">
+                    <t t-if="is_taxed">
                         <span t-esc="sub_line['total_price']/sub_line['qty']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                     </t>
                 </td>
@@ -249,10 +245,22 @@
                             <table class="table table-sm o_main_table" style="margin: 0 auto;">
                                 <thead>
                                     <tr style="font-family: verdana !important;">
-                                        <th class="text-center" style="font-family: verdana !important; width:330px;font-size: 11px;" colspan="3">Item</th>
-                                        <th class="text-center" style="font-family: verdana !important; width:250px; font-size: 11px;">Description</th>
+                                        <th class="text-center" style="font-family: verdana !important; width:400px;font-size: 11px;" colspan="3">
+                                            Description</th>
                                         <th class="text-center" style="font-family: verdana !important; width:40px; font-size: 11px;">Qty</th>
                                         <th class="text-right" style="font-family: verdana !important; width:70px; font-size: 11px;">Unit Price</th>
+                                        <t t-if="is_taxed">
+                                            <th class="text-center"
+                                                style="font-family: verdana !important; width:70px; font-size: 11px;">
+                                                Taxes
+                                            </th>
+                                        </t>
+                                        <t t-if="is_discounted">
+                                            <th class="text-center"
+                                                style="font-family: verdana !important; width:70px; font-size: 11px;">
+                                                Discount
+                                            </th>
+                                        </t>
                                         <th class="text-right" style="font-family: verdana !important; width:70px; font-size: 11px;">Total Price</th>
                                     </tr>
                                 </thead>
@@ -266,9 +274,24 @@
                                                 <t t-esc="bundle_index"/>
 .
                                             </td>
-                                            <td class="text-left" colspan="5" style="font-family: verdana !important;">
-                                                <t t-esc="sections[section]['name']" style="font-family: verdana !important;"/>
-                                            </td>
+                                            <t t-if="col_span == 5">
+                                                <td class="text-left" colspan="5" style="font-family: verdana !important;">
+                                                    <t t-esc="sections[section]['name']"
+                                                       style="font-family: verdana !important;"/>
+                                                </td>
+                                            </t>
+                                            <t t-if="col_span == 6">
+                                                <td class="text-left" colspan="6" style="font-family: verdana !important;">
+                                                    <t t-esc="sections[section]['name']"
+                                                       style="font-family: verdana !important;"/>
+                                                </td>
+                                            </t>
+                                            <t t-if="col_span == 7">
+                                                <td class="text-left" colspan="7" style="font-family: verdana !important;">
+                                                    <t t-esc="sections[section]['name']"
+                                                       style="font-family: verdana !important;"/>
+                                                </td>
+                                            </t>
                                             <td class="text-right">
                                                 <span t-esc="sections[section]['total_price']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                             </td>
@@ -282,17 +305,25 @@
                                                     <t t-esc="bundle_sub_index" style="font-family: verdana !important;"/>
                                                 </td>
                                                 <td class="text-left" style="padding-left: 15px; font-family: verdana !important;">
-                                                    <t t-esc="line['name']" style="font-family: verdana !important;"/>
-                                                </td>
-                                                <td class="text-left" style="font-family: verdana !important;">
                                                     <t t-raw="line['desc']" style="font-family: verdana !important;"/>
                                                 </td>
                                                 <td class="text-center" style="font-family: verdana !important;">
                                                     <t t-esc="line['qty']" style="font-family: verdana !important;"/>
                                                 </td>
                                                 <td class="text-right" style="font-family: verdana !important;">
-                                                    <span t-esc="line['total_price']/line['qty']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                                    <span t-esc="line['item_price']" style="font-family: verdana !important;"
+                                                          t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                                 </td>
+                                                <t t-if="is_taxed">
+                                                    <td class="text-center" style="font-family: verdana !important;">
+                                                        <span t-esc="', '.join(map(lambda x: (x.description or x.name), line['tax_id']))"/>
+                                                    </td>
+                                                </t>
+                                                <t t-if="is_discounted">
+                                                    <td class="text-center" style="font-family: verdana !important;">
+                                                        <span t-esc="line['discount']" style="font-family: verdana !important;"/>
+                                                    </td>
+                                                </t>
                                                 <td class="text-right" style="font-family: verdana !important;">
                                                     <span t-esc="line['total_price']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                                 </td>
