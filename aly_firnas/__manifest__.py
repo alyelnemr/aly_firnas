@@ -4,9 +4,10 @@
     'summary': "Aly El Nemr, Odoo Development for Firnas Shuman",
     'description': """Aly El Nemr, aly5elnemr@gmail.com, Odoo Development for Firnas Shuman""",
     'author': "Aly El Nemr",
-    'depends': ['purchase', 'account'],
+    'depends': ['purchase', 'sale', 'sale_management', 'account'],
 
     'data': [
+        'security/ir.model.access.csv',
         'views/aly_po_report.xml',
         'views/product.xml',
         'views/account_bank_statement.xml',

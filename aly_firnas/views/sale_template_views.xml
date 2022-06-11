@@ -6,7 +6,7 @@
             <field name="model">sale.order.template</field>
             <field name="inherit_id" ref="sale_management.sale_order_template_view_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//page[@string='Optional Products']" position="after">
+                <notebook position="inside">
                     <page string="Additional Products">
                         <field name="sale_order_template_additional_ids">
                             <tree string="Quotation Template Additional Products" editable="bottom">
@@ -20,7 +20,7 @@
                             </tree>
                         </field>
                     </page>
-                </xpath>
+                </notebook>
             </field>
         </record>
     </data>
