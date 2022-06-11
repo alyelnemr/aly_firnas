@@ -6,11 +6,18 @@
             <field name="model">sale.order.template</field>
             <field name="inherit_id" ref="sale_management.sale_order_template_view_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='sale_order_template_line_ids']/tree/field[@name='product_id']" position="after">
+                    <field name="section"/>
+                </xpath>
+                <xpath expr="//field[@name='sale_order_template_option_ids']/tree/field[@name='product_id']" position="after">
+                    <field name="section"/>
+                </xpath>
                 <notebook position="inside">
                     <page string="Additional Products">
                         <field name="sale_order_template_additional_ids">
                             <tree string="Quotation Template Additional Products" editable="bottom">
                                 <field name="product_id"/>
+                                <field name="section"/>
                                 <field name="name"/>
                                 <field name="quantity"/>
                                 <field name="product_uom_category_id" invisible="1"/>
@@ -23,5 +30,6 @@
                 </notebook>
             </field>
         </record>
+
     </data>
 </odoo>

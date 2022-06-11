@@ -10,6 +10,26 @@ from datetime import timedelta
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
+    def _compute_option_data_for_template_change(self, option):
+        if self.pricelist_id:
+            price = self.pricelist_id.with_context(uom=option.uom_id.id).get_product_price(option.product_id, 1, False)
+        else:
+            price = option.price_unit
+        return {
+            'product_id': option.product_id.id,
+            'name': option.name,
+            'quantity': option.quantity,
+            'uom_id': option.uom_id.id,
+            'section': option.section,
+            'price_unit': price,
+            'discount': option.discount,
+        }
+
+    def _compute_line_data_for_template_change(self, line):
+        vals = super(SaleOrder, self)._compute_line_data_for_template_change(line)
+        vals.update(section=line.section)
+        return vals
+
     @api.onchange('sale_order_template_id')
     def onchange_sale_order_template_id(self):
         if not self.sale_order_template_id:
@@ -92,6 +112,8 @@ class SaleOrderTemplateAdditional(models.Model):
 
     sale_order_template_id = fields.Many2one('sale.order.template', 'Quotation Template Reference', ondelete='cascade',
                                              index=True, required=True)
+
+    section = fields.Many2one('sale.order.line.section', string="Section")
     company_id = fields.Many2one('res.company', related='sale_order_template_id.company_id', store=True, index=True)
     name = fields.Text('Description', required=True, translate=True)
     product_id = fields.Many2one(
@@ -128,3 +150,14 @@ class SaleOrderTemplateAdditional(models.Model):
         if self.uom_id.id != self.product_id.uom_id.id:
             self.price_unit = self.product_id.uom_id._compute_price(self.product_id.lst_price, self.uom_id)
 
+
+class SaleOrderTemplateOption(models.Model):
+    _inherit = "sale.order.template.option"
+
+    section = fields.Many2one('sale.order.line.section', string="Section")
+
+
+class SaleOrderTemplateLine(models.Model):
+    _inherit = "sale.order.template.line"
+
+    section = fields.Many2one('sale.order.line.section', string="Section")
