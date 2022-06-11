@@ -190,7 +190,8 @@ class SaleOrderLine(models.Model):
                 'desc': textile.textile(sl.name) if sl.name else '',
                 # 'desc': textile.textile(sl.name.replace(sl.product_id.display_name, '')) if sl.name and sl.product_id else '',
                 'qty': int(sl.product_uom_qty),
-                'total_price': sl.item_price if not float_is_zero(sl.item_price, precision_rounding=2) else sl.price_subtotal,
+                'total_price': sl.price_subtotal,
+                'item_price': sl.item_price,
                 'show_price': sl.order_id.show_component_price,
                 'sub_lines': sl.get_orderline_sublines() or False
             } for sl in order_lines.filtered(
