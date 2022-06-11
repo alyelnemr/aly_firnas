@@ -33,7 +33,8 @@ class SaleOrder(models.Model):
                 'lines': [{
                     'name': ('[%s] ' % ol.product_id.default_code if ol.product_id.default_code else '')
                             + ol.product_id.name,
-                    'desc': textile.textile(ol.name) if ol.name else '',
+                    'desc': textile.textile(ol.name) if ol.name else ('[%s] ' % ol.product_id.default_code
+                                                                      if ol.product_id.default_code else '') + ol.product_id.name,
                     'qty': int(ol.product_uom_qty),
                     'total_price': ol.price_subtotal,
                     'tax_id': ol.tax_id,
