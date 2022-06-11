@@ -19,11 +19,11 @@ class SalesOrderReport(models.AbstractModel):
             discount += line.discount
         is_discounted = discount > 0
         is_taxed = docs.amount_tax > 0
-        col_span = 5
+        col_span = 4
         if is_taxed or is_discounted:
-            col_span = 6
+            col_span = 5
         if is_taxed and is_discounted:
-            col_span = 7
+            col_span = 6
         return {
             'data': data,
             'doc_ids': docids,
