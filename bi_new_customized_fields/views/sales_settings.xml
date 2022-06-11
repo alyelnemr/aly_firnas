@@ -1,0 +1,35 @@
+<odoo>
+    <data>
+        <record id="aly_res_config_sale_settings_view_form" model="ir.ui.view">
+            <field name="name">aly.res.config.sale.settings.view.form.inherit</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="50"/>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@data-key='sale_management']" position="inside">
+                    <h2>Firnas Shuman - Sales Order Terms</h2>
+                    <group>
+                        <group>
+                            <div class="row mt16 o_settings_container">
+                                <b>
+                                    <label for="aly_so_payment_schedule"/>
+                                </b>
+                                <field name="aly_so_payment_schedule"/>
+                            </div>
+                        </group>
+                        <group>
+                            <div class="row mt16 o_settings_container">
+                                <b>
+                                    <label for="aly_so_terms_condition"/>
+                                </b>
+                                <field name="aly_so_terms_condition"/>
+                            </div>
+                        </group>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

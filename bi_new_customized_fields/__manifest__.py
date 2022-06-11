@@ -13,6 +13,7 @@
     'data': [
         'views/inherit_account_bank_statement_model_view.xml',
         'views/inherit_res_partner_model_view.xml',
+        'views/sales_settings.xml',
         'views/inherit_hr_employee_model.xml',
         'views/inherit_project_project_model_view.xml',
         'views/inherit_sale_order_model_view.xml',
