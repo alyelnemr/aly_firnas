@@ -13,7 +13,7 @@ class InheritAccountPayment(models.Model):
         res = super(InheritAccountPayment, self)._prepare_payment_moves()
         for move_vals in res:
             for line in move_vals['line_ids']:
-                if line[2]['debit'] < 0:
+                if line[2]['debit'] <= 0:
                     line[2]['analytic_account_id'] = self.invoice_ids[0].analytic_account_id.id
                     line[2]['analytic_tag_ids'] = self.invoice_ids[0].analytic_tag_ids.ids
                 else:
@@ -63,7 +63,7 @@ class InheritAccountPayment(models.Model):
 
             moves = AccountMove.create(rec._prepare_payment_moves())
             for line in moves.line_ids:
-                if line.debit < 0:
+                if line.debit <= 0:
                     line.analytic_account_id = rec.invoice_ids[0].analytic_account_id.id
                     line.analytic_tag_ids = rec.invoice_ids[0].analytic_tag_ids.ids
                 else:
