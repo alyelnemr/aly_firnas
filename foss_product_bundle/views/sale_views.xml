@@ -34,7 +34,7 @@
                     <field name="bundle_status" invisible="1"/>
                     
                    
-                    <button name="update_product" invisible="bundle_status != 'bundle'" string="Update" type="object" states="draft,sale,sent" class="btn btn-primary oe_edit_only"/>
+                    <button name="update_product" attrs="{'invisible':[('bundle_status','!=','bundle')]}'" string="Update" type="object" states="draft,sale,sent" class="btn btn-primary oe_edit_only"/>
                     <!-- <button name="action_unlink" string="Delete" type="object" states="draft,sale,sent" class="btn btn-primary oe_edit_only"/> -->
                 </xpath>
 
