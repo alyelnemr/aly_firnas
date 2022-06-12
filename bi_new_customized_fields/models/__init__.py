@@ -12,3 +12,5 @@ from . import project_sale_partnership
 from . import project_sale_submission
 from . import inherit_project_task
 from . import client_name
+from . import res_config_settings
+
