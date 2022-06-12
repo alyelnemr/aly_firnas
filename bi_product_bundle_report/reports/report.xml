@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+    <data noupdate="1">
 
-        <template id="sale_management.report_saleorder_document_inherit_sale_management" inherit_id="sale.report_saleorder_document">
+        <template id="sale_management.report_saleorder_document_inherit_sale_management"
+                  inherit_id="sale.report_saleorder_document">
             <xpath expr="//div[@name='signature']" position="after">
                 <div t-if="doc.sale_order_option_ids and doc.state in ['draft', 'sent']">
-                    <t t-set="has_option_discount" t-value="any(doc.sale_order_option_ids.filtered(lambda o: o.discount != 0.0))"/>
+                    <t t-set="has_option_discount"
+                       t-value="any(doc.sale_order_option_ids.filtered(lambda o: o.discount != 0.0))"/>
                     <h4>
                         <span>Options</span>
                     </h4>
@@ -15,7 +17,8 @@
                                 <th class="text-left">Item</th>
                                 <th class="text-left">Description</th>
                                 <th class="text-left">Qty</th>
-                                <th t-if="has_option_discount" groups="product.group_discount_per_so_line" class="text-left">Disc.%
+                                <th t-if="has_option_discount" groups="product.group_discount_per_so_line" class="text-left">
+                                    Disc.%
                                 </th>
                                 <th class="text-right">Unit Price</th>
                             </tr>
@@ -34,12 +37,15 @@
                                 <td t-if="has_option_discount" groups="product.group_discount_per_so_line">
                                     <strong t-if="option.discount != 0.0" class="text-info">
                                         <t t-esc="((option.discount % 1) and '%s' or '%d') % option.discount"/>
-%
+                                        %
                                     </strong>
                                 </td>
                                 <td>
                                     <strong class="text-right">
-                                        <div t-field="option.price_unit" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' t-att-style="option.discount and 'text-decoration: line-through' or None" t-att-class="option.discount and 'text-danger' or None"/>
+                                        <div t-field="option.price_unit"
+                                             t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'
+                                             t-att-style="option.discount and 'text-decoration: line-through' or None"
+                                             t-att-class="option.discount and 'text-danger' or None"/>
                                         <div t-if="option.discount">
                                             <t t-esc="'%.2f' % ((1-option.discount / 100.0) * option.price_unit)"/>
                                         </div>
@@ -59,7 +65,8 @@
                 <div t-attf-class="header" style="height: 100px !important; z-index:0 !important;">
                     <div class="row" style="margin: 0 auto; padding-top: 10px; height: 100px !important; width: 90%;">
                         <div class="col-4 mb4 text-left">
-                            <img src="/bi_product_bundle_report/static/src/img/firnas_logo_full.jpg" style="height: 90px !important;" alt="Logo"/>
+                            <img src="/bi_product_bundle_report/static/src/img/firnas_logo_full.jpg"
+                                 style="height: 90px !important;" alt="Logo"/>
                         </div>
                         <div class="col-8 text-right" style="justify-content: center; padding: 15px 0px 15px 0px !important;">
                             <div style="width: 90% !important; border-right: 1px solid black; padding-right: 4px; display: inline-block !important;">
@@ -67,9 +74,12 @@
                                 <br/>
                                 <span style="font-family: verdana !important; font-size: 15px;" t-esc="doc.document_name"/>
                             </div>
-                            <div class="page_number d-inline-block" style="width: 6% !important; height: 100px !important; vertical-align:top;">
+                            <div class="page_number d-inline-block"
+                                 style="width: 6% !important; height: 100px !important; vertical-align:top;">
                                 <div style="font-family: verdana !important; font-size: 15px !important;">
-                                    4-<span class="page" style="padding-right: 5px !important; font-family: verdana !important; font-size: 15px !important; margin-left: -1px;"/>
+                                    4-
+                                    <span class="page"
+                                          style="padding-right: 5px !important; font-family: verdana !important; font-size: 15px !important; margin-left: -1px;"/>
                                 </div>
                             </div>
                         </div>
@@ -91,8 +101,6 @@
             </xpath>
 
         </template>
-
-
 
 
         <template id="external_layout_new">
@@ -123,13 +131,12 @@
         </template>
 
 
-
         <template id="sub_line_sub__sub_bundle_template">
             <t t-foreach="sub_line_1['sub_lines']" t-as="sub_line_2">
                 <tr style="font-size:10px !important; font-family: verdana !important;">
                     <td class="text-left" colspan="2" style="font-family: verdana !important;"/>
                     <td class="text-left" style="padding-left: 60px; font-family: verdana !important;">
-                                                                -
+                        -
                         <t t-esc="sub_line_2['name']" style="font-family: verdana !important;"/>
                     </td>
                     <td class="text-left" style="font-size:10px !important; font-family: verdana !important;">
@@ -140,12 +147,14 @@
                     </td>
                     <td class="text-left" style="font-family: verdana !important;">
                         <t t-if="sub_line_2['show_price']">
-                            <span t-esc="sub_line_2['total_price']/sub_line_2['qty']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                            <span t-esc="sub_line_2['total_price']/sub_line_2['qty']" style="font-family: verdana !important;"
+                                  t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                         </t>
                     </td>
                     <td class="text-right" style="font-family: verdana !important;">
                         <t t-if="sub_line_2['show_price']">
-                            <span t-esc="sub_line_2['total_price']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                            <span t-esc="sub_line_2['total_price']" style="font-family: verdana !important;"
+                                  t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                         </t>
                     </td>
                 </tr>
@@ -156,7 +165,7 @@
             <tr style="font-size:10px !important; font-family: verdana !important;">
                 <td class="text-left" colspan="2" style="font-family: verdana !important;"/>
                 <td class="text-left" style="padding-left: 60px; font-family: verdana !important;">
-                                                            -
+                    -
                     <t t-esc="sub_line_1['name']" style="font-family: verdana !important;"/>
                 </td>
                 <td class="text-left" style="font-size:10px !important; font-family: verdana !important;">
@@ -167,12 +176,14 @@
                 </td>
                 <td class="text-left" style="font-family: verdana !important;">
                     <t t-if="sub_line_1['show_price']">
-                        <span t-esc="sub_line_1['total_price']/sub_line_1['qty']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                        <span t-esc="sub_line_1['total_price']/sub_line_1['qty']" style="font-family: verdana !important;"
+                              t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                     </t>
                 </td>
                 <td class="text-right" style="font-family: verdana !important;">
                     <t t-if="sub_line_1['show_price']">
-                        <span t-esc="sub_line_1['total_price']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                        <span t-esc="sub_line_1['total_price']" style="font-family: verdana !important;"
+                              t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                     </t>
                 </td>
             </tr>
@@ -181,7 +192,8 @@
                 <t t-call="bi_product_bundle_report.sub_line_sub__sub_bundle_template"/>
             </t>
         </template>
-
+    </data>
+    <data>
         <template id="sub_line_template">
 
             <tr style="font-size:10px !important; font-family: verdana !important; width: 30px !important;">
