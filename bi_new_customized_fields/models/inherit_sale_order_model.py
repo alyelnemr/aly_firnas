@@ -6,10 +6,10 @@ class SaleOrderInherit(models.Model):
     _inherit = 'sale.order'
 
     def _set_default_standard_payment(self):
-        return self.env['ir.config_parameter'].sudo().get_param('aly_po_payment_schedule')
+        return self.env['ir.config_parameter'].sudo().get_param('aly_so_payment_schedule')
 
     def _set_default_terms_conditions(self):
-        return self.env['ir.config_parameter'].sudo().get_param('aly_po_acceptance')
+        return self.env['ir.config_parameter'].sudo().get_param('aly_so_terms_condition')
 
     project_name = fields.Char(string="Customer's Project Name / Proposal Title")
     document_name = fields.Char(string="Proposal Subject")
