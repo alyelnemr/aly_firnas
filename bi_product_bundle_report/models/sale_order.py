@@ -23,9 +23,13 @@ class SaleOrder(models.Model):
         data = {}
 
         sections = order_lines.mapped('section')
-        for section in sections:
-            data[str(section.id)] = {
-                'name': section.name,
+        all_sections = []
+        for line in order_lines:
+            if line['section'] not in all_sections:
+                all_sections.append(line['section'])
+        for section in all_sections:
+            data[str(section.id if section.id else 0)] = {
+                'name': section.name if section.name else '(undefined)',
                 'total_price': sum([
                     (ol.price_subtotal if not ol.product_id.child_line else ol.price_unit * ol.product_uom_qty) for ol in
                     order_lines.filtered(lambda l: l.section.id == section.id)
@@ -59,9 +63,13 @@ class SaleOrder(models.Model):
         data = {}
 
         sections = order_lines.mapped('section')
-        for section in sections:
-            data[str(section.id)] = {
-                'name': section.name,
+        all_sections = []
+        for line in order_lines:
+            if line['section'] not in all_sections:
+                all_sections.append(line['section'])
+        for section in all_sections:
+            data[str(section.id if section.id else 0)] = {
+                'name': section.name if section.name else '(undefined)',
                 'lines': [
                     {
                         'name': ('[%s] ' % ol.product_id.default_code if ol.product_id.default_code else '')
@@ -84,9 +92,13 @@ class SaleOrder(models.Model):
         data = {}
 
         sections = order_lines.mapped('section')
-        for section in sections:
-            data[str(section.id)] = {
-                'name': section.name,
+        all_sections = []
+        for line in order_lines:
+            if line['section'] not in all_sections:
+                all_sections.append(line['section'])
+        for section in all_sections:
+            data[str(section.id if section.id else 0)] = {
+                'name': section.name if section.name else '(undefined)',
                 'lines': [
                     {
                         'name': ('[%s] ' % ol.product_id.default_code if ol.product_id.default_code else '')
