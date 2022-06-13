@@ -7,9 +7,10 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//div[@name='button_box']" position="inside">
+                    <field name="opportunity_id" invisible="1"/>
                     <button class="oe_stat_button o_res_partner_tip_opp" type="object"
                             name="action_view_opportunity"
-                            icon="fa-star"
+                            icon="fa-star" attrs="{'invisible': [('opportunity_id', '=', False)]}"
                             context="{'default_partner_id': active_id}">
                         <span>Opportunities</span>
                     </button>
