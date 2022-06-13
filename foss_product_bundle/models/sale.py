@@ -42,7 +42,7 @@ class SaleOrderLine(models.Model):
     @api.depends('bundle_status', 'order_id.order_line', 'product_id')
     def _compute_is_update(self):
         for line in self:
-            if line.is_bundle(line):
+            if line.product_id.child_line:
                 line.is_update = True
             else:
                 line.is_update = False
@@ -142,9 +142,6 @@ class SaleOrderLine(models.Model):
                 related_lines = line.order_id.order_line.search(
                     [('parent_order_line', '=', line.ids[0])])
                 line.update_sections(line,related_lines)
-               
-
-
 
     def update_sections(self,line,related_lines):
         if not related_lines:
