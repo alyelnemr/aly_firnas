@@ -10,6 +10,23 @@ class SaleOrderOption(models.Model):
     section = fields.Many2one('sale.order.line.section', string="Section", required=False)
     price_note = fields.Char("Price Note")
 
+    def button_add_to_order(self):
+        self.add_option_to_order()
+
+    def _get_values_to_add_to_order(self):
+        self.ensure_one()
+        return {
+            'order_id': self.order_id.id,
+            'price_unit': self.price_unit,
+            'name': self.name,
+            'product_id': self.product_id.id,
+            'product_uom_qty': self.quantity,
+            'product_uom': self.uom_id.id,
+            'discount': self.discount,
+            'section': self.section.id,
+            'company_id': self.order_id.company_id.id,
+        }
+
 
 class SaleOrderAdditional(models.Model):
     _name = "sale.order.additional"
@@ -95,6 +112,7 @@ class SaleOrderAdditional(models.Model):
             'product_uom_qty': self.quantity,
             'product_uom': self.uom_id.id,
             'discount': self.discount,
+            'section': self.section.id,
             'company_id': self.order_id.company_id.id,
             'section':self.section.id
         }

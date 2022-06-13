@@ -13,6 +13,23 @@ class SaleOrderLine(models.Model):
     name = fields.Text(string='Description', required=False)
     product_uom = fields.Many2one('uom.uom', string='Unit of Measure', domain="[('category_id', '=', product_uom_category_id)]")
 
+    def button_add_to_order(self):
+        self.add_option_to_order()
+
+    def _get_values_to_add_to_order(self):
+        self.ensure_one()
+        return {
+            'order_id': self.order_id.id,
+            'price_unit': self.price_unit,
+            'name': self.name,
+            'product_id': self.product_id.id,
+            'product_uom_qty': self.quantity,
+            'product_uom': self.uom_id.id,
+            'discount': self.discount,
+            'section': self.section.id,
+            'company_id': self.order_id.company_id.id,
+        }
+
     @api.depends('state', 'price_reduce', 'product_id', 'untaxed_amount_invoiced', 'qty_delivered', 'product_uom_qty')
     def _compute_untaxed_amount_to_invoice(self):
         """ Total of remaining amount to invoice on the sale order line (taxes excl.) as
