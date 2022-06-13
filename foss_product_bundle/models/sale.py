@@ -37,7 +37,7 @@ class SaleOrderLine(models.Model):
     parent_order_line = fields.Many2one('sale.order.line', string="Parent Line")
     bundle_status = fields.Char(
         'Bundle_status', compute='line_bundle_status')
-    is_update = fields.Boolean(string="Show Update button",store=True, compute="_compute_is_update")
+    is_update = fields.Boolean(string="Show Update button", compute="_compute_is_update")
 
     @api.depends('bundle_status', 'order_id.order_line', 'product_id')
     def _compute_is_update(self):
