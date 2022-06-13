@@ -17,6 +17,19 @@ class SaleOrder(models.Model):
 
     split_page = fields.Boolean(string='Split Page?')
 
+    def action_view_opportunity(self):
+        '''
+        This function returns an action that displays the opportunities from partner.
+        '''
+        action = self.env.ref('crm.crm_lead_opportunities').read()[0]
+        # operator = 'child_of' if self..is_company else '='
+        action['domain'] = [('id', '=', self.opportunity_id.id), ('type', '=', 'opportunity')]
+        action['view_mode'] = 'form'
+        action['view_type'] = 'form'
+        action['res_id'] = self.opportunity_id.id
+        action['views'] = [(self.env.ref('crm.crm_lead_view_form').id, 'form')]
+        return action
+
     def print_bundled_quotation(self):
         self.ensure_one()
         order_lines = self.order_line

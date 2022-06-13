@@ -6,6 +6,14 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button class="oe_stat_button o_res_partner_tip_opp" type="object"
+                            name="action_view_opportunity"
+                            icon="fa-star"
+                            context="{'default_partner_id': active_id}">
+                        <span>Opportunities</span>
+                    </button>
+                </xpath>
                 <xpath expr="//header/field[@name='state']" position="before">
                     <button name="print_bundled_quotation" type="object" string="Print Bundled"
                             class="oe_highlight" invisible="1"/>
