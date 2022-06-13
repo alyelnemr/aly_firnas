@@ -37,7 +37,15 @@ class SaleOrderLine(models.Model):
     parent_order_line = fields.Many2one('sale.order.line', string="Parent Line")
     bundle_status = fields.Char(
         'Bundle_status', compute='line_bundle_status')
-    
+    is_update = fields.Boolean(string="Show Update button",store=True, compute="_compute_is_update")
+
+    @api.depends('bundle_status', 'order_id.order_line', 'product_id')
+    def _compute_is_update(self):
+        for line in self:
+            if line.is_bundle(line):
+                line.is_update = True
+            else:
+                line.is_update = False
 
     def action_unlink(self):
         for line in self:
@@ -47,7 +55,6 @@ class SaleOrderLine(models.Model):
             if related_lines:
                 related_lines.unlink()
             line.unlink()
-
 
     def get_sub_products(self,line_id,view_ids):
        
