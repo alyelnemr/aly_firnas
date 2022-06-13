@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
 
 
 class InheritSales(models.Model):
@@ -8,16 +9,24 @@ class InheritSales(models.Model):
 
     analytic_account_id = fields.Many2one(
         'account.analytic.account', 'Analytic Account',
-        readonly=True, copy=False, check_company=True, required=True,
+        readonly=True, copy=False, check_company=True, required=False,
         states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
         help="The analytic account related to a sales order.")
-    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True, copy=False)
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=False, copy=False)
 
     @api.onchange('analytic_tag_ids')
     def update_analytic_tags(self):
         for line in self.order_line:
             line.analytic_tag_ids = self.analytic_tag_ids.ids
+
+    def action_confirm(self):
+        for line in self:
+            if not line.analytic_tag_ids or not line.analytic_account_id:
+                raise ValidationError(_('You cannot Confirm until adding Analytic Tags and Analytic Accounts.'))
+        res = super(InheritSales, self).action_confirm()
+        return res
+
 
 class InheritSaleLines(models.Model):
     _inherit = 'sale.order.line'
