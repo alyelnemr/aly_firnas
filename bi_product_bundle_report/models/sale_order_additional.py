@@ -7,7 +7,7 @@ class SaleOrderOption(models.Model):
     name = fields.Text('Description', required=False)
     uom_id = fields.Many2one('uom.uom', 'Unit of Measure ', required=False, domain="[('category_id', '=', product_uom_category_id)]")
     is_printed = fields.Boolean(string="Print?", default=True)
-    section = fields.Many2one('sale.order.line.section', string="Section", required=True)
+    section = fields.Many2one('sale.order.line.section', string="Section", required=False)
     price_note = fields.Char("Price Note")
 
 
