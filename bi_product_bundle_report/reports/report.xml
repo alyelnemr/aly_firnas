@@ -257,7 +257,7 @@
                             <table class="table table-sm o_main_table" style="margin: 0 auto;">
                                 <thead>
                                     <tr style="font-family: verdana !important;">
-                                        <th class="text-center" style="font-family: verdana !important; width:400px;font-size: 11px;" colspan="3">
+                                        <th class="text-center" style="font-family: verdana !important; width:500px;font-size: 11px;" colspan="3">
                                             Description</th>
                                         <th class="text-center" style="font-family: verdana !important; width:40px; font-size: 11px;">Qty</th>
                                         <th class="text-right" style="font-family: verdana !important; width:70px; font-size: 11px;">Unit Price</th>
@@ -510,7 +510,7 @@
                                 <table class="table table-sm o_main_table" style="width: 100% !important; font-family: verdana !important;">
                                     <thead>
                                         <tr style="font-family: verdana !important;">
-                                            <th class="text-left" style="font-family: verdana !important; width:5000px !important; font-size: 11px;" colspan="2">Description</th>
+                                            <th class="text-left" style="font-family: verdana !important; width:500px !important; font-size: 11px;" colspan="2">Description</th>
                                             <th class="text-left" style="font-family: verdana !important; width:40px !important; font-size: 11px;">Qty</th>
                                             <th class="text-left" style="font-family: verdana !important; width:70px !important; font-size: 11px; width: 90px;">Price Note</th>
                                             <th t-if="has_option_discount" groups="product.group_discount_per_so_line" class="text-left" style="font-family: verdana !important; width:20px !important; font-size: 11px;">Disc.%
