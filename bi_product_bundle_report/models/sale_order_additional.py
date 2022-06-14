@@ -7,7 +7,7 @@ class SaleOrderOption(models.Model):
     name = fields.Text('Description', required=False)
     uom_id = fields.Many2one('uom.uom', 'Unit of Measure ', required=False, domain="[('category_id', '=', product_uom_category_id)]")
     is_printed = fields.Boolean(string="Print?", default=True)
-    section = fields.Many2one('sale.order.line.section', string="Section", required=False)
+    section = fields.Many2one('sale.order.line.section', string="Section", required=True)
     price_note = fields.Char("Price Note")
 
     def button_add_to_order(self):
@@ -47,7 +47,7 @@ class SaleOrderAdditional(models.Model):
     quantity = fields.Float('Quantity', required=True, digits='Product UoS', default=1)
     sequence = fields.Integer('Sequence', help="Gives the sequence order when displaying a list of optional products.")
     is_printed = fields.Boolean(string="Print?", default=True)
-    section = fields.Many2one('sale.order.line.section', string="Section")
+    section = fields.Many2one('sale.order.line.section', string="Section", required=True)
     price_note = fields.Char("Price Note")
 
 

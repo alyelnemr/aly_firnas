@@ -113,7 +113,7 @@ class SaleOrderTemplateAdditional(models.Model):
     sale_order_template_id = fields.Many2one('sale.order.template', 'Quotation Template Reference', ondelete='cascade',
                                              index=True, required=True)
 
-    section = fields.Many2one('sale.order.line.section', string="Section")
+    section = fields.Many2one('sale.order.line.section', string="Section", required=True)
     company_id = fields.Many2one('res.company', related='sale_order_template_id.company_id', store=True, index=True)
     name = fields.Text('Description', required=True, translate=True)
     product_id = fields.Many2one(
@@ -154,10 +154,10 @@ class SaleOrderTemplateAdditional(models.Model):
 class SaleOrderTemplateOption(models.Model):
     _inherit = "sale.order.template.option"
 
-    section = fields.Many2one('sale.order.line.section', string="Section")
+    section = fields.Many2one('sale.order.line.section', string="Section", required=True)
 
 
 class SaleOrderTemplateLine(models.Model):
     _inherit = "sale.order.template.line"
 
-    section = fields.Many2one('sale.order.line.section', string="Section")
+    section = fields.Many2one('sale.order.line.section', string="Section", required=True)

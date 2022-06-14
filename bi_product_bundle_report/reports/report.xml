@@ -476,7 +476,8 @@
                                                         <t t-esc="line['price_note']" style="font-family: verdana !important;"/>
                                                     </td>
                                                     <td class="text-right" style="font-family: verdana !important;">
-                                                        <span t-esc="line['total_price']/line['qty']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                                        <span t-esc="line['item_price']" style="font-family: verdana !important;"
+                                                              t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                                     </td>
                                                     <td class="text-right" style="font-family: verdana !important;">
                                                         <span t-esc="line['total_price']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
@@ -554,7 +555,8 @@
                                                         <t t-esc="line['disc']" style="font-family: verdana !important;"/>
                                                     </td>
                                                     <td class="text-right" style="font-family: verdana !important;">
-                                                        <span t-esc="line['total_price']/line['qty']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                                        <span t-esc="line['item_price']" style="font-family: verdana !important;"
+                                                              t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                                     </td>
                                                     <td class="text-right" style="font-family: verdana !important;">
                                                         <span t-esc="line['total_price']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>

@@ -8,7 +8,7 @@ class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
     is_printed = fields.Boolean(string="Print?", default=True)
-    section = fields.Many2one('sale.order.line.section', string="Section")
+    section = fields.Many2one('sale.order.line.section', string="Section", required=True)
     item_price = fields.Float(string="Item Price", compute="get_item_price")
     name = fields.Text(string='Description', required=False)
     product_uom = fields.Many2one('uom.uom', string='Unit of Measure', domain="[('category_id', '=', product_uom_category_id)]")
