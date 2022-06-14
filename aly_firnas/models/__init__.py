@@ -10,4 +10,4 @@ from . import account_move
 # from . import ir_mail_server
 from . import res_users
 from . import account_payment
-from . import sale_order_templatesssssssssssssss
+from . import sale_order_template
