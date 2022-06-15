@@ -27,8 +27,10 @@
             <div style="margin-left: 10px; margin-right: 10px; margin-top: 10px; margin-bottom: 10px;
             font-family: Open Sans !important;">
                 <strong style="color:rgb(86, 56, 90);font-weight: bold;">Invoice To (Buyer)</strong>
+                <div t-field="o.company_id.partner_id" style="font-weight: bold;"
+                     t-options='{"widget": "contact", "fields": ["name"], "no_marker": True, "phone_icons": False}'/>
                 <div t-field="o.company_id.partner_id"
-                     t-options='{"widget": "contact", "fields": ["address", "name", "email"], "no_marker": True, "phone_icons": False}'/>
+                     t-options='{"widget": "contact", "fields": ["address", "email"], "no_marker": True, "phone_icons": False}'/>
                 <span t-field="o.company_id.vat"
                       style="font-family: Open Sans !important;"
                       class="text-left"/>
@@ -655,7 +657,7 @@
                          style="margin: 0 auto; padding-top: 0px; padding-left: 0px; height: 100px !important; width: 100%;">
                         <div style="width: 50% !important;" class="col-4 mb4 text-left">
                             <img t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)"
-                                 style="height: 90px !important;" alt="Logo"/>
+                                 style="height: 80px !important;" alt="Logo"/>
                         </div>
                         <div class="col-8 text-right" style="justify-content: center;">
                             <div style="width: 50% !important; padding-right: 4px; padding-top: 35px; display: inline-block !important;">
