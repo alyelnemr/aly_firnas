@@ -47,9 +47,9 @@ class PurchaseReportTemplatePrimary(models.AbstractModel):
             discount += line.discount
         is_discounted = discount > 0
         is_taxed = docs.amount_tax > 0
-        rep_vendor_name = docs.partner_id.name if docs.partner_id else ''
-        rep_payment_term = docs.payment_term_id.name if docs.payment_term_id else ''
-        rep_partner_ref = docs.partner_ref if docs.partner_ref else ''
+        rep_vendor_name = docs.partner_id.name if docs.partner_id else ' '
+        rep_payment_term = docs.payment_term_id.name if docs.payment_term_id else ' '
+        rep_partner_ref = docs.partner_ref if docs.partner_ref else ' '
         order_date = docs.date_order.date() if docs.date_order else False
         receipt_date = docs.date_planned.date() if docs.date_planned else False
         docs.po_scope_schedule = docs.po_scope_schedule.replace('</p><p>', '<br />') if docs.po_scope_schedule else False
