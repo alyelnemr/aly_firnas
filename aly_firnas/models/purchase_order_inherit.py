@@ -1,4 +1,5 @@
 from odoo import api, fields, models, _
+from datetime import datetime
 
 
 class PurchaseOrder(models.Model):
@@ -9,7 +10,10 @@ class PurchaseOrder(models.Model):
         project_name = self.analytic_account_id.name[0:10]
         po_name = self.name
         report_type_string = ' PO' if report_type == 'po' else ' RFQ'
-        file_name = project_name + '- ' + po_name + ' - ' + self.company_id.name + report_type_string
+        report_number = '2700' if report_type == 'po' else '2500'
+        current_time = time = datetime.now()
+        current_time_str = time.strftime("%y%m%d")
+        file_name = project_name + '- ' + report_number + '-00- ' + po_name + '_' + current_time_str
         return file_name
 
     def _get_default_po_scope_schedule(self):
