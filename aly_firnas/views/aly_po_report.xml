@@ -127,7 +127,7 @@
                                     <div>
                                         <p style="font-size: 15px !important; font-family: verdana !important;">
                                             <t t-if="o.po_scope_schedule">
-                                                <t t-raw="o.po_scope_schedule.replace('[$vendor_name$]', o.partner_id.name).replace('[$payment_terms$]', o.payment_term_id.name).replace('[$vendor_reference$]', o.partner_ref)"
+                                                <t t-raw="o.po_scope_schedule.replace('[$vendor_name$]', rep_vendor_name).replace('[$payment_terms$]', rep_payment_term).replace('[$vendor_reference$]', rep_partner_ref)"
                                                    style="font-family: verdana !important; font-size: 15px !important;"/>
                                             </t>
                                         </p>
@@ -145,7 +145,7 @@
                                     <div>
                                         <p style="font-size: 15px !important; font-family: verdana !important;">
                                             <t t-if="o.po_payment_schedule">
-                                                <t t-raw="o.po_payment_schedule.replace('[$vendor_name$]', o.partner_id.name).replace('[$payment_terms$]', o.payment_term_id.name).replace('[$vendor_reference$]', o.partner_ref)"
+                                                <t t-raw="o.po_payment_schedule.replace('[$vendor_name$]', rep_vendor_name).replace('[$payment_terms$]', rep_payment_term).replace('[$vendor_reference$]', rep_partner_ref)"
                                                    style="font-family: verdana !important; font-size: 15px !important;"/>
                                             </t>
                                         </p>
@@ -162,7 +162,7 @@
                                     </div>
                                     <div>
                                         <p style="font-size: 15px !important; font-family: verdana !important;">
-                                            <t t-raw="o.po_acceptance.replace('[$vendor_name$]', o.partner_id.name).replace('[$payment_terms$]', o.payment_term_id.name).replace('[$vendor_reference$]', o.partner_ref)"
+                                            <t t-raw="o.po_acceptance.replace('[$vendor_name$]', rep_vendor_name).replace('[$payment_terms$]', rep_payment_term).replace('[$vendor_reference$]', rep_partner_ref)"
                                                style="font-family: verdana !important; font-size: 15px !important;"/>
                                         </p>
                                     </div>
@@ -536,7 +536,7 @@
                                     <div>
                                         <p style="font-size: 15px !important; font-family: verdana !important;">
                                             <t t-if="o.po_scope_schedule">
-                                                <t t-raw="o.po_scope_schedule.replace('[$vendor_name$]', o.partner_id.name).replace('[$payment_terms$]', o.payment_term_id.name).replace('[$vendor_reference$]', o.partner_ref)"
+                                                <t t-raw="o.po_scope_schedule.replace('[$vendor_name$]', rep_vendor_name).replace('[$payment_terms$]', rep_payment_term).replace('[$vendor_reference$]', rep_partner_ref)"
                                                    style="font-family: verdana !important; font-size: 15px !important;"/>
                                             </t>
                                         </p>
@@ -554,7 +554,7 @@
                                     <div>
                                         <p style="font-size: 15px !important; font-family: verdana !important;">
                                             <t t-if="o.po_payment_schedule">
-                                                <t t-raw="o.po_payment_schedule.replace('[$vendor_name$]', o.partner_id.name).replace('[$payment_terms$]', o.payment_term_id.name).replace('[$vendor_reference$]', o.partner_ref)"
+                                                <t t-raw="o.po_payment_schedule.replace('[$vendor_name$]', rep_vendor_name).replace('[$payment_terms$]', rep_payment_term).replace('[$vendor_reference$]', rep_partner_ref)"
                                                    style="font-family: verdana !important; font-size: 15px !important;"/>
                                             </t>
                                         </p>
@@ -571,7 +571,7 @@
                                     </div>
                                     <div>
                                         <p style="font-size: 15px !important; font-family: verdana !important;">
-                                            <t t-raw="o.po_acceptance.replace('[$vendor_name$]', o.partner_id.name).replace('[$payment_terms$]', o.payment_term_id.name).replace('[$vendor_reference$]', o.partner_ref)"
+                                            <t t-raw="o.po_acceptance.replace('[$vendor_name$]', rep_vendor_name).replace('[$payment_terms$]', rep_payment_term).replace('[$vendor_reference$]', rep_partner_ref)"
                                                style="font-family: verdana !important; font-size: 15px !important;"/>
                                         </p>
                                     </div>
@@ -649,6 +649,8 @@
                         </div>
                     </div>
                     <br />
+                </div>
+                <t t-call="web.internal_layout">
                     <div style="margin-left: 10px; margin-right: 10px; margin-top: 0px; margin-bottom: 10px;
             font-family: Open Sans !important;">
                         <div>
@@ -658,8 +660,6 @@
                             </h4>
                         </div>
                     </div>
-                </div>
-                <t t-call="web.internal_layout">
                     <t t-call="aly_firnas.aly_rfq_template"
                        t-lang="o.partner_id.lang"/>
                     <div class="footer">
