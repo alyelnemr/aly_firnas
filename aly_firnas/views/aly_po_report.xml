@@ -30,6 +30,9 @@
                 <div t-field="o.company_id.partner_id"
                      t-options='{"widget": "contact", "fields": ["address", "name", "email"], "no_marker": True, "phone_icons": False}'/>
                 <br/>
+                <span t-field="o.company_id.vat"
+                      style="font-family: Open Sans !important;"
+                      class="text-left"/>
             </div>
             <table style="width:50%;border: 0px;margin-left: 10px;">
                 <t t-if="o.user_id.name">
