@@ -638,7 +638,7 @@
                     <div class="row"
                          style="margin: 0 auto; padding-top: 0px; padding-left: 0px; height: 100px !important; width: 100%;">
                         <div style="width: 50% !important;" class="col-4 mb4 text-left">
-                            <img src="/aly_firnas/static/src/img/firnas_logo_full.jpg"
+                            <img t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)"
                                  style="height: 90px !important;" alt="Logo"/>
                         </div>
                         <div class="col-8 text-right" style="justify-content: center;">
