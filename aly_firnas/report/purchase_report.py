@@ -47,14 +47,15 @@ class PurchaseReportTemplatePrimary(models.AbstractModel):
             discount += line.discount
         is_discounted = discount > 0
         is_taxed = docs.amount_tax > 0
-        rep_vendor_name = docs.partner_id.name if docs.partner_id else ' '
-        rep_payment_term = docs.payment_term_id.name if docs.payment_term_id else ' '
-        rep_partner_ref = docs.partner_ref if docs.partner_ref else ' '
+        rep_vendor_name = docs.partner_id.name if docs.partner_id else ''
+        rep_payment_term = docs.payment_term_id.name if docs.payment_term_id else ''
+        rep_partner_ref = docs.partner_ref if docs.partner_ref else ''
         order_date = docs.date_order.date() if docs.date_order else False
         receipt_date = docs.date_planned.date() if docs.date_planned else False
         docs.po_scope_schedule = docs.po_scope_schedule.replace('</p><p>', '<br />') if docs.po_scope_schedule else False
         docs.po_payment_schedule = docs.po_payment_schedule.replace('</p><p>', '<br />') if docs.po_payment_schedule else False
         docs.po_acceptance = docs.po_acceptance.replace('</p><p>', '<br />') if docs.po_acceptance else False
+        is_print_page_break = docs.is_print_scope_schedule or docs.is_print_payment_schedule or docs.is_print_acceptance
         return {
             'data': data,
             'doc_ids': docids,
@@ -67,5 +68,6 @@ class PurchaseReportTemplatePrimary(models.AbstractModel):
             'rep_vendor_name': rep_vendor_name,
             'rep_payment_term': rep_payment_term,
             'rep_partner_ref': rep_partner_ref,
+            'is_print_page_break': is_print_page_break,
             'report_title': 'Purchase Order'
         }
