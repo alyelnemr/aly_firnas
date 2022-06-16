@@ -13,9 +13,6 @@ class SaleOrderLine(models.Model):
     name = fields.Text(string='Description', required=False)
     product_uom = fields.Many2one('uom.uom', string='Unit of Measure', domain="[('category_id', '=', product_uom_category_id)]")
 
-    def button_add_to_order(self):
-        self.add_option_to_order()
-
     def _get_values_to_add_to_order(self):
         self.ensure_one()
         return {

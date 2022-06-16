@@ -92,6 +92,9 @@ class SaleOrder(models.Model):
                         'qty': int(ol.quantity),
                         'total_price': ol.quantity * ol.price_unit,
                         'price_note': ol.price_note,
+                        'tax_id': ol.tax_id,
+                        'item_price': ol.item_price,
+                        'discount': ol.discount,
                         'disc': str(ol.discount) + '%'
                     } for ol in
                     order_lines.filtered(lambda l: l.section.id == section.id)
@@ -121,6 +124,9 @@ class SaleOrder(models.Model):
                         'qty': int(ol.quantity),
                         'total_price': ol.quantity * ol.price_unit,
                         'price_note': ol.price_note,
+                        'tax_id': ol.tax_id,
+                        'item_price': ol.item_price,
+                        'discount': ol.discount,
                         'disc': str(ol.discount) + '%'
                     } for ol in
                     order_lines.filtered(lambda l: l.section.id == section.id)
@@ -160,4 +166,3 @@ class SaleOrder(models.Model):
                 fmt(l[1]['amount']), fmt(l[1]['base']),
                 len(res),
             ) for l in res]
-
