@@ -9,6 +9,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/aly_po_report.xml',
+        'views/aly_rfq_report.xml',
         'views/product.xml',
         'views/account_bank_statement.xml',
         'views/account_move.xml',
