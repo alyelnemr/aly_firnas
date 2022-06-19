@@ -97,10 +97,6 @@ class SaleOrder(models.Model):
                 data.update({
                     'price_unit': price,
                     'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
-                    'product_uom_qty': line.product_uom_qty,
-                    'product_id': line.product_id.id,
-                    'product_uom': line.product_uom_id.id,
-                    'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                 })
             option_lines.append((0, 0, data))
         self.sale_order_option_ids = option_lines
@@ -122,10 +118,6 @@ class SaleOrder(models.Model):
                 data.update({
                     'price_unit': price,
                     'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
-                    'product_uom_qty': line.product_uom_qty,
-                    'product_id': line.product_id.id,
-                    'product_uom': line.product_uom_id.id,
-                    'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                 })
             additional_lines.append((0, 0, data))
         self.sale_order_additional_ids = additional_lines
