@@ -60,7 +60,7 @@
         </template>
 
         <template id="external_layout_standard_new" inherit_id="web.external_layout_standard" primary="True">
-            <xpath expr="//div[@class='header o_company_#{company.id}_layout']" position="replace">
+            <xpath expr="//div[@class='header']" position="replace">
 
                 <div t-attf-class="header" style="height: 100px !important; z-index:0 !important;">
                     <div class="row" style="margin: 0 auto; padding-top: 10px; height: 100px !important; width: 90%;">
@@ -642,43 +642,43 @@
 
         <template id="report_bundled_saleorder">
             <t t-call="web.html_container">
-                <div t-attf-class="header" style="height: 100px !important; z-index:0 !important;">
-                    <div class="row" style="margin: 0 auto; padding-top: 10px; height: 100px !important; width: 90%;">
-                        <div class="col-4 mb4 text-left">
-                            <img src="/bi_product_bundle_report/static/src/img/firnas_logo_full.jpg"
-                                 style="height: 90px !important;" alt="Logo"/>
-                        </div>
-                        <div class="col-8 text-right" style="justify-content: center; padding: 15px 0px 15px 0px !important;">
-                            <div style="width: 90% !important; border-right: 1px solid black; padding-right: 4px; display: inline-block !important;">
-                                <span style="font-family: verdana !important; font-size: 15px;" t-esc="doc.project_name"/>
-                                <br/>
-                                <span style="font-family: verdana !important; font-size: 15px;" t-esc="doc.document_name"/>
+                <t t-foreach="docs" t-as="doc">
+                    <div t-attf-class="header" style="height: 100px !important; z-index:0 !important;">
+                        <div class="row" style="margin: 0 auto; padding-top: 10px; height: 100px !important; width: 90%;">
+                            <div class="col-4 mb4 text-left">
+                                <img src="/bi_product_bundle_report/static/src/img/firnas_logo_full.jpg"
+                                     style="height: 90px !important;" alt="Logo"/>
                             </div>
-                            <div class="page_number d-inline-block"
-                                 style="width: 6% !important; height: 100px !important; vertical-align:top;">
-                                <div style="font-family: verdana !important; font-size: 15px !important;">
-                                    4-
-                                    <span class="page"
-                                          style="padding-right: 5px !important; font-family: verdana !important; font-size: 15px !important; margin-left: -1px;"/>
+                            <div class="col-8 text-right" style="justify-content: center; padding: 15px 0px 15px 0px !important;">
+                                <div style="width: 90% !important; border-right: 1px solid black; padding-right: 4px; display: inline-block !important;">
+                                    <span style="font-family: verdana !important; font-size: 15px;" t-esc="doc.project_name"/>
+                                    <br/>
+                                    <span style="font-family: verdana !important; font-size: 15px;" t-esc="doc.document_name"/>
+                                </div>
+                                <div class="page_number d-inline-block"
+                                     style="width: 6% !important; height: 100px !important; vertical-align:top;">
+                                    <div style="font-family: verdana !important; font-size: 15px !important;">
+                                        4-
+                                        <span class="page"
+                                              style="padding-right: 5px !important; font-family: verdana !important; font-size: 15px !important; margin-left: -1px;"/>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <t t-foreach="docs" t-as="doc">
                     <t t-call="bi_product_bundle_report.report_bundled_saleorder_document" t-lang="doc.partner_id.lang"/>
-                </t>
-                <div t-attf-class="footer">
+                    <div t-attf-class="footer">
 
-                    <div class="row" style="width: 100% !important; margin: auto auto; padding-top: 35px;">
-                        <br/>
-                        <div class="text-left" style="width: 100%;">
-                            <h5 style="font-family: verdana !important; font-size: 15px;color:rgb(166, 166, 166);">
-                                <t t-esc="doc.file_name"/>
-                            </h5>
+                        <div class="row" style="width: 100% !important; margin: auto auto; padding-top: 35px;">
+                            <br/>
+                            <div class="text-left" style="width: 100%;">
+                                <h5 style="font-family: verdana !important; font-size: 15px;color:rgb(166, 166, 166);">
+                                    <t t-esc="doc.file_name"/>
+                                </h5>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </t>
             </t>
         </template>
 
