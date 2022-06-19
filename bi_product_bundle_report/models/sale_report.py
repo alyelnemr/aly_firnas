@@ -35,6 +35,6 @@ class SalesOrderReport(models.AbstractModel):
             'is_discounted': is_discounted,
             'is_taxed': is_taxed,
             'is_additional_exists': is_additional_exists,
-            'is_opional_exists': is_optional_exists,
+            'is_optional_exists': is_optional_exists,
             'report_title': 'Purchase Order'
         }
