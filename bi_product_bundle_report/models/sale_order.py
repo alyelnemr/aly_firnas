@@ -96,7 +96,7 @@ class SaleOrder(models.Model):
                         'discount': ol.discount,
                         'disc': str(ol.discount) + '%'
                     } for ol in
-                    order_lines.filtered(lambda l: l.section.id == section.id)
+                    order_lines.filtered(lambda l: l.section.id == section.id and not l.is_button_clicked)
                 ]
             }
         return data
@@ -127,7 +127,7 @@ class SaleOrder(models.Model):
                         'discount': ol.discount,
                         'disc': str(ol.discount) + '%'
                     } for ol in
-                    order_lines.filtered(lambda l: l.section.id == section.id and l.is_present == False)
+                    order_lines.filtered(lambda l: l.section.id == section.id and not l.is_button_clicked)
                 ]
             }
         return data
