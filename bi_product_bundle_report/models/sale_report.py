@@ -19,6 +19,8 @@ class SalesOrderReport(models.AbstractModel):
             discount += line.discount
         is_discounted = discount > 0
         is_taxed = docs.amount_tax > 0
+        is_additional_exists = any(docs.sale_order_additional_ids.filtered(lambda o: not o.is_button_clicked))
+        is_optional_exists = any(docs.sale_order_option_ids.filtered(lambda o: not o.is_button_clicked))
         col_span = 4
         if is_taxed or is_discounted:
             col_span = 5
@@ -32,5 +34,7 @@ class SalesOrderReport(models.AbstractModel):
             'col_span': col_span,
             'is_discounted': is_discounted,
             'is_taxed': is_taxed,
+            'is_additional_exists': is_additional_exists,
+            'is_opional_exists': is_optional_exists,
             'report_title': 'Purchase Order'
         }
