@@ -110,11 +110,6 @@ class SaleOrderLine(models.Model):
             res['account_id'] = False
         return res
 
-    @api.depends('price_unit')
-    def _compute_item_price(self):
-        for line in self:
-            line.item_price = line.price_unit
-
     @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id')
     def _compute_amount(self):
         """
