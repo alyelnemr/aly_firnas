@@ -664,7 +664,9 @@
                             </div>
                         </div>
                     </div>
-                    <t t-call="bi_product_bundle_report.report_bundled_saleorder_document" t-lang="doc.partner_id.lang"/>
+                    <t t-call="web.internal_layout">
+                        <t t-call="bi_product_bundle_report.report_bundled_saleorder_document" t-lang="doc.partner_id.lang"/>
+                    </t>
                     <div t-attf-class="footer">
 
                         <div class="row" style="width: 100% !important; margin: auto auto; padding-top: 35px;">
