@@ -92,6 +92,7 @@ class SaleOrder(models.Model):
                         'qty': int(ol.quantity),
                         'total_price': ol.quantity * ol.price_unit,
                         'price_note': ol.price_note,
+                        'price_unit': ol.price_unit,
                         'discount': ol.discount,
                         'disc': str(ol.discount) + '%'
                     } for ol in
@@ -122,6 +123,7 @@ class SaleOrder(models.Model):
                         'qty': int(ol.quantity),
                         'total_price': ol.quantity * ol.price_unit,
                         'price_note': ol.price_note,
+                        'price_unit': ol.price_unit,
                         'discount': ol.discount,
                         'disc': str(ol.discount) + '%'
                     } for ol in
