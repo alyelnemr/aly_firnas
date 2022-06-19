@@ -11,3 +11,5 @@ from . import account_move
 from . import res_users
 from . import account_payment
 from . import sale_order_template
+from . import sale_order
+
