@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <data noupdate="0">
 
         <template id="sale_management.report_saleorder_document_inherit_sale_management"
                   inherit_id="sale.report_saleorder_document">
