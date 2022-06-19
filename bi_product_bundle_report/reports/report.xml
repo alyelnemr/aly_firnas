@@ -60,7 +60,7 @@
         </template>
 
         <template id="external_layout_standard_new" inherit_id="web.external_layout_standard" primary="True">
-            <xpath expr="//div[@class='header']" position="replace">
+            <xpath expr="//div[@class='header o_company_#{company.id}_layout']" position="replace">
 
                 <div t-attf-class="header" style="height: 100px !important; z-index:0 !important;">
                     <div class="row" style="margin: 0 auto; padding-top: 10px; height: 100px !important; width: 90%;">
@@ -131,6 +131,9 @@
         </template>
 
 
+    </data>
+    <data>
+
         <template id="sub_line_sub__sub_bundle_template">
             <t t-foreach="sub_line_1['sub_lines']" t-as="sub_line_2">
                 <tr style="font-size:10px !important; font-family: verdana !important;">
@@ -192,8 +195,6 @@
                 <t t-call="bi_product_bundle_report.sub_line_sub__sub_bundle_template"/>
             </t>
         </template>
-    </data>
-    <data>
         <template id="sub_line_template">
 
             <tr style="font-size:10px !important; font-family: verdana !important; width: 30px !important;">
@@ -476,6 +477,10 @@
                                                         <t t-esc="line['price_note']" style="font-family: verdana !important;"/>
                                                     </td>
                                                     <td class="text-right" style="font-family: verdana !important;">
+                                                        <span t-esc="line['item_price']" style="font-family: verdana !important;"
+                                                              t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                                    </td>
+                                                    <td class="text-right" style="font-family: verdana !important;">
                                                         <span t-esc="line['total_price']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                                     </td>
                                                 </tr>
@@ -549,6 +554,10 @@
                                                     </td>
                                                     <td t-if="has_option_discount" style="font-family: verdana !important;" groups="product.group_discount_per_so_line" class="text-center">
                                                         <t t-esc="line['disc']" style="font-family: verdana !important;"/>
+                                                    </td>
+                                                    <td class="text-right" style="font-family: verdana !important;">
+                                                        <span t-esc="line['item_price']" style="font-family: verdana !important;"
+                                                              t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                                     </td>
                                                     <td class="text-right" style="font-family: verdana !important;">
                                                         <span t-esc="line['total_price']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
