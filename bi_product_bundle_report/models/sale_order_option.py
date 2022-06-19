@@ -12,7 +12,8 @@ class SaleOrderOption(models.Model):
     price_note = fields.Char("Price Note")
     is_present = fields.Boolean(string="Present on Quotation",
                                 help="This field will be checked if the option line's product is "
-                                     "already present in the quotation.", default=False)
+                                     "already present in the quotation.",
+                                compute="_compute_is_present", search="_search_is_present")
     is_button_clicked = fields.Boolean(default=False)
 
     @api.depends('line_id', 'order_id.order_line', 'product_id')

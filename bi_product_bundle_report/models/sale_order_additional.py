@@ -8,8 +8,9 @@ class SaleOrderAdditional(models.Model):
     _order = 'sequence, id'
 
     is_present = fields.Boolean(string="Present on Quotation",
-                           help="This field will be checked if the additional line's product is "
-                                "already present in the quotation.", default=False)
+                                help="This field will be checked if the option line's product is "
+                                     "already present in the quotation.",
+                                compute="_compute_is_present", search="_search_is_present")
     order_id = fields.Many2one('sale.order', 'Sales Order Reference', ondelete='cascade', index=True)
     line_id = fields.Many2one('sale.order.line', ondelete="set null", copy=False)
     name = fields.Text('Description', required=False)
