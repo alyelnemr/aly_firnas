@@ -83,20 +83,20 @@ class SaleOrder(models.Model):
         option_lines = [(5, 0, 0)]
         for option in template.sale_order_template_option_ids:
             data = self._compute_option_data_for_template_change(option)
-            if line.product_id:
+            if option.product_id:
                 discount = 0
                 if self.pricelist_id:
-                    price = self.pricelist_id.with_context(uom=line.product_uom_id.id).get_product_price(line.product_id, 1,
+                    price = self.pricelist_id.with_context(uom=option.product_uom_id.id).get_product_price(line.product_id, 1,
                                                                                                          False)
                     # get price from price list only if no price list get from template line price
                     if not price:
-                        price = line.price_unit
+                        price = option.price_unit
                 else:
-                    price = line.price_unit
+                    price = option.price_unit
 
                 data.update({
                     'price_unit': price,
-                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                    'discount': 100 - ((100 - discount) * (100 - option.discount) / 100),
                 })
             option_lines.append((0, 0, data))
         self.sale_order_option_ids = option_lines
@@ -104,20 +104,20 @@ class SaleOrder(models.Model):
         additional_lines = [(5, 0, 0)]
         for option in template.sale_order_template_additional_ids:
             data = self._compute_option_data_for_template_change(option)
-            if line.product_id:
+            if option.product_id:
                 discount = 0
                 if self.pricelist_id:
-                    price = self.pricelist_id.with_context(uom=line.product_uom_id.id).get_product_price(line.product_id, 1,
-                                                                                                         False)
+                    price = self.pricelist_id.with_context(uom=option.product_uom_id.id).get_product_price(line.product_id, 1,
+                                                                                                           False)
                     # get price from price list only if no price list get from template line price
                     if not price:
-                        price = line.price_unit
+                        price = option.price_unit
                 else:
-                    price = line.price_unit
+                    price = option.price_unit
 
                 data.update({
                     'price_unit': price,
-                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                    'discount': 100 - ((100 - discount) * (100 - option.discount) / 100),
                 })
             additional_lines.append((0, 0, data))
         self.sale_order_additional_ids = additional_lines
