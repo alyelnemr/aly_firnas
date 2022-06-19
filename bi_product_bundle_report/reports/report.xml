@@ -229,92 +229,238 @@
 
         </template>
         <template id="report_bundled_saleorder_document">
-            <t t-call="bi_product_bundle_report.external_layout_new">
-                <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)"/>
-                <div class="page" style="z-index:1000 !important;">
-                    <div class="oe_structure"/>
-                    <t t-set="display_discount" t-value="0"/>
+            <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)"/>
+            <div class="page" style="z-index:1000 !important;">
+                <div class="oe_structure"/>
+                <t t-set="display_discount" t-value="0"/>
 
-                    <!-- Financial Proposal 4 -->
-                    <div class="row" style="width: 83% !important; margin: 0 auto; padding-top: 0px;">
-                        <div class="text-left" style="display: flex; align-items: center; justify-content: center;">
-                            <div>
-                                <h4 style="color:rgb(86, 56, 90); font-size: 22px !important; font-weight: bold; font-family: verdana !important;">
-                                    4 Financial Proposal
-                                </h4>
-                            </div>
+                <!-- Financial Proposal 4 -->
+                <div class="row" style="width: 83% !important; margin: 0 auto; padding-top: 0px;">
+                    <div class="text-left" style="display: flex; align-items: center; justify-content: center;">
+                        <div>
+                            <h4 style="color:rgb(86, 56, 90); font-size: 22px !important; font-weight: bold; font-family: verdana !important;">
+                                4 Financial Proposal
+                            </h4>
                         </div>
                     </div>
-                    <br/>
+                </div>
+                <br/>
 
-                    <!-- Proposed Prices 4.1 -->
-                    <div class="row" style="width: 83% !important; margin: 0 auto; padding-top: 0px; padding-bottom: 15px !important;">
-                        <div class="text-left" style="display: flex; align-items: center; justify-content: center;">
+                <!-- Proposed Prices 4.1 -->
+                <div class="row" style="width: 83% !important; margin: 0 auto; padding-top: 0px; padding-bottom: 15px !important;">
+                    <div class="text-left" style="display: flex; align-items: center; justify-content: center;">
+                        <div>
+                            <h5 style="color:rgb(86, 56, 90); font-size: 17px !important; font-weight: bold; font-family: verdana !important;">
+                                4.1 Proposed Prices
+                            </h5>
+                        </div>
+                        <table class="table table-sm o_main_table" style="margin: 0 auto;">
+                            <thead>
+                                <tr style="font-family: verdana !important;">
+                                    <th class="text-center" style="font-family: verdana !important; width:500px;font-size: 11px;" colspan="3">
+                                        Description</th>
+                                    <th class="text-center" style="font-family: verdana !important; width:40px; font-size: 11px;">Qty</th>
+                                    <th class="text-right" style="font-family: verdana !important; width:70px; font-size: 11px;">Unit Price</th>
+                                    <t t-if="is_taxed">
+                                        <th class="text-center"
+                                            style="font-family: verdana !important; width:70px; font-size: 11px;">
+                                            Taxes
+                                        </th>
+                                    </t>
+                                    <t t-if="is_discounted">
+                                        <th class="text-center"
+                                            style="font-family: verdana !important; width:70px; font-size: 11px;">
+                                            Discount
+                                        </th>
+                                    </t>
+                                    <th class="text-right" style="font-family: verdana !important; width:70px; font-size: 11px;">Total Price</th>
+                                </tr>
+                            </thead>
+                            <!-- sections and products -->
+                            <tbody class="sale_tbody">
+                                <t t-set="sections" t-value="doc.print_bundled_quotation()"/>
+                                <t t-set="bundle_index" t-value="1"/>
+                                <t t-foreach="sections" t-as="section">
+                                    <tr t-att-class="'bg-200 font-weight-bold o_line_section'" style="font-size:10px !important; font-family: verdana !important;">
+                                        <td class="text-left" style="width: 30px !important; font-family: verdana !important;">
+                                            <t t-esc="bundle_index"/>
+.
+                                        </td>
+                                        <t t-if="col_span == 5">
+                                            <td class="text-left" colspan="5" style="font-family: verdana !important;">
+                                                <t t-esc="sections[section]['name']"
+                                                   style="font-family: verdana !important;"/>
+                                            </td>
+                                        </t>
+                                        <t t-if="col_span == 6">
+                                            <td class="text-left" colspan="6" style="font-family: verdana !important;">
+                                                <t t-esc="sections[section]['name']"
+                                                   style="font-family: verdana !important;"/>
+                                            </td>
+                                        </t>
+                                        <t t-if="col_span == 4">
+                                            <td class="text-left" colspan="4" style="font-family: verdana !important;">
+                                                <t t-esc="sections[section]['name']"
+                                                   style="font-family: verdana !important;"/>
+                                            </td>
+                                        </t>
+                                        <td class="text-right">
+                                            <span t-esc="sections[section]['total_price']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                    <t t-set="bundle_sub_index" t-value="1"/>
+                                    <t t-foreach="sections[section]['lines']" t-as="line">
+                                        <tr t-att-class="'font-weight-bold'" style="font-size:10px !important; font-family: verdana !important;">
+                                            <td class="text-right" colspan="2" style="width: 30px !important;">
+                                                <t t-esc="bundle_index" style="font-family: verdana !important;"/>
+.
+                                                <t t-esc="bundle_sub_index" style="font-family: verdana !important;"/>
+                                            </td>
+                                            <td class="text-left" style="padding-left: 15px; font-family: verdana !important;">
+                                                <t t-raw="line['desc']" style="font-family: verdana !important;"/>
+                                            </td>
+                                            <td class="text-center" style="font-family: verdana !important;">
+                                                <t t-esc="line['qty']" style="font-family: verdana !important;"/>
+                                            </td>
+                                            <td class="text-right" style="font-family: verdana !important;">
+                                                <span t-esc="line['item_price']" style="font-family: verdana !important;"
+                                                      t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                            </td>
+                                            <t t-if="is_taxed">
+                                                <td class="text-center" style="font-family: verdana !important;">
+                                                    <span t-esc="', '.join(map(lambda x: (x.description or x.name), line['tax_id']))"/>
+                                                </td>
+                                            </t>
+                                            <t t-if="is_discounted">
+                                                <td class="text-center" style="font-family: verdana !important;">
+                                                    <span t-esc="line['discount']" style="font-family: verdana !important;"/>
+                                                </td>
+                                            </t>
+                                            <td class="text-right" style="font-family: verdana !important;">
+                                                <span t-esc="line['total_price']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                        <t t-set="bundle_sub_index" t-value="bundle_sub_index+1"/>
+
+                                        <t t-foreach="line['sub_lines']" t-as="sub_line">
+                                            <t t-call="bi_product_bundle_report.sub_line_template"/>
+                                        </t>
+                                    </t>
+                                    <t t-set="bundle_index" t-value="bundle_index + 1"/>
+                                </t>
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+
+
+
+                <div class="clearfix" name="so_total_summary" style="padding-right: 8% !important;">
+                    <div id="total" class="row" name="total">
+                        <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
+                            <table class="table table-sm">
+                                <tr class="border-black o_subtotal" style="font-family: verdana !important; font-size: 11px !important;">
+                                    <td name="td_amount_untaxed_label" style="font-family: verdana !important;">
+                                        <strong style="font-family: verdana !important;">Subtotal</strong>
+                                    </td>
+                                    <td name="td_amount_untaxed" style="font-family: verdana !important;" class="text-right">
+                                        <span t-field="doc.amount_untaxed" style="font-family: verdana !important;"/>
+                                    </td>
+                                </tr>
+                                <t t-foreach="doc.amount_by_group" t-as="amount_by_group">
+                                    <tr style="font-family: verdana !important; font-size: 11px !important;">
+                                        <t t-if="amount_by_group[3] == 1 and doc.amount_untaxed == amount_by_group[2]">
+                                            <td name="td_amount_by_group_label_3" style="font-family: verdana !important;">
+                                                <span t-esc="amount_by_group[0]"/>
+                                                <span style="font-family: verdana !important;">&amp;nbsp;<span>on</span>&amp;nbsp;
+                                                    <t t-esc="amount_by_group[2]" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                                </span>
+                                            </td>
+                                            <td name="td_amount_by_group_3" style="font-family: verdana !important;" class="text-right o_price_total">
+                                                <span t-esc="amount_by_group[1]" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                            </td>
+                                        </t>
+                                        <t t-else="">
+                                            <td name="td_amount_by_group_label" style="font-family: verdana !important;">
+                                                <span t-esc="amount_by_group[0]" style="font-family: verdana !important;"/>
+                                            </td>
+                                            <td name="td_amount_by_group" class="text-right o_price_total" style="font-family: verdana !important;">
+                                                <span t-esc="amount_by_group[1]" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                            </td>
+                                        </t>
+                                    </tr>
+                                </t>
+                                <tr style="font-family: verdana !important; font-size: 11px !important;" t-if="env['res.config.settings'].sudo().get_values()['ks_enable_discount'] and doc.ks_amount_discount > 0">
+                                    <td name="global_discount_amount_label" style="font-family: verdana !important;">
+                                        <strong style="font-family: verdana !important;">Global Discount</strong>
+                                    </td>
+                                    <td name="global_discount_amount" style="font-family: verdana !important;" class="text-right">
+                                        <span t-field="doc.ks_amount_discount" style="font-family: verdana !important;"/>
+                                    </td>
+                                </tr>
+                                <tr class="border-black o_total" style="font-family: verdana !important; font-size: 11px !important;">
+                                    <td name="td_amount_total_label" style="font-family: verdana !important;">
+                                        <strong style="font-family: verdana !important;">Total</strong>
+                                    </td>
+                                    <td name="td_amount_total" class="text-right" style="font-family: verdana !important;">
+                                        <span style="font-family: verdana !important;" t-field="doc.amount_total"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <br/>
+                <t t-set="header_index" t-value="2"/>
+
+                <p t-if="doc.split_page" style="page-break-after:always;"/>
+
+                <!-- Additional Products 4.2 -->
+                <t t-if="doc.sale_order_additional_ids">
+                    <div class="row" style="width: 83% !important; margin: 0 auto; padding-top: 0px; font-family: verdana !important;">
+                        <div class="text-left" style="display: flex; align-items: center; justify-content: center; font-family: verdana !important;">
                             <div>
                                 <h5 style="color:rgb(86, 56, 90); font-size: 17px !important; font-weight: bold; font-family: verdana !important;">
-                                    4.1 Proposed Prices
+                                    4.<t t-esc="header_index"/>
+                                    Additional Services Fees
                                 </h5>
                             </div>
-                            <table class="table table-sm o_main_table" style="margin: 0 auto;">
+                            <t t-set="has_additional_discount" t-value="any(doc.sale_order_additional_ids.filtered(lambda o: o.discount != 0.0))"/>
+                            <table class="table table-sm o_main_table" style="margin: 0 auto; font-family: verdana !important;">
                                 <thead>
                                     <tr style="font-family: verdana !important;">
-                                        <th class="text-center" style="font-family: verdana !important; width:500px;font-size: 11px;" colspan="3">
-                                            Description</th>
-                                        <th class="text-center" style="font-family: verdana !important; width:40px; font-size: 11px;">Qty</th>
-                                        <th class="text-right" style="font-family: verdana !important; width:70px; font-size: 11px;">Unit Price</th>
-                                        <t t-if="is_taxed">
-                                            <th class="text-center"
-                                                style="font-family: verdana !important; width:70px; font-size: 11px;">
-                                                Taxes
-                                            </th>
-                                        </t>
-                                        <t t-if="is_discounted">
-                                            <th class="text-center"
-                                                style="font-family: verdana !important; width:70px; font-size: 11px;">
-                                                Discount
-                                            </th>
-                                        </t>
-                                        <th class="text-right" style="font-family: verdana !important; width:70px; font-size: 11px;">Total Price</th>
+                                        <th class="text-left" style="font-family: verdana !important; width:500px !important; font-size: 11px;" colspan="2">Description</th>
+                                        <th class="text-left" style="font-family: verdana !important; width:40px !important; font-size: 11px;">Qty</th>
+                                        <th class="text-left" style="font-family: verdana !important; width:70px !important; font-size: 11px; width: 90px;">Price Note</th>
+                                        <th t-if="has_option_discount" groups="product.group_discount_per_so_line" class="text-left" style="width:20px !important; font-size: 11px; font-family: verdana !important;">Disc.%
+                                        </th>
+                                        <th class="text-right" style="width:60px !important; font-size: 11px; font-family: verdana !important;">Unit Price</th>
+                                        <th class="text-right" style="width:60px !important; font-size: 11px; font-family: verdana !important;">Total Price</th>
                                     </tr>
                                 </thead>
-                                <!-- sections and products -->
+                                <t t-set="bundle_index" t-value="1"/>
                                 <tbody class="sale_tbody">
-                                    <t t-set="sections" t-value="doc.print_bundled_quotation()"/>
-                                    <t t-set="bundle_index" t-value="1"/>
-                                    <t t-foreach="sections" t-as="section">
+                                    <t t-set="sections_additional" t-value="doc.get_additional_lines()"/>
+                                    <t t-foreach="sections_additional" t-as="section">
                                         <tr t-att-class="'bg-200 font-weight-bold o_line_section'" style="font-size:10px !important; font-family: verdana !important;">
                                             <td class="text-left" style="width: 30px !important; font-family: verdana !important;">
-                                                <t t-esc="bundle_index"/>
+                                                <t t-esc="bundle_index" style="font-family: verdana !important;"/>
 .
                                             </td>
-                                            <t t-if="col_span == 5">
-                                                <td class="text-left" colspan="5" style="font-family: verdana !important;">
-                                                    <t t-esc="sections[section]['name']"
-                                                       style="font-family: verdana !important;"/>
-                                                </td>
-                                            </t>
-                                            <t t-if="col_span == 6">
-                                                <td class="text-left" colspan="6" style="font-family: verdana !important;">
-                                                    <t t-esc="sections[section]['name']"
-                                                       style="font-family: verdana !important;"/>
-                                                </td>
-                                            </t>
-                                            <t t-if="col_span == 4">
-                                                <td class="text-left" colspan="4" style="font-family: verdana !important;">
-                                                    <t t-esc="sections[section]['name']"
-                                                       style="font-family: verdana !important;"/>
-                                                </td>
-                                            </t>
-                                            <td class="text-right">
-                                                <span t-esc="sections[section]['total_price']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                            <td class="text-left" t-if="has_option_discount" colspan="7" style="font-family: verdana !important;">
+                                                <t t-esc="sections_additional[section]['name']" style="font-family: verdana !important;"/>
+                                            </td>
+                                            <td class="text-left" t-if="not has_option_discount" colspan="6" style="font-family: verdana !important;">
+                                                <t t-esc="sections_additional[section]['name']" style="font-family: verdana !important;"/>
                                             </td>
                                         </tr>
                                         <t t-set="bundle_sub_index" t-value="1"/>
-                                        <t t-foreach="sections[section]['lines']" t-as="line">
-                                            <tr t-att-class="'font-weight-bold'" style="font-size:10px !important; font-family: verdana !important;">
-                                                <td class="text-right" colspan="2" style="width: 30px !important;">
-                                                    <t t-esc="bundle_index" style="font-family: verdana !important;"/>
-.
+                                        <t t-foreach="sections_additional[section]['lines']" t-as="line">
+                                            <tr t-att-class="'font-weight-bold'" style="font-size:10px !important; font-family: verdana !important; width: 30px !important;">
+                                                <td class="text-left" style="font-family: verdana !important;width: 10px;">
+                                                    <t t-esc="bundle_index" style="font-family: verdana !important;"/>.
                                                     <t t-esc="bundle_sub_index" style="font-family: verdana !important;"/>
                                                 </td>
                                                 <td class="text-left" style="padding-left: 15px; font-family: verdana !important;">
@@ -323,334 +469,228 @@
                                                 <td class="text-center" style="font-family: verdana !important;">
                                                     <t t-esc="line['qty']" style="font-family: verdana !important;"/>
                                                 </td>
+                                                <td t-if="has_option_discount" style="font-family: verdana !important;" groups="product.group_discount_per_so_line" class="text-center">
+                                                    <t t-esc="line['disc']" style="font-family: verdana !important;"/>
+                                                </td>
+                                                <td class="text-left" style="font-family: verdana !important;">
+                                                    <t t-esc="line['price_note']" style="font-family: verdana !important;"/>
+                                                </td>
                                                 <td class="text-right" style="font-family: verdana !important;">
-                                                    <span t-esc="line['item_price']" style="font-family: verdana !important;"
+                                                    <span t-esc="line['price_unit']" style="font-family: verdana !important;"
                                                           t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                                 </td>
-                                                <t t-if="is_taxed">
-                                                    <td class="text-center" style="font-family: verdana !important;">
-                                                        <span t-esc="', '.join(map(lambda x: (x.description or x.name), line['tax_id']))"/>
-                                                    </td>
-                                                </t>
-                                                <t t-if="is_discounted">
-                                                    <td class="text-center" style="font-family: verdana !important;">
-                                                        <span t-esc="line['discount']" style="font-family: verdana !important;"/>
-                                                    </td>
-                                                </t>
                                                 <td class="text-right" style="font-family: verdana !important;">
                                                     <span t-esc="line['total_price']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                                 </td>
                                             </tr>
                                             <t t-set="bundle_sub_index" t-value="bundle_sub_index+1"/>
-
-                                            <t t-foreach="line['sub_lines']" t-as="sub_line">
-                                                <t t-call="bi_product_bundle_report.sub_line_template"/>
-                                            </t>
                                         </t>
                                         <t t-set="bundle_index" t-value="bundle_index + 1"/>
                                     </t>
                                 </tbody>
-
                             </table>
-                        </div>
-                    </div>
 
-
-
-                    <div class="clearfix" name="so_total_summary" style="padding-right: 8% !important;">
-                        <div id="total" class="row" name="total">
-                            <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
-                                <table class="table table-sm">
-                                    <tr class="border-black o_subtotal" style="font-family: verdana !important; font-size: 11px !important;">
-                                        <td name="td_amount_untaxed_label" style="font-family: verdana !important;">
-                                            <strong style="font-family: verdana !important;">Subtotal</strong>
-                                        </td>
-                                        <td name="td_amount_untaxed" style="font-family: verdana !important;" class="text-right">
-                                            <span t-field="doc.amount_untaxed" style="font-family: verdana !important;"/>
-                                        </td>
-                                    </tr>
-                                    <t t-foreach="doc.amount_by_group" t-as="amount_by_group">
-                                        <tr style="font-family: verdana !important; font-size: 11px !important;">
-                                            <t t-if="amount_by_group[3] == 1 and doc.amount_untaxed == amount_by_group[2]">
-                                                <td name="td_amount_by_group_label_3" style="font-family: verdana !important;">
-                                                    <span t-esc="amount_by_group[0]"/>
-                                                    <span style="font-family: verdana !important;">&amp;nbsp;<span>on</span>&amp;nbsp;
-                                                        <t t-esc="amount_by_group[2]" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                                                    </span>
-                                                </td>
-                                                <td name="td_amount_by_group_3" style="font-family: verdana !important;" class="text-right o_price_total">
-                                                    <span t-esc="amount_by_group[1]" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                                                </td>
-                                            </t>
-                                            <t t-else="">
-                                                <td name="td_amount_by_group_label" style="font-family: verdana !important;">
-                                                    <span t-esc="amount_by_group[0]" style="font-family: verdana !important;"/>
-                                                </td>
-                                                <td name="td_amount_by_group" class="text-right o_price_total" style="font-family: verdana !important;">
-                                                    <span t-esc="amount_by_group[1]" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                                                </td>
-                                            </t>
-                                        </tr>
-                                    </t>
-                                    <tr style="font-family: verdana !important; font-size: 11px !important;" t-if="env['res.config.settings'].sudo().get_values()['ks_enable_discount'] and doc.ks_amount_discount > 0">
-                                        <td name="global_discount_amount_label" style="font-family: verdana !important;">
-                                            <strong style="font-family: verdana !important;">Global Discount</strong>
-                                        </td>
-                                        <td name="global_discount_amount" style="font-family: verdana !important;" class="text-right">
-                                            <span t-field="doc.ks_amount_discount" style="font-family: verdana !important;"/>
-                                        </td>
-                                    </tr>
-                                    <tr class="border-black o_total" style="font-family: verdana !important; font-size: 11px !important;">
-                                        <td name="td_amount_total_label" style="font-family: verdana !important;">
-                                            <strong style="font-family: verdana !important;">Total</strong>
-                                        </td>
-                                        <td name="td_amount_total" class="text-right" style="font-family: verdana !important;">
-                                            <span style="font-family: verdana !important;" t-field="doc.amount_total"/>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <br/>
-                    <t t-set="header_index" t-value="2"/>
-
-                    <p t-if="doc.split_page" style="page-break-after:always;"/>
-
-                    <!-- Additional Products 4.2 -->
-                    <t t-if="doc.sale_order_additional_ids">
-                        <div class="row" style="width: 83% !important; margin: 0 auto; padding-top: 0px; font-family: verdana !important;">
-                            <div class="text-left" style="display: flex; align-items: center; justify-content: center; font-family: verdana !important;">
-                                <div>
-                                    <h5 style="color:rgb(86, 56, 90); font-size: 17px !important; font-weight: bold; font-family: verdana !important;">
-                                        4.<t t-esc="header_index"/>
-                                        Additional Services Fees
-                                    </h5>
-                                </div>
-                                <t t-set="has_additional_discount" t-value="any(doc.sale_order_additional_ids.filtered(lambda o: o.discount != 0.0))"/>
-                                <table class="table table-sm o_main_table" style="margin: 0 auto; font-family: verdana !important;">
-                                    <thead>
-                                        <tr style="font-family: verdana !important;">
-                                            <th class="text-left" style="font-family: verdana !important; width:500px !important; font-size: 11px;" colspan="2">Description</th>
-                                            <th class="text-left" style="font-family: verdana !important; width:40px !important; font-size: 11px;">Qty</th>
-                                            <th class="text-left" style="font-family: verdana !important; width:70px !important; font-size: 11px; width: 90px;">Price Note</th>
-                                            <th t-if="has_option_discount" groups="product.group_discount_per_so_line" class="text-left" style="width:20px !important; font-size: 11px; font-family: verdana !important;">Disc.%
-                                            </th>
-                                            <th class="text-right" style="width:60px !important; font-size: 11px; font-family: verdana !important;">Unit Price</th>
-                                            <th class="text-right" style="width:60px !important; font-size: 11px; font-family: verdana !important;">Total Price</th>
-                                        </tr>
-                                    </thead>
-                                    <t t-set="bundle_index" t-value="1"/>
-                                    <tbody class="sale_tbody">
-                                        <t t-set="sections_additional" t-value="doc.get_additional_lines()"/>
-                                        <t t-foreach="sections_additional" t-as="section">
-                                            <tr t-att-class="'bg-200 font-weight-bold o_line_section'" style="font-size:10px !important; font-family: verdana !important;">
-                                                <td class="text-left" style="width: 30px !important; font-family: verdana !important;">
-                                                    <t t-esc="bundle_index" style="font-family: verdana !important;"/>
-.
-                                                </td>
-                                                <td class="text-left" t-if="has_option_discount" colspan="7" style="font-family: verdana !important;">
-                                                    <t t-esc="sections_additional[section]['name']" style="font-family: verdana !important;"/>
-                                                </td>
-                                                <td class="text-left" t-if="not has_option_discount" colspan="6" style="font-family: verdana !important;">
-                                                    <t t-esc="sections_additional[section]['name']" style="font-family: verdana !important;"/>
-                                                </td>
-                                            </tr>
-                                            <t t-set="bundle_sub_index" t-value="1"/>
-                                            <t t-foreach="sections_additional[section]['lines']" t-as="line">
-                                                <tr t-att-class="'font-weight-bold'" style="font-size:10px !important; font-family: verdana !important; width: 30px !important;">
-                                                    <td class="text-left" style="font-family: verdana !important;width: 10px;">
-                                                        <t t-esc="bundle_index" style="font-family: verdana !important;"/>.
-                                                        <t t-esc="bundle_sub_index" style="font-family: verdana !important;"/>
-                                                    </td>
-                                                    <td class="text-left" style="padding-left: 15px; font-family: verdana !important;">
-                                                        <t t-raw="line['desc']" style="font-family: verdana !important;"/>
-                                                    </td>
-                                                    <td class="text-center" style="font-family: verdana !important;">
-                                                        <t t-esc="line['qty']" style="font-family: verdana !important;"/>
-                                                    </td>
-                                                    <td t-if="has_option_discount" style="font-family: verdana !important;" groups="product.group_discount_per_so_line" class="text-center">
-                                                        <t t-esc="line['disc']" style="font-family: verdana !important;"/>
-                                                    </td>
-                                                    <td class="text-left" style="font-family: verdana !important;">
-                                                        <t t-esc="line['price_note']" style="font-family: verdana !important;"/>
-                                                    </td>
-                                                    <td class="text-right" style="font-family: verdana !important;">
-                                                        <span t-esc="line['price_unit']" style="font-family: verdana !important;"
-                                                              t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                                                    </td>
-                                                    <td class="text-right" style="font-family: verdana !important;">
-                                                        <span t-esc="line['total_price']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                                                    </td>
-                                                </tr>
-                                                <t t-set="bundle_sub_index" t-value="bundle_sub_index+1"/>
-                                            </t>
-                                            <t t-set="bundle_index" t-value="bundle_index + 1"/>
-                                        </t>
-                                    </tbody>
-                                </table>
-
-                            </div>
-                        </div>
-                        <br/>
-                        <t t-set="header_index" t-value="header_index + 1"/>
-                    </t>
-
-                    <!-- Optional Products 4.3 -->
-                    <t t-if="doc.sale_order_option_ids">
-                        <div class="row" style="width: 83% !important; margin: 0 auto; padding-top: 0px;">
-                            <div class="text-left" style="display: flex; align-items: center; justify-content: center;">
-                                <div>
-                                    <h5 style="color:rgb(86, 56, 90); font-size: 17px !important; font-weight: bold; font-family: verdana !important;">
-                                        4.<t t-esc="header_index" style="font-family: verdana !important;"/>
-                                        Optional Services Fees
-                                    </h5>
-                                </div>
-                                <t t-set="has_option_discount" style="font-family: verdana !important;" t-value="any(doc.sale_order_option_ids.filtered(lambda o: o.discount != 0.0))"/>
-                                <table class="table table-sm o_main_table" style="width: 100% !important; font-family: verdana !important;">
-                                    <thead>
-                                        <tr style="font-family: verdana !important;">
-                                            <th class="text-left" style="font-family: verdana !important; width:500px !important; font-size: 11px;" colspan="2">Description</th>
-                                            <th class="text-left" style="font-family: verdana !important; width:40px !important; font-size: 11px;">Qty</th>
-                                            <th class="text-left" style="font-family: verdana !important; width:70px !important; font-size: 11px; width: 90px;">Price Note</th>
-                                            <th t-if="has_option_discount" groups="product.group_discount_per_so_line" class="text-left" style="font-family: verdana !important; width:20px !important; font-size: 11px;">Disc.%
-                                            </th>
-                                            <th class="text-right" style="font-family: verdana !important; width:60px !important; font-size: 11px;">Unit Price</th>
-                                            <th class="text-right" style="font-family: verdana !important; width:60px !important; font-size: 11px;">Total Price</th>
-                                        </tr>
-                                    </thead>
-                                    <t t-set="bundle_index" t-value="1"/>
-                                    <tbody class="sale_tbody">
-                                        <t t-set="sections_additional" t-value="doc.get_optional_lines()"/>
-                                        <t t-foreach="sections_additional" t-as="section">
-                                            <tr t-att-class="'bg-200 font-weight-bold o_line_section'" style="font-size:10px !important; font-family: verdana !important;">
-                                                <td class="text-left" style="width: 30px !important; font-family: verdana !important;">
-                                                    <t t-esc="bundle_index" style="font-family: verdana !important;"/>
-.
-                                                </td>
-                                                <td class="text-left" t-if="has_option_discount" style="font-family: verdana !important;" colspan="7">
-                                                    <t t-esc="sections_additional[section]['name']" style="font-family: verdana !important;"/>
-                                                </td>
-                                                <td class="text-left" t-if="not has_option_discount" style="font-family: verdana !important;" colspan="6">
-                                                    <t t-esc="sections_additional[section]['name']" style="font-family: verdana !important;"/>
-                                                </td>
-                                            </tr>
-                                            <t t-set="bundle_sub_index" t-value="1"/>
-                                            <t t-foreach="sections_additional[section]['lines']" t-as="line">
-                                                <tr t-att-class="'font-weight-bold'" style="font-size:10px !important; font-family: verdana !important; width: 30px !important;">
-                                                    <td class="text-left" style="font-family: verdana !important;width: 12px;">
-                                                        <t t-esc="bundle_index" style="font-family: verdana !important;"/>.
-                                                        <t t-esc="bundle_sub_index" style="font-family: verdana !important;"/>
-                                                    </td>
-                                                    <td class="text-left" style="padding-left: 15px; font-family: verdana !important;">
-                                                        <t t-raw="line['desc']" style="font-family: verdana !important;"/>
-                                                    </td>
-                                                    <td class="text-center" style="font-family: verdana !important;">
-                                                        <t t-esc="line['qty']" style="font-family: verdana !important;"/>
-                                                    </td>
-                                                    <td class="text-left" style="font-family: verdana !important;">
-                                                        <t t-raw="line['price_note']" style="font-family: verdana !important;"/>
-                                                    </td>
-                                                    <td t-if="has_option_discount" style="font-family: verdana !important;" groups="product.group_discount_per_so_line" class="text-center">
-                                                        <t t-esc="line['disc']" style="font-family: verdana !important;"/>
-                                                    </td>
-                                                    <td class="text-right" style="font-family: verdana !important;">
-                                                        <span t-esc="line['price_unit']" style="font-family: verdana !important;"
-                                                              t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                                                    </td>
-                                                    <td class="text-right" style="font-family: verdana !important;">
-                                                        <span t-esc="line['total_price']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                                                    </td>
-                                                </tr>
-                                                <t t-set="bundle_sub_index" t-value="bundle_sub_index+1"/>
-                                            </t>
-                                            <t t-set="bundle_index" t-value="bundle_index + 1"/>
-                                        </t>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <br/>
-                        <t t-set="header_index" t-value="header_index + 1"/>
-                    </t>
-
-                    <!-- Payment Schedule 4.4 -->
-                    <div class="row" style="width: 83% !important; margin: 0 auto; padding-top: 0px; page-break-inside: avoid; font-family: verdana !important;">
-                        <div class="text-left">
-                            <div>
-                                <h5 style="color:rgb(86, 56, 90); font-size: 17px !important; font-weight: bold; font-family: verdana !important;">
-                                    4.<t t-esc="header_index" style="font-family: verdana !important;"/>
-                                    Payment Schedule
-                                </h5>
-                            </div>
-                            <div>
-                                <p style="font-size: 10px !important; font-family: verdana !important;">
-                                    <t t-raw="doc.standard_payment_schedule" style="font-family: verdana !important; font-size: 10px !important;"/>
-                                    <br/>
-                                    <t t-if="doc.payment_term_id.note" t-raw="doc.payment_term_id.note" style="font-family: verdana !important; font-size: 10px !important;"/>
-                                </p>
-                            </div>
                         </div>
                     </div>
                     <br/>
                     <t t-set="header_index" t-value="header_index + 1"/>
+                </t>
 
-
-                    <!-- Terms And Conditions 4.5 -->
-                    <div class="row" style="width: 83% !important; margin: 0 auto; padding-top: 0px; page-break-inside: avoid; font-family: verdana !important;">
-                        <div class="text-left">
+                <!-- Optional Products 4.3 -->
+                <t t-if="doc.sale_order_option_ids">
+                    <div class="row" style="width: 83% !important; margin: 0 auto; padding-top: 0px;">
+                        <div class="text-left" style="display: flex; align-items: center; justify-content: center;">
                             <div>
                                 <h5 style="color:rgb(86, 56, 90); font-size: 17px !important; font-weight: bold; font-family: verdana !important;">
                                     4.<t t-esc="header_index" style="font-family: verdana !important;"/>
-                                    Terms and Conditions
+                                    Optional Services Fees
                                 </h5>
                             </div>
-                            <div>
-                                <p style="font-size: 10px !important; font-family: verdana !important;">
-                                    <t t-raw="doc.terms_and_conditions" style="font-family: verdana !important; font-size: 10px !important;"/>
-                                </p>
-                            </div>
+                            <t t-set="has_option_discount" style="font-family: verdana !important;" t-value="any(doc.sale_order_option_ids.filtered(lambda o: o.discount != 0.0))"/>
+                            <table class="table table-sm o_main_table" style="width: 100% !important; font-family: verdana !important;">
+                                <thead>
+                                    <tr style="font-family: verdana !important;">
+                                        <th class="text-left" style="font-family: verdana !important; width:500px !important; font-size: 11px;" colspan="2">Description</th>
+                                        <th class="text-left" style="font-family: verdana !important; width:40px !important; font-size: 11px;">Qty</th>
+                                        <th class="text-left" style="font-family: verdana !important; width:70px !important; font-size: 11px; width: 90px;">Price Note</th>
+                                        <th t-if="has_option_discount" groups="product.group_discount_per_so_line" class="text-left" style="font-family: verdana !important; width:20px !important; font-size: 11px;">Disc.%
+                                        </th>
+                                        <th class="text-right" style="font-family: verdana !important; width:60px !important; font-size: 11px;">Unit Price</th>
+                                        <th class="text-right" style="font-family: verdana !important; width:60px !important; font-size: 11px;">Total Price</th>
+                                    </tr>
+                                </thead>
+                                <t t-set="bundle_index" t-value="1"/>
+                                <tbody class="sale_tbody">
+                                    <t t-set="sections_additional" t-value="doc.get_optional_lines()"/>
+                                    <t t-foreach="sections_additional" t-as="section">
+                                        <tr t-att-class="'bg-200 font-weight-bold o_line_section'" style="font-size:10px !important; font-family: verdana !important;">
+                                            <td class="text-left" style="width: 30px !important; font-family: verdana !important;">
+                                                <t t-esc="bundle_index" style="font-family: verdana !important;"/>
+.
+                                            </td>
+                                            <td class="text-left" t-if="has_option_discount" style="font-family: verdana !important;" colspan="7">
+                                                <t t-esc="sections_additional[section]['name']" style="font-family: verdana !important;"/>
+                                            </td>
+                                            <td class="text-left" t-if="not has_option_discount" style="font-family: verdana !important;" colspan="6">
+                                                <t t-esc="sections_additional[section]['name']" style="font-family: verdana !important;"/>
+                                            </td>
+                                        </tr>
+                                        <t t-set="bundle_sub_index" t-value="1"/>
+                                        <t t-foreach="sections_additional[section]['lines']" t-as="line">
+                                            <tr t-att-class="'font-weight-bold'" style="font-size:10px !important; font-family: verdana !important; width: 30px !important;">
+                                                <td class="text-left" style="font-family: verdana !important;width: 12px;">
+                                                    <t t-esc="bundle_index" style="font-family: verdana !important;"/>.
+                                                    <t t-esc="bundle_sub_index" style="font-family: verdana !important;"/>
+                                                </td>
+                                                <td class="text-left" style="padding-left: 15px; font-family: verdana !important;">
+                                                    <t t-raw="line['desc']" style="font-family: verdana !important;"/>
+                                                </td>
+                                                <td class="text-center" style="font-family: verdana !important;">
+                                                    <t t-esc="line['qty']" style="font-family: verdana !important;"/>
+                                                </td>
+                                                <td class="text-left" style="font-family: verdana !important;">
+                                                    <t t-raw="line['price_note']" style="font-family: verdana !important;"/>
+                                                </td>
+                                                <td t-if="has_option_discount" style="font-family: verdana !important;" groups="product.group_discount_per_so_line" class="text-center">
+                                                    <t t-esc="line['disc']" style="font-family: verdana !important;"/>
+                                                </td>
+                                                <td class="text-right" style="font-family: verdana !important;">
+                                                    <span t-esc="line['price_unit']" style="font-family: verdana !important;"
+                                                          t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                                </td>
+                                                <td class="text-right" style="font-family: verdana !important;">
+                                                    <span t-esc="line['total_price']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                                </td>
+                                            </tr>
+                                            <t t-set="bundle_sub_index" t-value="bundle_sub_index+1"/>
+                                        </t>
+                                        <t t-set="bundle_index" t-value="bundle_index + 1"/>
+                                    </t>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <br/>
+                    <t t-set="header_index" t-value="header_index + 1"/>
+                </t>
 
-
-
-                    <!-- Is there a discount on at least one line? -->
-                    <div t-if="doc.signature" class="mt32 ml64 mr4" name="signature" style="font-family: verdana !important;">
-                        <div class="offset-8" style="font-family: verdana !important;">
-                            <strong style="font-family: verdana !important;">Signature</strong>
+                <!-- Payment Schedule 4.4 -->
+                <div class="row" style="width: 83% !important; margin: 0 auto; padding-top: 0px; page-break-inside: avoid; font-family: verdana !important;">
+                    <div class="text-left">
+                        <div>
+                            <h5 style="color:rgb(86, 56, 90); font-size: 17px !important; font-weight: bold; font-family: verdana !important;">
+                                4.<t t-esc="header_index" style="font-family: verdana !important;"/>
+                                Payment Schedule
+                            </h5>
                         </div>
-                        <div class="offset-8">
-                            <img t-att-src="image_data_uri(doc.signature)" style="max-height: 4cm; max-width: 8cm; font-family: verdana !important;"/>
-                        </div>
-                        <div class="offset-8 text-center" style="font-family: verdana !important;">
-                            <p t-field="doc.signed_by" style="font-family: verdana !important;"/>
+                        <div>
+                            <p style="font-size: 10px !important; font-family: verdana !important;">
+                                <t t-raw="doc.standard_payment_schedule" style="font-family: verdana !important; font-size: 10px !important;"/>
+                                <br/>
+                                <t t-if="doc.payment_term_id.note" t-raw="doc.payment_term_id.note" style="font-family: verdana !important; font-size: 10px !important;"/>
+                            </p>
                         </div>
                     </div>
-
-                    <div class="oe_structure"/>
-
-                    <p t-field="doc.note" style="font-family: verdana !important;"/>
-
-                    <p id="fiscal_position_remark" style="font-family: verdana !important;" t-if="doc.fiscal_position_id and doc.fiscal_position_id.sudo().note">
-                        <strong style="font-family: verdana !important;">Fiscal Position Remark:</strong>
-                        <span style="font-family: verdana !important;" t-field="doc.fiscal_position_id.sudo().note"/>
-                    </p>
                 </div>
-            </t>
+                <br/>
+                <t t-set="header_index" t-value="header_index + 1"/>
+
+
+                <!-- Terms And Conditions 4.5 -->
+                <div class="row" style="width: 83% !important; margin: 0 auto; padding-top: 0px; page-break-inside: avoid; font-family: verdana !important;">
+                    <div class="text-left">
+                        <div>
+                            <h5 style="color:rgb(86, 56, 90); font-size: 17px !important; font-weight: bold; font-family: verdana !important;">
+                                4.<t t-esc="header_index" style="font-family: verdana !important;"/>
+                                Terms and Conditions
+                            </h5>
+                        </div>
+                        <div>
+                            <p style="font-size: 10px !important; font-family: verdana !important;">
+                                <t t-raw="doc.terms_and_conditions" style="font-family: verdana !important; font-size: 10px !important;"/>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+
+
+
+                <!-- Is there a discount on at least one line? -->
+                <div t-if="doc.signature" class="mt32 ml64 mr4" name="signature" style="font-family: verdana !important;">
+                    <div class="offset-8" style="font-family: verdana !important;">
+                        <strong style="font-family: verdana !important;">Signature</strong>
+                    </div>
+                    <div class="offset-8">
+                        <img t-att-src="image_data_uri(doc.signature)" style="max-height: 4cm; max-width: 8cm; font-family: verdana !important;"/>
+                    </div>
+                    <div class="offset-8 text-center" style="font-family: verdana !important;">
+                        <p t-field="doc.signed_by" style="font-family: verdana !important;"/>
+                    </div>
+                </div>
+
+                <div class="oe_structure"/>
+
+                <p t-field="doc.note" style="font-family: verdana !important;"/>
+
+                <p id="fiscal_position_remark" style="font-family: verdana !important;" t-if="doc.fiscal_position_id and doc.fiscal_position_id.sudo().note">
+                    <strong style="font-family: verdana !important;">Fiscal Position Remark:</strong>
+                    <span style="font-family: verdana !important;" t-field="doc.fiscal_position_id.sudo().note"/>
+                </p>
+            </div>
         </template>
 
         <template id="report_bundled_saleorder">
             <t t-call="web.html_container">
+                <div t-attf-class="header" style="height: 100px !important; z-index:0 !important;">
+                    <div class="row" style="margin: 0 auto; padding-top: 10px; height: 100px !important; width: 90%;">
+                        <div class="col-4 mb4 text-left">
+                            <img src="/bi_product_bundle_report/static/src/img/firnas_logo_full.jpg"
+                                 style="height: 90px !important;" alt="Logo"/>
+                        </div>
+                        <div class="col-8 text-right" style="justify-content: center; padding: 15px 0px 15px 0px !important;">
+                            <div style="width: 90% !important; border-right: 1px solid black; padding-right: 4px; display: inline-block !important;">
+                                <span style="font-family: verdana !important; font-size: 15px;" t-esc="doc.project_name"/>
+                                <br/>
+                                <span style="font-family: verdana !important; font-size: 15px;" t-esc="doc.document_name"/>
+                            </div>
+                            <div class="page_number d-inline-block"
+                                 style="width: 6% !important; height: 100px !important; vertical-align:top;">
+                                <div style="font-family: verdana !important; font-size: 15px !important;">
+                                    4-
+                                    <span class="page"
+                                          style="padding-right: 5px !important; font-family: verdana !important; font-size: 15px !important; margin-left: -1px;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <t t-foreach="docs" t-as="doc">
                     <t t-call="bi_product_bundle_report.report_bundled_saleorder_document" t-lang="doc.partner_id.lang"/>
                 </t>
+                <div t-attf-class="footer">
+
+                    <div class="row" style="width: 100% !important; margin: auto auto; padding-top: 35px;">
+                        <br/>
+                        <div class="text-left" style="width: 100%;">
+                            <h5 style="font-family: verdana !important; font-size: 15px;color:rgb(166, 166, 166);">
+                                <t t-esc="doc.file_name"/>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
             </t>
         </template>
 
-        <report id="action_report_bundled_saleorder" string="Bundled Quotation / Order" model="sale.order" report_type="qweb-pdf" file="bi_product_bundle_report.report_bundled_saleorder" name="bi_product_bundle_report.report_bundled_saleorder" print_report_name="(object.state in ('draft', 'sent') and 'Quotation - %s' % (object.name)) or 'Order - %s' % (object.name)" />
-
+        <record id="action_report_bundled_saleorder" model="ir.actions.report">
+            <field name="name">Bundled Quotation / Order</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">bi_product_bundle_report.report_bundled_saleorder</field>
+            <field name="report_file">bi_product_bundle_report.report_bundled_saleorder</field>
+            <field name="print_report_name">(object.state in ('draft', 'sent') and 'Quotation - %s' % (object.name)) or 'Order -
+                %s' % (object.name)</field>
+            <field name="binding_type">report</field>
+        </record>
     </data>
 </odoo>

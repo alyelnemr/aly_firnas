@@ -9,7 +9,7 @@
     'category': 'Sales',
     'version': '0.1',
     'depends': ['base', 'sale', 'foss_product_bundle', 'sale_management', 'bi_new_customized_fields',
-                'universal_discount', 'web'],
+                'universal_discount'],
     'data': [
         'security/ir.model.access.csv',
         'views/sale_order_form.xml',
