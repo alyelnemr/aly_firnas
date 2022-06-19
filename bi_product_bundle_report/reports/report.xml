@@ -230,7 +230,7 @@
         </template>
         <template id="report_bundled_saleorder_document">
             <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)"/>
-            <div class="page" style="z-index:1000 !important;">
+            <div class="page" style="z-index:1000 !important;padding-top: 10px; ">
                 <div class="oe_structure"/>
                 <t t-set="display_discount" t-value="0"/>
 
@@ -642,7 +642,7 @@
             <t t-call="web.html_container">
                 <t t-foreach="docs" t-as="doc">
                     <div t-attf-class="header" style="height: 80px !important; z-index:0 !important;">
-                        <div class="row" style="margin: 0 auto; padding-top: 10px; height: 100px !important; width: 90%;">
+                        <div class="row" style="margin: 0 auto; padding-top: 10px; height: 80px !important; width: 90%;">
                             <div class="col-4 mb4 text-left">
                                 <img src="/bi_product_bundle_report/static/src/img/firnas_logo_full.jpg"
                                      style="height: 90px !important;" alt="Logo"/>
