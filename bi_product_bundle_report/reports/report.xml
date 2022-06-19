@@ -688,8 +688,7 @@
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">bi_product_bundle_report.report_bundled_saleorder</field>
             <field name="report_file">bi_product_bundle_report.report_bundled_saleorder</field>
-            <field name="print_report_name">(object.state in ('draft', 'sent') and 'Quotation - %s' % (object.name)) or 'Order -
-                %s' % (object.name)</field>
+            <field name="print_report_name">(object.state in ('draft', 'sent') and 'Quotation - %s' % (object.name)) or 'Order - %s' % (object.name)</field>
             <field name="binding_type">report</field>
         </record>
     </data>
