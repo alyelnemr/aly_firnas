@@ -645,7 +645,7 @@
                         <div class="row" style="margin: 0 auto; padding-top: 10px; height: 80px !important; width: 90%;">
                             <div class="col-4 mb4 text-left">
                                 <img src="/bi_product_bundle_report/static/src/img/firnas_logo_full.jpg"
-                                     style="height: 90px !important;" alt="Logo"/>
+                                     style="height: 80px !important;" alt="Logo"/>
                             </div>
                             <div class="col-8 text-right" style="justify-content: center; padding: 15px 0px 15px 0px !important;">
                                 <div style="width: 90% !important; border-right: 1px solid black; padding-right: 4px; display: inline-block !important;">
@@ -654,7 +654,7 @@
                                     <span style="font-family: verdana !important; font-size: 15px;" t-esc="doc.document_name"/>
                                 </div>
                                 <div class="page_number d-inline-block"
-                                     style="width: 6% !important; height: 100px !important; vertical-align:top;">
+                                     style="width: 6% !important; height: 80px !important; vertical-align:top;">
                                     <div style="font-family: verdana !important; font-size: 15px !important;">
                                         4-
                                         <span class="page"
