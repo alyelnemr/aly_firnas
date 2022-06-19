@@ -180,6 +180,8 @@ class SaleOrderLine(models.Model):
             if line_id.id in related_lines.ids:
                 return related_lines
         return False
+
+
 class StockMove(models.Model):
     _inherit = 'stock.move'
 
