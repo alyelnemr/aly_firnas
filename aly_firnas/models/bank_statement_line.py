@@ -17,8 +17,8 @@ class InheritBankStatement(models.Model):
     _inherit = "account.bank.statement.line"
 
     analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account', index=True,
-                                          required=True)
-    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True)
+                                          required=False)
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=False)
 
     def _prepare_reconciliation_move(self, move_ref):
         """ Prepare the dict of values to create the move from a statement line. This method may be overridden to adapt domain logic
