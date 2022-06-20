@@ -37,15 +37,15 @@
                         </button>
                     </div>
                 </xpath>
-                <xpath expr="//field[@name='partner_type']" position="replace">
-                    <field name="partner_type" widget="selection"
-                           attrs="{'required': [('state', '=', 'draft')], 'invisible': False}"/>
-                </xpath>
-                <xpath expr="//field[@name='partner_id']" position="replace">
-                    <field name="partner_id"
-                           attrs="{'required': [('state', '=', 'draft')], 'invisible': False}"
-                           context="{'default_is_company': True}"/>
-                </xpath>
+<!--                <xpath expr="//field[@name='partner_type']" position="replace">-->
+<!--                    <field name="partner_type" widget="selection"-->
+<!--                           attrs="{'required': [('state', '=', 'draft')], 'invisible': False}"/>-->
+<!--                </xpath>-->
+<!--                <xpath expr="//field[@name='partner_id']" position="replace">-->
+<!--                    <field name="partner_id"-->
+<!--                           attrs="{'required': [('state', '=', 'draft')], 'invisible': False}"-->
+<!--                           context="{'default_is_company': True}"/>-->
+<!--                </xpath>-->
             </field>
         </record>
     </data>
