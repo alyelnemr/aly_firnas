@@ -95,12 +95,12 @@ class AcountMove(models.Model):
                 )
         else:
             self.custom_rate = custom_rate
-        x = self.currency_id.rate
-        print(x)
+        self.currency_id.rate = self.custom_rate
 
     def action_refresh_currency(self):
         self.ensure_one()
         if self.state != "draft":
-            raise ValidationError(_("Rate currency can refresh state draft only."))
+            raise ValidationError(_("Rate currency can refresh when state is draft only."))
         self._onchange_currency_change_rate(currency_changed=False)
+        self.with_context(check_move_validity=False)._onchange_currency()
         return True

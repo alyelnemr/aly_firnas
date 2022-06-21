@@ -28,3 +28,14 @@ class InheritAccountMoveLine(models.Model):
                     line.analytic_tag_ids = analytic_tag_ids.ids
 
         return lines
+
+    # def write(self, vals):
+    #     for line in self:
+    #         if 'analytic_account_id' in vals:
+    #             for item in line.move_id.invoice_line_ids:
+    #                 item.analytic_account_id = vals['analytic_account_id']
+    #         if 'analytic_tag_ids' in vals:
+    #             for item in line.move_id.invoice_line_ids:
+    #                 item.analytic_tag_ids = vals['analytic_tag_ids']
+    #     lines = super(InheritAccountMoveLine, self).write(vals)
+    #     return lines
