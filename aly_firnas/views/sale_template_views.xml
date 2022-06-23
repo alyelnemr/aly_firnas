@@ -12,7 +12,7 @@
                 <xpath expr="//field[@name='sale_order_template_option_ids']/tree/field[@name='product_id']" position="after">
                     <field name="section"/>
                 </xpath>
-                <xpath expr="//notebook/page[2]" position="before">
+                <xpath expr="//notebook/page[1]" position="after">
                     <page string="Additional Products">
                         <field name="sale_order_template_additional_ids">
                             <tree string="Quotation Template Additional Products" editable="bottom">
