@@ -30,13 +30,26 @@
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_uom']"
                        position="attributes">
                     <attribute name="attrs">{'readonly': [('state', 'in', ('sale','done', 'cancel'))], 'required': False}</attribute>
+                    <attribute name="optional">show</attribute>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+                    <attribute name="optional">show</attribute>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_uom_qty']" position="attributes">
+                    <attribute name="optional">show</attribute>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_unit']" position="attributes">
+                    <attribute name="optional">show</attribute>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="attributes">
+                    <attribute name="optional">show</attribute>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="after">
-                    <field name="section" />
+                    <field name="section" optional="show"/>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_unit']"
                        position="before">
-                    <field name="item_price"/>
+                    <field name="item_price" optional="show"/>
                 </xpath>
                 <xpath expr="//notebook/page[@name='optional_products']" position="before">
                     <page string="Additional Products" name="additional">
@@ -150,7 +163,7 @@
                     </attribute>
                 </xpath>
                 <xpath expr="//field[@name='sale_order_option_ids']/tree//field[@name='sequence']" position="after">
-                    <field name="section" optional="hide"/>
+                    <field name="section"/>
                 </xpath>
                 <xpath expr="//field[@name='sale_order_option_ids']/tree//field[@name='price_unit']" position="after">
                     <field name="price_note"/>
@@ -161,7 +174,6 @@
                 <xpath expr="//field[@name='sale_order_option_ids']/tree//field[@name='product_id']" position="attributes">
                     <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}
                     </attribute>
-                    <attribute name="optional">show</attribute>
                 </xpath>
             </field>
         </record>
