@@ -10,6 +10,11 @@ from datetime import timedelta
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
+    opportunity_id = fields.Many2one(
+        'crm.lead', string='Opportunity', check_company=True,
+        domain="[('type', '=', 'opportunity'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]"
+    , copy=False)
+
     def _compute_option_data_for_template_change(self, option):
         if self.pricelist_id:
             price = self.pricelist_id.with_context(uom=option.uom_id.id).get_product_price(option.product_id, 1, False)
