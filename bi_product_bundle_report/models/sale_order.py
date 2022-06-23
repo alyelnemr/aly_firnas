@@ -56,6 +56,7 @@ class SaleOrder(models.Model):
                     'tax_id': ol.tax_id,
                     'item_price': ol.item_price,
                     'discount': ol.discount,
+                    'is_update': ol.is_update,
                     'sub_lines': ol.get_orderline_sublines()
                 } for ol
                     in order_lines.filtered(lambda l: l.section.id == section.id and l.is_printed is True and not self.is_sub_product(l))]

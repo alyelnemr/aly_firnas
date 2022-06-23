@@ -337,7 +337,16 @@
                                                 </td>
                                             </t>
                                             <td class="text-right" style="font-family: verdana !important;">
-                                                <span t-esc="line['total_price']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                                <t t-if="line['is_update']">
+                                                    <span t-esc="line['item_price']" style="font-family: verdana !important;"
+                                                          t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                                </t>
+                                                <t t-else="">
+                                                    <t t-if="line['is_update']">
+                                                        <span t-esc="line['total_price']" style="font-family: verdana !important;"
+                                                              t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                                    </t>
+                                                </t>
                                             </td>
                                         </tr>
                                         <t t-set="bundle_sub_index" t-value="bundle_sub_index+1"/>
