@@ -9,7 +9,7 @@ class SaleOrderLine(models.Model):
 
     is_printed = fields.Boolean(string="Print?", default=True)
     section = fields.Many2one('sale.order.line.section', string="Section", required=True)
-    item_price = fields.Float(string="Item Price", compute="get_item_price")
+    item_price = fields.Float(string="Item Price", store=False, compute="get_item_price")
     name = fields.Text(string='Description', required=False)
     product_uom = fields.Many2one('uom.uom', string='Unit of Measure', domain="[('category_id', '=', product_uom_category_id)]")
 
@@ -27,6 +27,7 @@ class SaleOrderLine(models.Model):
             'company_id': self.order_id.company_id.id,
         }
 
+    @api.depends('price_subtotal')
     def get_item_price(self):
         for record in self:
             order_lines = self.search([('parent_order_line', '=', record.id)])
