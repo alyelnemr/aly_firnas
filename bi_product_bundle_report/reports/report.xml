@@ -328,7 +328,9 @@
                                             </td>
                                             <t t-if="is_discounted">
                                                 <td class="text-center" style="font-family: verdana !important;">
-                                                    <span t-esc="line['discount']" style="font-family: verdana !important;"/>
+                                                    <t t-if="line['discount'] > 0">
+                                                        <span t-esc="line['discount']" style="font-family: verdana !important;"/>
+                                                    </t>
                                                 </td>
                                             </t>
                                             <t t-if="is_taxed">
