@@ -56,8 +56,13 @@
                             attrs="{'readonly': [('parent.state', 'not in', ['draft', 'sent'])]}"
                     />
                 </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='discount']" position="replace">
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='tax_id']" position="before">
+                    <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line" optional="show"/>
+                </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_unit']"
-                       position="before">
+                       position="after">
                     <field name="item_price" optional="show"/>
                 </xpath>
                 <xpath expr="//notebook/page[@name='optional_products']" position="before">
@@ -150,6 +155,20 @@
                 </xpath>
             </field>
         </record>
+
+
+        <record model="ir.ui.view" id="aly_sale_margin_sale_order_line_form">
+            <field name="name">aly.sale.order.line.tree.margin.view.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_margin.sale_margin_sale_order_line_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']/tree//field[@name='price_unit']" position="before">
+                    <field name="purchase_price" optional="hide" groups="base.group_user"/>
+                </xpath>
+            </field>
+        </record>
+
+
         <record id="aly_view_order_tree" model="ir.ui.view">
             <field name="name">aly.sale.order.tree.inherit.website.sale</field>
             <field name="model">sale.order</field>
