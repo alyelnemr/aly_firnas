@@ -38,7 +38,7 @@ class SaleOrderLine(models.Model):
                         for ol in order_lines
                     ])
                     order_lines = self.search([('parent_order_line', 'in', order_lines.ids)])
-                result = item_price + record.price_unit
+                result = item_price + record.price_subtotal
             else:
                 result = record.price_subtotal
             record.item_price = result
