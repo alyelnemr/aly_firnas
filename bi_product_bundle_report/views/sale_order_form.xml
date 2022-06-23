@@ -38,7 +38,7 @@
                        position="before">
                     <field name="item_price"/>
                 </xpath>
-                <xpath expr="//notebook/page[@name='other_information']" position="before">
+                <xpath expr="//notebook/page[@name='optional_products']" position="before">
                     <page string="Additional Products" name="additional">
                         <field name="sale_order_additional_ids" mode="tree,form,kanban">
                             <form string="Additional Products">
