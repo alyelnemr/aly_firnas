@@ -11,7 +11,7 @@
     'version': '0.1',
     'depends': ['base', 'crm', 'bi_crm_concatenated_name', 'bi_crm_customization'],
     'data': [
-        'views/crm_lead_inherit.xml',
+        'views/crm_lead.xml',
     ],
     'installable': True,
     'auto_install': False,
