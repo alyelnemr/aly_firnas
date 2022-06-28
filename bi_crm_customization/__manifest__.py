@@ -11,7 +11,7 @@
     'depends': ['base', 'crm'],
     'data': [
         'security/ir.model.access.csv',
-        'views/inherit_crm_lead_view.xml',
+        'views/crm_lead.xml',
     ],
     'installable': True,
     'auto_install': False,

@@ -10,7 +10,7 @@
     'version': '0.1',
     'depends': ['base', 'sale_management', 'crm'],
     'data': [
-        'views/inherit_crm_lead_view.xml',
+        'views/crm_lead.xml',
         'views/inherit_sale_order_view.xml',
     ],
     'installable': True,
