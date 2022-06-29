@@ -58,11 +58,9 @@
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='discount']" position="replace">
                 </xpath>
-                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='tax_id']" position="before">
-                    <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line" optional="show"/>
-                </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_unit']"
                        position="after">
+                    <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line" optional="show"/>
                     <field name="item_price" optional="show"/>
                 </xpath>
                 <xpath expr="//notebook/page[@name='optional_products']" position="before">
