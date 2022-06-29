@@ -49,7 +49,7 @@ class AcountMove(models.Model):
     manual_currency = fields.Boolean()
     is_manual = fields.Boolean(compute="_compute_currency")
     custom_rate = fields.Float(
-        digits=0,
+        digits=(16, 10),
         tracking=True,
         help="Set new currency rate to apply on the invoice\n."
              "This rate will be taken in order to convert amounts between the "
