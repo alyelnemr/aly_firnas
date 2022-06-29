@@ -24,7 +24,7 @@
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_id']"
                        position="before">
-                    <field name="is_printed" context="{'changed_id': id}"/>
+                    <field name="is_printed" context="{'changed_id': id}" optional="show"/>
                     <field name="is_offer_product" invisible="1"/>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_uom']"
@@ -162,7 +162,9 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale_margin.sale_margin_sale_order_line_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='order_line']/tree//field[@name='price_unit']" position="before">
+                <xpath expr="//field[@name='order_line']/tree//field[@name='purchase_price']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree//field[@name='product_uom_qty']" position="after">
                     <field name="purchase_price" optional="hide" groups="base.group_user"/>
                 </xpath>
             </field>
