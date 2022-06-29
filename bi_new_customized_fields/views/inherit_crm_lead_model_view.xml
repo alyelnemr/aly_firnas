@@ -23,14 +23,14 @@
                                 <field name="proposals_engineer_id"/>
                                 <field name="rfp_ref_number"/>
                                 <field name="project_num" required="1"/>
-                                <field name="type_custom" required="1"/>
+                                <field name="type_custom" required="0"/>
                                 <field name="project_name"/>
                                 <field name="country" required="1" widget="many2many_tags"/>
                                 <field name="start_date" required="1"/>
                                 <field name="source_id" required="1"/>
                             </group>
                             <group>
-                                <field name="sub_date" required="1"/>
+                                <field name="sub_date" required="0"/>
                                 <field name="sub_type"/>
                                 <field name="fund"/>
                                 <field name="partnership_model"/>
