@@ -33,6 +33,9 @@
                 </tr>
                 <tr>
                     <td style="width:50%;">
+                        <span style="font-family: Open Sans !important;"
+                              class="text-left">Tax ID:
+                        </span>
                         <span t-field="o.company_id.vat"
                               style="font-family: Open Sans !important;"
                               class="text-left"/>
@@ -187,7 +190,6 @@
                 </table>
             </t>
             <br/>
-            <br/>
             <table class="table table-sm o_main_table" style=" margin: auto; ">
                 <thead>
                     <tr>
@@ -274,7 +276,7 @@
                             </t>
                             <t t-else="">
                                 <t t-if="line.price_subtotal > 0">
-                                    <td colspan="6" id="section">
+                                    <td colspan="5" id="section">
                                         <span t-field="line.name"/>
                                     </td>
                                     <td class="text-right"
@@ -292,7 +294,6 @@
                     </t>
                 </tbody>
             </table>
-            <br/>
             <br/>
             <table style="width:auto; border: 0px !important; margin-right: 0px; margin-left: auto;">
                 <tr style="width:auto;" class="text-right">
@@ -435,6 +436,7 @@
                     </tr>
                 </table>
             </t>
+            <br/>
             <table style="width:100%;border: 0px;margin-left: 10px;">
                 <tr>
                     <th style="width:50%;color:rgb(86, 56, 90); ">
