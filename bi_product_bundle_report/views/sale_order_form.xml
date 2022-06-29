@@ -75,8 +75,8 @@
                                     <field name="product_uom_category_id" invisible="1"/>
                                     <field name="uom_id" groups="uom.group_uom"/>
                                     <field name="price_unit"/>
-                                    <field name="price_note"/>
                                     <field name="discount" groups="product.group_discount_per_so_line"/>
+                                    <field name="price_note"/>
                                     <field name="is_present"/>
                                 </group>
                             </form>
@@ -140,9 +140,9 @@
                                 <field name="uom_id" string="UoM" groups="uom.group_uom" optional="show"/>
                                 <field name="product_uom_category_id" invisible="1"/>
                                 <field name="price_unit"/>
-                                <field name="price_note"/>
                                 <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line"
                                        optional="show"/>
+                                <field name="price_note"/>
                                 <field name="is_present" invisible="1"/>
                                 <button name="button_add_to_order" class="oe_link" icon="fa-shopping-cart"
                                         title="Add to order lines" type="object"
@@ -193,7 +193,7 @@
                 <xpath expr="//field[@name='sale_order_option_ids']/tree//field[@name='sequence']" position="after">
                     <field name="section"/>
                 </xpath>
-                <xpath expr="//field[@name='sale_order_option_ids']/tree//field[@name='price_unit']" position="after">
+                <xpath expr="//field[@name='sale_order_option_ids']/tree//field[@name='discount']" position="after">
                     <field name="price_note"/>
                 </xpath>
                 <xpath expr="//field[@name='payment_term_id']" position="after">
