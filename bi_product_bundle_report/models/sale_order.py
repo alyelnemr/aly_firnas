@@ -45,7 +45,7 @@ class SaleOrder(models.Model):
                 'name': section.name if section.name else '(undefined)',
                 'total_price': sum([
                     (ol.price_subtotal if not ol.product_id.child_line else ol.price_unit * ol.product_uom_qty) for ol in
-                    order_lines.filtered(lambda l: l.section.id == section.id)
+                    order_lines.filtered(lambda l: l.section.id == section.id and l.is_printed is True)
                 ]),
                 'lines': [{
                     'name': ('[%s] ' % ol.product_id.default_code if ol.product_id.default_code else '')
