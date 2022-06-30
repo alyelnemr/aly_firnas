@@ -374,7 +374,7 @@
                                         <strong style="font-family: verdana !important;">Subtotal</strong>
                                     </td>
                                     <td name="td_amount_untaxed" style="font-family: verdana !important;" class="text-right">
-                                        <span t-field="amount_untaxed" style="font-family: verdana !important;"/>
+                                        <span t-esc="amount_untaxed" style="font-family: verdana !important;"/>
                                     </td>
                                 </tr>
                                 <tr style="font-family: verdana !important; font-size: 11px !important;">
@@ -383,7 +383,7 @@
                                     </td>
                                     <td name="td_amount_by_group" class="text-right o_price_total"
                                         style="font-family: verdana !important;">
-                                        <span t-esc="docs.amount_tax" style="font-family: verdana !important;"
+                                        <span t-esc="amount_tax" style="font-family: verdana !important;"
                                               t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                     </td>
                                 </tr>
