@@ -77,7 +77,7 @@
                             <div class="page_number d-inline-block"
                                  style="width: 7% !important; height: 90px !important; vertical-align:top;">
                                 <div style="font-family: verdana !important; font-size: 15px !important;">4-<span class="page"
-                                          style="padding-right: 5px !important; font-family: verdana !important; font-size: 15px !important; margin-left: -1px;"/>
+                                          style="padding-right: 3px !important; font-family: verdana !important; font-size: 15px !important; margin-left: -1px;"/>
                                 </div>
                             </div>
                         </div>
