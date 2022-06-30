@@ -315,7 +315,7 @@
                                     <t t-set="bundle_sub_index" t-value="1"/>
                                     <t t-foreach="sections[section]['lines']" t-as="line">
                                         <tr t-att-class="'font-weight-bold'" style="font-size:10px !important; font-family: verdana !important;">
-                                            <td class="text-left" colspan="2" style="width: 30px !important;">
+                                            <td class="text-left" colspan="2" style="width: 30px !important;white-space: nowrap;">
                                                 <t t-esc="bundle_index" style="padding-left: 0px; font-family: verdana !important;"/>.
                                                 <t t-esc="bundle_sub_index" style="padding-left: 0px; font-family: verdana !important;"/>
                                             </td>
