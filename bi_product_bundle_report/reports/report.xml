@@ -617,7 +617,7 @@
 
 
                 <!-- Terms And Conditions 4.5 -->
-                <div class="row" style="width: 100% !important; margin: 0 auto; padding-top: 0px; page-break-inside: avoid; font-family: verdana !important;">
+                <div class="row" style="width: 83% !important; margin: 0 auto; padding-top: 0px; page-break-inside: avoid; font-family: verdana !important;">
                     <div class="text-left">
                         <div>
                             <h5 style="color:rgb(86, 56, 90); font-size: 17px !important; font-weight: bold; font-family: verdana !important;">
@@ -626,7 +626,7 @@
                             </h5>
                         </div>
                         <div>
-                            <p style="width: 100% !important; font-size: 10px !important; font-family: verdana !important;">
+                            <p style="font-size: 10px !important; font-family: verdana !important;">
                                 <t t-raw="doc.terms_and_conditions" style="font-family: verdana !important; font-size: 10px !important;"/>
                             </p>
                         </div>
