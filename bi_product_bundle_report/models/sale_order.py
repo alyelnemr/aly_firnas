@@ -55,6 +55,7 @@ class SaleOrder(models.Model):
                     'total_price': ol.price_subtotal,
                     'tax_id': ol.tax_id,
                     'item_price': ol.item_price,
+                    'price_unit': ol.price_unit,
                     'discount': ol.discount,
                     'is_update': ol.is_update,
                     'sub_lines': ol.get_orderline_sublines()
