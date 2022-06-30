@@ -263,7 +263,7 @@
                         <table class="table table-sm o_main_table" style="margin: 0 auto;">
                             <thead>
                                 <tr style="font-family: verdana !important;">
-                                    <th class="text-center" style="font-family: verdana !important; width:500px;font-size: 11px;" colspan="4">
+                                    <th class="text-center" style="font-family: verdana !important; width:500px;font-size: 11px;" colspan="3">
                                         Description</th>
                                     <th class="text-center" style="font-family: verdana !important; width:40px; font-size: 11px;">Qty</th>
                                     <th class="text-right" style="font-family: verdana !important; width:70px; font-size: 11px;">Unit Price</th>
@@ -302,8 +302,8 @@
                                                    style="font-family: verdana !important;"/>
                                             </td>
                                         </t>
-                                        <t t-if="col_span == 7">
-                                            <td class="text-left" colspan="7" style="font-family: verdana !important;">
+                                        <t t-if="col_span == 4">
+                                            <td class="text-left" colspan="4" style="font-family: verdana !important;">
                                                 <t t-esc="sections[section]['name']"
                                                    style="font-family: verdana !important;"/>
                                             </td>
@@ -315,9 +315,9 @@
                                     <t t-set="bundle_sub_index" t-value="1"/>
                                     <t t-foreach="sections[section]['lines']" t-as="line">
                                         <tr t-att-class="'font-weight-bold'" style="font-size:10px !important; font-family: verdana !important;">
-                                            <td class="text-left" colspan="3" style="width: 30px !important;">
-                                                <t t-esc="bundle_index" style="font-family: verdana !important;"/>.
-                                                <t t-esc="bundle_sub_index" style="font-family: verdana !important;"/>
+                                            <td class="text-left" colspan="2" style="width: 30px !important;">
+                                                <t t-esc="bundle_index" style="padding-left: 0px; font-family: verdana !important;"/>.
+                                                <t t-esc="bundle_sub_index" style="padding-left: 0px; font-family: verdana !important;"/>
                                             </td>
                                             <td class="text-left" style="padding-left: 15px; font-family: verdana !important;">
                                                 <t t-raw="line['desc']" style="font-family: verdana !important;"/>
