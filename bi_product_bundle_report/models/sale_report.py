@@ -14,11 +14,6 @@ class SalesOrderReport(models.AbstractModel):
         model = 'sale.order'
         active_id = self.env.context.get('active_id')
         docs = self.env[model].sudo().browse(docids)
-        discount = 0
-        for line in docs.order_line:
-            discount += line.discount
-        is_discounted = discount > 0
-        is_taxed = docs.amount_tax > 0
         is_additional_exists = any(docs.sale_order_additional_ids.filtered(lambda o: not o.is_button_clicked))
         is_optional_exists = any(docs.sale_order_option_ids.filtered(lambda o: not o.is_button_clicked))
         amount_untaxed = sum([
@@ -29,6 +24,12 @@ class SalesOrderReport(models.AbstractModel):
             ol.price_tax for ol in
             docs.order_line.filtered(lambda l: l.is_printed is True)
         ])
+        discount = 0
+        for line in docs.order_line.filtered(lambda l: l.is_printed is True):
+            discount += line.discount
+        is_discounted = discount > 0
+        is_taxed = docs.amount_tax > 0
+        amount_total = (amount_untaxed + amount_tax) - discount
         col_span = 4
         if is_taxed or is_discounted:
             col_span = 5
@@ -44,6 +45,7 @@ class SalesOrderReport(models.AbstractModel):
             'is_taxed': is_taxed,
             'amount_untaxed': amount_untaxed,
             'amount_tax': amount_tax,
+            'amount_total': amount_total,
             'is_additional_exists': is_additional_exists,
             'is_optional_exists': is_optional_exists,
             'report_title': 'Purchase Order'

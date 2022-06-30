@@ -374,7 +374,8 @@
                                         <strong style="font-family: verdana !important;">Subtotal</strong>
                                     </td>
                                     <td name="td_amount_untaxed" style="font-family: verdana !important;" class="text-right">
-                                        <span t-esc="amount_untaxed" style="font-family: verdana !important;"/>
+                                        <span t-esc="amount_untaxed" style="font-family: verdana !important;"
+                                              t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                     </td>
                                 </tr>
                                 <tr style="font-family: verdana !important; font-size: 11px !important;">
@@ -415,7 +416,8 @@
                                         <strong style="font-family: verdana !important;">Global Discount</strong>
                                     </td>
                                     <td name="global_discount_amount" style="font-family: verdana !important;" class="text-right">
-                                        <span t-field="doc.ks_amount_discount" style="font-family: verdana !important;"/>
+                                        <span t-esc="discount" style="font-family: verdana !important;"
+                                              t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                     </td>
                                 </tr>
                                 <tr class="border-black o_total" style="font-family: verdana !important; font-size: 11px !important;">
@@ -423,7 +425,8 @@
                                         <strong style="font-family: verdana !important;">Total</strong>
                                     </td>
                                     <td name="td_amount_total" class="text-right" style="font-family: verdana !important;">
-                                        <span style="font-family: verdana !important;" t-field="doc.amount_total"/>
+                                        <span style="font-family: verdana !important;" t-esc="amount_total"
+                                              t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                     </td>
                                 </tr>
                             </table>
