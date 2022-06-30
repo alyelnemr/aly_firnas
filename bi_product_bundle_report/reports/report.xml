@@ -75,9 +75,9 @@
                                 <span style="font-family: verdana !important; font-size: 15px;" t-esc="doc.document_name"/>
                             </div>
                             <div class="page_number d-inline-block"
-                                 style="width: 7% !important; height: 90px !important; vertical-align:top;">
+                                 style="width: 6% !important; height: 100px !important; vertical-align:top;">
                                 <div style="font-family: verdana !important; font-size: 15px !important;">4-<span class="page"
-                                          style="padding-right: 3px !important; font-family: verdana !important; font-size: 15px !important; margin-left: -1px;"/>
+                                          style="padding-right: 5px !important; font-family: verdana !important; font-size: 15px !important; margin-left: -1px;"/>
                                 </div>
                             </div>
                         </div>
@@ -167,9 +167,6 @@
                 <td class="text-left" colspan="2" style="font-family: verdana !important;"/>
                 <td class="text-left" style="padding-left: 60px; font-family: verdana !important;">
                     -
-                    <t t-esc="sub_line_1['name']" style="font-family: verdana !important;"/>
-                </td>
-                <td class="text-left" style="font-size:10px !important; font-family: verdana !important;">
                     <t t-esc="sub_line_1['desc']" style="font-family: verdana !important;"/>
                 </td>
                 <td class="text-center" style="font-family: verdana !important;">
@@ -181,6 +178,14 @@
                               t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                     </t>
                 </td>
+                <t t-if="is_discounted">
+                    <td class="text-right" style="font-family: verdana !important;">
+                    </td>
+                </t>
+                <t t-if="is_taxed">
+                    <td class="text-right" style="font-family: verdana !important;">
+                    </td>
+                </t>
                 <td class="text-right" style="font-family: verdana !important;">
                     <t t-if="sub_line_1['show_price']">
                         <span t-esc="sub_line_1['total_price']" style="font-family: verdana !important;"
@@ -208,15 +213,18 @@
                         <span t-esc="sub_line['total_price']/sub_line['qty']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                     </t>
                 </td>
+                <t t-if="is_discounted">
+                    <td class="text-right" style="font-family: verdana !important;">
+                    </td>
+                </t>
+                <t t-if="is_taxed">
+                    <td class="text-right" style="font-family: verdana !important;">
+                    </td>
+                </t>
                 <td class="text-right" style="font-family: verdana !important;">
                     <t t-if="sub_line['show_price']">
-                        <span t-esc="sub_line['total_price']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                    </t>
-                </td>
-
-                <td class="text-right" style="font-family: verdana !important;">
-                    <t t-if="sub_line['show_price']">
-                        <span t-esc="sub_line['total_price']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                        <span t-esc="sub_line['total_price']" style="font-family: verdana !important;"
+                              t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                     </t>
                 </td>
             </tr>
@@ -309,9 +317,8 @@
                                     <t t-set="bundle_sub_index" t-value="1"/>
                                     <t t-foreach="sections[section]['lines']" t-as="line">
                                         <tr t-att-class="'font-weight-bold'" style="font-size:10px !important; font-family: verdana !important;">
-                                            <td class="text-right" colspan="2" style="width: 30px !important;">
-                                                <t t-esc="bundle_index" style="font-family: verdana !important;"/>
-.
+                                            <td class="text-right" colspan="2" style="width: 40px !important;">
+                                                <t t-esc="bundle_index" style="font-family: verdana !important;"/>.
                                                 <t t-esc="bundle_sub_index" style="font-family: verdana !important;"/>
                                             </td>
                                             <td class="text-left" style="padding-left: 15px; font-family: verdana !important;">
@@ -321,7 +328,7 @@
                                                 <t t-esc="line['qty']" style="font-family: verdana !important;"/>
                                             </td>
                                             <td class="text-right" style="font-family: verdana !important;">
-                                                <span t-esc="line['item_price']" style="font-family: verdana !important;"
+                                                <span t-esc="line['price_unit']" style="font-family: verdana !important;"
                                                       t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                             </td>
                                             <t t-if="is_discounted">
@@ -337,16 +344,8 @@
                                                 </td>
                                             </t>
                                             <td class="text-right" style="font-family: verdana !important;">
-                                                <t t-if="line['is_update']">
-                                                    <span t-esc="line['item_price']" style="font-family: verdana !important;"
-                                                          t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                                                </t>
-                                                <t t-else="">
-                                                    <t t-if="line['is_update']">
-                                                        <span t-esc="line['total_price']" style="font-family: verdana !important;"
-                                                              t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                                                    </t>
-                                                </t>
+                                                <span t-esc="line['total_price']" style="font-family: verdana !important;"
+                                                      t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                             </td>
                                         </tr>
                                         <t t-set="bundle_sub_index" t-value="bundle_sub_index+1"/>
