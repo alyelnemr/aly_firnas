@@ -374,7 +374,7 @@
                                         <strong style="font-family: verdana !important;">Subtotal</strong>
                                     </td>
                                     <td name="td_amount_untaxed" style="font-family: verdana !important;" class="text-right">
-                                        <span t-field="doc.amount_untaxed" style="font-family: verdana !important;"/>
+                                        <span t-field="amount_untaxed" style="font-family: verdana !important;"/>
                                     </td>
                                 </tr>
                                 <tr style="font-family: verdana !important; font-size: 11px !important;">
