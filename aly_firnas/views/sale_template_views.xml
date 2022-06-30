@@ -12,10 +12,10 @@
                 <xpath expr="//field[@name='sale_order_template_line_ids']/tree/field[@name='price_unit']" position="replace">
                 </xpath>
                 <xpath expr="//field[@name='sale_order_template_line_ids']/tree/field[@name='discount']" position="before">
-                    <field name="section"/>
+                    <field name="price_unit"/>
                 </xpath>
                 <xpath expr="//field[@name='sale_order_template_option_ids']/tree/field[@name='product_id']" position="before">
-                    <field name="price_unit"/>
+                    <field name="section"/>
                 </xpath>
                 <xpath expr="//notebook/page[1]" position="after">
                     <page string="Additional Products">

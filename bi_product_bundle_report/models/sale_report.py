@@ -29,7 +29,7 @@ class SalesOrderReport(models.AbstractModel):
             discount += line.discount
         is_discounted = discount > 0
         is_taxed = docs.amount_tax > 0
-        amount_total = (amount_untaxed + amount_tax) - discount
+        amount_total = (amount_untaxed + amount_tax)
         col_span = 4
         if is_taxed or is_discounted:
             col_span = 5

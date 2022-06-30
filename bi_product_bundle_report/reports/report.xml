@@ -75,7 +75,7 @@
                                 <span style="font-family: verdana !important; font-size: 15px;" t-esc="doc.document_name"/>
                             </div>
                             <div class="page_number d-inline-block"
-                                 style="width: 6% !important; height: 100px !important; vertical-align:top;">
+                                 style="width: 6% !important; height: 90px !important; vertical-align:top;">
                                 <div style="font-family: verdana !important; font-size: 15px !important;">
                                     4-
                                     <span class="page"
@@ -416,8 +416,7 @@
                                         <strong style="font-family: verdana !important;">Global Discount</strong>
                                     </td>
                                     <td name="global_discount_amount" style="font-family: verdana !important;" class="text-right">
-                                        <span t-esc="discount" style="font-family: verdana !important;"
-                                              t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                        <span t-field="doc.ks_amount_discount" style="font-family: verdana !important;"/>
                                     </td>
                                 </tr>
                                 <tr class="border-black o_total" style="font-family: verdana !important; font-size: 11px !important;">
