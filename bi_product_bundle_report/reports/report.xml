@@ -675,7 +675,7 @@
                                     <span style="font-family: verdana !important; font-size: 15px;" t-esc="doc.document_name"/>
                                 </div>
                                 <div class="page_number d-inline-block"
-                                     style="width: 10% !important; padding-right: 4px; height: 80px !important; vertical-align:top;">
+                                     style="width: 6% !important; padding-right: 0px; height: 80px !important; vertical-align:top;">
                                     <div style="font-family: verdana !important; font-size: 15px !important;">
                                         4-
                                         <span class="page"
