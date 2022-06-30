@@ -674,12 +674,12 @@
                                     <br/>
                                     <span style="font-family: verdana !important; font-size: 15px;" t-esc="doc.document_name"/>
                                 </div>
-                                <div class="page_number d-inline-block"
-                                     style="width: 6% !important; padding-right: 0px; height: 80px !important; vertical-align:top;">
-                                    <div style="font-family: verdana !important; font-size: 15px !important;">
+                                <div class="page_number d-inline-block text-right"
+                                     style="width: 6% !important; padding-right: 0px; padding-left: 0px; height: 80px !important; vertical-align:top;">
+                                    <div style="font-family: verdana !important; font-size: 13px !important;">
                                         4-
                                         <span class="page"
-                                              style="padding-right: 5px !important; font-family: verdana !important; font-size: 15px !important; margin-left: -1px;"/>
+                                              style="!important; font-family: verdana !important; font-size: 13px !important; margin-left: -1px;"/>
                                     </div>
                                 </div>
                             </div>
