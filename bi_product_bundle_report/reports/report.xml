@@ -375,7 +375,7 @@
                                 </tr>
                                 <tr style="font-family: verdana !important; font-size: 11px !important;">
                                     <td name="td_amount_by_group_label" style="font-family: verdana !important;">
-                                        <span style="font-family: verdana !important;">Taxes</span>
+                                        <strong style="font-family: verdana !important;">Subtotal</strong>
                                     </td>
                                     <td name="td_amount_by_group" class="text-right o_price_total"
                                         style="font-family: verdana !important;">
