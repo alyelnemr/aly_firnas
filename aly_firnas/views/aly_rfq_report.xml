@@ -33,10 +33,12 @@
                 </tr>
                 <tr>
                     <td style="width:50%;">
-                        <span style="font-family: Open Sans !important;"
-                              class="text-left">Tax ID: </span><span t-field="o.company_id.vat"
-                              style="font-family: Open Sans !important;"
-                              class="text-left"/>
+                        <t t-if="o.company_id.vat">
+                            <span style="font-family: Open Sans !important;"
+                                  class="text-left">Tax ID: </span><span t-field="o.company_id.vat"
+                                  style="font-family: Open Sans !important;"
+                                  class="text-left"/>
+                        </t>
                     </td>
                     <td style="width:50%;">
                     </td>
@@ -215,10 +217,7 @@
                         </t>
                     </th>
                     <th style="width:50%;color:rgb(86, 56, 90); ">
-                        <t t-if="o.is_print_vendor_signature">
-                            <span t-field="o.partner_id.name" style="font-weight: bold; font-size: 15px !important;"
-                                  class="text-left"/>
-                        </t>
+
                     </th>
                 </tr>
                 <tr>
@@ -231,7 +230,7 @@
                         <t t-if="o.is_print_firnas_signature">Signature</t>
                     </th>
                     <th style="width:50%;color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">
-                        <t t-if="o.is_print_vendor_signature">Signature</t>
+
                     </th>
                 </tr>
                 <tr>
@@ -244,7 +243,7 @@
                         <t t-if="o.is_print_firnas_signature">Name and Title</t>
                     </th>
                     <th style="width:50%;color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">
-                        <t t-if="o.is_print_vendor_signature">Name and Title</t>
+
                     </th>
                 </tr>
             </table>
