@@ -1,3 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_sale_order_line_section,access_sale_order_line_section,model_sale_order_line_section,,1,1,1,1
+access_sale_order_line_section2,access_sale_order_line_section2,model_sale_order_line_section,sales_team.group_sale_salesman,1,1,1,1
+access_sale_order_line_section_manager2,access_sale_order_line_section3,model_sale_order_line_section,sales_team.group_sale_manager,1,1,1,1
 access_sale_order_additional,access_sale_order_additional,model_sale_order_additional,,1,1,1,1

@@ -15,10 +15,9 @@
                 <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="after">
                     <field name="discount"/>
                 </xpath>
-                <xpath expr="//page[@name='purchase_delivery_invoice']/group/group/field[last()]" position="before"><field string="Delivery Section" name="is_print_delivery_section"/>
-                </xpath>
                 <xpath expr="//page[@name='purchase_delivery_invoice']/group/group/field[last()]" position="after">
-                    <field string="Firnas Shuman Signature" name="is_print_firnas_signature"/>
+                    <field string="Delivery Section" name="is_print_delivery_section"/>
+                    <field string="Company Signature" name="is_print_firnas_signature"/>
                     <field string="Vendor Signature" name="is_print_vendor_signature"/>
                 </xpath>
                 <notebook position="inside">

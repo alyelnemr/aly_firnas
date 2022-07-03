@@ -19,8 +19,9 @@ class PurchaseOrderLine(models.Model):
             x = 1
             self.line_rank = len(first_line_rec.order_id.order_line)
             for line in first_line_rec.order_id.order_line:
-                line.line_rank = x
-                x += 1
+                if not line.display_type:
+                    line.line_rank = x
+                    x += 1
 
     def _prepare_account_move_line(self, move):
         vals = super(PurchaseOrderLine, self)._prepare_account_move_line(move)

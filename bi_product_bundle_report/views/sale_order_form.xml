@@ -6,6 +6,15 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <field name="opportunity_id" invisible="1"/>
+                    <button class="oe_stat_button o_res_partner_tip_opp" type="object"
+                            name="action_view_opportunity"
+                            icon="fa-star" attrs="{'invisible': [('opportunity_id', '=', False)]}"
+                            context="{'default_partner_id': active_id}">
+                        <span>Opportunities</span>
+                    </button>
+                </xpath>
                 <xpath expr="//header/field[@name='state']" position="before">
                     <button name="print_bundled_quotation" type="object" string="Print Bundled"
                             class="oe_highlight" invisible="1"/>
@@ -15,21 +24,46 @@
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_id']"
                        position="before">
-                    <field name="is_printed" context="{'changed_id': id}"/>
+                    <field name="is_printed" context="{'changed_id': id}" optional="show"/>
                     <field name="is_offer_product" invisible="1"/>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_uom']"
                        position="attributes">
                     <attribute name="attrs">{'readonly': [('state', 'in', ('sale','done', 'cancel'))], 'required': False}</attribute>
+                    <attribute name="optional">show</attribute>
                 </xpath>
-                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="after">
-                    <field name="section" required="1" />
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+                    <attribute name="optional">show</attribute>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_uom_qty']" position="attributes">
+                    <attribute name="optional">show</attribute>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_unit']" position="attributes">
+                    <attribute name="optional">show</attribute>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="attributes">
+                    <attribute name="optional">show</attribute>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="before">
+                    <field name="section" optional="show"/>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='customer_lead']" position="replace">
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_uom_qty']" position="before">
+                    <field
+                            name="customer_lead"
+                            optional="hide"
+                            attrs="{'readonly': [('parent.state', 'not in', ['draft', 'sent'])]}"
+                    />
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='discount']" position="replace">
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_unit']"
-                       position="before">
-                    <field name="item_price"/>
+                       position="after">
+                    <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line" optional="show"/>
+                    <field name="item_price" optional="show"/>
                 </xpath>
-                <xpath expr="//notebook/page[@name='other_information']" position="before">
+                <xpath expr="//notebook/page[@name='optional_products']" position="before">
                     <page string="Additional Products" name="additional">
                         <field name="sale_order_additional_ids" mode="tree,form,kanban">
                             <form string="Additional Products">
@@ -41,8 +75,8 @@
                                     <field name="product_uom_category_id" invisible="1"/>
                                     <field name="uom_id" groups="uom.group_uom"/>
                                     <field name="price_unit"/>
-                                    <field name="price_note"/>
                                     <field name="discount" groups="product.group_discount_per_so_line"/>
+                                    <field name="price_note"/>
                                     <field name="is_present"/>
                                 </group>
                             </form>
@@ -106,9 +140,9 @@
                                 <field name="uom_id" string="UoM" groups="uom.group_uom" optional="show"/>
                                 <field name="product_uom_category_id" invisible="1"/>
                                 <field name="price_unit"/>
-                                <field name="price_note"/>
                                 <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line"
                                        optional="show"/>
+                                <field name="price_note"/>
                                 <field name="is_present" invisible="1"/>
                                 <button name="button_add_to_order" class="oe_link" icon="fa-shopping-cart"
                                         title="Add to order lines" type="object"
@@ -120,15 +154,56 @@
             </field>
         </record>
 
+
+        <record model="ir.ui.view" id="aly_sale_margin_sale_order_line_form">
+            <field name="name">aly.sale.order.line.tree.margin.view.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_margin.sale_margin_sale_order_line_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']/tree//field[@name='purchase_price']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree//field[@name='product_uom_qty']" position="after">
+                    <field name="purchase_price" optional="hide" groups="base.group_user"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="aly_view_order_tree" model="ir.ui.view">
+            <field name="name">aly.sale.order.tree.inherit.website.sale</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='create_date']" position="after">
+                    <field name="opportunity_id"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="aly_sale_view_inherit123" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit.sale</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_crm.sale_view_inherit123"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='opportunity_id']" position="replace">
+                    <field name="opportunity_id" help="Log in the chatter from which opportunity the order originates"
+                           />
+                </xpath>
+            </field>
+        </record>
         <record id="inherit_view_sale_order_add_section_fields" model="ir.ui.view">
             <field name="name">inherit.view.sale.order.add.section.fields</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale_management.sale_order_form_quote"/>
             <field name="arch" type="xml">
+                <xpath expr="//page[@name='optional_products']" position="attributes">
+                    <attribute name="attrs">
+                        {'invisible': False}
+                    </attribute>
+                </xpath>
                 <xpath expr="//field[@name='sale_order_option_ids']/tree//field[@name='sequence']" position="after">
                     <field name="section"/>
                 </xpath>
-                <xpath expr="//field[@name='sale_order_option_ids']/tree//field[@name='price_unit']" position="after">
+                <xpath expr="//field[@name='sale_order_option_ids']/tree//field[@name='discount']" position="after">
                     <field name="price_note"/>
                 </xpath>
                 <xpath expr="//field[@name='payment_term_id']" position="after">

@@ -11,6 +11,7 @@
                         <group>
                             <field mode="tree" name="child_line" nolabel="1">
                                 <tree string="Product Details" editable="bottom">
+                                    <field name="seq" widget="handle" />
                                     <field name="product_id" options="{'no_create': True}" required="1"/>
                                     <field name="product_qty" required="1"/>
                                 </tree>
@@ -32,10 +33,10 @@
 
                 <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='price_subtotal']" position="after">
                     <field name="bundle_status" invisible="1"/>
-                    
-                   
-                    <button name="update_product" string="Update" type="object" states="draft,sale,sent" class="btn btn-primary oe_edit_only"/>
-                    <!-- <button name="action_unlink" string="Delete" type="object" states="draft,sale,sent" class="btn btn-primary oe_edit_only"/> -->
+                    <field name="is_update" invisible="1" />
+                    <button name="update_product" class="btn btn-primary"
+                            string="Update" type="object"
+                            attrs="{'invisible': [('is_update', '=', False)]}"/>
                 </xpath>
 
 

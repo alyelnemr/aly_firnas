@@ -1,15 +1,6 @@
 from odoo import api, fields, models,_
 from odoo.exceptions import UserError, ValidationError
 
-class SaleOrderOption(models.Model):
-    _inherit = "sale.order.option"
-
-    name = fields.Text('Description', required=False)
-    uom_id = fields.Many2one('uom.uom', 'Unit of Measure ', required=False, domain="[('category_id', '=', product_uom_category_id)]")
-    is_printed = fields.Boolean(string="Print?", default=True)
-    section = fields.Many2one('sale.order.line.section', string="Section", required=True)
-    price_note = fields.Char("Price Note")
-
 
 class SaleOrderAdditional(models.Model):
     _name = "sale.order.additional"
@@ -17,8 +8,9 @@ class SaleOrderAdditional(models.Model):
     _order = 'sequence, id'
 
     is_present = fields.Boolean(string="Present on Quotation",
-                           help="This field will be checked if the additional line's product is "
-                                "already present in the quotation.",compute="_compute_is_present")
+                                help="This field will be checked if the option line's product is "
+                                     "already present in the quotation.",
+                                compute="_compute_is_present", search="_search_is_present")
     order_id = fields.Many2one('sale.order', 'Sales Order Reference', ondelete='cascade', index=True)
     line_id = fields.Many2one('sale.order.line', ondelete="set null", copy=False)
     name = fields.Text('Description', required=False)
@@ -30,16 +22,16 @@ class SaleOrderAdditional(models.Model):
     quantity = fields.Float('Quantity', required=True, digits='Product UoS', default=1)
     sequence = fields.Integer('Sequence', help="Gives the sequence order when displaying a list of optional products.")
     is_printed = fields.Boolean(string="Print?", default=True)
-    section = fields.Many2one('sale.order.line.section', string="Section")
+    section = fields.Many2one('sale.order.line.section', string="Section", required=True)
     price_note = fields.Char("Price Note")
-
+    is_button_clicked = fields.Boolean(default=False)
 
     @api.depends('line_id', 'order_id.order_line', 'product_id')
     def _compute_is_present(self):
         # NOTE: this field cannot be stored as the line_id is usually removed
         # through cascade deletion, which means the compute would be false
-        for additional in self:
-            additional.is_present = bool(additional.order_id.order_line.filtered(lambda l: l.product_id == additional.product_id))
+        for option in self:
+            option.is_present = option.is_button_clicked
 
     @api.onchange('product_id')
     def onchange_product_id(self):
@@ -69,12 +61,13 @@ class SaleOrderAdditional(models.Model):
         return {'domain': domain}
 
     def button_add_to_order(self):
-        self.add_option_to_order()
+        self.add_additional_to_order()
 
-    def add_option_to_order(self):
+    def add_additional_to_order(self):
         self.ensure_one()
 
         sale_order = self.order_id
+        self.write({'is_button_clicked': True})
 
         # if sale_order.state not in ['draft', 'sent']:
         #     raise UserError(_('You cannot add additional to a confirmed order.'))

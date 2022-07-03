@@ -6,10 +6,10 @@ class SaleOrderInherit(models.Model):
     _inherit = 'sale.order'
 
     def _set_default_standard_payment(self):
-        return """<p style="font-size: 15px;">Payments are presented as a percentage of the contract value for these services. They are divided into the following payments:</p><ul style="font-size: 15px;"><li style="font-size: 15px;">80% advance payment.</li><li style="font-size: 15px;">20% upon commissioning.</li></ul><p style="font-size: 15px;">Maintenance visits (Corrective and preventive): to be paid 100% within 15 days of issuance of the report. Data Collection and monitoring: to be paid 100% quarterly in advance.</p>"""
+        return self.env['ir.config_parameter'].sudo().get_param('aly_so_payment_schedule')
 
     def _set_default_terms_conditions(self):
-        return """<ul style="font-size: 15px;"><li style="font-size: 15px;">All prices are in EUR.</li><li style="font-size: 15px;">The proposal is exclusive of VAT.</li><li style="font-size: 15px;">The offer is valid for 30 days.</li></ul><br/>"""
+        return self.env['ir.config_parameter'].sudo().get_param('aly_so_terms_condition')
 
     project_name = fields.Char(string="Customer's Project Name / Proposal Title")
     document_name = fields.Char(string="Proposal Subject")
