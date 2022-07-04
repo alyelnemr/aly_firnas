@@ -122,15 +122,15 @@
             </t>
         </template>
 
+    </data>
+    <data>
+
         <template id="report_assets_common_custom_fonts" name="Custom QWeb fonts" inherit_id="web.report_assets_common">
             <xpath expr="." position="inside">
                 <link href="/bi_product_bundle_report/static/src/scss/fonts.scss" rel="stylesheet" type="text/less"/>
             </xpath>
         </template>
 
-
-    </data>
-    <data>
 
         <template id="sub_line_sub__sub_bundle_template">
             <t t-foreach="sub_line_1['sub_lines']" t-as="sub_line_2">
