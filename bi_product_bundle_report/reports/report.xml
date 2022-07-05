@@ -267,7 +267,7 @@
                                     <th class="text-center" style="font-family: verdana !important;color: #CF9FFF; width:40px; font-size: 11px;">Qty</th>
                                     <th class="text-right" style="font-family: verdana !important;color: #CF9FFF; width:70px; font-size: 11px;">Unit Price</th>
                                     <t t-if="is_discounted">
-                                        <th class="text-center" style="font-family: verdana !important; width:70px; font-size: 11px;">Discount</th>
+                                        <th class="text-center" style="font-family: verdana !important;color: #CF9FFF; width:70px; font-size: 11px;">Discount</th>
                                     </t>
                                     <t t-if="is_taxed">
                                         <th class="text-center" style="font-family: verdana !important;color: #CF9FFF; width:70px; font-size: 11px;">Taxes</th>

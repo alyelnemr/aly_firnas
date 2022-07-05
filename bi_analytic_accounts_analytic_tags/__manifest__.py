@@ -18,7 +18,7 @@
         'views/inherit_picking_view.xml',
         'views/inherit_sales_view.xml',
         'views/inherit_purchase_view.xml',
-        'views/inherit_account_move_view.xml',
+        'views/account_move.xml',
     ],
     'installable': True,
     'auto_install': False,
