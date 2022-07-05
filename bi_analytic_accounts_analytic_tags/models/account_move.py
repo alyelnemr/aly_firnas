@@ -17,6 +17,7 @@ class InheritAccountMove(models.Model):
                 if item.account_id and item.account_id.internal_type == 'payable':
                     item.analytic_account_id = move.analytic_account_id
                     item.analytic_tag_ids = move.analytic_tag_ids
+        return res
 
     def write(self, vals):
         lines = super(InheritAccountMove, self).write(vals)
