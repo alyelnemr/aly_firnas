@@ -163,19 +163,19 @@ class InheritBankStatement(models.Model):
             # Complete dicts to create both counterpart move lines and write-offs
             to_create = (counterpart_aml_dicts + new_aml_dicts)
             date = self.date or fields.Date.today()
-            for aml_dict in to_create:
+            for index, aml_dict in enumerate(to_create):
                 analytic_tag_ids = self.analytic_tag_ids
                 if not analytic_tag_ids:
-                    if len(counterpart_aml_dicts) > 0 and counterpart_aml_dicts[0]['move_line']:
-                        analytic_tag_ids = counterpart_aml_dicts[0]['move_line'].analytic_tag_ids
-                    if len(new_aml_dicts) > 0 and new_aml_dicts[0]['analytic_tag_ids']:
-                        analytic_tag_ids = new_aml_dicts[0]['analytic_tag_ids']
+                    if len(counterpart_aml_dicts) > 0 and counterpart_aml_dicts[index]['move_line']:
+                        analytic_tag_ids = counterpart_aml_dicts[index]['move_line'].analytic_tag_ids
+                    if len(new_aml_dicts) > 0 and new_aml_dicts[index]['analytic_tag_ids']:
+                        analytic_tag_ids = new_aml_dicts[index]['analytic_tag_ids']
                 analytic_account_id = self.analytic_account_id.id
                 if not analytic_account_id:
-                    if len(counterpart_aml_dicts) > 0 and counterpart_aml_dicts[0]['move_line']:
-                        analytic_account_id = counterpart_aml_dicts[0]['move_line'].analytic_account_id.id
-                    if len(new_aml_dicts) > 0 and new_aml_dicts[0]['analytic_tag_ids']:
-                        analytic_account_id = new_aml_dicts[0]['analytic_account_id']
+                    if len(counterpart_aml_dicts) > 0 and counterpart_aml_dicts[index]['move_line']:
+                        analytic_account_id = counterpart_aml_dicts[index]['move_line'].analytic_account_id.id
+                    if len(new_aml_dicts) > 0 and new_aml_dicts[index]['analytic_tag_ids']:
+                        analytic_account_id = new_aml_dicts[index]['analytic_account_id']
                 aml_dict['move_id'] = move.id
                 aml_dict['partner_id'] = self.partner_id.id
                 aml_dict['statement_line_id'] = self.id
