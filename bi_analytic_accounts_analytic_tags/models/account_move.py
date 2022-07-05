@@ -26,8 +26,9 @@ class InheritAccountMove(models.Model):
                 if item.account_id.internal_type == 'payable':
                     item.analytic_account_id = move.analytic_account_id if not item.analytic_account_id else item.analytic_account_id
                     item.analytic_tag_ids = move.analytic_tag_ids if not item.analytic_tag_ids else item.analytic_tag_ids
-                item.analytic_account_id = move.invoice_line_ids[0].analytic_account_id if not item.analytic_account_id else item.analytic_account_id
-                item.analytic_tag_ids = move.invoice_line_ids[0].analytic_tag_ids if not item.analytic_tag_ids else item.analytic_tag_ids
+                else:
+                    item.analytic_account_id = move.invoice_line_ids[0].analytic_account_id if not item.analytic_account_id else item.analytic_account_id
+                    item.analytic_tag_ids = move.invoice_line_ids[0].analytic_tag_ids if not item.analytic_tag_ids else item.analytic_tag_ids
         return lines
 
     @api.depends('line_ids.analytic_account_id', 'line_ids.analytic_tag_ids', 'invoice_line_ids.analytic_account_id',
