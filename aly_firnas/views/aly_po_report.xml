@@ -33,12 +33,14 @@
                 </tr>
                 <tr>
                     <td style="width:50%;">
-                        <span style="font-family: Open Sans !important;"
-                              class="text-left">Tax ID:
-                        </span>
-                        <span t-field="o.company_id.vat"
-                              style="font-family: Open Sans !important;"
-                              class="text-left"/>
+                        <t t-if="o.company_id.vat">
+                            <span style="font-family: Open Sans !important;"
+                                  class="text-left">Tax ID:
+                            </span>
+                            <span t-field="o.company_id.vat"
+                                  style="font-family: Open Sans !important;"
+                                  class="text-left"/>
+                        </t>
                     </td>
                     <td style="width:50%;">
                     </td>
