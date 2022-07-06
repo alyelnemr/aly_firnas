@@ -316,7 +316,7 @@
                                                 <t t-raw="line['desc']" style="font-family: verdana !important;"/>
                                             </td>
                                             <td class="text-center" style="font-family: verdana !important;">
-                                                <t t-esc="line['price_unit']" style="font-family: verdana !important;"/>
+                                                <t t-esc="line['qty']" style="font-family: verdana !important;"/>
                                             </td>
                                             <td class="text-right" style="font-family: verdana !important;">
                                                 <span t-esc="line['price_unit']" style="font-family: verdana !important;"
