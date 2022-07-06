@@ -70,7 +70,7 @@ class SaleOrder(models.Model):
         return data
 
     def is_sub_product(self,line):
-        return self.order_line.filtered(lambda l:l.id == line.parent_order_line.id)
+        return self.order_line.filtered(lambda l: l.id == line.parent_order_line.id)
     
     def is_updated_bundle(self,line):
         return line.get_orderline_sublines()
