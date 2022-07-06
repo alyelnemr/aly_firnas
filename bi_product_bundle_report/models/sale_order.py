@@ -59,8 +59,8 @@ class SaleOrder(models.Model):
                         'tax_id': ol.tax_id,
                         'item_price': ol.item_price,
                         # 'price_unit': ol.price_unit,
-                        'price_unit': round(ol.item_price / (int(ol.product_uom_qty) * ((1 - ol.discount) / 100)), 2),
-                        'discount': ol.discount,
+                        'price_unit': round((int(ol.product_uom_qty) * ((1 - ol.discount) / 100)), 2),
+                        'discount': ((1 - ol.discount) / 100),
                         'is_update': ol.is_update,
                         'sub_lines': ol.get_orderline_sublines()
                     } for ol
