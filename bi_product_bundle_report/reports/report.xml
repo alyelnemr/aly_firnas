@@ -331,7 +331,7 @@
                                             </t>
                                             <t t-if="is_taxed">
                                                 <td class="text-center" style="font-family: verdana !important;">
-                                                    <span t-esc="', '.join(map(lambda x: (x.description or x.name), line['tax_id']))"/>
+                                                    <span t-esc="', '.join(map(lambda x: (x.description or x.name), line['tax_id']))" />
                                                 </td>
                                             </t>
                                             <td class="text-right" style="font-family: verdana !important;">

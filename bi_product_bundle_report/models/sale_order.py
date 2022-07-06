@@ -54,12 +54,12 @@ class SaleOrder(models.Model):
                         'name': ('[%s] ' % ol.product_id.default_code if ol.product_id.default_code else '')
                                 + ol.product_id.name,
                         'desc': textile.textile(ol.name) if ol.name else '',
-                        'qty': float(ol.product_uom_qty),
+                        'qty': int(ol.product_uom_qty),
                         'total_price': ol.price_subtotal,
                         'tax_id': ol.tax_id,
                         'item_price': ol.item_price,
                         # 'price_unit': ol.price_unit,
-                        'price_unit': round(ol.item_price / (float(ol.product_uom_qty) * ((1 - ol.discount) / 100)), 2),
+                        'price_unit': round(ol.item_price / (int(ol.product_uom_qty) * (1 - (ol.discount / 100))), 2),
                         'discount': ol.discount,
                         'is_update': ol.is_update,
                         'sub_lines': ol.get_orderline_sublines()
