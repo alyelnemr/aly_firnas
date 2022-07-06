@@ -44,6 +44,9 @@
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="attributes">
                     <attribute name="optional">show</attribute>
                 </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
+                    <field name="item_price" string="Total Price" optional="show"/>
+                </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/widget[@name='qty_at_date_widget']" position="attributes">
                     <attribute name="string">Stock</attribute>
                     <attribute name="optional">show</attribute>
@@ -69,7 +72,6 @@
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_unit']"
                        position="after">
                     <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line" optional="show"/>
-                    <field name="item_price" optional="show"/>
                 </xpath>
                 <xpath expr="//notebook/page[@name='optional_products']" position="before">
                     <page string="Additional Products" name="additional">
