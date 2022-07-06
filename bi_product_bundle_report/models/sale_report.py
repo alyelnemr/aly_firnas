@@ -20,15 +20,14 @@ class SalesOrderReport(models.AbstractModel):
             (ol.price_subtotal if not ol.product_id.child_line else ol.price_unit * ol.product_uom_qty) for ol in
             docs.order_line.filtered(lambda l: l.is_printed is True)
         ])
-        amount_tax = sum([
-            ol.price_tax for ol in
-            docs.order_line.filtered(lambda l: l.is_printed is True)
-        ])
+        amount_tax = 0
         discount = 0
         for line in docs.order_line.filtered(lambda l: l.is_printed is True):
-            discount += line.discount
+            if not docs.order_line.filtered(lambda l: l.id == line.parent_order_line.id):
+                discount += line.discount
+                amount_tax += line.price_tax
         is_discounted = discount > 0
-        is_taxed = docs.amount_tax > 0
+        is_taxed = amount_tax > 0
         amount_total = (amount_untaxed + amount_tax)
         col_span = 4
         if is_taxed or is_discounted:

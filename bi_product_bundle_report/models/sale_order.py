@@ -41,33 +41,37 @@ class SaleOrder(models.Model):
             if line['section'] not in all_sections:
                 all_sections.append(line['section'])
         for section in all_sections:
-            data[str(section.id if section.id else 0)] = {
-                'name': section.name if section.name else '(undefined)',
-                'total_price': sum([
-                    (ol.price_subtotal if not ol.product_id.child_line else ol.price_unit * ol.product_uom_qty) for ol in
-                    order_lines.filtered(lambda l: l.section.id == section.id and l.is_printed is True)
-                ]),
-                'lines': [{
-                    'name': ('[%s] ' % ol.product_id.default_code if ol.product_id.default_code else '')
-                            + ol.product_id.name,
-                    'desc': textile.textile(ol.name) if ol.name else '',
-                    'qty': int(ol.product_uom_qty),
-                    'total_price': ol.price_subtotal,
-                    'tax_id': ol.tax_id,
-                    'item_price': ol.item_price,
-                    'price_unit': ol.price_unit,
-                    'discount': ol.discount,
-                    'is_update': ol.is_update,
-                    'sub_lines': ol.get_orderline_sublines()
-                } for ol
-                    in order_lines.filtered(lambda l: l.section.id == section.id and l.is_printed is True and not self.is_sub_product(l))]
-                    
-            }
-            # and l.bundle_status in ('bundle','bundel_of_bundle')
+            order_lines_count = order_lines.filtered(
+                lambda l: l.section.id == section.id and l.is_printed is True and not self.is_sub_product(l))
+            if order_lines_count:
+                data[str(section.id if section.id else 0)] = {
+                    'name': section.name if section.name else '(undefined)',
+                    'total_price': sum([
+                        (ol.price_subtotal if not ol.product_id.child_line else ol.price_unit * ol.product_uom_qty) for ol in
+                        order_lines.filtered(lambda l: l.section.id == section.id and l.is_printed is True)
+                    ]),
+                    'lines': [{
+                        'name': ('[%s] ' % ol.product_id.default_code if ol.product_id.default_code else '')
+                                + ol.product_id.name,
+                        'desc': textile.textile(ol.name) if ol.name else '',
+                        'qty': float(ol.product_uom_qty),
+                        'total_price': ol.price_subtotal,
+                        'tax_id': ol.tax_id,
+                        'item_price': ol.item_price,
+                        # 'price_unit': ol.price_unit,
+                        'price_unit': round(ol.item_price / (float(ol.product_uom_qty) * ((1 - ol.discount) / 100)), 2),
+                        'discount': ol.discount,
+                        'is_update': ol.is_update,
+                        'sub_lines': ol.get_orderline_sublines()
+                    } for ol
+                        in order_lines.filtered(lambda l: l.section.id == section.id and l.is_printed is True and not self.is_sub_product(l))]
+
+                }
+                # and l.bundle_status in ('bundle','bundel_of_bundle')
         return data
 
     def is_sub_product(self,line):
-        return self.order_line.filtered(lambda l:l.id == line.parent_order_line.id)
+        return self.order_line.filtered(lambda l: l.id == line.parent_order_line.id)
     
     def is_updated_bundle(self,line):
         return line.get_orderline_sublines()

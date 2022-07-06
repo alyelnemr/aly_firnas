@@ -44,6 +44,13 @@
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="attributes">
                     <attribute name="optional">show</attribute>
                 </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
+                    <field name="item_price" string="Total Price" optional="show"/>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/widget[@name='qty_at_date_widget']" position="attributes">
+                    <attribute name="string">Stock</attribute>
+                    <attribute name="optional">show</attribute>
+                </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="before">
                     <field name="section" optional="show"/>
                 </xpath>
@@ -56,12 +63,15 @@
                             attrs="{'readonly': [('parent.state', 'not in', ['draft', 'sent'])]}"
                     />
                 </xpath>
+                <xpath expr="//field[@name='require_payment']" position="after">
+                    <field name="opportunity_id" help="Log in the chatter from which opportunity the order originates"
+                    />
+                </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='discount']" position="replace">
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_unit']"
                        position="after">
                     <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line" optional="show"/>
-                    <field name="item_price" optional="show"/>
                 </xpath>
                 <xpath expr="//notebook/page[@name='optional_products']" position="before">
                     <page string="Additional Products" name="additional">
@@ -176,17 +186,6 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='create_date']" position="after">
                     <field name="opportunity_id"/>
-                </xpath>
-            </field>
-        </record>
-        <record id="aly_sale_view_inherit123" model="ir.ui.view">
-            <field name="name">sale.order.form.inherit.sale</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale_crm.sale_view_inherit123"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='opportunity_id']" position="replace">
-                    <field name="opportunity_id" help="Log in the chatter from which opportunity the order originates"
-                           />
                 </xpath>
             </field>
         </record>
