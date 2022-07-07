@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="aly_hr_expense_view_form">
+            <field name="name">hr_expense_view_form.inherit</field>
+            <field name="model">hr.expense</field>
+            <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='employee_id']" position="replace">
+                    <field name="employee_id" groups="hr_expense.group_hr_expense_team_approver"/>
+                </xpath>
+                <xpath expr="//field[@name='date']" position="attributes">
+                    <attribute name="attrs">{'invisible': False}</attribute>
+                    <attribute name="modifiers">
+                        {'invisible':False,'readonly':[['state','not
+                        in',['draft']]],'required':true}</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
