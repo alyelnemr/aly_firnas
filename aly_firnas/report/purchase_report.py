@@ -118,11 +118,11 @@ class PurchaseReportTemplatePrimary(models.AbstractModel):
         docs.po_payment_schedule = docs.po_payment_schedule.replace('</p><p>', '<br />') if docs.po_payment_schedule else False
         docs.po_acceptance = docs.po_acceptance.replace('</p><p>', '<br />') if docs.po_acceptance else False
         is_print_page_break = docs.is_print_scope_schedule or docs.is_print_payment_schedule or docs.is_print_acceptance
-        col_span = 4
+        col_span = 5
         if is_taxed or is_discounted:
-            col_span = 5
-        if is_taxed and is_discounted:
             col_span = 6
+        if is_taxed and is_discounted:
+            col_span = 7
         return {
             'data': data,
             'doc_ids': docids,

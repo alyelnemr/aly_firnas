@@ -32,7 +32,8 @@ class HRExpense(models.Model):
 
         # return ['|', ('company_id', '=', False), ('company_id', 'in', self.env.user.company_ids)]
 
-    employee_id = fields.Many2one('hr.employee', string="Employee", required=True, readonly=True, states={'draft': [('readonly', False)], 'reported': [('readonly', False)], 'refused': [('readonly', False)]}, default=_default_employee_id)
+    employee_id = fields.Many2one('hr.employee', string="Employee", required=True, readonly=True, states={'draft': [('readonly', False)], 'reported': [('readonly', False)], 'refused': [('readonly', False)]}, default=_default_employee_id,
+                                  check_company=False)
 
     # override expense credit account to take journal credit account
     def _get_expense_account_destination(self):

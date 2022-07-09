@@ -278,8 +278,8 @@
                             </t>
                             <t t-else="">
                                 <t t-if="line.price_subtotal > 0">
-                                    <t t-if="col_span == 4">
-                                        <td colspan="4" id="section">
+                                    <t t-if="col_span == 7">
+                                        <td colspan="7" id="section">
                                             <span t-field="line.name"/>
                                         </td>
                                     </t>
