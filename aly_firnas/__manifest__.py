@@ -12,6 +12,8 @@
         'views/aly_rfq_report.xml',
         'views/product.xml',
         'views/hr_expense.xml',
+        'views/hr_employee.xml',
+        'views/account_analytic_account.xml',
         'views/account_bank_statement.xml',
         'views/account_move.xml',
         'views/account_payment.xml',
