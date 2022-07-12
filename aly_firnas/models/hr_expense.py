@@ -58,6 +58,27 @@ class HRExpense(models.Model):
     def _default_company_id(self):
         return self.project_id.company_id
 
+    def _compute_picking_count(self):
+        if self.expense_picking_id:
+            picking_type_ids = self.env['stock.picking'].browse(self.expense_picking_id.id)
+            if picking_type_ids:
+                self.picking_count = len(picking_type_ids)
+            else:
+                self.picking_count = 0
+        else:
+            self.picking_count = 0
+
+    def _default_picking_receive(self):
+        type_obj = self.env['stock.picking.type']
+        company_id = self.env.context.get('company_id') or self.env.user.company_id.id
+        types = type_obj.search([('code', '=', 'incoming'), ('warehouse_id.company_id', '=', company_id)], limit=1)
+        if not types:
+            types = type_obj.search([('code', '=', 'incoming'), ('warehouse_id', '=', False)])
+        return types[:1]
+
+    picking_type_id = fields.Many2one('stock.picking.type', 'Picking Type', required=True,
+                                      default=_default_picking_receive,
+                                      help="This will determine picking type of incoming shipment")
     employee_id = fields.Many2one('hr.employee', string="Employee", required=True, readonly=True, states={'draft': [('readonly', False)], 'reported': [('readonly', False)], 'refused': [('readonly', False)]}, default=_default_employee_id,
                                   check_company=False)
     partner_id = fields.Many2one('res.partner', string='Vendor', required=True, change_default=True,
@@ -70,6 +91,8 @@ class HRExpense(models.Model):
                                  states={'draft': [('readonly', False)]})
     company_id = fields.Many2one('res.company', string='Company', required=True, readonly=True,
                                  states={'draft': [('readonly', False)]}, default=_default_company_id)
+    expense_picking_id = fields.Many2one('stock.picking', string="Picking ID")
+    picking_count = fields.Integer(string="Count", compute='_compute_picking_count', store=False)
 
     # override expense credit account to take journal credit account
     def _get_expense_account_destination(self):
@@ -78,3 +101,98 @@ class HRExpense(models.Model):
         if self.sheet_id.journal_id.default_credit_account_id:
             result = self.sheet_id.journal_id.default_credit_account_id.id
         return result
+
+    @api.model
+    def create(self, vals):
+        res = super(HRExpense, self).create(vals)
+        moves = self.env['stock.move']
+        done = self.env['stock.move'].browse()
+        for line in res:
+            if line.product_id.type in ['product', 'consu']:
+                pick = {
+                    'picking_type_id': line.picking_type_id.id,
+                    'partner_id': line.partner_id.id,
+                    'origin': '(Expenses) of ' + line.name,
+                    'location_dest_id': self.picking_type_id.default_location_dest_id.id,
+                    'location_id': self.partner_id.property_stock_supplier.id
+                }
+                picking = self.env['stock.picking'].create(pick)
+                line.expense_picking_id = picking.id
+                price_unit = line.unit_amount
+                template = {
+                    'name': line.name or '',
+                    'product_id': line.product_id.id,
+                    'product_uom': line.product_uom_id.id,
+                    'location_id': line.partner_id.property_stock_supplier.id,
+                    'location_dest_id': line.picking_type_id.default_location_dest_id.id,
+                    'picking_id': picking.id,
+                    'state': 'draft',
+                    'company_id': line.company_id.id,
+                    'price_unit': price_unit,
+                    'picking_type_id': line.picking_type_id.id,
+                    'route_ids': 1 and [
+                        (6, 0, [x.id for x in self.env['stock.location.route'].search([('id', 'in', (2, 3))])])] or [],
+                    'warehouse_id': line.picking_type_id.warehouse_id.id,
+                }
+                diff_quantity = line.quantity
+                tmp = template.copy()
+                tmp.update({
+                    'product_uom_qty': diff_quantity,
+                })
+                template['product_uom_qty'] = diff_quantity
+                done += moves.create(template)
+                move_ids = done._action_confirm()
+                move_ids._action_assign()
+        return res
+
+    def write(self, vals):
+        res = super(HRExpense, self).write(vals)
+        moves = self.env['stock.move']
+        done = self.env['stock.move'].browse()
+        for line in self:
+            if line.product_id.type in ['product', 'consu'] and not line.expense_picking_id:
+                pick = {
+                    'picking_type_id': line.picking_type_id.id,
+                    'partner_id': line.partner_id.id,
+                    'origin': 'Expense of ' + line.name,
+                    'location_dest_id': self.picking_type_id.default_location_dest_id.id,
+                    'location_id': self.partner_id.property_stock_supplier.id
+                }
+                picking = self.env['stock.picking'].create(pick)
+                line.expense_picking_id = picking.id
+                price_unit = line.unit_amount
+                template = {
+                    'name': line.name or '',
+                    'product_id': line.product_id.id,
+                    'product_uom': line.product_uom_id.id,
+                    'location_id': line.partner_id.property_stock_supplier.id,
+                    'location_dest_id': line.picking_type_id.default_location_dest_id.id,
+                    'picking_id': picking.id,
+                    'state': 'draft',
+                    'company_id': line.company_id.id,
+                    'price_unit': price_unit,
+                    'picking_type_id': line.picking_type_id.id,
+                    'route_ids': 1 and [
+                        (6, 0, [x.id for x in self.env['stock.location.route'].search([('id', 'in', (2, 3))])])] or [],
+                    'warehouse_id': line.picking_type_id.warehouse_id.id,
+                }
+                diff_quantity = line.quantity
+                tmp = template.copy()
+                tmp.update({
+                    'product_uom_qty': diff_quantity,
+                })
+                template['product_uom_qty'] = diff_quantity
+                done += moves.create(template)
+                move_ids = done._action_confirm()
+                move_ids._action_assign()
+        return res
+
+    def action_view_picking_delivery(self):
+        action = self.env.ref('stock.action_picking_tree_all').read()[0]
+        pickings = self.env['stock.picking'].browse(self.expense_picking_id.id)
+        if len(pickings) > 1:
+            action['domain'] = [('id', 'in', pickings.ids)]
+        elif pickings:
+            action['views'] = [(self.env.ref('stock.view_picking_form').id, 'form')]
+            action['res_id'] = pickings[0].id
+        return action
