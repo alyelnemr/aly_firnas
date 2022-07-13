@@ -85,14 +85,17 @@ class HRExpense(models.Model):
                                  tracking=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     vendor_contact = fields.Many2one('res.partner', string='Vendor Contacts', required=False,
                                      domain="[('parent_id', '=', partner_id)]")
-    user_to_approve_id = fields.Many2one('res.users', 'User To Approve', readonly=True, copy=False, states={'draft': [('readonly', False)]},
-                              tracking=True)
     project_id = fields.Many2one('project.project', 'Project', required=True, readonly=True,
                                  states={'draft': [('readonly', False)]})
     company_id = fields.Many2one('res.company', string='Company', required=True, readonly=True,
                                  states={'draft': [('readonly', False)]}, default=_default_company_id)
     expense_picking_id = fields.Many2one('stock.picking', string="Picking ID")
     picking_count = fields.Integer(string="Count", compute='_compute_picking_count', store=False)
+    payment_mode = fields.Selection([
+        ("own_account", "Employee (to reimburse)"),
+        ("company_account", "Company")
+    ], default='company_account', readonly=True, string="Paid By")
+    attachment_document = fields.Binary(string='Attachment', required=True)
 
     # override expense credit account to take journal credit account
     def _get_expense_account_destination(self):

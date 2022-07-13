@@ -149,7 +149,6 @@ class CustomerPortal(CustomerPortal):
 
         return request.render('bi_expense_portal.display_expense_request', values)
 
-
     @http.route(['/expense_request_form'], type='http', auth="user", website=True)
     def portal_expense_request_form(self, **kw):
         if not request.env.user.has_group('bi_expense_portal.group_employee_expense_portal') and not request.env.user.has_group('bi_expense_portal.group_employee_expense_manager_portal'):
@@ -157,10 +156,14 @@ class CustomerPortal(CustomerPortal):
         values = {}
         products = request.env['product.product'].sudo().search([('can_be_expensed', '=', True)])
         currencies = request.env['res.currency'].sudo().search([])
+        vendors = request.env['res.partner'].sudo().search([])
+        vendor_id = vendors[0].id
+        vendor_contact = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)])
+        projects = request.env['project.project'].sudo().search([])
         accounts = request.env['account.account'].sudo().search([('internal_type', '=', 'other')])
         analytic_accounts = request.env['account.analytic.account'].with_user(request.env.ref('base.user_admin').id).search([])
-        analytic_tags = request.env['account.analytic.tag'].with_user(request.env.ref('base.user_admin').id).search([])
         employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
+        analytic_tags = employees[0].analytic_tag_ids
 
         default_managers = request.env['res.users'].sudo()
         for emp in employees:
@@ -171,6 +174,9 @@ class CustomerPortal(CustomerPortal):
             managers -= default_managers
         values.update({
             'products': products,
+            'vendors': vendors,
+            'projects': projects,
+            'vendor_contact': vendor_contact,
             'currencies': currencies,
             'companies': request.env.user.company_ids - request.env.user.company_id,
             'default_currency': request.env.company.currency_id,
@@ -381,7 +387,8 @@ class CustomerPortal(CustomerPortal):
         if company:
             product_ids = request.env['product.product'].sudo().search(
                 [('can_be_expensed', '=', True), '|', ('company_id', '=', int(company)), ('company_id', '=', False)])
-            analytic_account_ids = request.env['account.analytic.account'].with_user(request.env.ref('base.user_admin').id).search(
+            analytic_account_ids = request.env['account.analytic.account'].with_user(
+                request.env.ref('base.user_admin').id).search(
                 ['|', ('company_id', '=', int(company)), ('company_id', '=', False)])
             analytic_tag_ids = request.env['account.analytic.tag'].with_user(
                 request.env.ref('base.user_admin').id).search(
@@ -398,7 +405,9 @@ class CustomerPortal(CustomerPortal):
             account_ids = request.env['account.account'].sudo()
             prod = request.env['product.product'].sudo().search([('id', '=', int(product))]) if product else False
             if prod:
-                account_ids += prod.with_context(force_company=int(company)).property_account_expense_id or prod.categ_id.with_context(force_company=int(company)).property_account_expense_categ_id
+                account_ids += prod.with_context(
+                    force_company=int(company)).property_account_expense_id or prod.categ_id.with_context(
+                    force_company=int(company)).property_account_expense_categ_id
             for a in account_ids:
                 accounts.append((a.id, a.display_name))
 
@@ -407,4 +416,54 @@ class CustomerPortal(CustomerPortal):
             analytic_accounts=analytic_accounts,
             analytic_tags=analytic_tags,
             accounts=accounts,
+        )
+
+    @http.route(['/expense/vendor_contacts'], type='json', auth="public", website=True)
+    def vendor_contacts(self, vendor, **kw):
+        vendor_contacts = []
+        if vendor:
+            vendor_id = int(vendor)
+            res_partner_contacts = request.env['res.partner'].sudo().search(
+                [('parent_id', '=', vendor_id)])
+            for item in res_partner_contacts:
+                vendor_contacts.append((item.id, item.name))
+        return dict(
+            vendor_contacts=vendor_contacts,
+        )
+
+    @http.route(['/expense/project_change'], type='json', auth="public", website=True)
+    def project_change(self, project_id_str, **kw):
+        analytic_account_data = []
+        company_id = []
+        employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
+        analytic_tags_data = []
+        for item_tag in employees[0].analytic_tag_ids:
+            analytic_tags_data.append((item_tag.id, item_tag.name))
+        if project_id_str:
+            project_id = int(project_id_str)
+            res_project_data = request.env['project.project'].sudo().search(
+                [('id', '=', project_id)])
+            for item in res_project_data:
+                company_id = item.company_id.id
+            for item in res_project_data:
+                analytic_account_data.append((item.analytic_account_id.id, item.analytic_account_id.name))
+                for item_tag in item.analytic_account_id.analytic_tag_ids:
+                    analytic_tags_data.append((item_tag.id, item_tag.name))
+        return dict(
+            company_data=company_id,
+            analytic_account_data=analytic_account_data,
+            analytic_tags_data=analytic_tags_data,
+        )
+
+    @http.route(['/expense/product_change'], type='json', auth="public", website=True)
+    def product_change(self, product_id_str, **kw):
+        product_data = []
+        if product_id_str:
+            product_id = int(product_id_str)
+            res_product_data = request.env['product.product'].sudo().search(
+                [('id', '=', product_id)])
+            for item in res_product_data.product_tmpl_id._get_product_accounts()['expense']:
+                product_data.append((item.id, item.name))
+        return dict(
+            default_account=product_data,
         )

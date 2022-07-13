@@ -6,6 +6,11 @@
                 <script type="text/javascript" src="/bi_expense_portal/static/src/js/website_expense.js"></script>
             </xpath>
         </template>
+        <template id="aly_assets_frontend_test" inherit_id="website.assets_frontend" name="Assets Frontend test">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/bi_expense_portal/static/src/js/website_expense.js"></script>
+            </xpath>
+        </template>
 
         <template id="portal_my_home_menu_expense" name="Portal layout : expense menu entries"
                   inherit_id="portal.portal_breadcrumbs" priority="25">
@@ -303,16 +308,33 @@
                                 </div>
                                 <div class="form-group row form-field">
                                     <div class="col-lg-4 col-md-4">
-                                        <label class="col-form-label" for="manager_id">Manager</label>
-                                        <select class="form-control" name="manager_id" required="1">
-                                            <t t-foreach="default_managers" t-as="manager">
-                                                <option t-att-value="manager.id">
-                                                    <t t-esc="manager.name"/>
+                                        <label class="col-form-label" for="partner_id">Vendor</label>
+                                        <select id="partner_id" class="form-control" name="partner_id" required="1">
+                                            <t t-foreach="vendors" t-as="vendor">
+                                                <option t-att-value="vendor.id">
+                                                    <t t-esc="vendor.name"/>
                                                 </option>
                                             </t>
-                                            <t t-foreach="managers" t-as="manager">
-                                                <option t-att-value="manager.id">
-                                                    <t t-esc="manager.name"/>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="vendor_contact">Vendor Contacts</label>
+                                        <select id="vendor_contact" class="form-control" name="vendor_contact">
+                                            <t t-foreach="vendors" t-as="v_contact">
+                                                <option t-att-value="v_contact.id">
+                                                    <t t-esc="v_contact.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="project_id">Projects</label>
+                                        <select id="project_id" class="form-control" name="project_id" required="1">
+                                            <t t-foreach="projects" t-as="project">
+                                                <option t-att-value="project.id">
+                                                    <t t-esc="project.name"/>
                                                 </option>
                                             </t>
                                         </select>
@@ -373,18 +395,23 @@
                                         <label class="col-form-label" for="unit_amount">Unit Price</label>
                                         <input type="number" step="0.01" class="form-control" name="unit_amount" required="1"/>
                                     </div>
-                                    <div class="col-lg-4 col-md-4">
+                                    <div class="col-lg-2 col-md-2">
                                         <label class="col-form-label" for="quantity">Quantity</label>
-                                        <input type="number" step="0.01" class="form-control" name="quantity" value="1.0" required="1"/>
+                                        <input type="number" step="0.01" class="form-control" name="quantity" value="1.0"
+                                               required="1"/>
+                                    </div>
+                                    <div class="col-lg-2 col-md-2">
+                                        <label class="col-form-label" for="taxes">Taxes %</label>
+                                        <input type="number" step="0.01" class="form-control" name="taxes" required="1"/>
                                     </div>
                                 </div>
                                 <div class="form-group row form-field">
                                     <div class="col-lg-4 col-md-4">
                                         <label class="col-form-label" for="payment_mode">Paid By</label>
                                         <select class="form-control" name="payment_mode" required="1">
-                                            <option value="own_account">
-                                                Employee (to reimburse)
-                                            </option>
+<!--                                            <option value="own_account">-->
+<!--                                                Employee (to reimburse)-->
+<!--                                            </option>-->
                                             <option value="company_account">
                                                 Company
                                             </option>
@@ -393,9 +420,11 @@
                                     <div t-if="default_account" class="col-lg-4 col-md-4">
                                         <label class="col-form-label" for="account_id">Account</label>
                                         <select class="form-control" name="account_id" required="1">
-                                            <option t-att-value="default_account.id">
-                                                <t t-esc="default_account.sudo().display_name"/>
-                                            </option>
+                                            <t t-foreach="default_account" t-as="acc">
+                                                <option t-att-value="acc.id">
+                                                    <t t-esc="acc.sudo().display_name"/>
+                                                </option>
+                                            </t>
                                         </select>
                                     </div>
                                 </div>
@@ -415,7 +444,8 @@
                                     </div>
                                     <div class="col-lg-2 col-md-2">
                                         <label class="col-form-label" for="analytic_account_id">Analytic Account</label>
-                                        <select class="form-control" name="analytic_account_id" required="1"
+                                        <select class="form-control" id="analytic_account_id" name="analytic_account_id"
+                                                required="1"
                                                 data-init="0">
                                             <t t-foreach="analytic_accounts" t-as="analytic_account">
                                                 <option t-att-value="analytic_account.id">
@@ -426,7 +456,7 @@
                                     </div>
                                     <div class="col-lg-2 col-md-2">
                                         <label class="col-form-label" for="analytic_tag_id">Analytic Tag</label>
-                                        <select class="form-control" name="analytic_tag_id" required="1"
+                                        <select multiple="multiple" class="form-control" id="analytic_tag_id" name="analytic_tag_id" required="1"
                                                 data-init="0">
                                             <t t-foreach="analytic_tags" t-as="analytic_tag">
                                                 <option t-att-value="analytic_tag.id">

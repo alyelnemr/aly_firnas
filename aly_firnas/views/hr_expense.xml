@@ -18,13 +18,23 @@
                     </button>
                 </xpath>
                 <xpath expr="//field[@name='product_id']" position="before">
-                    <field name="partner_id" />
-                    <field name="vendor_contact" />
-                    <field name="user_to_approve_id" />
+                    <field name="partner_id"/>
+                    <field name="vendor_contact"/>
                     <field name="employee_id" groups="hr_expense.group_hr_expense_team_approver"/>
                     <field name="project_id"/>
                 </xpath>
+                <xpath expr="//field[@name='total_amount']" position="after">
+                    <field name="attachment_document"/>
+                </xpath>
                 <xpath expr="//field[@name='employee_id']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='tax_ids']" position="replace">
+                    <field name="tax_ids" widget="many2many_tags"
+                           attrs="{'readonly': [('is_editable', '=', False)]}" context="{'default_company_id': company_id}"/>
+                </xpath>
+                <xpath expr="//field[@name='payment_mode']" position="replace">
+                    <field name="payment_mode" widget="radio" context="{'default_payment_mode': 'company_account'}"
+                           attrs="{'readonly': True}"/>
                 </xpath>
                 <xpath expr="//field[@name='date']" position="attributes">
                     <attribute name="attrs">{'invisible': False}</attribute>
