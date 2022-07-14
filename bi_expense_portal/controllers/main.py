@@ -154,15 +154,17 @@ class CustomerPortal(CustomerPortal):
         if not request.env.user.has_group('bi_expense_portal.group_employee_expense_portal') and not request.env.user.has_group('bi_expense_portal.group_employee_expense_manager_portal'):
             return request.render("bi_expense_portal.not_allowed_expense_request")
         values = {}
-        products = request.env['product.product'].sudo().search([('can_be_expensed', '=', True)])
         currencies = request.env['res.currency'].sudo().search([])
         projects = request.env['project.project'].sudo().search([])
         vendors = request.env['res.partner'].sudo().search([])
         vendor_id = vendors[0].id
+        company = projects[0].company_id.id
+        products = request.env['product.product'].sudo().search(
+            [('can_be_expensed', '=', True), '|', ('company_id', '=', int(company)), ('company_id', '=', False)])
         tax_ids = request.env['account.tax'].sudo().search([('company_id', '=', projects[0].company_id.id)])
         vendor_contact = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)])
         accounts = request.env['account.account'].sudo().search([('internal_type', '=', 'other')])
-        analytic_accounts = request.env['account.analytic.account'].sudo().search([('id', '=', projects[0].analytic_account_id.id)])
+        analytic_accounts = request.env['account.analytic.account'].sudo().browse([projects[0].analytic_account_id.id])
         employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
         analytic_tags = employees[0].analytic_tag_ids + analytic_accounts[0].analytic_tag_ids
 
@@ -188,8 +190,8 @@ class CustomerPortal(CustomerPortal):
             'default_managers': default_managers,
             'accounts': accounts,
             'default_account': request.env['ir.property'].sudo().get('property_account_expense_categ_id', 'product.category'),
-            'analytic_accounts': analytic_accounts,
-            'analytic_tags': analytic_tags,
+            'analytic_account_id': analytic_accounts,
+            'analytic_tag_id': analytic_tags,
             'today': str(fields.Date.today()),
             'error_fields': '',
         })
@@ -239,19 +241,24 @@ class CustomerPortal(CustomerPortal):
                 'analytic_account_id': analytic_account_id,
             })
 
-        if request.params.get('analytic_tag_id', False):
-            analytic_tag_id = int(request.params.get('analytic_tag_id'))
+        list_all = request.httprequest.form.getlist('analytic_tag_id')
+
+        if list_all:
+            vals.update({
+                'analytic_tag_ids': [(6, 0, list_all)],
+            })
+        elif request.params.get('analytic_tag_id', False):
+            analytic_tag_id = int()
             vals.update({
                 'analytic_tag_ids': [(6, 0, [analytic_tag_id])],
             })
-            vals.pop('analytic_tag_id', None)
+        vals.pop('analytic_tag_id', None)
 
         if request.params.get('tax_ids', False):
             tax_ids = int(request.params.get('tax_ids'))
             vals.update({
                 'tax_ids': [(6, 0, [tax_ids])],
             })
-            vals.pop('tax_ids', None)
 
         if request.params.get('manager_id', False):
             vals.pop('manager_id', None)
@@ -274,13 +281,15 @@ class CustomerPortal(CustomerPortal):
             if created_request:
                 created_request.sudo().unlink()
             values = {}
-            products = request.env['product.product'].sudo().search([('can_be_expensed', '=', True)])
             currencies = request.env['res.currency'].sudo().search([])
             vendors = request.env['res.partner'].sudo().search([])
             projects = request.env['project.project'].sudo().search([])
             vendor_id = vendors[0].id
+            company = projects[0].company_id.id
+            products = request.env['product.product'].sudo().search(
+                [('can_be_expensed', '=', True), '|', ('company_id', '=', int(company)), ('company_id', '=', False)])
             vendor_contact = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)])
-            tax_ids = request.env['account.tax'].sudo().search([('company_id', '=', projects[0].company_id.id)])
+            tax_ids = request.env['account.tax'].sudo().search([('company_id', '=', company)])
             accounts = request.env['account.account'].sudo().search([('internal_type', '=', 'other')])
             analytic_accounts = request.env['account.analytic.account'].sudo().search([('id', '=', projects[0].analytic_account_id.id)])
             employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
@@ -310,8 +319,8 @@ class CustomerPortal(CustomerPortal):
                 'accounts': accounts,
                 'default_account': request.env['ir.property'].get('property_account_expense_categ_id',
                                                                   'product.category'),
-                'analytic_accounts': analytic_accounts,
-                'analytic_tags': analytic_tags,
+                'analytic_account_id': analytic_accounts,
+                'analytic_tag_id': analytic_tags,
                 'today': str(fields.Date.today()),
                 'error_fields': json.dumps(e.args[0]),
             })
@@ -505,6 +514,7 @@ class CustomerPortal(CustomerPortal):
     @http.route(['/expense/compute_all'], type='json', auth="public", website=True)
     def compute_all(self, unit_amount_str, quantity_str, tax_id_str, **kw):
         vendor_contacts = []
+        total_amount = 0
         if unit_amount_str and quantity_str and tax_id_str:
             unit_amount = float(unit_amount_str)
             quantity = float(quantity_str)

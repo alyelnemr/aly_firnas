@@ -320,7 +320,7 @@
                                     <div class="col-lg-4 col-md-4">
                                         <label class="col-form-label" for="vendor_contact">Vendor Contacts</label>
                                         <select id="vendor_contact" class="form-control" name="vendor_contact">
-                                            <t t-foreach="vendors" t-as="v_contact">
+                                            <t t-foreach="vendor_contact" t-as="v_contact">
                                                 <option t-att-value="v_contact.id">
                                                     <t t-esc="v_contact.name"/>
                                                 </option>
@@ -457,9 +457,8 @@
                                     <div class="col-lg-2 col-md-2">
                                         <label class="col-form-label" for="analytic_account_id">Analytic Account</label>
                                         <select class="form-control" id="analytic_account_id" name="analytic_account_id"
-                                                required="1"
-                                                data-init="0">
-                                            <t t-foreach="analytic_accounts" t-as="analytic_account">
+                                                required="1" data-init="0">
+                                            <t t-foreach="analytic_account_id" t-as="analytic_account">
                                                 <option t-att-value="analytic_account.id">
                                                     <t t-esc="analytic_account.display_name"/>
                                                 </option>
@@ -470,8 +469,8 @@
                                         <label class="col-form-label" for="analytic_tag_id">Analytic Tag</label>
                                         <select multiple="multiple" class="form-control" id="analytic_tag_id" name="analytic_tag_id" required="1"
                                                 data-init="0">
-                                            <t t-foreach="analytic_tags" t-as="analytic_tag">
-                                                <option t-att-value="analytic_tag.id">
+                                            <t t-foreach="analytic_tag_id" t-as="analytic_tag">
+                                                <option t-att-value="analytic_tag.id" selected="selected">
                                                     <t t-esc="analytic_tag.display_name"/>
                                                 </option>
                                             </t>

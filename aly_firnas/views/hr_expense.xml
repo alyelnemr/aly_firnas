@@ -23,9 +23,9 @@
                     <field name="employee_id" groups="hr_expense.group_hr_expense_team_approver"/>
                     <field name="project_id"/>
                 </xpath>
-                <xpath expr="//field[@name='total_amount']" position="after">
-                    <field name="attachment_document"/>
-                </xpath>
+<!--                <xpath expr="//field[@name='total_amount']" position="after">-->
+<!--                    <field name="attachment_document"/>-->
+<!--                </xpath>-->
                 <xpath expr="//field[@name='employee_id']" position="replace">
                 </xpath>
                 <xpath expr="//field[@name='tax_ids']" position="replace">

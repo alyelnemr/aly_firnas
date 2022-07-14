@@ -95,7 +95,7 @@ class HRExpense(models.Model):
         ("own_account", "Employee (to reimburse)"),
         ("company_account", "Company")
     ], default='company_account', readonly=True, string="Paid By")
-    attachment_document = fields.Binary(string='Attachment', required=True)
+    attachment_document = fields.Binary(string='Attachment', required=False)
 
     # override expense credit account to take journal credit account
     def _get_expense_account_destination(self):

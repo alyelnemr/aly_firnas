@@ -12,7 +12,7 @@ var qweb = core.qweb;
 publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
     selector: '.o_portal_wrap',
     events:{
-        'change select[name="company_id"]': '_onChangeCompany',
+//        'change select[name="company_id"]': '_onChangeCompany',
         'change select[name="partner_id"]': '_onChangeVendor',
         'change select[name="project_id"]': '_onChangeProject',
         'change select[name="product_id"]': '_onChangeProduct',
@@ -38,7 +38,7 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
     start: function () {
         var self = this;
         var def = this._super.apply(this, arguments);
-        this.$('select[name="company_id"]').change();
+//        this.$('select[name="company_id"]').change();
         this.$('select[name="partner_id"]').change();
         this.$('select[name="project_id"]').change();
         this.$('input[name="quantity"]').change();
@@ -101,7 +101,7 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
                     selectAnalyticTags.html('');
                     _.each(data.analytic_tags, function (x) {
                         var opt = $('<option>').text(x[1])
-                            .attr('value', x[0]);
+                            .attr('value', x[0]).attr('selected', 'selected');
                         selectAnalyticTags.append(opt);
                     });
                 } else {
@@ -192,7 +192,7 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
                     selectAnalyticTags.html('');
                     _.each(data.analytic_tags_data, function (x) {
                         var opt = $('<option>').text(x[1])
-                            .attr('value', x[0]);
+                            .attr('value', x[0]).attr('selected', 'selected');
                         selectAnalyticTags.append(opt);
                     });
                 } else {
