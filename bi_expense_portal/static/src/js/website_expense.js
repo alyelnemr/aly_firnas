@@ -16,6 +16,9 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
         'change select[name="partner_id"]': '_onChangeVendor',
         'change select[name="project_id"]': '_onChangeProject',
         'change select[name="product_id"]': '_onChangeProduct',
+        'change select[name="tax_ids"]': '_onChangeComputeAll',
+        'change input[name="unit_amount"]': '_onChangeComputeAll',
+        'change input[name="quantity"]': '_onChangeComputeAll',
     },
 
     /**
@@ -27,6 +30,7 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
         this._changeVendor = _.debounce(this._changeVendor.bind(this), 500);
         this._changeProject = _.debounce(this._changeProject.bind(this), 500);
         this._changeProduct = _.debounce(this._changeProduct.bind(this), 500);
+        this._changeComputeAll = _.debounce(this._changeComputeAll.bind(this), 500);
     },
     /**
      * @override
@@ -37,6 +41,9 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
         this.$('select[name="company_id"]').change();
         this.$('select[name="partner_id"]').change();
         this.$('select[name="project_id"]').change();
+        this.$('input[name="quantity"]').change();
+        this.$('input[name="unit_amount"]').change();
+        this.$('select[name="tax_ids"]').change();
         return def;
     },
 
@@ -226,6 +233,18 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
             }
         });
     },
+    _changeComputeAll: function () {
+        this._rpc({
+            route: '/expense/compute_all',
+            params: {
+                unit_amount_str: $("#unit_amount").val(),
+                quantity_str: $("#quantity").val(),
+                tax_id_str: $("#tax_ids").val(),
+            },
+        }).then(function (data) {
+            $("input[name='total_amount']").val(data.total_amount);
+        });
+    },
 
     /**
      * @private
@@ -254,6 +273,12 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
             return;
         }
         this._changeProduct();
+    },
+    _onChangeComputeAll: function (ev) {
+        if (!this.$('select[name="product_id"]').length) {
+            return;
+        }
+        this._changeComputeAll();
     },
 });
 });

@@ -391,18 +391,30 @@
                                     </div>
                                 </div>
                                 <div class="form-group row form-field">
-                                    <div class="col-lg-4 col-md-4">
+                                    <div class="col-lg-2 col-md-2">
                                         <label class="col-form-label" for="unit_amount">Unit Price</label>
-                                        <input type="number" step="0.01" class="form-control" name="unit_amount" required="1"/>
+                                        <input type="number" step="0.01" class="form-control" id="unit_amount"
+                                               name="unit_amount" required="1"/>
                                     </div>
                                     <div class="col-lg-2 col-md-2">
                                         <label class="col-form-label" for="quantity">Quantity</label>
-                                        <input type="number" step="0.01" class="form-control" name="quantity" value="1.0"
-                                               required="1"/>
+                                        <input type="number" step="0.01" class="form-control" id="quantity"
+                                               name="quantity" value="1.0" required="1"/>
                                     </div>
                                     <div class="col-lg-2 col-md-2">
-                                        <label class="col-form-label" for="taxes">Taxes %</label>
-                                        <input type="number" step="0.01" class="form-control" name="taxes" required="1"/>
+                                        <label class="col-form-label" for="taxes">Taxes</label>
+                                        <select class="form-control" id="tax_ids" name="tax_ids" required="1">
+                                            <t t-foreach="tax_ids" t-as="tax">
+                                                <option t-att-value="tax.id">
+                                                    <t t-esc="tax.sudo().display_name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-2 col-md-2">
+                                        <label class="col-form-label" for="total_amount">Total</label>
+                                        <input type="number" step="0.01" class="form-control" name="total_amount" value="0.0"
+                                               readonly="1"/>
                                     </div>
                                 </div>
                                 <div class="form-group row form-field">

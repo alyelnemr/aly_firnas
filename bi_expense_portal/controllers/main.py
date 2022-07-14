@@ -156,14 +156,15 @@ class CustomerPortal(CustomerPortal):
         values = {}
         products = request.env['product.product'].sudo().search([('can_be_expensed', '=', True)])
         currencies = request.env['res.currency'].sudo().search([])
+        projects = request.env['project.project'].sudo().search([])
         vendors = request.env['res.partner'].sudo().search([])
         vendor_id = vendors[0].id
+        tax_ids = request.env['account.tax'].sudo().search([('company_id', '=', projects[0].company_id.id)])
         vendor_contact = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)])
-        projects = request.env['project.project'].sudo().search([])
         accounts = request.env['account.account'].sudo().search([('internal_type', '=', 'other')])
-        analytic_accounts = request.env['account.analytic.account'].with_user(request.env.ref('base.user_admin').id).search([])
+        analytic_accounts = request.env['account.analytic.account'].sudo().search([('id', '=', projects[0].analytic_account_id.id)])
         employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
-        analytic_tags = employees[0].analytic_tag_ids
+        analytic_tags = employees[0].analytic_tag_ids + analytic_accounts[0].analytic_tag_ids
 
         default_managers = request.env['res.users'].sudo()
         for emp in employees:
@@ -178,6 +179,7 @@ class CustomerPortal(CustomerPortal):
             'projects': projects,
             'vendor_contact': vendor_contact,
             'currencies': currencies,
+            'tax_ids': tax_ids,
             'companies': request.env.user.company_ids - request.env.user.company_id,
             'default_currency': request.env.company.currency_id,
             'default_company': request.env.user.company_id,
@@ -196,10 +198,25 @@ class CustomerPortal(CustomerPortal):
     @http.route(['/expense_request_submit'], type='http', auth="user", website=True,methods=['POST'], csrf=False)
     def portal_expense_request_submit(self, **kw):
         vals = request.params.copy()
+        if request.params.get('partner_id', False):
+            partner_id = int(request.params.get('partner_id'))
+            vals.update({
+                'partner_id': partner_id,
+            })
+        if request.params.get('vendor_contact', False):
+            vendor_contact = int(request.params.get('vendor_contact'))
+            vals.update({
+                'vendor_contact': vendor_contact,
+            })
         if request.params.get('product_id', False):
             product_id = int(request.params.get('product_id'))
             vals.update({
                 'product_id': product_id,
+            })
+        if request.params.get('project_id', False):
+            project_id = int(request.params.get('project_id'))
+            vals.update({
+                'project_id': project_id,
             })
         if request.params.get('company_id', False):
             company_id = int(request.params.get('company_id'))
@@ -229,6 +246,13 @@ class CustomerPortal(CustomerPortal):
             })
             vals.pop('analytic_tag_id', None)
 
+        if request.params.get('tax_ids', False):
+            tax_ids = int(request.params.get('tax_ids'))
+            vals.update({
+                'tax_ids': [(6, 0, [tax_ids])],
+            })
+            vals.pop('tax_ids', None)
+
         if request.params.get('manager_id', False):
             vals.pop('manager_id', None)
 
@@ -252,10 +276,15 @@ class CustomerPortal(CustomerPortal):
             values = {}
             products = request.env['product.product'].sudo().search([('can_be_expensed', '=', True)])
             currencies = request.env['res.currency'].sudo().search([])
+            vendors = request.env['res.partner'].sudo().search([])
+            projects = request.env['project.project'].sudo().search([])
+            vendor_id = vendors[0].id
+            vendor_contact = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)])
+            tax_ids = request.env['account.tax'].sudo().search([('company_id', '=', projects[0].company_id.id)])
             accounts = request.env['account.account'].sudo().search([('internal_type', '=', 'other')])
-            analytic_accounts = request.env['account.analytic.account'].with_user(request.env.ref('base.user_admin').id).search([])
-            analytic_tags = request.env['account.analytic.tag'].with_user(request.env.ref('base.user_admin').id).search([])
+            analytic_accounts = request.env['account.analytic.account'].sudo().search([('id', '=', projects[0].analytic_account_id.id)])
             employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
+            analytic_tags = employees[0].analytic_tag_ids + analytic_accounts[0].analytic_tag_ids
 
             default_managers = request.env['res.users'].sudo()
             for emp in employees:
@@ -267,7 +296,11 @@ class CustomerPortal(CustomerPortal):
 
             values.update({
                 'products': products,
+                'vendors': vendors,
+                'vendor_contact': vendor_contact,
+                'projects': projects,
                 'currencies': currencies,
+                'tax_ids': tax_ids,
                 'default_currency': request.env.company.currency_id,
                 'employees': employees,
                 'companies': request.env.user.company_ids - request.env.user.company_id,
@@ -284,23 +317,24 @@ class CustomerPortal(CustomerPortal):
             })
             return request.render("bi_expense_portal.expense_request_submit", values)
 
-        if created_request:
-            if request.params.get('manager_id', False):
-                manager_id = int(request.params.get('manager_id'))
-            else:
-                manager_id = False
-            self.action_submit_expenses(created_request, manager_id)
-            if request.params.get('attachment', False):
-                request.env['ir.attachment'].sudo().create({
-                    'name': 'attachment',
-                    'type': 'binary',
-                    'datas': base64.encodestring(request.params.get('attachment').read()),
-                    'store_fname': 'attachment',
-                    'res_model': 'hr.expense',
-                    'res_id': created_request.id,
-                })
-            if created_request.sheet_id:
-                created_request.sheet_id.action_submit_sheet()
+        # this code for creating expense report, ignore this step by a request from Eng. Mostafa El Bedawy
+        # if created_request:
+        #     if request.params.get('manager_id', False):
+        #         manager_id = int(request.params.get('manager_id'))
+        #     else:
+        #         manager_id = False
+        #     self.action_submit_expenses(created_request, manager_id)
+        #     if request.params.get('attachment', False):
+        #         request.env['ir.attachment'].sudo().create({
+        #             'name': 'attachment',
+        #             'type': 'binary',
+        #             'datas': base64.encodestring(request.params.get('attachment').read()),
+        #             'store_fname': 'attachment',
+        #             'res_model': 'hr.expense',
+        #             'res_id': created_request.id,
+        #         })
+        #     if created_request.sheet_id:
+        #         created_request.sheet_id.action_submit_sheet()
 
         return request.render("bi_expense_portal.thankyou_page")
 
@@ -466,4 +500,17 @@ class CustomerPortal(CustomerPortal):
                 product_data.append((item.id, item.name))
         return dict(
             default_account=product_data,
+        )
+
+    @http.route(['/expense/compute_all'], type='json', auth="public", website=True)
+    def compute_all(self, unit_amount_str, quantity_str, tax_id_str, **kw):
+        vendor_contacts = []
+        if unit_amount_str and quantity_str and tax_id_str:
+            unit_amount = float(unit_amount_str)
+            quantity = float(quantity_str)
+            tax_id = int(tax_id_str)
+            tax_obj = request.env['account.tax'].sudo().search([('id', '=', tax_id)])
+            total_amount = round( (unit_amount * quantity) + (unit_amount * quantity * (tax_obj.amount / 100)), 2)
+        return dict(
+            total_amount=total_amount,
         )
