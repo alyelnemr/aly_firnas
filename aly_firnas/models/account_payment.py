@@ -15,6 +15,17 @@ class AcountMove(models.Model):
              "current currency and last currency",
     )
 
+    def check_reconciliation(self):
+        for payment in self:
+            rec = False
+            for aml in payment.move_line_ids.filtered(lambda x: x.account_id.reconcile):
+                if aml.reconciled:
+                    rec = True
+                    break
+            payment.move_reconciled = rec
+            if payment.move_reconciled:
+                payment.write({'state': 'reconciled'})
+
     @api.depends("currency_id")
     def _compute_currency(self):
         for rec in self:
