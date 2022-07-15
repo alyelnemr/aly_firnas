@@ -50,6 +50,10 @@
             <field name="model">hr.expense.sheet</field>
             <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//button[@name='reset_expense_sheets']" position="replace">
+                    <button name="reset_expense_sheets" string="Reset to Draft" type="object"
+                            attrs="{'invisible': ['|', ('can_reset', '=', False), ('state', 'in', ['draft'])]}"/>
+                </xpath>
                 <xpath expr="//group[@name='employee_details']" position="after">
                     <group>
                         <group>
