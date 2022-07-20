@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+    <data noupdate="1">
         <template id="assets_frontend" inherit_id="web.assets_frontend">
             <xpath expr="script[last()]" position="after">
                 <script type="text/javascript" src="/bi_expense_portal/static/src/js/website_expense.js"></script>
             </xpath>
         </template>
-        <template id="aly_assets_frontend_test" inherit_id="website.assets_frontend" name="Assets Frontend test">
-            <xpath expr="." position="inside">
-                <script type="text/javascript" src="/bi_expense_portal/static/src/js/website_expense.js"></script>
-            </xpath>
-        </template>
-
         <template id="portal_my_home_menu_expense" name="Portal layout : expense menu entries"
                   inherit_id="portal.portal_breadcrumbs" priority="25">
             <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
@@ -123,6 +117,12 @@
                                             Submit
                                         </a>
                                     </t>
+                                    <t t-if="exp.state in ['draft']">
+                                        <a class="btn btn-info"
+                                           t-att-href="'/expense_request_form/%s' % (exp.id)">
+                                            Edit
+                                        </a>
+                                    </t>
                                     <t t-if="exp.state in ['reported']">
                                         <a t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('bi_expense_portal.group_employee_expense_manager_portal')" class="btn btn-success"
                                            t-att-href="'/request_approve?id=%s' % (exp.id)">
@@ -164,6 +164,12 @@
                                         <a class="btn btn-info"
                                            t-att-href="'/request_submit?id=%s&amp;form=1' % (expense_request.id)">
                                             Submit
+                                        </a>
+                                    </t>
+                                    <t t-if="expense_request.state in ['draft']">
+                                        <a class="btn btn-info"
+                                           t-att-href="'/expense_request_form/%s' % (expense_request.id)">
+                                            Edit
                                         </a>
                                     </t>
                                     <t t-if="expense_request.state in ['reported']">
@@ -318,9 +324,9 @@
                                         </select>
                                     </div>
                                     <div class="col-lg-4 col-md-4">
-                                        <label class="col-form-label" for="vendor_contact">Vendor Contacts</label>
-                                        <select id="vendor_contact" class="form-control" name="vendor_contact">
-                                            <t t-foreach="vendor_contact" t-as="v_contact">
+                                        <label class="col-form-label" for="vendor_contact_id">Vendor Contacts</label>
+                                        <select id="vendor_contact_id" class="form-control" name="vendor_contact_id">
+                                            <t t-foreach="vendor_contact_id" t-as="v_contact">
                                                 <option t-att-value="v_contact.id">
                                                     <t t-esc="v_contact.name"/>
                                                 </option>

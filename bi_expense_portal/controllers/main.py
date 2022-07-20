@@ -68,9 +68,9 @@ class CustomerPortal(CustomerPortal):
             searchbar_filters.update({
                 str(company.id): {'label': company.name, 'domain': domain + [('company_id', '=', company.id)]}
             })
-        if not filterby:
-            filterby = str(request.env.user.company_id.id)
-        domain = searchbar_filters[filterby]['domain']
+        # if not filterby:
+        #     filterby = str(request.env.user.company_id.id)
+        # domain = searchbar_filters[filterby]['domain']
         # count for pager
         expenses_count = expenses_obj.sudo().search_count(domain)
 
@@ -162,7 +162,7 @@ class CustomerPortal(CustomerPortal):
         products = request.env['product.product'].sudo().search(
             [('can_be_expensed', '=', True), '|', ('company_id', '=', int(company)), ('company_id', '=', False)])
         tax_ids = request.env['account.tax'].sudo().search([('company_id', '=', projects[0].company_id.id)])
-        vendor_contact = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)])
+        vendor_contact_id = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)])
         accounts = request.env['account.account'].sudo().search([('internal_type', '=', 'other')])
         analytic_accounts = request.env['account.analytic.account'].sudo().browse([projects[0].analytic_account_id.id])
         employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
@@ -179,7 +179,7 @@ class CustomerPortal(CustomerPortal):
             'products': products,
             'vendors': vendors,
             'projects': projects,
-            'vendor_contact': vendor_contact,
+            'vendor_contact_id': vendor_contact_id,
             'currencies': currencies,
             'tax_ids': tax_ids,
             'companies': request.env.user.company_ids - request.env.user.company_id,
@@ -197,6 +197,60 @@ class CustomerPortal(CustomerPortal):
         })
         return request.render("bi_expense_portal.expense_request_submit", values)
 
+    @http.route(['/expense_request_form/<int:expense_id>'], type='http', auth="user", website=True)
+    def portal_expense_request_form(self, expense_id, **kw):
+        if expense_id:
+            expense_sudo = request.env['hr.expense'].sudo().browse([expense_id])
+        else:
+            return request.redirect('/my/expenses')
+
+        if not request.env.user.has_group('bi_expense_portal.group_employee_expense_portal') and not request.env.user.has_group('bi_expense_portal.group_employee_expense_manager_portal'):
+            return request.render("bi_expense_portal.not_allowed_expense_request")
+        values = {}
+        currencies = request.env['res.currency'].sudo().search([])
+        projects = request.env['project.project'].sudo().search([])
+        vendors = request.env['res.partner'].sudo().search([])
+        vendor_id = vendors[0].id
+        company = projects[0].company_id.id
+        products = request.env['product.product'].sudo().search(
+            [('can_be_expensed', '=', True), '|', ('company_id', '=', int(company)), ('company_id', '=', False)])
+        tax_ids = request.env['account.tax'].sudo().search([('company_id', '=', projects[0].company_id.id)])
+        vendor_contact_id = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)])
+        accounts = request.env['account.account'].sudo().search([('internal_type', '=', 'other')])
+        analytic_accounts = request.env['account.analytic.account'].sudo().browse([projects[0].analytic_account_id.id])
+        employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
+        analytic_tags = employees[0].analytic_tag_ids + analytic_accounts[0].analytic_tag_ids
+
+        default_managers = request.env['res.users'].sudo()
+        for emp in employees:
+            if emp.parent_id and emp.parent_id.user_id:
+                default_managers += emp.parent_id.user_id
+        managers = request.env['res.users'].sudo().search([])
+        if default_managers:
+            managers -= default_managers
+        values.update({
+            'expense_sudo': expense_sudo,
+            'products': products,
+            'vendors': vendors,
+            'projects': projects,
+            'vendor_contact_id': vendor_contact_id,
+            'currencies': currencies,
+            'tax_ids': tax_ids,
+            'companies': request.env.user.company_ids - request.env.user.company_id,
+            'default_currency': request.env.company.currency_id,
+            'default_company': request.env.user.company_id,
+            'employees': employees,
+            'managers': managers,
+            'default_managers': default_managers,
+            'accounts': accounts,
+            'default_account': request.env['ir.property'].sudo().get('property_account_expense_categ_id', 'product.category'),
+            'analytic_account_id': analytic_accounts,
+            'analytic_tag_id': analytic_tags,
+            'today': str(fields.Date.today()),
+            'error_fields': '',
+        })
+        return request.render("bi_expense_portal.expense_request_edit", values)
+
     @http.route(['/expense_request_submit'], type='http', auth="user", website=True,methods=['POST'], csrf=False)
     def portal_expense_request_submit(self, **kw):
         vals = request.params.copy()
@@ -205,10 +259,10 @@ class CustomerPortal(CustomerPortal):
             vals.update({
                 'partner_id': partner_id,
             })
-        if request.params.get('vendor_contact', False):
-            vendor_contact = int(request.params.get('vendor_contact'))
+        if request.params.get('vendor_contact_id', False):
+            vendor_contact_id = int(request.params.get('vendor_contact_id'))
             vals.update({
-                'vendor_contact': vendor_contact,
+                'vendor_contact_id': vendor_contact_id,
             })
         if request.params.get('product_id', False):
             product_id = int(request.params.get('product_id'))
@@ -270,12 +324,22 @@ class CustomerPortal(CustomerPortal):
         vals.update({
             'date': datetime.strptime(date, DEFAULT_SERVER_DATE_FORMAT) if date else False,
         })
+        hdn_expense_id = False
+        if request.params.get('hdn_expense_id', False):
+            hdn_expense_id = int(request.params.get('hdn_expense_id'))
+            vals.pop('hdn_expense_id', None)
+        if request.params.get('hdn_vendor_contact_id', False):
+            vals.pop('hdn_vendor_contact_id', None)
 
         created_request = False
         try:
             vals = self._onchange_product_id(vals)
 
-            created_request = request.env['hr.expense'].sudo().create(vals)
+            if hdn_expense_id:
+                expense = request.env['hr.expense'].sudo().search([('id', '=', int(hdn_expense_id))])
+                expense.write(vals)
+            else:
+                created_request = request.env['hr.expense'].sudo().create(vals)
 
         except Exception as e:
             if created_request:
@@ -288,7 +352,7 @@ class CustomerPortal(CustomerPortal):
             company = projects[0].company_id.id
             products = request.env['product.product'].sudo().search(
                 [('can_be_expensed', '=', True), '|', ('company_id', '=', int(company)), ('company_id', '=', False)])
-            vendor_contact = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)])
+            vendor_contact_id = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)])
             tax_ids = request.env['account.tax'].sudo().search([('company_id', '=', company)])
             accounts = request.env['account.account'].sudo().search([('internal_type', '=', 'other')])
             analytic_accounts = request.env['account.analytic.account'].sudo().search([('id', '=', projects[0].analytic_account_id.id)])
@@ -306,7 +370,7 @@ class CustomerPortal(CustomerPortal):
             values.update({
                 'products': products,
                 'vendors': vendors,
-                'vendor_contact': vendor_contact,
+                'vendor_contact_id': vendor_contact_id,
                 'projects': projects,
                 'currencies': currencies,
                 'tax_ids': tax_ids,

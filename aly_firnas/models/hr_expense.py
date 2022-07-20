@@ -104,7 +104,7 @@ class HRExpense(models.Model):
                                   check_company=False)
     partner_id = fields.Many2one('res.partner', string='Vendor', required=True, change_default=True,
                                  tracking=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
-    vendor_contact = fields.Many2one('res.partner', string='Vendor Contacts', required=False,
+    vendor_contact_id = fields.Many2one('res.partner', string='Vendor Contacts', required=False,
                                      domain="[('parent_id', '=', partner_id)]")
     project_id = fields.Many2one('project.project', 'Project', required=True, readonly=True,
                                  states={'draft': [('readonly', False)]})

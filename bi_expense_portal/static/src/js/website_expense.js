@@ -139,7 +139,8 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
             },
         }).then(function (data) {
             // populate products and display
-            var selectVendorContacts = $("select[name='vendor_contact']");
+            var selectVendorContacts = $("select[name='vendor_contact_id']");
+            var hdnVendorContactID = $("input[name='hdn_vendor_contact_id']").val();
 
             // dont reload task at first loading (done in qweb)
             if (selectVendorContacts.data('init')===0 || selectVendorContacts.find('option').length===1) {
@@ -148,6 +149,10 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
                     _.each(data.vendor_contacts, function (x) {
                         var opt = $('<option>').text(x[1])
                             .attr('value', x[0]);
+                        if (hdnVendorContactID == x[0]) {
+                            opt = $('<option>').text(x[1])
+                                .attr('value', x[0]).attr('selected', 'selected');
+                        }
                         selectVendorContacts.append(opt);
                     });
                 } else {
