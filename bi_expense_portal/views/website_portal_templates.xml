@@ -123,6 +123,12 @@
                                             Edit
                                         </a>
                                     </t>
+                                    <t t-if="exp.state in ['draft']">
+                                        <a class="btn btn-info"
+                                           t-att-href="'/expense_request_delete/%s' % (exp.id)">
+                                            Delete
+                                        </a>
+                                    </t>
                                     <t t-if="exp.state in ['reported']">
                                         <a t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('bi_expense_portal.group_employee_expense_manager_portal')" class="btn btn-success"
                                            t-att-href="'/request_approve?id=%s' % (exp.id)">
@@ -538,6 +544,24 @@
                                     <h1 class="text-center">Done!</h1>
                                     <p class="text-center">
                                         Your request has been created successfully.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <template id="delete_page">
+            <t t-call="portal.portal_layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h1 class="text-center">Done!</h1>
+                                    <p class="text-center">
+                                        Your request has been <b>deleted</b> successfully.
                                     </p>
                                 </div>
                             </div>

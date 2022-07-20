@@ -198,7 +198,7 @@ class CustomerPortal(CustomerPortal):
         return request.render("bi_expense_portal.expense_request_submit", values)
 
     @http.route(['/expense_request_form/<int:expense_id>'], type='http', auth="user", website=True)
-    def portal_expense_request_form(self, expense_id, **kw):
+    def portal_expense_request_edit(self, expense_id, **kw):
         if expense_id:
             expense_sudo = request.env['hr.expense'].sudo().browse([expense_id])
         else:
@@ -250,6 +250,15 @@ class CustomerPortal(CustomerPortal):
             'error_fields': '',
         })
         return request.render("bi_expense_portal.expense_request_edit", values)
+
+    @http.route(['/expense_request_delete/<int:expense_id>'], type='http', auth="user", website=True)
+    def portal_expense_request_delete(self, expense_id, **kw):
+        if expense_id:
+            expense_sudo = request.env['hr.expense'].sudo().browse([expense_id])
+            expense_sudo.sudo().unlink()
+        else:
+            return request.redirect('/my/expenses')
+        return request.render("bi_expense_portal.delete_page")
 
     @http.route(['/expense_request_submit'], type='http', auth="user", website=True,methods=['POST'], csrf=False)
     def portal_expense_request_submit(self, **kw):
@@ -314,10 +323,10 @@ class CustomerPortal(CustomerPortal):
                 'tax_ids': [(6, 0, [tax_ids])],
             })
 
-        if request.params.get('manager_id', False):
+        if 'manager_id' in vals.keys():
             vals.pop('manager_id', None)
 
-        if request.params.get('attachment', False):
+        if 'attachment' in vals.keys():
             vals.pop('attachment', None)
 
         date = request.params.get('date')
@@ -325,10 +334,10 @@ class CustomerPortal(CustomerPortal):
             'date': datetime.strptime(date, DEFAULT_SERVER_DATE_FORMAT) if date else False,
         })
         hdn_expense_id = False
-        if request.params.get('hdn_expense_id', False):
-            hdn_expense_id = int(request.params.get('hdn_expense_id'))
+        if 'hdn_expense_id' in vals.keys():
+            hdn_expense_id = int(vals.get('hdn_expense_id'))
             vals.pop('hdn_expense_id', None)
-        if request.params.get('hdn_vendor_contact_id', False):
+        if 'hdn_vendor_contact_id' in vals.keys():
             vals.pop('hdn_vendor_contact_id', None)
 
         created_request = False
