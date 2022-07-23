@@ -18,15 +18,20 @@ class CustomerPortal(CustomerPortal):
         values = super(CustomerPortal, self)._prepare_portal_layout_values()
         employee = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)], limit=1)
         expenses_obj = request.env['hr.expense']
+        expenses_reports_obj = request.env['hr.expense.sheet']
         if request.env.user.has_group('bi_expense_portal.group_employee_expense_manager_portal'):
             expenses_count = expenses_obj.sudo().search_count([])
+            expenses_reports_count = expenses_obj.sudo().search_count([])
         else:
             if employee:
                 expenses_count = expenses_obj.sudo().search_count(['|', ('employee_id', '=', employee.id), ('employee_id.parent_id', '=', employee.id)])
+                expenses_reports_count = expenses_reports_obj.sudo().search_count(['|', ('employee_id', '=', employee.id), ('employee_id.parent_id', '=', employee.id)])
             else:
                 expenses_count = 0
+                expenses_reports_count = 0
         values.update({
             'expenses_count': expenses_count,
+            'expenses_reports_count': expenses_reports_count,
             'employee_data': employee,
             'payment_modes': {
                 'own_account': 'Employee (to reimburse)',
@@ -38,6 +43,14 @@ class CustomerPortal(CustomerPortal):
                 'approved': 'Approved',
                 'done': 'Paid',
                 'refused': 'Refused',
+            },
+            'report_states': {
+                'draft': 'Draft',
+                'submit': 'Submitted',
+                'post': 'Posted',
+                'approve': 'Approved',
+                'done': 'Paid',
+                'cancel': 'Refused',
             },
         })
         return values
@@ -108,6 +121,72 @@ class CustomerPortal(CustomerPortal):
         })
         return request.render("bi_expense_portal.display_expense_requests", values)
 
+    @http.route(['/my/expenses_reports', '/my/expenses_reports/page/<int:page>'], type='http', auth="user", website=True)
+    def portal_my_expense_reports(self, page=1, sortby=None, filterby=None, **kw):
+        if not request.env.user.has_group('bi_expense_portal.group_employee_expense_portal') and not request.env.user.has_group('bi_expense_portal.group_employee_expense_manager_portal'):
+            return request.render("bi_expense_portal.not_allowed_expense_request")
+
+        response = super(CustomerPortal, self)
+        values = self._prepare_portal_layout_values()
+        expenses_reports_obj = request.env['hr.expense.sheet']
+
+        employee = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)], limit=1)
+
+        if request.env.user.has_group('bi_expense_portal.group_employee_expense_manager_portal'):
+            domain = []
+        else:
+            if employee:
+                domain = ['|', ('employee_id', '=', employee.id), ('employee_id.parent_id', '=', employee.id)]
+            else:
+                domain = [('employee_id', '=', False)]
+
+        searchbar_filters = {
+            'all': {'label': _('All'), 'domain': domain},
+        }
+        for company in request.env.user.company_ids:
+            searchbar_filters.update({
+                str(company.id): {'label': company.name, 'domain': domain + [('company_id', '=', company.id)]}
+            })
+        # if not filterby:
+        #     filterby = str(request.env.user.company_id.id)
+        # domain = searchbar_filters[filterby]['domain']
+        # count for pager
+        expenses_count = expenses_reports_obj.sudo().search_count(domain)
+
+        # pager
+        # pager = request.website.pager(
+        pager = portal_pager(
+            url="/my/expenses_reports",
+            url_args={'sortby': sortby},
+            total=expenses_count,
+            page=page,
+            step=self._items_per_page
+        )
+
+        sortings = {
+            'date': {'label': _('Date'), 'order': 'create_date desc'},
+            'name': {'label': _('Description'), 'order': 'name'},
+            'stage': {'label': _('Stage'), 'order': 'state'},
+        }
+        # default sortby order
+        if not sortby:
+            sortby = 'date'
+        order = sortings[sortby]['order']
+
+        # content according to pager and archive selected
+        expenses = expenses_reports_obj.sudo().search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
+        values.update({
+            'expenses_reports': expenses,
+            'page_name': 'expenses_reports',
+            'pager': pager,
+            'searchbar_filters': OrderedDict(sorted(searchbar_filters.items())),
+            'filterby': filterby,
+            'searchbar_sortings': sortings,
+            'sortby': sortby,
+            'default_url': '/my/expenses_reports',
+        })
+        return request.render("bi_expense_portal.display_expense_reports", values)
+
     @http.route(['/my/expenses/<int:expense_id>'], type='http', auth="public", website=True)
     def portal_expense_page(self, expense_id, report_type=None, access_token=None, message=False, download=False, **kw):
 
@@ -148,6 +227,50 @@ class CustomerPortal(CustomerPortal):
         })
 
         return request.render('bi_expense_portal.display_expense_request', values)
+
+    @http.route(['/my/expenses_reports/<int:expense_report_id>'], type='http', auth="public", website=True)
+    def portal_expense_report_page(self, expense_report_id, report_type=None, access_token=None, message=False, download=False, **kw):
+
+        if expense_report_id:
+            expense_sudo = request.env['hr.expense.sheet'].sudo().browse([expense_report_id])
+            if not expense_sudo.payment_mode:
+                expense_sudo.payment_mode = 'company_account'
+        else:
+            return request.redirect('/my/expenses_reports')
+
+        # use sudo to allow accessing/viewing requests for public user
+        values = {
+            'payment_modes': {
+                'own_account': 'Employee (to reimburse)',
+                'company_account': 'Company',
+            },
+            'report_states': {
+                'draft': 'Draft',
+                'submit': 'Submitted',
+                'post': 'Posted',
+                'approve': 'Approved',
+                'done': 'Paid',
+                'cancel': 'Refused',
+            },
+        }
+        values.update({
+            'expense_report': expense_sudo,
+            'message': message,
+            'token': access_token,
+            'return_url': '/my/expenses_reports',
+            'bootstrap_formatting': True,
+        })
+
+        def resize_to_48(b64source):
+            if not b64source:
+                b64source = base64.b64encode(Binary().placeholder())
+            return image_process(b64source, size=(48, 48))
+
+        values.update({
+            'resize_to_48': resize_to_48,
+        })
+
+        return request.render('bi_expense_portal.display_expense_report', values)
 
     @http.route(['/expense_request_form'], type='http', auth="user", website=True)
     def portal_expense_request_form(self, **kw):
@@ -196,6 +319,40 @@ class CustomerPortal(CustomerPortal):
             'error_fields': '',
         })
         return request.render("bi_expense_portal.expense_request_submit", values)
+
+    @http.route(['/expense_report_form'], type='http', auth="user", website=True)
+    def portal_expense_report_form(self, **kw):
+        if not request.env.user.has_group('bi_expense_portal.group_employee_expense_portal') and not request.env.user.has_group('bi_expense_portal.group_employee_expense_manager_portal'):
+            return request.render("bi_expense_portal.not_allowed_expense_request")
+        values = {}
+        employee = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)], limit=1)
+        employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
+        expenses_obj = request.env['hr.expense']
+        expenses_to_be_added = expenses_obj.sudo().search(
+            ['|', ('employee_id', '=', employee.id), ('employee_id.parent_id', '=', employee.id),
+             ('state', '=', 'draft'),
+             ('company_id', '=', request.env.user.company_id.id),
+             ('sheet_id', '=', False)])
+
+        default_managers = request.env['res.users'].sudo()
+        for emp in employees:
+            if emp.parent_id and emp.parent_id.user_id:
+                default_managers += emp.parent_id.user_id
+        managers = request.env['res.users'].sudo().search([])
+        if default_managers:
+            managers -= default_managers
+        values.update({
+            'expenses_to_be_added': expenses_to_be_added,
+            'companies': request.env.user.company_ids - request.env.user.company_id,
+            'default_currency': request.env.company.currency_id,
+            'default_company': request.env.user.company_id,
+            'employees': employees,
+            'managers': managers,
+            'default_managers': default_managers,
+            'today': str(fields.Date.today()),
+            'error_fields': '',
+        })
+        return request.render("bi_expense_portal.expense_report_submit", values)
 
     @http.route(['/expense_request_form/<int:expense_id>'], type='http', auth="user", website=True)
     def portal_expense_request_edit(self, expense_id, **kw):
@@ -251,6 +408,46 @@ class CustomerPortal(CustomerPortal):
         })
         return request.render("bi_expense_portal.expense_request_edit", values)
 
+    @http.route(['/expense_report_form/<int:expense_report_id>'], type='http', auth="user", website=True)
+    def portal_expense_report_edit(self, expense_report_id, **kw):
+        if expense_report_id:
+            expense_sudo = request.env['hr.expense.sheet'].sudo().browse([expense_report_id])
+        else:
+            return request.redirect('/my/expenses_reports')
+
+        if not request.env.user.has_group('bi_expense_portal.group_employee_expense_portal') and not request.env.user.has_group('bi_expense_portal.group_employee_expense_manager_portal'):
+            return request.render("bi_expense_portal.not_allowed_expense_request")
+        values = {}
+        employee = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)], limit=1)
+        employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
+        expenses_obj = request.env['hr.expense']
+        expenses_to_be_added = expenses_obj.sudo().search(
+            ['|', ('employee_id', '=', employee.id), ('employee_id.parent_id', '=', employee.id),
+             ('state', '=', 'draft'),
+             ('company_id', '=', request.env.user.company_id.id),
+            ('sheet_id', '=', False)])
+
+        default_managers = request.env['res.users'].sudo()
+        for emp in employees:
+            if emp.parent_id and emp.parent_id.user_id:
+                default_managers += emp.parent_id.user_id
+        managers = request.env['res.users'].sudo().search([])
+        if default_managers:
+            managers -= default_managers
+        values.update({
+            'expense_sudo': expense_sudo,
+            'expenses_to_be_added': expenses_to_be_added - expense_sudo.expense_line_ids,
+            'companies': request.env.user.company_ids - request.env.user.company_id,
+            'default_currency': request.env.company.currency_id,
+            'default_company': request.env.user.company_id,
+            'employees': employees,
+            'managers': managers,
+            'default_managers': default_managers,
+            'today': str(fields.Date.today()),
+            'error_fields': '',
+        })
+        return request.render("bi_expense_portal.expense_report_edit", values)
+
     @http.route(['/expense_request_delete/<int:expense_id>'], type='http', auth="user", website=True)
     def portal_expense_request_delete(self, expense_id, **kw):
         if expense_id:
@@ -258,6 +455,15 @@ class CustomerPortal(CustomerPortal):
             expense_sudo.sudo().unlink()
         else:
             return request.redirect('/my/expenses')
+        return request.render("bi_expense_portal.delete_page")
+
+    @http.route(['/expense_report_delete/<int:expense_report_id>'], type='http', auth="user", website=True)
+    def portal_expense_report_delete(self, expense_report_id, **kw):
+        if expense_report_id:
+            expense_sudo = request.env['hr.expense.sheet'].sudo().browse([expense_report_id])
+            expense_sudo.sudo().unlink()
+        else:
+            return request.redirect('/my/expenses_reports')
         return request.render("bi_expense_portal.delete_page")
 
     @http.route(['/expense_request_submit'], type='http', auth="user", website=True,methods=['POST'], csrf=False)
@@ -418,7 +624,82 @@ class CustomerPortal(CustomerPortal):
         #     if created_request.sheet_id:
         #         created_request.sheet_id.action_submit_sheet()
 
-        return request.render("bi_expense_portal.thankyou_page")
+        return request.render("bi_expense_portal.thankyou_page") if not hdn_expense_id else request.render("bi_expense_portal.edit_page")
+
+    @http.route(['/expense_report_submit'], type='http', auth="user", website=True,methods=['POST'], csrf=False)
+    def portal_expense_report_submit(self, **kw):
+        vals = request.params.copy()
+        if request.params.get('company_id', False):
+            company_id = int(request.params.get('company_id'))
+            vals.update({
+                'company_id': company_id,
+            })
+
+        list_all = request.httprequest.form.getlist('to_be_added_ids')
+        if list_all:
+            list_all = list(map(int, list_all))
+            vals.update({
+                'expense_line_ids': [(6, 0, list_all)],
+            })
+        else:
+            vals.update({
+                'expense_line_ids': [(5, 0, {})],
+            })
+        vals.pop('to_be_added_ids', None)
+
+        if request.params.get('employee_id', False):
+            employee_id = int(request.params.get('employee_id'))
+            vals.update({
+                'employee_id': employee_id,
+            })
+        if 'user_id' in vals.keys():
+            manager_id = int(request.params.get('user_id'))
+            vals.update({
+                'user_id': manager_id,
+            })
+
+        hdn_expense_id = False
+        if 'hdn_expense_id' in vals.keys():
+            hdn_expense_id = int(vals.get('hdn_expense_id'))
+            vals.pop('hdn_expense_id', None)
+
+        created_request = False
+        try:
+            vals = self._onchange_product_id(vals)
+
+            if hdn_expense_id:
+                expense = request.env['hr.expense.sheet'].sudo().search([('id', '=', int(hdn_expense_id))])
+                expense.write(vals)
+            else:
+                created_request = request.env['hr.expense.sheet'].sudo().create(vals)
+
+        except Exception as e:
+            if created_request:
+                created_request.sudo().unlink()
+            values = {}
+            employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
+
+            default_managers = request.env['res.users'].sudo()
+            for emp in employees:
+                if emp.parent_id and emp.parent_id.user_id:
+                    default_managers += emp.parent_id.user_id
+            managers = request.env['res.users'].sudo().search([])
+            if default_managers:
+                managers -= default_managers
+            values.update({
+                'description': vals['description'],
+                'companies': request.env.user.company_ids - request.env.user.company_id,
+                'default_currency': request.env.company.currency_id,
+                'default_company': request.env.user.company_id,
+                'employees': employees,
+                'managers': managers,
+                'default_managers': default_managers,
+                'today': str(fields.Date.today()),
+                'error_fields': json.dumps(e.args[0]),
+            })
+            return request.render("bi_expense_portal.expense_report_submit", values)
+
+        return request.render("bi_expense_portal.thankyou_report_page") if not hdn_expense_id else request.render("bi_expense_portal.edit_report_page")
 
     def _onchange_product_id(self, vals):
         product = request.env['product.product'].sudo().browse([int(vals.get('product_id'))]) if vals.get('product_id', False) else False
@@ -462,6 +743,21 @@ class CustomerPortal(CustomerPortal):
                 return request.redirect('/my/expenses/%s'%expense_id)
         return request.redirect('/my/expenses')
 
+    @http.route(['/report_submit'], type='http', auth="user", website=True)
+    def portal_submit_expense_report(self, **kw):
+        expense_id = request.params.get('id')
+        form = request.params.get('form', False)
+        if expense_id:
+            expense = request.env['hr.expense.sheet'].sudo().search([('id', '=', int(expense_id))])
+            if expense:
+                try:
+                    expense.action_submit_sheet()
+                except Exception as e:
+                    pass
+            if form:
+                return request.redirect('/my/expenses_reports/%s'%expense_id)
+        return request.redirect('/my/expenses_reports')
+
     @http.route(['/request_approve'], type='http', auth="user", website=True)
     def portal_approve_expense_request(self, **kw):
         expense_id = request.params.get('id')
@@ -493,6 +789,36 @@ class CustomerPortal(CustomerPortal):
             if form:
                 return request.redirect('/my/expenses/%s'%expense_id)
         return request.redirect('/my/expenses/')
+
+    @http.route(['/report_approve'], type='http', auth="user", website=True)
+    def portal_approve_expense_report(self, **kw):
+        expense_id = request.params.get('id')
+        form = request.params.get('form', False)
+        if expense_id:
+            expense = request.env['hr.expense.sheet'].sudo().search([('id', '=', int(expense_id))])
+            if expense:
+                try:
+                    expense.sudo().approve_expense_sheets()
+                except:
+                    pass
+            if form:
+                return request.redirect('/my/expenses_reports/%s'%expense_id)
+        return request.redirect('/my/expenses_reports')
+
+    @http.route(['/report_refuse'], type='http', auth="user", website=True)
+    def portal_refuse_expense_report(self, **kw):
+        expense_id = request.params.get('id')
+        form = request.params.get('form', False)
+        if expense_id:
+            expense = request.env['hr.expense.sheet'].sudo().search([('id', '=', int(expense_id))])
+            if expense:
+                try:
+                    expense.sudo().refuse_sheet('')
+                except:
+                    pass
+            if form:
+                return request.redirect('/my/expenses_reports/%s'%expense_id)
+        return request.redirect('/my/expenses_reports/')
 
     @http.route(['/expense/company_infos'], type='json', auth="public", methods=['POST'], website=True)
     def company_infos(self, company, product, **kw):

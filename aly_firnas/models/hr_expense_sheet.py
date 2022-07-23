@@ -9,6 +9,10 @@ class HrExpenseSheet(models.Model):
 
     user_id = fields.Many2one('res.users', 'Manager', readonly=True, copy=False, states={'draft': [('readonly', False)]},
                               tracking=True, required=True)
+    payment_mode = fields.Selection([
+        ("own_account", "Employee (to reimburse)"),
+        ("company_account", "Company")
+    ], default='company_account', readonly=True, string="Paid By")
 
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
