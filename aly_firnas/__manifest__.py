@@ -16,6 +16,7 @@
         'views/account_move.xml',
         'views/account_payment.xml',
         'views/sale_template_views.xml',
+        'views/sale_order.xml',
         'views/purchase_order_line.xml',
         'views/purchase_order_views.xml',
         'views/purchase_order_report.xml',

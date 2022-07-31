@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="aly_inherit_view_sale_order_add_currency" model="ir.ui.view">
+            <field name="name">aly.inherit.view.sale.order.add.currency</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="payment_term_id" position="after">
+                    <field name="manual_currency_rate_active" />
+                    <field name="new_currency_id" attrs="{
+                           'invisible': [('manual_currency_rate_active', '=', False)],
+                           'required':[('manual_currency_rate_active', '=', True)]
+                           }"/>
+                    <field name="manual_currency_rate"
+                           attrs="{
+                           'invisible': [('manual_currency_rate_active', '=', False)],
+                           'required':[('manual_currency_rate_active', '=', True)]
+                           }"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -14,6 +14,23 @@ class SaleOrder(models.Model):
         'crm.lead', string='Opportunity', check_company=True,
         domain="[('type', '=', 'opportunity'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]"
     , copy=False)
+    manual_currency_rate_active = fields.Boolean('Apply Manual Exchange')
+    manual_currency_rate = fields.Float('Rate', digits=(12, 4))
+    new_currency_id = fields.Many2one("res.currency", string="New Currency", readonly=False, required=False, default=lambda self: self.currency_id)
+
+    @api.depends('pricelist_id', 'date_order', 'company_id')
+    def _compute_currency_rate(self):
+        for order in self:
+            if order.manual_currency_rate_active:
+                order.currency_rate = self.env['res.currency'].with_context(override_currency_rate=self.manual_currency_rate)._get_conversion_rate(order.company_id.currency_id, order.currency_id, order.company_id, order.date_order)
+                for item in order.order_line:
+                    item.price_unit = order.currency_id.with_context(
+                        override_currency_rate=self.manual_currency_rate)._convert(
+                        item.price_unit, self.new_currency_id,
+                        self.company_id or self.env.company, self.date_order or fields.Date.today())
+                order.currency_id = self.new_currency_id
+            else:
+                order.currency_rate = self.env['res.currency']._get_conversion_rate(order.company_id.currency_id,order.currency_id, order.company_id,order.date_order)
 
     def _compute_option_data_for_template_change(self, option):
         if self.pricelist_id:
@@ -42,7 +59,6 @@ class SaleOrder(models.Model):
             self.require_payment = self._get_default_require_payment()
             return
         template = self.sale_order_template_id.with_context(lang=self.partner_id.lang)
-
         order_lines = [(5, 0, 0)]
         for line in template.sale_order_template_line_ids:
             data = self._compute_line_data_for_template_change(line)
@@ -81,10 +97,8 @@ class SaleOrder(models.Model):
                 #         self.env['sale.order.line']._get_purchase_price(self.pricelist_id, line.product_id, line.product_uom_id,
                 #                                                         fields.Date.context_today(self)))
             order_lines.append((0, 0, data))
-
         self.order_line = order_lines
         self.order_line._compute_tax_id()
-
         option_lines = [(5, 0, 0)]
         for option in template.sale_order_template_option_ids:
             data = self._compute_option_data_for_template_change(option)
@@ -135,3 +149,19 @@ class SaleOrder(models.Model):
 
         if template.note:
             self.note = template.note
+
+
+class SaleOrderLine(models.Model):
+    _inherit = 'sale.order.line'
+
+    @api.onchange('product_id')
+    def product_id_change(self):
+        if self.order_id.manual_currency_rate_active:
+            self = self.with_context(override_currency_rate=self.order_id.manual_currency_rate)
+        return super(SaleOrderLine, self).product_id_change()
+
+    @api.onchange('product_uom', 'product_uom_qty')
+    def product_uom_change(self):
+        if self.order_id.manual_currency_rate_active:
+            self = self.with_context(override_currency_rate=self.order_id.manual_currency_rate)
+        return super(SaleOrderLine, self).product_uom_change()
