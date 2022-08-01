@@ -17,6 +17,8 @@
         'views/account_payment.xml',
         'views/sale_template_views.xml',
         'views/sale_order.xml',
+        # 'views/stock_picking.xml',
+        'views/stock_production_lot.xml',
         'views/purchase_order_line.xml',
         'views/purchase_order_views.xml',
         'views/purchase_order_report.xml',

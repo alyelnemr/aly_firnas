@@ -13,4 +13,4 @@ from . import account_payment
 from . import sale_order_template
 from . import sale_order
 from . import res_currency
-
+from . import stock_move_line
