@@ -22,11 +22,11 @@ class ResUsers(models.Model):
         ]
         if not re.search(''.join(password_regex), password):
             raise ValidationError(self.password_match_message())
-
         return True
 
     def write(self, vals):
-        if vals.get('password'):
+        is_complex = self.env['ir.config_parameter'].sudo().get_param('aly_complex_password') or False
+        if vals.get('password') and is_complex:
             self._check_password_rules(vals['password'])
         return super(ResUsers, self).write(vals)
 

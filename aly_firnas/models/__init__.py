@@ -14,3 +14,7 @@ from . import sale_order_template
 from . import sale_order
 from . import res_currency
 from . import stock_move_line
+from . import hr_expense
+from . import hr_expense_sheet
+from . import hr_employee
+from . import account_analytic_acount

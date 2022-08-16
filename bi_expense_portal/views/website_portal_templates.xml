@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+    <data noupdate="1">
         <template id="assets_frontend" inherit_id="web.assets_frontend">
             <xpath expr="script[last()]" position="after">
                 <script type="text/javascript" src="/bi_expense_portal/static/src/js/website_expense.js"></script>
             </xpath>
         </template>
-
         <template id="portal_my_home_menu_expense" name="Portal layout : expense menu entries"
                   inherit_id="portal.portal_breadcrumbs" priority="25">
             <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
@@ -21,6 +20,20 @@
             </xpath>
         </template>
 
+        <template id="portal_my_home_menu_expense_report" name="Portal layout : expense report menu entries"
+                  inherit_id="portal.portal_breadcrumbs" priority="25">
+            <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+                <li t-if="page_name == 'expenses_reports' or expense_report"
+                    t-attf-class="breadcrumb-item #{'active ' if not expense_report else ''}">
+                    <a t-if="expense_report" t-attf-href="/my/expenses_reports?{{ keep_query() }}">Expenses Reports</a>
+                    <t t-else="">Expense Reports</t>
+                </li>
+                <li t-if="expense_report" class="breadcrumb-item active">
+                    <t t-esc="expense_report.name"/>
+                </li>
+            </xpath>
+        </template>
+
         <template id="portal_my_expense_request" name="Portal My Expense Request: Request Entries"
                   inherit_id="portal.portal_my_home" priority="3">
             <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
@@ -29,6 +42,13 @@
                         <t t-set="title">Expense Requests</t>
                         <t t-set="url" t-value="'/my/expenses'"/>
                         <t t-set="count" t-value="expenses_count"/>
+                    </t>
+                </t>
+                <t t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('bi_expense_portal.group_employee_expense_portal') or request.env['res.users'].browse(request.session.uid).user_has_groups('bi_expense_portal.group_employee_expense_manager_portal')">
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="title">Expense Reports</t>
+                        <t t-set="url" t-value="'/my/expenses_reports'"/>
+                        <t t-set="count" t-value="expenses_reports_count"/>
                     </t>
                 </t>
             </xpath>
@@ -112,19 +132,124 @@
                                           class="badge badge-pill badge-info"/>
                                 </td>
                                 <td>
+                                    <t t-if="exp.state in ['draft', 'reported']">
+                                        <a class="btn btn-info"
+                                           t-att-href="'/expense_request_form/%s' % (exp.id)">
+                                            Edit
+                                        </a>
+                                    </t>
+                                    <t t-if="exp.state in ['draft', 'reported']">
+                                        <a class="btn btn-info"
+                                           t-att-href="'/expense_request_delete/%s' % (exp.id)">
+                                            Delete
+                                        </a>
+                                    </t>
+                                </td>
+                            </tr>
+                        </t>
+                    </table>
+                    <div t-if="pager" class="o_portal_pager text-center">
+                        <t t-call="portal.pager"/>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+        <template id="display_expense_reports" name="Display Expense Reports">
+            <t t-call="portal.portal_layout">
+                <style>
+                    #myInput {
+                    background-position: 10px 10px;
+                    background-repeat: no-repeat;
+                    width: 100%;
+                    font-size: 16px;
+                    padding: 12px 20px 12px 40px;
+                    border: 1px solid #ddd;
+                    margin-bottom: 12px;
+                    }
+                    .container {
+                    max-width: 100% !important;
+                    }
+                </style>
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Expense Report</t>
+                </t>
+                <h3 class="page-header">
+                    Your Expense Reports
+                </h3>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <a t-attf-href="/expense_report_form" class="btn btn-info">New Expense Report</a>
+                    </div>
+                </div>
+                <t t-if="not expenses_reports">
+                    <p>You don't have any expense reports yet.</p>
+                </t>
+                <t t-if="expenses_reports">
+                    <table class="table table-hover o_my_status_table">
+                        <thead>
+                            <tr class="active">
+                                <th>Description</th>
+                                <th>Employee</th>
+                                <th>Total</th>
+                                <th>Company</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <t t-foreach="expenses_reports" t-as="exp">
+                            <tr>
+                                <td class="text-left">
+                                    <a t-attf-href="/my/expenses_reports/#{exp.id}?#{keep_query()}">
+                                        <span t-field="exp.name"/>
+                                    </a>
+                                </td>
+                                <td class="text-left">
+                                    <span t-field="exp.employee_id.display_name"/>
+                                </td>
+                                <td class="text-left">
+                                    <span t-field="exp.total_amount"/>
+                                </td>
+                                <td class="text-left">
+                                    <span t-field="exp.company_id.display_name"/>
+                                </td>
+                                <td class="text-left">
+                                    <span t-if="exp.state in ['approved', 'done']" t-esc="report_states[exp.state]"
+                                          class="badge badge-pill badge-success"/>
+                                    <span t-elif="exp.state in ['draft']" t-esc="report_states[exp.state]"
+                                          class="badge badge-pill badge-warning"/>
+                                    <span t-elif="exp.state in ['cancel']" t-esc="report_states[exp.state]"
+                                          class="badge badge-pill badge-danger"/>
+                                    <span t-else="" t-esc="report_states[exp.state]"
+                                          class="badge badge-pill badge-info"/>
+                                </td>
+                                <td>
                                     <t t-if="exp.state in ['draft']">
                                         <a class="btn btn-info"
-                                           t-att-href="'/request_submit?id=%s' % (exp.id)">
+                                           t-att-href="'/report_submit?id=%s' % (exp.id)">
                                             Submit
                                         </a>
                                     </t>
-                                    <t t-if="exp.state in ['reported']">
+                                    <t t-if="exp.state in ['draft', 'submit']">
+                                        <a class="btn btn-info"
+                                           t-att-href="'/expense_report_form/%s' % (exp.id)">
+                                            Edit
+                                        </a>
+                                    </t>
+                                    <t t-if="exp.state in ['draft', 'submit']">
+                                        <a class="btn btn-info"
+                                           t-att-href="'/expense_report_delete/%s' % (exp.id)">
+                                            Delete <t t-esc="exp.state" />
+                                        </a>
+                                    </t>
+                                    <t t-if="exp.state in ['submit']">
                                         <a t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('bi_expense_portal.group_employee_expense_manager_portal')" class="btn btn-success"
-                                           t-att-href="'/request_approve?id=%s' % (exp.id)">
+                                           t-att-href="'/report_approve?id=%s' % (exp.id)">
                                             Approve
                                         </a>
                                         <a t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('bi_expense_portal.group_employee_expense_manager_portal')" class="btn btn-danger"
-                                           t-att-href="'/request_refuse?id=%s' % (exp.id)">
+                                           t-att-href="'/report_refuse?id=%s' % (exp.id)">
                                             Refuse
                                         </a>
                                     </t>
@@ -159,6 +284,12 @@
                                         <a class="btn btn-info"
                                            t-att-href="'/request_submit?id=%s&amp;form=1' % (expense_request.id)">
                                             Submit
+                                        </a>
+                                    </t>
+                                    <t t-if="expense_request.state in ['draft']">
+                                        <a class="btn btn-info"
+                                           t-att-href="'/expense_request_form/%s' % (expense_request.id)">
+                                            Edit
                                         </a>
                                     </t>
                                     <t t-if="expense_request.state in ['reported']">
@@ -284,6 +415,134 @@
             </t>
         </template>
 
+        <template id="display_expense_report" name="Portal: My Expense Report">
+            <t t-call="portal.portal_layout">
+                <div class="container">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-lg-12 text-center">
+                                    <h4>
+                                        <span t-esc="expense_report.name"/>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row" style="margin-bottom: 10px;">
+                                <div class="col-lg-6">
+                                    <t t-if="expense_report.state in ['draft']">
+                                        <a class="btn btn-info"
+                                           t-att-href="'/report_submit?id=%s&amp;form=1' % (expense_report.id)">
+                                            Submit
+                                        </a>
+                                    </t>
+                                    <t t-if="expense_report.state in ['draft']">
+                                        <a class="btn btn-info"
+                                           t-att-href="'/expense_report_form/%s' % (expense_report.id)">
+                                            Edit
+                                        </a>
+                                    </t>
+                                    <t t-if="expense_report.state in ['reported']">
+                                        <a id="approve" t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('bi_expense_portal.group_employee_expense_manager_portal')" class="btn btn-success"
+                                           t-att-href="'/request_approve?id=%s&amp;form=1' % (expense_report.id)">
+                                            Approve
+                                        </a>
+                                        <a id="refuse" t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('bi_expense_portal.group_employee_expense_manager_portal')" class="btn btn-danger"
+                                           t-att-href="'/request_refuse?id=%s&amp;form=1' % (expense_report.id)">
+                                            Refuse
+                                        </a>
+                                    </t>
+                                </div>
+                                <div class="col-lg-6 text-right">
+                                    <span t-if="expense_report.state in ['approved', 'done']"
+                                          t-esc="report_states[expense_report.state]"
+                                          class="badge badge-pill badge-success"/>
+                                    <span t-elif="expense_report.state in ['cancel']"
+                                          t-esc="report_states[expense_report.state]"
+                                          class="badge badge-pill badge-danger"/>
+                                    <span t-elif="expense_report.state in ['draft']"
+                                          t-esc="report_states[expense_report.state]"
+                                          class="badge badge-pill badge-warning"/>
+                                    <span t-else="" t-esc="report_states[expense_report.state]"
+                                          class="badge badge-pill badge-info"/>
+                                </div>
+                            </div>
+                            <div class="mb8">
+                                <strong>Employee:</strong>
+                                <span t-field="expense_report.employee_id.display_name"/>
+                            </div>
+                            <div class="mb8">
+                                <strong>Manager:</strong>
+                                <span t-field="expense_report.user_id.name"/>
+                            </div>
+                            <div class="mb8">
+                                <strong>Paid By:</strong>
+                                <span t-esc="payment_modes[expense_report.payment_mode]"/>
+                            </div>
+                            <hr/>
+                            <div class="row">
+                                <div class="col-lg-2 text-left">
+                                    <strong>Date</strong>
+                                </div>
+                                <div class="col-lg-3">
+                                    <strong>Product</strong>
+                                </div>
+                                <div class="col-lg-2 text-right">
+                                    <strong>Unit Price</strong>
+                                </div>
+                                <div class="col-lg-2 text-right">
+                                    <strong>Quantity</strong>
+                                </div>
+                                <div class="col-lg-2 text-right">
+                                    <strong>Subtotal</strong>
+                                </div>
+                            </div>
+                            <t t-foreach="expense_report.expense_line_ids" t-as="expense_request">
+                                <div class="row">
+                                    <div class="col-lg-2 text-left">
+                                        <span t-field="expense_request.date" t-options='{"widget": "date"}'/>
+                                    </div>
+                                    <div id='product_name' class="col-lg-3">
+                                        <span t-esc="expense_request.product_id.name"/>
+                                    </div>
+                                    <div class="col-lg-2 text-right">
+                                        <span t-field="expense_request.unit_amount"
+                                              t-options='{"widget": "monetary", "display_currency": expense_request.currency_id}'/>
+                                    </div>
+                                    <div class="col-lg-2 text-right">
+                                        <span t-esc="expense_request.quantity"/>
+                                    </div>
+                                    <div class="col-lg-2 text-right">
+                                        <span t-field="expense_request.untaxed_amount"
+                                              t-options='{"widget": "monetary", "display_currency": expense_request.currency_id}'/>
+                                    </div>
+                                </div>
+                            </t>
+                            <hr style="width: 70%"/>
+                            <div class="row">
+                                <div class="col-lg-12 text-right">
+                                    <div class="row">
+                                        <div class="col-lg-10 text-right">
+                                            <strong>Total:</strong>
+                                        </div>
+                                        <div class="col-lg-2 text-right">
+                                            <strong>
+                                                <span t-field="expense_report.total_amount"
+                                                      t-options='{"widget": "monetary", "display_currency": expense_report.currency_id}'/>
+                                            </strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr/>
+                        </div>
+                    </div>
+                </div>
+                <div class="oe_structure mb32"/>
+            </t>
+        </template>
+
         <template id="expense_request_submit" name="Expense: Submit an Expense Request">
             <t t-call="portal.portal_layout">
                 <t t-set="additional_title">Expenses</t>
@@ -303,16 +562,33 @@
                                 </div>
                                 <div class="form-group row form-field">
                                     <div class="col-lg-4 col-md-4">
-                                        <label class="col-form-label" for="manager_id">Manager</label>
-                                        <select class="form-control" name="manager_id" required="1">
-                                            <t t-foreach="default_managers" t-as="manager">
-                                                <option t-att-value="manager.id">
-                                                    <t t-esc="manager.name"/>
+                                        <label class="col-form-label" for="partner_id">Vendor</label>
+                                        <select id="partner_id" class="form-control" name="partner_id" required="1">
+                                            <t t-foreach="vendors" t-as="vendor">
+                                                <option t-att-value="vendor.id">
+                                                    <t t-esc="vendor.name"/>
                                                 </option>
                                             </t>
-                                            <t t-foreach="managers" t-as="manager">
-                                                <option t-att-value="manager.id">
-                                                    <t t-esc="manager.name"/>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="vendor_contact_id">Vendor Contacts</label>
+                                        <select id="vendor_contact_id" class="form-control" name="vendor_contact_id">
+                                            <t t-foreach="vendor_contact_id" t-as="v_contact">
+                                                <option t-att-value="v_contact.id">
+                                                    <t t-esc="v_contact.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="project_id">Projects</label>
+                                        <select id="project_id" class="form-control" name="project_id" required="1">
+                                            <t t-foreach="projects" t-as="project">
+                                                <option t-att-value="project.id">
+                                                    <t t-esc="project.name"/>
                                                 </option>
                                             </t>
                                         </select>
@@ -369,22 +645,39 @@
                                     </div>
                                 </div>
                                 <div class="form-group row form-field">
-                                    <div class="col-lg-4 col-md-4">
+                                    <div class="col-lg-2 col-md-2">
                                         <label class="col-form-label" for="unit_amount">Unit Price</label>
-                                        <input type="number" step="0.01" class="form-control" name="unit_amount" required="1"/>
+                                        <input type="number" step="0.01" class="form-control" id="unit_amount"
+                                               name="unit_amount" required="1"/>
                                     </div>
-                                    <div class="col-lg-4 col-md-4">
+                                    <div class="col-lg-2 col-md-2">
                                         <label class="col-form-label" for="quantity">Quantity</label>
-                                        <input type="number" step="0.01" class="form-control" name="quantity" value="1.0" required="1"/>
+                                        <input type="number" step="0.01" class="form-control" id="quantity"
+                                               name="quantity" value="1.0" required="1"/>
+                                    </div>
+                                    <div class="col-lg-2 col-md-2">
+                                        <label class="col-form-label" for="taxes">Taxes</label>
+                                        <select class="form-control" id="tax_ids" name="tax_ids" required="1">
+                                            <t t-foreach="tax_ids" t-as="tax">
+                                                <option t-att-value="tax.id">
+                                                    <t t-esc="tax.sudo().display_name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-2 col-md-2">
+                                        <label class="col-form-label" for="total_amount">Total</label>
+                                        <input type="number" step="0.01" class="form-control" name="total_amount" value="0.0"
+                                               readonly="1"/>
                                     </div>
                                 </div>
                                 <div class="form-group row form-field">
                                     <div class="col-lg-4 col-md-4">
                                         <label class="col-form-label" for="payment_mode">Paid By</label>
                                         <select class="form-control" name="payment_mode" required="1">
-                                            <option value="own_account">
-                                                Employee (to reimburse)
-                                            </option>
+<!--                                            <option value="own_account">-->
+<!--                                                Employee (to reimburse)-->
+<!--                                            </option>-->
                                             <option value="company_account">
                                                 Company
                                             </option>
@@ -393,9 +686,11 @@
                                     <div t-if="default_account" class="col-lg-4 col-md-4">
                                         <label class="col-form-label" for="account_id">Account</label>
                                         <select class="form-control" name="account_id" required="1">
-                                            <option t-att-value="default_account.id">
-                                                <t t-esc="default_account.sudo().display_name"/>
-                                            </option>
+                                            <t t-foreach="default_account" t-as="acc">
+                                                <option t-att-value="acc.id">
+                                                    <t t-esc="acc.sudo().display_name"/>
+                                                </option>
+                                            </t>
                                         </select>
                                     </div>
                                 </div>
@@ -415,9 +710,9 @@
                                     </div>
                                     <div class="col-lg-2 col-md-2">
                                         <label class="col-form-label" for="analytic_account_id">Analytic Account</label>
-                                        <select class="form-control" name="analytic_account_id" required="1"
-                                                data-init="0">
-                                            <t t-foreach="analytic_accounts" t-as="analytic_account">
+                                        <select class="form-control" id="analytic_account_id" name="analytic_account_id"
+                                                required="1" data-init="0">
+                                            <t t-foreach="analytic_account_id" t-as="analytic_account">
                                                 <option t-att-value="analytic_account.id">
                                                     <t t-esc="analytic_account.display_name"/>
                                                 </option>
@@ -426,10 +721,10 @@
                                     </div>
                                     <div class="col-lg-2 col-md-2">
                                         <label class="col-form-label" for="analytic_tag_id">Analytic Tag</label>
-                                        <select class="form-control" name="analytic_tag_id" required="1"
+                                        <select multiple="multiple" class="form-control" id="analytic_tag_id" name="analytic_tag_id" required="1"
                                                 data-init="0">
-                                            <t t-foreach="analytic_tags" t-as="analytic_tag">
-                                                <option t-att-value="analytic_tag.id">
+                                            <t t-foreach="analytic_tag_id" t-as="analytic_tag">
+                                                <option t-att-value="analytic_tag.id" selected="selected">
                                                     <t t-esc="analytic_tag.display_name"/>
                                                 </option>
                                             </t>
@@ -446,6 +741,139 @@
                                         <input type="text" class="form-control" name="description"/>
                                     </div>
                                 </div>
+                                <div class="form-group row">
+                                    <div class="col-md-8 col-lg-7">
+                                        <button type="submit"
+                                                class="btn btn-primary btn-lg o_website_form_send o_default_snippet_text">
+                                            Submit
+                                        </button>
+                                        <span style="color: red;">
+                                            <t t-if="error_fields" t-esc="error_fields"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </form>
+                        </section>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="expense_report_submit" name="Expense Report: Create an Expense Report">
+            <t t-call="portal.portal_layout">
+                <t t-set="additional_title">Expenses Report</t>
+                <div id="wrap" class='container'>
+                    <h1 class="text-center mt-2">
+                        Expense Report Form
+                    </h1>
+                    <div class="row mt-3">
+                        <section id="forms" class="col expense_form">
+                            <form action="/expense_report_submit" method="post" enctype="multipart/form-data">
+<!--                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>-->
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-8 col-md-8">
+                                        <label class="col-form-label" for="description">Description</label>
+                                        <input type="text" class="form-control" name="name" required="1"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="employee_id">Employee</label>
+                                        <select class="form-control" name="employee_id" required="1">
+                                            <t t-foreach="employees" t-as="employee">
+                                                <option t-att-value="employee.id">
+                                                    <t t-esc="employee.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="payment_mode">Paid By</label>
+                                        <select class="form-control" name="payment_mode">
+                                            <option value="company_account">
+                                                Company
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="user_id">Manager</label>
+                                        <select class="form-control" name="user_id" required="1">
+                                            <t t-foreach="default_managers" t-as="manager">
+                                                <option t-att-value="manager.id">
+                                                    <t t-esc="manager.name"/>
+                                                </option>
+                                            </t>
+                                            <t t-foreach="managers" t-as="manager">
+                                                <option t-att-value="manager.id">
+                                                    <t t-esc="manager.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="company_id">Company</label>
+                                        <select id="company_id" class="form-control company_autoformat" name="company_id">
+                                            <option t-att-value="default_company.id">
+                                                <t t-esc="default_company.name"/>
+                                            </option>
+                                            <t t-foreach="companies" t-as="company">
+                                                <option t-att-value="company.id">
+                                                    <t t-esc="company.display_name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2 text-center">
+                                        <strong>Select</strong>
+                                    </div>
+                                    <div class="col-lg-2 text-left">
+                                        <strong>Date</strong>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <strong>Product</strong>
+                                    </div>
+                                    <div class="col-lg-2 text-right">
+                                        <strong>Unit Price</strong>
+                                    </div>
+                                    <div class="col-lg-2 text-right">
+                                        <strong>Quantity</strong>
+                                    </div>
+                                    <div class="col-lg-2 text-right">
+                                        <strong>Subtotal</strong>
+                                    </div>
+                                </div>
+                                <t t-set="to_be_added_index" t-value="1"/>
+                                <t t-foreach="expenses_to_be_added" t-as="expense_request">
+                                    <div class="row">
+                                        <div class="col-lg-2 text-center">
+<!--                                            <input type="checkbox" t-att-value="'%s' % (expense_request.id)" t-att-name="'to_be_added_[''%s'']' % (to_be_added_index)" />-->
+                                            <input type="checkbox" t-att-value="'%s' % (expense_request.id)" name="to_be_added_ids" />
+                                        </div>
+                                        <div class="col-lg-2 text-left">
+                                            <span t-field="expense_request.date" t-options='{"widget": "date"}'/>
+                                        </div>
+                                        <div id='product_name' class="col-lg-2">
+                                            <span t-esc="expense_request.product_id.name"/>
+                                        </div>
+                                        <div class="col-lg-2 text-right">
+                                            <span t-field="expense_request.unit_amount"
+                                                  t-options='{"widget": "monetary", "display_currency": expense_request.currency_id}'/>
+                                        </div>
+                                        <div class="col-lg-2 text-right">
+                                            <span t-esc="expense_request.quantity"/>
+                                        </div>
+                                        <div class="col-lg-2 text-right">
+                                            <span t-field="expense_request.untaxed_amount"
+                                                  t-options='{"widget": "monetary", "display_currency": expense_request.currency_id}'/>
+                                        </div>
+                                    </div>
+                                    <t t-set="to_be_added_index" t-value="to_be_added_index+1"/>
+                                </t>
+                                <hr style="width: 70%"/>
                                 <div class="form-group row">
                                     <div class="col-md-8 col-lg-7">
                                         <button type="submit"
@@ -490,7 +918,79 @@
                                 <div class="col-lg-12">
                                     <h1 class="text-center">Done!</h1>
                                     <p class="text-center">
-                                        Your request has been created successfully.
+                                        Your request has been <b>created</b> successfully.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <template id="thankyou_report_page">
+            <t t-call="portal.portal_layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h1 class="text-center">Done!</h1>
+                                    <p class="text-center">
+                                        Your report has been <b>created</b> successfully.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <template id="delete_page">
+            <t t-call="portal.portal_layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h1 class="text-center">Done!</h1>
+                                    <p class="text-center">
+                                        Your request has been <b>deleted</b> successfully.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <template id="edit_page">
+            <t t-call="portal.portal_layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h1 class="text-center">Done!</h1>
+                                    <p class="text-center">
+                                        Your request has been <b>edited</b> successfully.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <template id="edit_report_page">
+            <t t-call="portal.portal_layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h1 class="text-center">Done!</h1>
+                                    <p class="text-center">
+                                        Your report has been <b>edited</b> successfully.
                                     </p>
                                 </div>
                             </div>
@@ -502,3 +1002,4 @@
 
     </data>
 </odoo>
+
