@@ -92,3 +92,12 @@ class CRMLeadInherit(models.Model):
                 rec.letter_identifier = rec.parent_opportunity_id.next_letter_sequence or 'B'
             else:
                 rec.letter_identifier = False
+
+
+class Lead2OpportunityMassConvert(models.TransientModel):
+    _inherit = 'crm.lead2opportunity.partner.mass'
+
+    partner_mass_ids = fields.Many2many('res.partner', 'crmlead2opprtunity_mass_partner_ids_rel', 'crmlead_mass_partner_ids_id',
+                                   'partner_ids_mass_partner_id', string="Partner")
+    client_mass_name = fields.Many2many('res.partner', 'crmlead2opprtunity_mass_client_rel', 'crmlead_mass_client_name_id',
+                                           'client_name_mass_partner_id', string="End Client")
