@@ -81,7 +81,7 @@
                     </group>
                 </xpath>
                 <xpath expr="//field[@name='payment_mode']" position="attributes">
-                    <attribute name="context=">{'default_payment_mode': 'company_account'}</attribute>
+                    <attribute name="context">{'default_payment_mode': 'company_account'}</attribute>
                 </xpath>
                 <xpath expr="//page[@name='other_info']" position="attributes">
                     <attribute name="attrs">{'invisible': True}</attribute>
