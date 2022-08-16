@@ -127,7 +127,7 @@
         <field name="arch" type="xml">
             <xpath expr="//button[@name='%(crm.action_crm_lead2opportunity_partner)d']" position="replace">
                 <button name="%(bi_crm_concatenated_name.aly_action_crm_lead2opportunity_partner)d"
-                        string="Convert to Opportunity Aly" type="action"
+                        string="Convert to Opportunity" type="action"
                         help="Convert to Opportunity"
                         class="oe_highlight" attrs="{'invisible': ['|', ('type', '=', 'opportunity'), ('active', '=', False)]}"/>
             </xpath>
