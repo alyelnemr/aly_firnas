@@ -69,8 +69,7 @@
                             <field name="bank_journal_id" groups="account.group_account_user"
                                    options="{'no_open': True, 'no_create': True}"
                                    attrs="{'invisible': [('payment_mode', '!=', 'company_account')],
-                                   'required': True}"
-                                   context="{'default_company_id': company_id}"/>
+                                   'required': True}" context="{'default_company_id': company_id}"/>
                             <field name="accounting_date" groups="account.group_account_user"
                                    attrs="{'invisible': [('state', 'not in', ['approve', 'post', 'done'])]}"/>
                         </group>
@@ -81,7 +80,7 @@
                     </group>
                 </xpath>
                 <xpath expr="//field[@name='payment_mode']" position="attributes">
-                    <attribute name="context=">{'default_payment_mode': 'company_account'}</attribute>
+                    <attribute name="context">{'default_payment_mode': 'company_account'}</attribute>
                 </xpath>
                 <xpath expr="//page[@name='other_info']" position="attributes">
                     <attribute name="attrs">{'invisible': True}</attribute>
