@@ -55,13 +55,13 @@ class Lead2OpportunityPartner(models.TransientModel):
             if 'partnership_model' in fields and lead.partnership_model:
                 result['partnership_model'] = lead.partnership_model
             if 'sub_type' in fields and lead.sub_type:
-                result['sub_type'] = lead.sub_type
+                result['sub_type'] = lead.sub_type.id
             if 'sub_date' in fields and lead.sub_date:
                 result['sub_date'] = lead.sub_date
             if 'start_date' in fields and lead.start_date:
                 result['start_date'] = lead.start_date
             if 'source_id' in fields and lead.source_id:
-                result['source_id'] = lead.source_id
+                result['source_id'] = lead.source_id.id
             if 'country' in fields and lead.country:
                 result['country'] = lead.country.ids
             if 'partner_ids' in fields and lead.partner:
@@ -71,7 +71,7 @@ class Lead2OpportunityPartner(models.TransientModel):
             if 'project_num' in fields and lead.project_num:
                 result['project_num'] = lead.project_num
             if 'proposals_engineer_id' in fields and lead.proposals_engineer_id:
-                result['proposals_engineer_id'] = lead.proposals_engineer_id
+                result['proposals_engineer_id'] = lead.proposals_engineer_id.id
             if 'type_custom' in fields and lead.type_custom:
                 result['type_custom'] = lead.type_custom
             if 'internal_opportunity_name' in fields and lead.internal_opportunity_name:
