@@ -26,7 +26,7 @@ class CRMLeadInherit(models.Model):
                                  domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
                                  help="Linked partner (optional). Usually created when converting the lead. You can find a partner by its Name, TIN, Email or Internal Reference.")
     project_num = fields.Char(string="Project Number", store=True)
-    type_custom = fields.Char(string="Type")
+    type_custom = fields.Many2one('crm.type', string="Type", required=True)
     project_name = fields.Char(string="Customer's Project Name / Proposal Title", store=True, )
     country = fields.Many2many('res.country', string='Countries')
     start_date = fields.Date(string="Start Date")

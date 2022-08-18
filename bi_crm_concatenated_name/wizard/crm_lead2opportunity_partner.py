@@ -19,7 +19,6 @@ class Lead2OpportunityPartner(models.TransientModel):
                                  domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
                                  help="Linked partner (optional). Usually created when converting the lead. You can find a partner by its Name, TIN, Email or Internal Reference.")
     project_num = fields.Char(string="Project Number", store=True)
-    type_custom = fields.Char(string="Type")
     project_name = fields.Char(string="Customer's Project Name / Proposal Title", store=True, )
     country = fields.Many2many('res.country', string='Countries')
     start_date = fields.Date(string="Start Date")
@@ -29,7 +28,7 @@ class Lead2OpportunityPartner(models.TransientModel):
     fund = fields.Many2one('project.fund', string="Funding")
     partnership_model = fields.Many2one('project.partnership', string="Partnership Model")
     partner_ids = fields.Many2many('res.partner', string="Partner")
-    client_name = fields.Many2many('res.partner', 'crmlead_client_rel', string="End Client")
+    #client_name = fields.Many2many('res.partner', 'crmlead2opportunity_client_rel', string="End Client")
     # client_name = fields.Many2many('client.name', string="End Client")
     proposals_engineer_id = fields.Many2one('res.users', string='Proposals Engineer')
     rfp_ref_number = fields.Char(string='RfP Ref. Number')
@@ -49,7 +48,7 @@ class Lead2OpportunityPartner(models.TransientModel):
             lead = self.env['crm.lead'].browse(self._context['active_id'])
 
             if 'client_name' in fields and lead.client_name:
-                result['client_name'] = lead.client_name
+                result['client_name'] = lead.client_name.ids
             if 'fund' in fields and lead.fund:
                 result['fund'] = lead.fund
             if 'partnership_model' in fields and lead.partnership_model:
@@ -73,7 +72,7 @@ class Lead2OpportunityPartner(models.TransientModel):
             if 'proposals_engineer_id' in fields and lead.proposals_engineer_id:
                 result['proposals_engineer_id'] = lead.proposals_engineer_id.id
             if 'type_custom' in fields and lead.type_custom:
-                result['type_custom'] = lead.type_custom
+                result['type_custom'] = lead.type_custom.id
             if 'internal_opportunity_name' in fields and lead.internal_opportunity_name:
                 result['internal_opportunity_name'] = lead.internal_opportunity_name
             if 'rfp_ref_number' in fields and lead.rfp_ref_number:
@@ -119,7 +118,7 @@ class Lead2OpportunityPartner(models.TransientModel):
                 'company_id': self.company_id.id,
                 'currency_id': self.currency_id.id,
                 'project_name': self.project_name,
-                'client_name': self.client_name,
+                # 'client_name': self.client_name.ids,
                 'country': self.country,
                 'fund': self.fund,
                 'internal_opportunity_name': self.internal_opportunity_name,
