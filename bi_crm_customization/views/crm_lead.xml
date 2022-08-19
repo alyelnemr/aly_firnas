@@ -29,6 +29,43 @@
             </xpath>
             <xpath expr="//div/h2/div[1]" position="replace"></xpath>
             <xpath expr="//div/h2/div[@class='col']" position="replace"></xpath>
+            <xpath expr="//group/group/field[@name='partner_id']" position="attributes">
+                <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}
+                </attribute>
+            </xpath>
+            <xpath expr="//group/group[2]/field[@name='partner_id']" position="attributes">
+                <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="sub_date" required="0"/>
+            </xpath>
+            <xpath expr="//page[@name='lead']//group//group//field[@name='source_id']" position="replace">
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page name="info" string="Information">
+                    <group>
+                        <group>
+                            <field name="proposals_engineer_id"/>
+                            <field name="rfp_ref_number"/>
+                            <field name="project_num" required="1"/>
+                            <field name="type_custom" required="0"/>
+                            <field name="project_name"/>
+                            <field name="country" required="1" widget="many2many_tags"/>
+                            <field name="start_date" required="1"/>
+                            <field name="source_id" required="1"/>
+                        </group>
+                        <group>
+                            <field name="actual_sub_date"/>
+                            <field name="sub_type"/>
+                            <field name="fund"/>
+                            <field name="partnership_model"/>
+                            <field name="partner" widget="many2many_tags"/>
+                            <field name="client_name" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
         </field>
     </record>
     <record id="view_crm_lead_inherit_tree" model="ir.ui.view">
@@ -60,6 +97,17 @@
                     <field name="currency_id"/>
                 </t>
             </xpath>
+            <templates position="before">
+                <field name="sub_date"/>
+            </templates>
+            <xpath expr="//div[@class='o_kanban_record_bottom']" position="before">
+                <div>
+                    <field name="sub_date"/>
+                </div>
+            </xpath>
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="default_order">sub_date DESC</attribute>
+            </xpath>
         </field>
     </record>
     <record id="view_crm_lead_inherit_search" model="ir.ui.view">
@@ -72,4 +120,16 @@
             </xpath>
         </field>
     </record>
+    <!--calendar view-->
+    <record id="inherited_view_crm_lead_new_fields_calendar" model="ir.ui.view">
+        <field name="name">crm.lead.inherit.calendar</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_calendar_view_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//calendar" position="attributes">
+                <attribute name="date_start">sub_date</attribute>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>

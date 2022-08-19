@@ -15,6 +15,7 @@ class CRMLeadInherit(models.Model):
     project_num = fields.Char(string="Project Number", default='/', compute='_compute_project_num', store=True)
     internal_opportunity_name = fields.Char(string="Internal Opportunity Name", required=True)
     next_letter_sequence = fields.Char(string="Next Letter Sequence", readonly=True)
+    task_id = fields.Many2one('project.task', string="Task in Project Module", required=False, copy=False)
 
     @api.depends('project_num', 'country.code', 'internal_opportunity_name')
     def _compute_name(self):
@@ -56,9 +57,17 @@ class CRMLeadInherit(models.Model):
             vals['original_serial_number'] = vals['serial_number']
 
         res = super(CRMLeadInherit, self).create(vals)
+        if res.type == 'opportunity':
+            project = self.env['project.project'].search([('name', '=', 'Proposals Department')])
+            task_id = self.env['project.task'].sudo().create({
+                'name': res.name,
+                'project_id': project.id
+            })
+            res.task_id = task_id.id
         return res
 
     def write(self, vals):
+        is_conversion = False
         if 'parent_opportunity_id' in vals:
             if self.type == 'opportunity':
                 if vals['parent_opportunity_id']:
@@ -66,8 +75,17 @@ class CRMLeadInherit(models.Model):
                     vals['serial_number'] = parent_opp.serial_number
                 else:
                     vals['serial_number'] = self.original_serial_number
-
-        return super(CRMLeadInherit, self).write(vals)
+        if 'type' in vals and self.type != vals['type']:
+            is_conversion = True
+        res = super(CRMLeadInherit, self).write(vals)
+        if self.type == 'opportunity' and not self.task_id and is_conversion:
+            project = self.env['project.project'].search([('name', '=', 'Proposals Department')])
+            task_id = self.env['project.task'].sudo().create({
+                'name': self.name,
+                'project_id': project.id
+            })
+            self.task_id = task_id
+        return res
 
     def action_new_quotation(self):
         res = super(CRMLeadInherit, self).action_new_quotation()

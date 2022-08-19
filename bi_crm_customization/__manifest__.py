@@ -10,7 +10,11 @@
     'version': '0.1',
     'depends': ['base', 'crm'],
     'data': [
+        'data/service_cron.xml',
+        'security/security.xml',
         'security/ir.model.access.csv',
+        'views/res_config_settings.xml',
+        'views/crm_stage.xml',
         'views/crm_lead.xml',
     ],
     'installable': True,

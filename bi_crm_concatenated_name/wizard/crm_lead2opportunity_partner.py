@@ -46,13 +46,14 @@ class Lead2OpportunityPartner(models.TransientModel):
         if self._context.get('active_id'):
 
             lead = self.env['crm.lead'].browse(self._context['active_id'])
+            result['name'] = 'convert'
 
             if 'client_name' in fields and lead.client_name:
                 result['client_name'] = lead.client_name.ids
             if 'fund' in fields and lead.fund:
-                result['fund'] = lead.fund
+                result['fund'] = lead.fund.id
             if 'partnership_model' in fields and lead.partnership_model:
-                result['partnership_model'] = lead.partnership_model
+                result['partnership_model'] = lead.partnership_model.id
             if 'sub_type' in fields and lead.sub_type:
                 result['sub_type'] = lead.sub_type.id
             if 'sub_date' in fields and lead.sub_date:
@@ -120,7 +121,7 @@ class Lead2OpportunityPartner(models.TransientModel):
                 'project_name': self.project_name,
                 # 'client_name': self.client_name.ids,
                 'country': self.country,
-                'fund': self.fund,
+                'fund': self.fund.id,
                 'internal_opportunity_name': self.internal_opportunity_name,
                 'letter_identifier': self.letter_identifier,
                 'next_letter_sequence': self.next_letter_sequence,
@@ -135,7 +136,7 @@ class Lead2OpportunityPartner(models.TransientModel):
                 'start_date': self.start_date,
                 'sub_date': self.sub_date,
                 'sub_type': self.sub_type,
-                'type_custom': self.type_custom,
+                'type_custom': self.type_custom.id,
             })
 
         return leads[0].redirect_lead_opportunity_view()

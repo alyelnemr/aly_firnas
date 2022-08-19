@@ -5,7 +5,7 @@
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="bi_new_customized_fields.inherited_view_crm_lead_new_fields_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//page/group/group/field[@name='sub_date']" position="after">
+            <xpath expr="field[@name='sub_date']" position="after">
                 <field name="actual_sub_date"/>
             </xpath>
         </field>

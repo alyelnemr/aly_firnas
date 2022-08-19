@@ -111,7 +111,7 @@
     </record>
 
     <record id="aly_action_crm_lead2opportunity_partner" model="ir.actions.act_window">
-        <field name="name">Convert to opportunity Aly</field>
+        <field name="name">Convert to opportunity</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">crm.lead2opportunity.partner</field>
         <field name="view_mode">form</field>
