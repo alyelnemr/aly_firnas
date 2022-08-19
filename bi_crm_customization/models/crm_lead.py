@@ -28,10 +28,11 @@ class CRMLeadInherit(models.Model):
                                  domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
                                  help="Linked partner (optional). Usually created when converting the lead. You can find a partner by its Name, TIN, Email or Internal Reference.")
     project_num = fields.Char(string="Project Number", store=True)
-    type_custom = fields.Many2one('crm.type', string="Type", required=True)
+    type_custom = fields.Many2one('crm.type', string="Project Type", required=True)
+    type_custom_ids = fields.Many2many('crm.type', string="Secondary Project Types", required=True)
     project_name = fields.Char(string="Customer's Project Name / Proposal Title", store=True, )
     country = fields.Many2many('res.country', string='Countries')
-    start_date = fields.Date(string="Start Date")
+    start_date = fields.Date(string="Request Date")
     sub_date = fields.Datetime(string="Submission Deadline")
     actual_sub_date = fields.Date(string="Actual Submission Date")
     mandatory_actual_sub = fields.Boolean(related='stage_id.mandatory_actual_sub',
@@ -40,8 +41,14 @@ class CRMLeadInherit(models.Model):
     # source = fields.Char(string="Source")
     fund = fields.Many2one('project.fund', string="Funding")
     partnership_model = fields.Many2one('project.partnership', string="Partnership Model")
-    partner = fields.Many2many('res.partner', string="Partner")
+    partner = fields.Many2many('res.partner', string="JV Partners")
     client_name = fields.Many2many('res.partner', 'crmlead_client_rel', string="End Client")
+    subcontractor_supplier_ids = fields.Many2many('res.partner', 'crmlead_subcontractor_rel', string="Subcontractors/Suppliers")
+    proposal_reviewer_ids = fields.Many2many('res.partner', 'crmlead_prop_reviewer_rel', string="Proposal Reviewers")
+    latest_proposal_submission_date = fields.Date(string="Latest Proposal Submission Date")
+    result_date = fields.Date(string="Result Date")
+    contract_signature_date = fields.Date(string="Contract/PO Signature Date")
+    initial_contact_date = fields.Date(string="Initial Contact Date")
     # client_name = fields.Many2many('client.name', string="End Client")
     proposals_engineer_id = fields.Many2one('res.users', string='Proposals Engineer')
     rfp_ref_number = fields.Char(string='RfP Ref. Number')
@@ -58,6 +65,10 @@ class CRMLeadInherit(models.Model):
                 err += 'Please Add Currency!\n'
             if rec.stage_id.mandatory_forecast and rec.forecast <= 0:
                 err += 'Please Add Forecast!\n'
+            if rec.stage_id.mandatory_result_date and not rec.result_date:
+                err += 'Please Add Result Date!\n'
+            if rec.stage_id.mandatory_signature_date and not rec.contract_signature_date:
+                err += 'Please Add Result Date!\n'
             if err:
                 raise ValidationError(err)
 

@@ -8,3 +8,5 @@ class CrmStage(models.Model):
     mandatory_actual_sub = fields.Boolean(string="Mandatory Actual Submission Date")
     mandatory_currency = fields.Boolean(string="Mandatory Currency")
     mandatory_forecast = fields.Boolean(string="Mandatory Forecast")
+    mandatory_result_date = fields.Boolean(string="Mandatory Result Date")
+    mandatory_signature_date = fields.Boolean(string="Mandatory Contract/PO Signature Date")
