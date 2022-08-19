@@ -37,7 +37,7 @@
                 <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}
                 </attribute>
             </xpath>
-            <xpath expr="//field[@name='company_id']" position="after">
+            <xpath expr="//field[@name='team_id']" position="after">
                 <field name="sub_date" required="0"/>
             </xpath>
             <xpath expr="//notebook" position="inside">
