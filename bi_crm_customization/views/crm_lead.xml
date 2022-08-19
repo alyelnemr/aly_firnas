@@ -40,7 +40,7 @@
             <xpath expr="//field[@name='company_id']" position="after">
                 <field name="sub_date" required="0"/>
             </xpath>
-            <xpath expr="//page[@name='lead']//group//group//field[@name='source_id']" position="replace">
+            <xpath expr="field[@name='source_id']" position="replace">
             </xpath>
             <xpath expr="//notebook" position="inside">
                 <page name="info" string="Information">
