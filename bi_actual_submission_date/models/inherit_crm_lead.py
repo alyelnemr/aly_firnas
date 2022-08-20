@@ -13,20 +13,9 @@ class CrmLead(models.Model):
 
     @api.onchange('stage_id')
     def _onchange_stages(self):
-        err = ''
         for rec in self:
             if rec.stage_id.mandatory_actual_sub and not rec.actual_sub_date:
-                err = 'Please Add Actual Submission Date First!\n'
-            if rec.stage_id.mandatory_currency and not rec.currency_id:
-                err += 'Please Add Currency!\n'
-            if rec.stage_id.mandatory_forecast and rec.forecast <= 0:
-                err += 'Please Add Forecast!\n'
-            if rec.stage_id.mandatory_result_date and not rec.result_date:
-                err += 'Please Add Result Date!\n'
-            if rec.stage_id.mandatory_signature_date and not rec.contract_signature_date:
-                err += 'Please Add Result Date!\n'
-            if err:
-                raise ValidationError(err)
+                raise ValidationError('Please Add Actual Submission Date First!')
 
     def _notify_submission_date_groups(self):
         # groups to notify
