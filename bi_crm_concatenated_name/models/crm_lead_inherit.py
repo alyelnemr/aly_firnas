@@ -10,7 +10,6 @@ class CRMLeadInherit(models.Model):
     parent_opportunity_id = fields.Many2one('crm.lead', string='Existing Opportunities')
     serial_number = fields.Char(string='Serial Number')
     original_serial_number = fields.Char(string='Original Serial Number')
-    type_custom = fields.Many2one('crm.type', string="Type", required=True)
     letter_identifier = fields.Char(string='Letter Identifier')
     project_num = fields.Char(string="Project Number", default='/', compute='_compute_project_num', store=True)
     internal_opportunity_name = fields.Char(string="Internal Opportunity Name", required=True)
