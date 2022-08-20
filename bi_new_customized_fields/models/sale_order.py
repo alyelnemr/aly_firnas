@@ -55,8 +55,8 @@ class SaleOrderInherit(models.Model):
                 result['internal_opportunity_name'] = lead.internal_opportunity_name
             if 'rfp_ref_number' in fields and lead.rfp_ref_number:
                 result['rfp_ref_number'] = lead.rfp_ref_number
-            if 'client_name_id' in fields and lead.client_name_id:
-                result['client_name_id'] = lead.client_name_id.ids
+            if 'client_name' in fields and lead.client_name:
+                result['client_name_id'] = lead.client_name.ids
             if 'subcontractor_supplier_ids' in fields and lead.subcontractor_supplier_ids:
                 result['subcontractor_supplier_ids'] = lead.subcontractor_supplier_ids.ids
             if 'proposal_reviewer_ids' in fields and lead.proposal_reviewer_ids:
