@@ -13,7 +13,6 @@
         'security/ir.model.access.csv',
         'views/crm_lead_views.xml',
         'views/res_config_settings_inherit.xml',
-        'views/crm_type_views.xml',
         'data/ir_sequence_data.xml',
     ],
     'installable': True,
