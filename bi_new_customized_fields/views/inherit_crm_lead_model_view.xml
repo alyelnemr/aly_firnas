@@ -18,48 +18,6 @@
                 </xpath>
                 <xpath expr="//page[@name='lead']//group//group//field[@name='source_id']" position="replace">
                 </xpath>
-                <xpath expr="//notebook" position="inside">
-                    <page name="info" string="Information">
-                        <group>
-                            <group>
-                                <label for="is_existing_opportunity" string="Is it an existing opportunity?"
-                                       attrs="{'invisible': [('type', '!=', 'opportunity')]}"/>
-                                <field name="is_existing_opportunity" nolabel="1"
-                                       attrs="{'invisible': [('type', '!=', 'opportunity')]}"/>
-                                <field name="parent_opportunity_id"
-                                       attrs="{'invisible':['|', ('is_existing_opportunity', '=', False), ('type', '!=', 'opportunity')], 'required':[('is_existing_opportunity', '=', True)]}"/>
-                                <field name="letter_identifier" force_save="1"
-                                       attrs="{'invisible':['|', ('is_existing_opportunity', '=', False), ('type', '!=', 'opportunity')], 'required':[('is_existing_opportunity', '=', True)], 'readonly':True}"/>
-                                <field name="next_letter_sequence" invisible="1"/>
-                                <field name="serial_number" attrs="{'invisible': [('type', '!=', 'opportunity')]}" readonly="1"/>
-                                <field name="proposals_engineer_id"/>
-                                <field name="rfp_ref_number"/>
-                                <field name="project_num" required="0"/>
-                                <field name="type_custom" required="0"/>
-                                <field name="internal_opportunity_name"/>
-<!--                                <field name="type_custom_ids" required="0" widget="many2many_tags"/>-->
-                                <field name="project_name"/>
-                                <field name="country" required="1" widget="many2many_tags"/>
-                                <field name="start_date" required="1"/>
-                                <field name="source_id" required="1"/>
-                            </group>
-                            <group>
-                                <field name="actual_sub_date"/>
-                                <field name="sub_type"/>
-                                <field name="fund"/>
-                                <field name="partnership_model"/>
-                                <field name="partner" widget="many2many_tags"/>
-                                <field name="subcontractor_supplier_ids" widget="many2many_tags"/>
-                                <field name="client_name" widget="many2many_tags"/>
-                                <field name="latest_proposal_submission_date"/>
-                                <field name="result_date"/>
-                                <field name="contract_signature_date"/>
-                                <field name="initial_contact_date"/>
-                                <field name="proposal_reviewer_ids" widget="many2many_tags"/>
-                            </group>
-                        </group>
-                    </page>
-                </xpath>
             </field>
         </record>
 
