@@ -58,6 +58,7 @@
                             <field name="sub_type"/>
                             <field name="fund"/>
                             <field name="partnership_model"/>
+                            <field name="partner" widget="many2many_tags"/>
                             <field name="subcontractor_supplier_ids" widget="many2many_tags"/>
                             <field name="client_name" widget="many2many_tags"/>
                             <field name="latest_proposal_submission_date"/>
