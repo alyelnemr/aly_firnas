@@ -7,6 +7,25 @@
         <field name="arch" type="xml">
             <xpath expr="//group/group/field[@name='team_id']" position="after">
                 <field name="notify_group_ids" widget="many2many_tags"/>
+                <field name="mandatory_actual_sub"/>
+                <field name="mandatory_currency"/>
+                <field name="mandatory_forecast"/>
+                <field name="mandatory_result_date"/>
+                <field name="mandatory_signature_date"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="aly_crm_stage_view_inherit_tree" model="ir.ui.view">
+        <field name="name">crm.stage.view.tree.inherit</field>
+        <field name="model">crm.stage</field>
+        <field name="inherit_id" ref="crm.crm_stage_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='team_id']" position="after">
+                <field name="mandatory_actual_sub"/>
+                <field name="mandatory_currency"/>
+                <field name="mandatory_forecast"/>
+                <field name="mandatory_result_date"/>
+                <field name="mandatory_signature_date"/>
             </xpath>
         </field>
     </record>
