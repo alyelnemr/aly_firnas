@@ -57,56 +57,6 @@
             </xpath>
             <xpath expr="//group[@name='action']" position="replace">
             </xpath>
-            <!--<form string="Project">
-                <group>
-                    <group>
-                        <field name="partner_id" widget="res_partner_many2one"
-                               options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"/>
-                        <field name="is_existing_opportunity"/>
-                        <field name="parent_opportunity_id"
-                               attrs="{'invisible':[('is_existing_opportunity', '=', False)], 'required':[('is_existing_opportunity', '=', True)]}"/>
-                        <field name="letter_identifier" force_save="1"
-                               attrs="{'invisible':[('is_existing_opportunity', '=', False)], 'required':[('is_existing_opportunity', '=', True)], 'readonly':True}"/>
-                    </group>
-                    <group>
-                        <field name="user_id"/>
-                        <field name="currency_id"/>
-                        <field name="forecast"/>
-                    </group>
-                </group>
-                <notebook>
-                    <page name="info" string="Information">
-                        <group>
-                            <group>
-                                <field name="proposals_engineer_id"/>
-                                <field name="rfp_ref_number"/>
-                                <field name="project_num"/>
-                                <field name="type_custom" required="1"/>
-                                <field name="internal_opportunity_name"/>
-                                <field name="project_name"/>
-                                <field name="country" widget="many2many_tags" required="1"/>
-                                <field name="start_date" required="1"/>
-                                <field name="source_id" required="1"/>
-                            </group>
-                            <group>
-                                <field name="sub_date" required="1"/>
-                                <field name="sub_type"/>
-                                <field name="fund"/>
-                                <field name="partnership_model"/>
-                                <field name="partner" widget="many2many_tags"
-                                       options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"/>
-                                <field name="client_name" widget="many2many_tags"/>
-                                <field name="company_id" invisible="0"/>
-                            </group>
-                        </group>
-                    </page>
-                </notebook>
-                <footer>
-                    <button string="Create" name="create_opportunity" type="object"
-                            class="btn-primary o_open_tasks"/>
-                    <button string="Discard" class="btn-secondary" special="cancel"/>
-                </footer>
-            </form>-->
         </field>
     </record>
 

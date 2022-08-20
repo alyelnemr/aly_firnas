@@ -20,7 +20,7 @@ class SaleOrderInherit(models.Model):
     serial_num = fields.Char(string="Serial Number")
     project_number = fields.Char(string="Project Number", store=True)
     type_custom = fields.Many2one('crm.type', related='opportunity_id.type_custom', string="Project Type", required=True)
-    type_custom_ids = fields.Many2many('crm.type', related='opportunity_id.type_custom_ids', string="Secondary Project Types", required=True)
+    # type_custom_ids = fields.Many2many('crm.type', related='opportunity_id.type_custom_ids', string="Secondary Project Types", required=True)
     country = fields.Many2many('res.country', string='Country')
     start_date = fields.Date(related='opportunity_id.start_date', string="Request Date")
     sub_date = fields.Datetime(string="Submission Deadline")
