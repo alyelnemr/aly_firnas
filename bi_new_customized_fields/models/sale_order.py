@@ -23,6 +23,8 @@ class SaleOrderInherit(models.Model):
             lead = self.env['crm.lead'].browse(self._context['active_id'])
             result['name'] = 'convert'
 
+            if 'project_name' in fields and lead.project_name:
+                result['project_name'] = lead.project_name
             if 'client_name' in fields and lead.client_name:
                 result['client_name'] = lead.client_name.ids
             if 'fund' in fields and lead.fund:
@@ -39,8 +41,8 @@ class SaleOrderInherit(models.Model):
                 result['source_id'] = lead.source_id.id
             if 'country' in fields and lead.country:
                 result['country'] = lead.country.ids
-            if 'partner_ids' in fields and lead.partner:
-                result['partner_ids'] = lead.partner.ids
+            if 'partner' in fields and lead.partner:
+                result['partner'] = lead.partner.ids
             if 'project_name' in fields and lead.project_name:
                 result['project_name'] = lead.project_name
             if 'project_num' in fields and lead.project_num:
@@ -53,6 +55,20 @@ class SaleOrderInherit(models.Model):
                 result['internal_opportunity_name'] = lead.internal_opportunity_name
             if 'rfp_ref_number' in fields and lead.rfp_ref_number:
                 result['rfp_ref_number'] = lead.rfp_ref_number
+            if 'client_name_id' in fields and lead.client_name_id:
+                result['client_name_id'] = lead.client_name_id.ids
+            if 'subcontractor_supplier_ids' in fields and lead.subcontractor_supplier_ids:
+                result['subcontractor_supplier_ids'] = lead.subcontractor_supplier_ids.ids
+            if 'proposal_reviewer_ids' in fields and lead.proposal_reviewer_ids:
+                result['proposal_reviewer_ids'] = lead.proposal_reviewer_ids.ids
+            if 'latest_proposal_submission_date' in fields and lead.latest_proposal_submission_date:
+                result['latest_proposal_submission_date'] = lead.latest_proposal_submission_date
+            if 'result_date' in fields and lead.result_date:
+                result['result_date'] = lead.result_date
+            if 'contract_signature_date' in fields and lead.contract_signature_date:
+                result['contract_signature_date'] = lead.contract_signature_date
+            if 'initial_contact_date' in fields and lead.initial_contact_date:
+                result['initial_contact_date'] = lead.initial_contact_date
         return result
 
     project_name = fields.Char(string="Customer's Project Name / Proposal Title")
