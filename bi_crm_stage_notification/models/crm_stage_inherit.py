@@ -10,3 +10,4 @@ class CrmStage(models.Model):
     mandatory_forecast = fields.Boolean(string="Mandatory Forecast")
     mandatory_result_date = fields.Boolean(string="Mandatory Result Date")
     mandatory_signature_date = fields.Boolean(string="Mandatory Contract/PO Signature Date")
+    notify_group_ids = fields.Many2many('res.groups', string='Award Notification Groups', )
