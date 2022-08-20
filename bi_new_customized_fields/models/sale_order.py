@@ -11,6 +11,50 @@ class SaleOrderInherit(models.Model):
     def _set_default_terms_conditions(self):
         return self.env['ir.config_parameter'].sudo().get_param('aly_so_terms_condition')
 
+    @api.model
+    def default_get(self, fields):
+        """ Default get for name, opportunity_ids.
+            If there is an exisitng partner link to the lead, find all existing
+            opportunities links with this partner to merge all information together
+        """
+        result = super(SaleOrderInherit, self).default_get(fields)
+        if self._context.get('active_id') or self.opportunity_id:
+
+            lead = self.env['crm.lead'].browse(self._context['active_id'])
+            result['name'] = 'convert'
+
+            if 'client_name' in fields and lead.client_name:
+                result['client_name'] = lead.client_name.ids
+            if 'fund' in fields and lead.fund:
+                result['fund'] = lead.fund.id
+            if 'partnership_model' in fields and lead.partnership_model:
+                result['partnership_model'] = lead.partnership_model.id
+            if 'sub_type' in fields and lead.sub_type:
+                result['sub_type'] = lead.sub_type.id
+            if 'sub_date' in fields and lead.sub_date:
+                result['sub_date'] = lead.sub_date
+            if 'start_date' in fields and lead.start_date:
+                result['start_date'] = lead.start_date
+            if 'source_id' in fields and lead.source_id:
+                result['source_id'] = lead.source_id.id
+            if 'country' in fields and lead.country:
+                result['country'] = lead.country.ids
+            if 'partner_ids' in fields and lead.partner:
+                result['partner_ids'] = lead.partner.ids
+            if 'project_name' in fields and lead.project_name:
+                result['project_name'] = lead.project_name
+            if 'project_num' in fields and lead.project_num:
+                result['project_num'] = lead.project_num
+            if 'proposals_engineer_id' in fields and lead.proposals_engineer_id:
+                result['proposals_engineer_id'] = lead.proposals_engineer_id.id
+            if 'type_custom' in fields and lead.type_custom:
+                result['type_custom'] = lead.type_custom.id
+            if 'internal_opportunity_name' in fields and lead.internal_opportunity_name:
+                result['internal_opportunity_name'] = lead.internal_opportunity_name
+            if 'rfp_ref_number' in fields and lead.rfp_ref_number:
+                result['rfp_ref_number'] = lead.rfp_ref_number
+        return result
+
     project_name = fields.Char(string="Customer's Project Name / Proposal Title")
     document_name = fields.Char(string="Proposal Subject")
     file_name = fields.Char(string="Document/File  Name (Footer)")
