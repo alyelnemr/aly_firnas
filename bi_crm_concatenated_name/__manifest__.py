@@ -8,7 +8,7 @@
     'author': "BI Solutions Development Team",
     'category': 'crm',
     'version': '0.1',
-    'depends': ['base', 'crm', 'bi_new_customized_fields', 'bi_crm_customization'],
+    'depends': ['base', 'crm', 'bi_new_customized_fields'],
     'data': [
         'security/ir.model.access.csv',
         'views/crm_lead_inherit.xml',
