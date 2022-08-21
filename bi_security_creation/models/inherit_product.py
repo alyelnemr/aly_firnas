@@ -15,6 +15,6 @@ class ProductInherit(models.Model):
     
     def write(self, vals):
         has_my_group = self.env.user.has_group('bi_security_creation.group_create_product')
-        if not has_my_group:
+        if not has_my_group and not self.env.su:
             raise exceptions.ValidationError("Sorry you can't edit products!")
         return super(ProductInherit, self).write(vals)
