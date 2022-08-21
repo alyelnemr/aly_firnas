@@ -19,6 +19,10 @@
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="serial_num" required="0"/>
                 </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[last()]"
+                       position="after">
+                    <field name="internal_notes" optional="show"/>
+                </xpath>
                 <xpath expr="//notebook" position="inside">
                     <page name="info" string="Information">
                         <group>

@@ -164,4 +164,4 @@ class SaleOrderLine(models.Model):
     def product_uom_change(self):
         if self.order_id.manual_currency_rate_active:
             self = self.with_context(override_currency_rate=self.order_id.manual_currency_rate)
-        return super(SaleOrderLine, self).product_uom_change()
+        # return super(SaleOrderLine, self).product_uom_change()

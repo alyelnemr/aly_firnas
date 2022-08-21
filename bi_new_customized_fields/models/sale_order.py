@@ -46,7 +46,7 @@ class SaleOrderInherit(models.Model):
             if 'project_name' in fields and lead.project_name:
                 result['project_name'] = lead.project_name
             if 'project_num' in fields and lead.project_num:
-                result['project_num'] = lead.project_num
+                result['project_number'] = lead.project_num
             if 'proposals_engineer_id' in fields and lead.proposals_engineer_id:
                 result['proposals_engineer_id'] = lead.proposals_engineer_id.id
             if 'type_custom' in fields and lead.type_custom:
@@ -100,3 +100,4 @@ class SaleOrderInherit(models.Model):
     initial_contact_date = fields.Date(string="Initial Contact Date")
     rfp_ref_number = fields.Char(string='RfP Ref. Number')
     proposals_engineer_id = fields.Many2one('res.users', string='Proposals Engineer')
+    internal_notes = fields.Char(string='Internal Notes')
