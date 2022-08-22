@@ -20,3 +20,4 @@ from . import hr_employee
 from . import account_analytic_acount
 from . import stock_production_lot
 from . import stock_quant
+from . import analytic_tags

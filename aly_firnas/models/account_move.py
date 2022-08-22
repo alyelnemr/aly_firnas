@@ -19,6 +19,13 @@ class AcountMove(models.Model):
                 sign = -1
             move.amount_line = sign * total
 
+    def _get_purchase_order_id(self):
+        for line in self:
+            purchase_lines = self.env['purchase.order.line'].search([('invoice_lines.move_id.id', '=', line.id)])
+            if purchase_lines:
+                return purchase_lines[0].order_id.id
+        return False
+
     def _get_amount_from_currency(self):
         for move in self:
             total = 0
@@ -36,6 +43,12 @@ class AcountMove(models.Model):
                 sign = -1
             move.amount_in_currency = total / count if count > 0 else 0
 
+    purchase_order_id = fields.Many2one('purchase.order', store=True,
+                                  compute='_get_purchase_order_id',
+                                  readonly=True,
+                                  states={'draft': [('readonly', False)]},
+                                  string='Purchase Order',
+                                  help="Auto-complete from a past purchase order.")
     amount_in_currency = fields.Monetary(string='Amount in Currency',
                                          currency_field='amount_currency_field', store=False, readonly=True,
                                          compute='_get_amount_from_currency')
@@ -104,3 +117,16 @@ class AcountMove(models.Model):
         self._onchange_currency_change_rate(currency_changed=False)
         self.with_context(check_move_validity=False)._onchange_currency()
         return True
+
+    def action_view_purchase_order(self):
+        '''
+        This function returns an action that displays the opportunities from partner.
+        '''
+        action = self.env.ref('purchase.purchase_order_action_generic').read()[0]
+        # operator = 'child_of' if self..is_company else '='
+        action['domain'] = [('id', '=', self.purchase_order_id.id)]
+        action['view_mode'] = 'form'
+        action['view_type'] = 'form'
+        action['res_id'] = self.purchase_order_id.id
+        action['views'] = [(self.env.ref('purchase.purchase_order_action_generic').id, 'form')]
+        return action

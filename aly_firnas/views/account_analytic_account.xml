@@ -11,5 +11,58 @@
                 </xpath>
             </field>
         </record>
+        <record model="ir.ui.view" id="aly_view_account_analytic_tag_form">
+            <field name="name">aly.analytic.analytic.tag.form.inherit</field>
+            <field name="model">account.analytic.tag</field>
+            <field name="inherit_id" ref="analytic.account_analytic_tag_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group" position="replace">
+                    <group>
+                        <group>
+                            <field name="active" invisible="1"/>
+                            <field name="name"/>
+                            <field name="active_analytic_distribution" groups="analytic.group_analytic_accounting"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="analytic_tag_type_id"/>
+                        </group>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="aly_view_account_analytic_tag_search">
+            <field name="name">aly.analytic.analytic.tag.form.search</field>
+            <field name="model">account.analytic.tag</field>
+            <field name="inherit_id" ref="analytic.account_analytic_tag_view_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <field name="analytic_tag_type_id"/>
+                    <group expand="0" string="Group By" colspan="4">
+                        <filter string="Analytic Tag Type" name="group_analytic_tag_type" domain="[]"
+                                context="{'group_by':'analytic_tag_type_id'}"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="account_analytic_tag_type_form" model="ir.ui.view">
+            <field name="name">account.analytic.tag.type.form</field>
+            <field name="model">account.analytic.tag.type</field>
+            <field name="arch" type="xml">
+                <form string="Analytic Tags Type">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
     </data>
 </odoo>
