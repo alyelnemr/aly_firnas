@@ -27,7 +27,7 @@ class Lead2OpportunityPartner(models.TransientModel):
     # source = fields.Char(string="Source")
     fund = fields.Many2one('project.fund', string="Funding")
     partnership_model = fields.Many2one('project.partnership', string="Partnership Model")
-    partner_ids = fields.Many2many('res.partner', string="Partner")
+    partner_ids = fields.Many2many('res.partner', string="JV Partners")
     #client_name = fields.Many2many('res.partner', 'crmlead2opportunity_client_rel', string="End Client")
     # client_name = fields.Many2many('client.name', string="End Client")
     proposals_engineer_id = fields.Many2one('res.users', string='Proposals Engineer')
