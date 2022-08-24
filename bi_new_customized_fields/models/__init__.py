@@ -12,4 +12,4 @@ from . import project_sale_submission
 from . import project_task
 from . import client_name
 from . import res_config_settings
-
+from . import sale_order_line
