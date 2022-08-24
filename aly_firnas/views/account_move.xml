@@ -7,7 +7,7 @@
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='analytic_account_id']" position="before">
-                    <field name="purchase_order_id"/>
+<!--                    <field name="purchase_order_id"/>-->
                 </xpath>
                 <xpath expr="//div[@name='button_box']" position="inside">
                     <field name="purchase_order_id" invisible="1"/>
