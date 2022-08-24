@@ -12,12 +12,12 @@
                     <field name="analytic_tag_ids" widget="many2many_tags" required="1"
                            attrs="{'invisible': [('type', 'not in', ('in_invoice', 'out_invoice', 'in_refund', 'in_receipt'))]}"/>
                 </xpath>
-                <xpath expr="//field[@name='analytic_account_id']" position="attributes">
+                <!--<xpath expr="//field[@name='analytic_account_id']" position="attributes">
                     <attribute name="required">1</attribute>
                 </xpath>
                 <xpath expr="//field[@name='analytic_tag_ids']" position="attributes">
                     <attribute name="required">1</attribute>
-                </xpath>
+                </xpath>-->
             </field>
         </record>
 

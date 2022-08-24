@@ -21,10 +21,17 @@ class AcountMove(models.Model):
 
     def _get_purchase_order_id(self):
         for line in self:
+            line.purchase_order_id = line.p_order_id if line.p_order_id else False
             purchase_lines = self.env['purchase.order.line'].search([('invoice_lines.move_id.id', '=', line.id)])
             if purchase_lines:
-                return purchase_lines[0].order_id.id
-        return False
+                line.purchase_order_id = purchase_lines[0].order_id.id
+
+    def _get_sale_order_id(self):
+        for line in self:
+            line.sale_order_id = line.s_order_id if line.s_order_id else False
+            sale_lines = self.env['sale.order.line'].search([('invoice_lines.move_id.id', '=', line.id)])
+            if sale_lines:
+                line.sale_order_id = sale_lines[0].order_id.id
 
     def _get_amount_from_currency(self):
         for move in self:
@@ -43,12 +50,13 @@ class AcountMove(models.Model):
                 sign = -1
             move.amount_in_currency = total / count if count > 0 else 0
 
-    purchase_order_id = fields.Many2one('purchase.order', store=True,
+    purchase_order_id = fields.Many2one('purchase.order', store=False,
                                   compute='_get_purchase_order_id',
-                                  readonly=True,
-                                  states={'draft': [('readonly', False)]},
-                                  string='Purchase Order',
-                                  help="Auto-complete from a past purchase order.")
+                                  string='Purchase Order',)
+    sale_order_id = fields.Many2one('sale.order', string="Sales Order", store=False,
+                                    compute='_get_sale_order_id')
+    p_order_id = fields.Many2one('purchase.order', string='Purchase Order')
+    s_order_id = fields.Many2one('sale.order', string="Sales Order")
     amount_in_currency = fields.Monetary(string='Amount in Currency',
                                          currency_field='amount_currency_field', store=False, readonly=True,
                                          compute='_get_amount_from_currency')
@@ -119,14 +127,23 @@ class AcountMove(models.Model):
         return True
 
     def action_view_purchase_order(self):
-        '''
-        This function returns an action that displays the opportunities from partner.
-        '''
-        action = self.env.ref('purchase.purchase_order_action_generic').read()[0]
-        # operator = 'child_of' if self..is_company else '='
-        action['domain'] = [('id', '=', self.purchase_order_id.id)]
-        action['view_mode'] = 'form'
-        action['view_type'] = 'form'
-        action['res_id'] = self.purchase_order_id.id
-        action['views'] = [(self.env.ref('purchase.purchase_order_action_generic').id, 'form')]
-        return action
+        return {
+            'res_model': 'purchase.order',
+            'type': 'ir.actions.act_window',
+            'res_id': self.purchase_order_id.id,
+            'view_mode': 'form',
+            'view_type': 'form',
+            'view_id': self.env.ref('purchase.purchase_order_form').id,
+            'target': 'self'
+        }
+
+    def action_view_sale_order(self):
+        return {
+            'res_model': 'sale.order',
+            'type': 'ir.actions.act_window',
+            'res_id': self.sale_order_id.id,
+            'view_mode': 'form',
+            'view_type': 'form',
+            'view_id': self.env.ref('sale.view_order_form').id,
+            'target': 'self'
+        }

@@ -6,15 +6,24 @@
             <field name="model">account.move</field>
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='analytic_account_id']" position="before">
-<!--                    <field name="purchase_order_id"/>-->
+                <xpath expr="//field[@name='ref']" position="after">
+                    <field name="p_order_id"
+                           attrs="{'invisible': [('type', 'not in', ('in_invoice'))]}"/>
+                    <field name="s_order_id"
+                           attrs="{'invisible': [('type', 'not in', ('out_invoice'))]}"/>
+                    <field name="purchase_order_id" invisible="1"/>
+                    <field name="sale_order_id" invisible="1"/>
                 </xpath>
                 <xpath expr="//div[@name='button_box']" position="inside">
-                    <field name="purchase_order_id" invisible="1"/>
                     <button class="oe_stat_button o_res_partner_tip_opp" type="object"
                             name="action_view_purchase_order"
                             icon="fa-pencil-square-o" attrs="{'invisible': [('purchase_order_id', '=', False)]}">
                         <span>Purchase Order</span>
+                    </button>
+                    <button class="oe_stat_button o_res_partner_tip_opp" type="object"
+                            name="action_view_sale_order"
+                            icon="fa-pencil-square-o" attrs="{'invisible': [('sale_order_id', '=', False)]}">
+                        <span>Sales Order</span>
                     </button>
                 </xpath>
                 <xpath expr="//field[@name='currency_id']" position="after">
