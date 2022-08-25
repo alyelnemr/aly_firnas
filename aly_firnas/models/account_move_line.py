@@ -4,6 +4,8 @@ from odoo import api, fields, models, _
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
+    note = fields.Text(string='Notes', related='statement_line_id.note')
+
     def write(self, vals):
         res = super(AccountMoveLine, self).write(vals)
         for line in self:
