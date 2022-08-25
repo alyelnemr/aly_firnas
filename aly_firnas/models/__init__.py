@@ -7,6 +7,7 @@ from . import stock_move
 from . import res_config_settings
 from . import account_bank_statement
 from . import account_move
+from . import account_move_line
 # from . import ir_mail_server
 from . import res_users
 from . import account_payment

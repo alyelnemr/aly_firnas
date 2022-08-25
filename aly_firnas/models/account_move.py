@@ -2,7 +2,7 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 
 
-class AcountMove(models.Model):
+class AccountMove(models.Model):
     _inherit = "account.move"
 
     def _get_amount_from_line(self):

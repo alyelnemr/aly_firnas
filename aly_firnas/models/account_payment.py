@@ -16,15 +16,26 @@ class AcountMove(models.Model):
     )
 
     def check_reconciliation(self):
+        # when making a reconciliation on an existing liquidity journal item, mark the payment as reconciled
         for payment in self:
-            rec = False
-            for aml in payment.move_line_ids.filtered(lambda x: x.account_id.reconcile):
-                if aml.reconciled:
-                    rec = True
-                    break
-            payment.move_reconciled = rec
-            if payment.move_reconciled:
-                payment.write({'state': 'reconciled'})
+            for line in payment.move_line_ids:
+                if line.payment_id:
+                    # In case of an internal transfer, there are 2 liquidity move lines to match with a bank statement
+                    if any(_line.statement_id for _line in line.payment_id.move_line_ids.filtered(
+                            lambda r: r.id != line.id and r.account_id.internal_type == 'liquidity')):
+                        line.payment_id.state = 'reconciled'
+                        break
+
+    # def check_reconciliation(self):
+    #     for payment in self:
+    #         rec = False
+    #         for aml in payment.move_line_ids.filtered(lambda x: x.account_id.reconcile):
+    #             if aml.reconciled:
+    #                 rec = True
+    #                 break
+    #         payment.move_reconciled = rec
+    #         if payment.move_reconciled:
+    #             payment.write({'state': 'reconciled'})
 
     @api.depends("currency_id")
     def _compute_currency(self):
