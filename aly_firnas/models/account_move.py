@@ -71,11 +71,23 @@ class AcountMove(models.Model):
     is_manual = fields.Boolean(compute="_compute_currency")
     custom_rate = fields.Float(
         digits=(16, 10),
+        tracking=True, compute='_compute_currency_conversely', store=False,
+        help="Set new currency rate to apply on the invoice\n."
+             "This rate will be taken in order to convert amounts between the "
+             "current currency and last currency",
+    )
+    custom_rate_conversely = fields.Float(
+        digits=(16, 10),
         tracking=True,
         help="Set new currency rate to apply on the invoice\n."
              "This rate will be taken in order to convert amounts between the "
              "current currency and last currency",
     )
+
+    @api.depends("currency_id", 'custom_rate', 'is_manual')
+    def _compute_currency_conversely(self):
+        for rec in self:
+            rec.custom_rate = 1 / rec.custom_rate_conversely if rec.custom_rate_conversely > 0 else 0
 
     @api.depends("currency_id")
     def _compute_currency(self):
@@ -116,6 +128,7 @@ class AcountMove(models.Model):
                 )
         else:
             self.custom_rate = custom_rate
+            self.custom_rate_conversely = 1 / custom_rate if custom_rate > 0 else 0
         self.currency_id.rate = self.custom_rate
 
     def action_refresh_currency(self):

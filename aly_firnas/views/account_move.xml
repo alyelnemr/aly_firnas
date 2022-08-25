@@ -39,7 +39,7 @@
                                 attrs="{'invisible': [('is_manual', '=', False)], 'readonly': [('state', '!=', 'draft')]}"
                         />
                         <field
-                                name="custom_rate"
+                                name="custom_rate_conversely"
                                 attrs="{'invisible': [('manual_currency', '=', False)], 'readonly': [('state', '!=', 'draft')]}"
                         />
                         <button
