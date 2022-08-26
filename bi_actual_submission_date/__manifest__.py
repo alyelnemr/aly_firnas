@@ -12,7 +12,6 @@
     'data': [
         'security/security.xml',
         'views/inherit_res_config_settings_view.xml',
-        'data/service_cron.xml',
     ],
     'installable': True,
     'auto_install': False,
