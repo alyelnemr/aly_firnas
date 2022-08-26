@@ -90,10 +90,11 @@ class Project(models.Model):
                 record.date_start = min(item.date for item in record.timesheet_ids)
                 record.date_end = max(item.date for item in record.timesheet_ids)
 
-    # @api.depends('tag_ids')
-    # def _compute_tag_id_group_by(self):
-    #     for record in self:
-    #         record.tag_id_group_by = record.tag_ids and record.tag_ids[0].id or False
+    @api.depends('tag_ids')
+    def _compute_tag_id_group_by(self):
+        for record in self:
+            # record.tag_id_group_by = record.tag_ids and record.tag_ids[0].id or False
+            record.tag_id_group_by = False
 
     @api.depends('tz')
     def _compute_tz_offset(self):
