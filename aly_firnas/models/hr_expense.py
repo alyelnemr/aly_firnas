@@ -46,6 +46,13 @@ class HRExpense(models.Model):
             if expense.project_id:
                 expense.company_id = expense.project_id.company_id.id
                 expense.analytic_account_id = expense.project_id.analytic_account_id.id
+                expense.employee_id = self.env.user.employee_id.id
+
+    @api.onchange('company_id')
+    def _set_current_user(self):
+        for expense in self:
+            if self.env.user.employee_id:
+                expense.employee_id = self.env.user.employee_id.id
 
     @api.onchange('analytic_account_id')
     def _set_analytic_account_data(self):
@@ -100,7 +107,8 @@ class HRExpense(models.Model):
     picking_type_id = fields.Many2one('stock.picking.type', 'Picking Type', required=True,
                                       default=_default_picking_receive,
                                       help="This will determine picking type of incoming shipment")
-    employee_id = fields.Many2one('hr.employee', string="Employee", required=True, readonly=True, states={'draft': [('readonly', False)], 'reported': [('readonly', False)], 'refused': [('readonly', False)]}, default=_default_employee_id,
+    employee_id = fields.Many2one('hr.employee', string="Employee", required=True,
+                                  readonly=True, states={'draft': [('readonly', False)], 'reported': [('readonly', False)], 'refused': [('readonly', False)]}, default=_default_employee_id,
                                   check_company=False)
     partner_id = fields.Many2one('res.partner', string='Vendor', required=True, change_default=True,
                                  tracking=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
