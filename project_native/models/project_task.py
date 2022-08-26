@@ -83,12 +83,12 @@ class Project(models.Model):
     tag_id_group_by = fields.Many2one('project.tags', string='Tags for Group by', compute='_compute_tag_id_group_by', store=True)
     is_using_timesheet = fields.Boolean(string='Using Timesheet', default=False)
 
-    @api.onchange('is_using_timesheet')
-    def _compute_start_end_date(self):
-        for record in self:
-            if record.is_using_timesheet:
-                record.date_start = min(item.date for item in record.timesheet_ids)
-                record.date_end = max(item.date for item in record.timesheet_ids)
+    # @api.onchange('is_using_timesheet')
+    # def _compute_start_end_date(self):
+    #     for record in self:
+    #         if record.is_using_timesheet:
+    #             record.date_start = min(item.date for item in record.timesheet_ids)
+    #             record.date_end = max(item.date for item in record.timesheet_ids)
 
     @api.depends('tag_ids')
     def _compute_tag_id_group_by(self):
