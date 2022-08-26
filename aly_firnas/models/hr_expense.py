@@ -8,14 +8,10 @@ class HRExpense(models.Model):
     _inherit = 'hr.expense'
 
     @api.model
-    def _default_employee_id(self):
-        return self.env.user.employee_id
-
-    @api.model
     def _get_employee_id_domain(self):
         res = [('id', '=', 0)]  # Nothing accepted by domain, by default
         if self.user_has_groups('hr_expense.group_hr_expense_user') or self.user_has_groups('account.group_account_user'):
-            res = "['|', ('company_id', '=', False), ('company_id', '=', [c.id for c in self.env.user.company_ids])]"  # Then, domain accepts everything
+            res = "['|', ('company_id', '=', False), ('company_id', 'in', [c.id for c in self.env.user.company_ids])]"  # Then, domain accepts everything
         elif self.user_has_groups('hr_expense.group_hr_expense_team_approver') and self.env.user.employee_ids:
             user = self.env.user
             employee = self.env.user.employee_id
@@ -47,12 +43,22 @@ class HRExpense(models.Model):
                 expense.company_id = expense.project_id.company_id.id
                 expense.analytic_account_id = expense.project_id.analytic_account_id.id
                 expense.employee_id = self.env.user.employee_id.id
+            if expense.analytic_account_id:
+                analytic_tag_ids = expense.analytic_account_id.analytic_tag_ids
+                if expense.employee_id:
+                    analytic_tag_ids += expense.employee_id.analytic_tag_ids
+                expense.analytic_tag_ids = analytic_tag_ids
 
     @api.onchange('company_id')
     def _set_current_user(self):
         for expense in self:
             if self.env.user.employee_id:
                 expense.employee_id = self.env.user.employee_id.id
+            if expense.analytic_account_id:
+                analytic_tag_ids = expense.analytic_account_id.analytic_tag_ids
+                if expense.employee_id:
+                    analytic_tag_ids += expense.employee_id.analytic_tag_ids
+                expense.analytic_tag_ids = analytic_tag_ids
 
     @api.onchange('analytic_account_id')
     def _set_analytic_account_data(self):
@@ -65,7 +71,9 @@ class HRExpense(models.Model):
 
     @api.model
     def _default_company_id(self):
-        return self.project_id.company_id
+        if self.project_id:
+            return self.project_id.company_id
+        return self.env.user.company_id
 
     def _compute_picking_count(self):
         if self.expense_picking_id:
@@ -104,12 +112,18 @@ class HRExpense(models.Model):
                     expense.company_id, date_expense or fields.Date.today())
             expense.total_amount_company = amount if expense.total_amount_company == 0 else expense.total_amount_company
 
+    @api.onchange('currency_id', 'company_id')
+    def _change_currency(self):
+        for expense in self:
+            expense.is_same_currency = expense.currency_id == expense.company_id.currency_id
+
+    is_same_currency = fields.Boolean("Is Same Currency as Company Currency", compute='_change_currency')
     picking_type_id = fields.Many2one('stock.picking.type', 'Picking Type', required=True,
                                       default=_default_picking_receive,
                                       help="This will determine picking type of incoming shipment")
     employee_id = fields.Many2one('hr.employee', string="Employee", required=True,
-                                  readonly=True, states={'draft': [('readonly', False)], 'reported': [('readonly', False)], 'refused': [('readonly', False)]}, default=_default_employee_id,
-                                  check_company=False)
+                                  readonly=True, states={'draft': [('readonly', False)], 'reported': [('readonly', False)], 'refused': [('readonly', False)]},
+                                  default=lambda self: self.env.user.employee_id, check_company=False)
     partner_id = fields.Many2one('res.partner', string='Vendor', required=True, change_default=True,
                                  tracking=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     vendor_contact_id = fields.Many2one('res.partner', string='Vendor Contacts', required=False,

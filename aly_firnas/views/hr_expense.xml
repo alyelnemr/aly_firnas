@@ -24,7 +24,8 @@
                     <field name="project_id"/>
                 </xpath>
                 <xpath expr="//field[@name='total_amount']" position="after">
-                    <field name="total_amount_company" attrs="{'readonly': False}"/>
+                    <field name="total_amount_company" attrs="{'readonly': [('is_same_currency', '=', True)]}"/>
+                    <field name="is_same_currency" invisible="1"/>
                 </xpath>
                 <xpath expr="//field[@name='employee_id']" position="replace">
                 </xpath>
@@ -35,7 +36,7 @@
                 <xpath expr="//field[@name='account_id']" position="replace">
                     <field name="account_id" options="{'no_create': True}"
                            domain="[('internal_type', '=', 'other'), ('company_id', '=', company_id)]"
-                           attrs="{'readonly': [('is_editable', '=', False)]}"
+                           attrs="{'readonly': ['|', ('product_id', '!=', False), ('is_editable', '=', False)]}"
                            context="{'default_company_id': company_id}"/>
                 </xpath>
                 <xpath expr="//field[@name='payment_mode']" position="replace">
@@ -48,6 +49,15 @@
                         {'invisible':False,'readonly':[['state','not
                         in',['draft']]],'required':true}
                     </attribute>
+                </xpath>
+                <xpath expr="//field[@name='analytic_account_id']" position="attributes">
+                    <attribute name="attrs">{'readonly': ['|', ('product_id', '!=', False), ('is_editable', '=', False)]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='analytic_tag_ids']" position="attributes">
+                    <attribute name="attrs">{'readonly': ['|', ('product_id', '!=', False), ('is_editable', '=', False)]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='company_id']" position="attributes">
+                    <attribute name="attrs">{'readonly': ['|', ('product_id', '!=', False), ('is_editable', '=', False)]}</attribute>
                 </xpath>
             </field>
         </record>
