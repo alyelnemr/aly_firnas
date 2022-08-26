@@ -17,47 +17,78 @@
                         />
                     </button>
                 </xpath>
-                <xpath expr="//field[@name='product_id']" position="before">
-                    <field name="partner_id"/>
-                    <field name="vendor_contact_id"/>
-                    <field name="employee_id"/>
-                    <field name="project_id"/>
+                <xpath expr="//field[@name='payment_mode']" position="replace">
                 </xpath>
-                <xpath expr="//field[@name='total_amount']" position="after">
-                    <field name="total_amount_company" attrs="{'readonly': [('is_same_currency', '=', True)]}"/>
-                    <field name="is_same_currency" invisible="1"/>
-                </xpath>
-                <xpath expr="//field[@name='employee_id']" position="replace">
+                <xpath expr="//field[@name='unit_amount']" position="replace">
                 </xpath>
                 <xpath expr="//field[@name='tax_ids']" position="replace">
-                    <field name="tax_ids" widget="many2many_tags"
-                           attrs="{'readonly': [('is_editable', '=', False)]}" context="{'default_company_id': company_id}"/>
                 </xpath>
-                <xpath expr="//field[@name='account_id']" position="replace">
+                <xpath expr="//field[@name='total_amount']" position="replace">
+                </xpath>
+                <xpath expr="//label[@for='quantity']" position="replace">
+                </xpath>
+                <xpath expr="//label[@for='payment_mode']" position="replace">
+                </xpath>
+                <xpath expr="//div[@class='o_row']" position="replace">
+                </xpath>
+                <xpath expr="//div[@class='oe_title']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='company_id']" position="replace">
+                    <field name="total_amount_company" attrs="{'readonly': [('is_same_currency', '=', True)]}"/>
+                    <field name="is_same_currency" invisible="1"/>
                     <field name="account_id" options="{'no_create': True}"
                            domain="[('internal_type', '=', 'other'), ('company_id', '=', company_id)]"
                            attrs="{'readonly': ['|', ('product_id', '!=', False), ('is_editable', '=', False)]}"
                            context="{'default_company_id': company_id}"/>
                 </xpath>
-                <xpath expr="//field[@name='payment_mode']" position="replace">
+                <xpath expr="//field[@name='employee_id']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='currency_id']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='analytic_account_id']" position="replace">
+                    <field name="tax_ids" widget="many2many_tags" groups="account.group_account_user"
+                           attrs="{'readonly': [('is_editable', '=', False)]}" context="{'default_company_id': company_id}"/>
+                </xpath>
+                <xpath expr="//field[@name='analytic_tag_ids']" position="replace">
+                    <field name="total_amount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                </xpath>
+                <xpath expr="//field[@name='currency_id']" position="replace">
+                    <field name="currency_id" groups="base.group_multi_currency"/>
+                    <field name="unit_amount" required="1" widget="monetary"
+                           options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                </xpath>
+                <xpath expr="//field[@name='reference']" position="replace">
+                    <field name="product_id" required="1"
+                           context="{'default_can_be_expensed': 1, 'tree_view_ref': 'hr_expense.product_product_expense_tree_view'}"
+                           widget="many2one_barcode"
+                    />
+                </xpath>
+                <xpath expr="//field[@name='date']" position="replace">
+                    <field name="name" placeholder="e.g. Lunch with Customer"/>
+                </xpath>
+                <xpath expr="//field[@name='account_id']" position="replace">
+                    <label for="quantity"/>
+                    <div class="o_row">
+                        <field name="quantity" class="oe_inline"/>
+                        <field name="product_uom_id" required="1" widget="selection" class="oe_inline" groups="uom.group_uom"/>
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='product_id']" position="replace">
+                    <field name="partner_id"/>
+                    <field name="vendor_contact_id"/>
+                    <field name="reference" attrs="{'readonly': [('is_ref_editable', '=', False)]}"/>
+                    <field name="date" attrs="{'invisible': False}" modifiers="{'invisible':False,'readonly':[['state','not
+                        in',['draft']]],'required':true}"/>
+                    <field name="project_id"/>
+                    <field name="company_id" groups="base.group_multi_company" attrs="{'readonly': ['|', ('product_id', '!=', False), ('is_editable', '=', False)]}"/>
+                    <field name="analytic_account_id" domain="['|', ('company_id', '=', company_id), ('company_id', '=', False)]"
+                           groups="analytic.group_analytic_accounting" attrs="{'readonly': ['|', ('product_id', '!=', False), ('is_editable', '=', False)]}"/>
+                    <field name="analytic_tag_ids" widget="many2many_tags" groups="analytic.group_analytic_tags"
+                           attrs="{'readonly': ['|', ('product_id', '!=', False), ('is_editable', '=', False)]}"/>
+                    <field name="employee_id" groups="hr_expense.group_hr_expense_team_approver"
+                           context="{'default_company_id': company_id}"/>
                     <field name="payment_mode" widget="radio" context="{'default_payment_mode': 'company_account'}"
                            attrs="{'readonly': True}"/>
-                </xpath>
-                <xpath expr="//field[@name='date']" position="attributes">
-                    <attribute name="attrs">{'invisible': False}</attribute>
-                    <attribute name="modifiers">
-                        {'invisible':False,'readonly':[['state','not
-                        in',['draft']]],'required':true}
-                    </attribute>
-                </xpath>
-                <xpath expr="//field[@name='analytic_account_id']" position="attributes">
-                    <attribute name="attrs">{'readonly': ['|', ('product_id', '!=', False), ('is_editable', '=', False)]}</attribute>
-                </xpath>
-                <xpath expr="//field[@name='analytic_tag_ids']" position="attributes">
-                    <attribute name="attrs">{'readonly': ['|', ('product_id', '!=', False), ('is_editable', '=', False)]}</attribute>
-                </xpath>
-                <xpath expr="//field[@name='company_id']" position="attributes">
-                    <attribute name="attrs">{'readonly': ['|', ('product_id', '!=', False), ('is_editable', '=', False)]}</attribute>
                 </xpath>
             </field>
         </record>
