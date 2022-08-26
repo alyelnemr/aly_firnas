@@ -34,8 +34,6 @@ class CRMLeadInherit(models.Model):
     start_date = fields.Date(string="Request Date")
     sub_date = fields.Datetime(string="Submission Deadline")
     actual_sub_date = fields.Date(string="Actual Submission Date")
-    mandatory_actual_sub = fields.Boolean(related='stage_id.mandatory_actual_sub',
-                                          string="Mandatory Actual Submission Date", store=True)
     sub_type = fields.Many2one('project.submission', string="Submission Type")
     # source = fields.Char(string="Source")
     fund = fields.Many2one('project.fund', string="Funding")
@@ -60,9 +58,36 @@ class CRMLeadInherit(models.Model):
     original_serial_number = fields.Char(string='Original Serial Number')
     letter_identifier = fields.Char(string='Letter Identifier')
     project_num = fields.Char(string="Project Number", default='/', compute='_compute_project_num', store=True)
+    project_id = fields.Many2one('project.project', string="Project", compute='_compute_project_project', store=False)
     internal_opportunity_name = fields.Char(string="Internal Opportunity Name", required=True)
     next_letter_sequence = fields.Char(string="Next Letter Sequence", readonly=True)
     task_id = fields.Many2one('project.task', string="Task in Project Module", required=False, copy=False)
+    actual_sub_date = fields.Date(string="Actual Submission Date")
+
+    @api.onchange('stage_id')
+    def _onchange_stages(self):
+        for rec in self:
+            if rec.stage_id.mandatory_actual_sub and not rec.actual_sub_date:
+                raise ValidationError('Please Add Actual Submission Date First!')
+
+    def _notify_submission_date_groups(self):
+        # groups to notify
+        date_sub_groups_ids = self.env['res.users'].browse(self.env.uid).company_id.date_sub_groups_ids.ids
+        group_ids = self.env['res.groups'].sudo().search([('id', 'in', date_sub_groups_ids)])
+        group_partner_ids = group_ids.users.mapped('partner_id')
+        today_date = fields.Date.context_today(self)
+
+        leads_need_notification_ids = self.env['crm.lead'].sudo().search(
+            [('actual_sub_date', '!=', False), ('mandatory_actual_sub', '=', True),
+             ('actual_sub_date', '<', today_date)]).filtered(
+            lambda l: ((today_date - l.actual_sub_date).days + 1) % 7 == 0)
+        if leads_need_notification_ids and group_partner_ids:
+            for lead in leads_need_notification_ids:
+                lead.message_post(
+                    body=_(
+                        "The Stage '%s' of this pipeline with actual submission date '%s' has not been Changed for the last 7 days, please follow up. <br> Best Regards.") % (
+                             lead.stage_id.name, lead.actual_sub_date),
+                    partner_ids=group_partner_ids.ids)
 
     @api.depends('project_num', 'country.code', 'internal_opportunity_name')
     def _compute_name(self):
@@ -83,6 +108,13 @@ class CRMLeadInherit(models.Model):
                     record.project_num = (record.serial_number or '') + record.type_custom.type_no
             else:
                 record.project_num = '/'
+
+    def _compute_project_project(self):
+        for record in self:
+            record.project_id = False
+            project_id = self.env['project.project'].search([('opportunity_id', '=', record.id)])
+            if project_id:
+                record.project_id = project_id.id
 
     @api.model
     def create(self, vals):
@@ -193,3 +225,12 @@ class CRMLeadInherit(models.Model):
                         "The Stage '%s' of this pipeline with actual submission date '%s' has not been Changed for the last 7 days, please follow up. <br> Best Regards.") % (
                              lead.stage_id.name, lead.actual_sub_date),
                     partner_ids=group_partner_ids.ids)
+
+    def action_view_project(self):
+        action = self.env.ref('project.open_view_project_all_config').read()[0]
+        action['domain'] = [('id', '=', self.project_id.id)]
+        action['view_mode'] = 'form'
+        action['view_type'] = 'form'
+        action['res_id'] = self.project_id.id
+        action['view_id'] = self.env.ref('project.view_project').id
+        return action
