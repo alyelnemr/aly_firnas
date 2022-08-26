@@ -15,6 +15,7 @@
         'security/ir.model.access.csv',
         'views/res_config_settings.xml',
         'views/crm_type.xml',
+        'views/crm_lead_views.xml',
         'views/crm_lead.xml',
     ],
     'installable': True,

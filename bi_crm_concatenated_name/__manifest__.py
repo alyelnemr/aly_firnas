@@ -10,8 +10,6 @@
     'version': '0.1',
     'depends': ['base', 'crm', 'bi_new_customized_fields'],
     'data': [
-        'security/ir.model.access.csv',
-        'views/crm_lead_views.xml',
         'views/res_config_settings_inherit.xml',
         'data/ir_sequence_data.xml',
     ],
