@@ -80,8 +80,20 @@ class Project(models.Model):
 
     cp_shows = fields.Boolean(name="Critical Path", help="Critical Path Shows", default=True)
     cp_detail = fields.Boolean(name="Critical Path Detail", help="Critical Path Shows Detail on Gantt", default=False)
+    tag_id_group_by = fields.Many2one('project.tags', string='Tags for Group by', compute='_compute_tag_id_group_by', store=True)
+    is_using_timesheet = fields.Boolean(string='Using Timesheet', default=False)
 
+    @api.onchange('is_using_timesheet')
+    def _compute_start_end_date(self):
+        for record in self:
+            if record.is_using_timesheet:
+                record.planned_date_begin = min(item.date for item in record.timesheet_ids)
+                record.planned_date_end = max(item.date for item in record.timesheet_ids)
 
+    @api.depends('tag_ids')
+    def _compute_tag_id_group_by(self):
+        for record in self:
+            record.tag_id_group_by = record.tag_ids and record.tag_ids[0].id or False
 
     @api.depends('tz')
     def _compute_tz_offset(self):

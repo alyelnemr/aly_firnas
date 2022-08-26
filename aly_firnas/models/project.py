@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models, _
-from odoo.exceptions import ValidationError
 
 
-class ResUsers(models.Model):
+class ProjectProject(models.Model):
     _inherit = 'project.project'
 
     user_id = fields.Many2one('res.users', string='Project Engineer', default=lambda self: self.env.user, tracking=True)
