@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools import email_split, float_is_zero
 
 
 class HrExpenseSheet(models.Model):
     _inherit = "hr.expense.sheet"
 
+    @api.onchange('user_id')
+    def _check_user(self):
+        for expense in self:
+            expense.is_same_user_approver = expense.user_id == self.env.user
+
+    is_same_user_approver = fields.Boolean("Is Same User Approver", compute='_check_user')
     user_id = fields.Many2one('res.users', 'Manager', readonly=True, copy=False, states={'draft': [('readonly', False)]},
                               tracking=True, required=True)
     payment_mode = fields.Selection([
@@ -27,6 +32,9 @@ class HrExpenseSheet(models.Model):
         move = self.env['account.move'].browse(self.account_move_id.id)
         if move:
             move.write({'state': 'cancel'})
-        self.write({'state': 'draft', 'account_move_id': False})
+        if self.state in ('done', 'post'):
+            self.write({'state': 'approve', 'account_move_id': False})
+        else:
+            self.write({'state': 'draft', 'account_move_id': False})
         self.activity_update()
         return True

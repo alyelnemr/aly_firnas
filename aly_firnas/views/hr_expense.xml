@@ -112,10 +112,16 @@
                                    attrs="{'invisible': [('state', 'not in', ['approve', 'post', 'done'])]}"/>
                         </group>
                         <group>
+                            <field name="is_same_user_approver" invisible="1"/>
                             <field name="account_move_id" groups="account.group_account_user"
                                    attrs="{'invisible': [('state', 'not in', ['post', 'done'])]}" readonly="1"/>
                         </group>
                     </group>
+                </xpath>
+                <xpath expr="//button[@name='approve_expense_sheets']" position="replace">
+                    <button name="approve_expense_sheets" string="Approve" type="object"
+                            groups="hr_expense.group_hr_expense_team_approver" class="oe_highlight o_expense_sheet_approve"
+                            attrs="{'invisible': [('is_same_user_approver', '=', False), ('state', 'not in', ['submit'])]}" />
                 </xpath>
                 <xpath expr="//field[@name='payment_mode']" position="attributes">
                     <attribute name="context">{'default_payment_mode': 'company_account'}</attribute>
