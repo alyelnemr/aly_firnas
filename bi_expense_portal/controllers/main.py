@@ -911,7 +911,7 @@ class CustomerPortal(CustomerPortal):
         )
 
     @http.route(['/expense/compute_all'], type='json', auth="public", website=True)
-    def compute_all(self, unit_amount_str, quantity_str, tax_id_str, **kw):
+    def compute_all(self, unit_amount_str=None, quantity_str=None, tax_id_str=None, **kw):
         vendor_contacts = []
         total_amount = 0
         if unit_amount_str and quantity_str and tax_id_str:
