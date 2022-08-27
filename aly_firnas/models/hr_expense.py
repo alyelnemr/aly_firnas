@@ -36,10 +36,21 @@ class HRExpense(models.Model):
                                                 expense.employee_id.user_id.partner_id)
             expense.total_amount = taxes.get('total_included')
 
+    @api.onchange('product_id', 'company_id')
+    def _onchange_product_id(self):
+        for expense in self:
+            expense.is_readonly_analytic_tag = False
+            expense.is_readonly_analytic_account = False
+            if expense.product_id:
+                if expense.analytic_account_id:
+                    expense.is_readonly_analytic_account = True
+                if expense.analytic_tag_ids:
+                    expense.is_readonly_analytic_tag = True
+
     @api.onchange('project_id')
     def _set_project_data(self):
         for expense in self:
-            analytic_tag_ids = []
+            analytic_tag_ids = expense.analytic_tag_ids
             if expense.project_id:
                 expense.company_id = expense.project_id.company_id.id
                 expense.analytic_account_id = expense.project_id.analytic_account_id.id
@@ -48,29 +59,29 @@ class HRExpense(models.Model):
                 analytic_tag_ids = expense.analytic_account_id.analytic_tag_ids
             if expense.employee_id:
                 analytic_tag_ids += expense.employee_id.analytic_tag_ids
-            expense.analytic_tag_ids = analytic_tag_ids
+            expense.analytic_tag_ids += analytic_tag_ids
 
     @api.onchange('company_id')
     def _set_current_user(self):
         for expense in self:
-            analytic_tag_ids = []
+            analytic_tag_ids = expense.analytic_tag_ids
             if self.env.user.employee_id:
                 expense.employee_id = self.env.user.employee_id.id
             if expense.analytic_account_id:
                 analytic_tag_ids = expense.analytic_account_id.analytic_tag_ids
             if expense.employee_id:
                 analytic_tag_ids += expense.employee_id.analytic_tag_ids
-            expense.analytic_tag_ids = analytic_tag_ids
+            expense.analytic_tag_ids += analytic_tag_ids
 
     @api.onchange('analytic_account_id')
     def _set_analytic_account_data(self):
         for expense in self:
-            analytic_tag_ids = []
+            analytic_tag_ids = expense.analytic_tag_ids
             if expense.analytic_account_id:
                 analytic_tag_ids = expense.analytic_account_id.analytic_tag_ids
             if expense.employee_id:
                 analytic_tag_ids += expense.employee_id.analytic_tag_ids
-            expense.analytic_tag_ids = analytic_tag_ids
+            expense.analytic_tag_ids += analytic_tag_ids
 
     @api.model
     def _default_company_id(self):
@@ -120,6 +131,8 @@ class HRExpense(models.Model):
         for expense in self:
             expense.is_same_currency = expense.currency_id == expense.company_id.currency_id
 
+    is_readonly_analytic_account = fields.Boolean("Is Readonly Analytic Account", compute='_onchange_product_id', store=False)
+    is_readonly_analytic_tag = fields.Boolean("Is Readonly Analytic Tag", compute='_onchange_product_id', store=False)
     is_same_currency = fields.Boolean("Is Same Currency as Company Currency", compute='_change_currency')
     picking_type_id = fields.Many2one('stock.picking.type', 'Picking Type', required=True,
                                       default=_default_picking_receive,
@@ -200,7 +213,7 @@ class HRExpense(models.Model):
                 # amount = expense.currency_id._convert(amount, company_currency, expense.company_id, account_date)
                 amount_currency = taxes['total_excluded']
             move_line_src = {
-                'name': move_line_name,
+                'name': expense.name,
                 'quantity': expense.quantity or 1,
                 'debit': amount if amount > 0 else 0,
                 'credit': -amount if amount < 0 else 0,
@@ -211,7 +224,7 @@ class HRExpense(models.Model):
                 'analytic_account_id': expense.analytic_account_id.id,
                 'analytic_tag_ids': [(6, 0, expense.analytic_tag_ids.ids)],
                 'expense_id': expense.id,
-                'partner_id': partner_id,
+                'partner_id': expense.partner_id.id,
                 'tax_ids': [(6, 0, expense.tax_ids.ids)],
                 'tag_ids': [(6, 0, taxes['base_tags'])],
                 'currency_id': expense.currency_id.id if different_currency else False,

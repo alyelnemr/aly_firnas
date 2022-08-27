@@ -9,7 +9,7 @@ class HrExpenseSheet(models.Model):
     @api.onchange('user_id')
     def _check_user(self):
         for expense in self:
-            expense.is_same_user_approver = expense.user_id == self.env.user
+            expense.is_same_user_approver = expense.user_id == self.env.user and expense.state == 'submit'
 
     is_same_user_approver = fields.Boolean("Is Same User Approver", compute='_check_user')
     user_id = fields.Many2one('res.users', 'Manager', readonly=True, copy=False, states={'draft': [('readonly', False)]},
