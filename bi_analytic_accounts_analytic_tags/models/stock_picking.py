@@ -39,4 +39,5 @@ class InheritPicking(models.Model):
 
                 vals['is_origin_so'] = True
 
-        return super(InheritPicking, self).create(vals)
+        res = super(InheritPicking, self).create(vals)
+        return res

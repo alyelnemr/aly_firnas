@@ -144,10 +144,8 @@ class HRExpense(models.Model):
                                  tracking=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     vendor_contact_id = fields.Many2one('res.partner', string='Vendor Contacts', required=False,
                                      domain="[('parent_id', '=', partner_id)]")
-    project_id = fields.Many2one('project.project', 'Project', required=True, readonly=True,
-                                 states={'draft': [('readonly', False)]})
-    company_id = fields.Many2one('res.company', string='Company', required=True, readonly=True,
-                                 states={'draft': [('readonly', False)]}, default=_default_company_id)
+    project_id = fields.Many2one('project.project', 'Project', required=True, readonly=False)
+    company_id = fields.Many2one('res.company', string='Company', required=True, readonly=False, default=_default_company_id)
     expense_picking_id = fields.Many2one('stock.picking', string="Picking ID")
     picking_count = fields.Integer(string="Count", compute='_compute_picking_count', store=False)
     payment_mode = fields.Selection([
@@ -156,11 +154,11 @@ class HRExpense(models.Model):
     ], default='company_account', readonly=True, string="Paid By")
     attachment_document = fields.Binary(string='Attachment', required=False)
     journal_id = fields.Many2one('account.journal', string='Expense Journal',
-                                 states={'done': [('readonly', True)], 'post': [('readonly', True)]}, check_company=True,
-                                 domain="[('type', '=', 'purchase'), ('company_id', '=', company_id)]",
+                                 states={'done': [('readonly', True)], 'post': [('readonly', True)]}, check_company=False,
+                                 domain="[('type', '=', 'purchase')]",
                                  default=_default_journal_id, help="The journal used when the expense is done.")
     bank_journal_id = fields.Many2one('account.journal', string='Bank Journal',
-                                      states={'done': [('readonly', True)], 'post': [('readonly', True)]}, check_company=True,
+                                      states={'done': [('readonly', True)], 'post': [('readonly', True)]}, check_company=False,
                                       domain="[('type', 'in', ['cash', 'bank']), ('company_id', '=', company_id)]",
                                       default=_default_bank_journal_id,
                                       help="The payment method used when the expense is paid by the company.")
@@ -390,7 +388,7 @@ class HRExpense(models.Model):
                     'location_dest_id': line.picking_type_id.default_location_dest_id.id,
                     'picking_id': picking.id,
                     'state': 'draft',
-                    'company_id': line.company_id.id,
+                    'company_id': line.project_id.company_id.id,
                     'price_unit': price_unit,
                     'picking_type_id': line.picking_type_id.id,
                     'route_ids': 1 and [

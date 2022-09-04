@@ -1,6 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <record id="aly_view_stock_move_line_operation_tree_add_internal_ref_desc" model="ir.ui.view">
+        <field name="name">aly.stock.move.line.operations.tree.add.internal.ref.desc</field>
+        <field name="model">stock.move.line</field>
+        <field name="priority">1001</field>
+        <field name="inherit_id" ref="stock.view_stock_move_line_operation_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lot_name']" position="after">
+                <field name="lot_ref" readonly="0" context="{
+                            'default_lot_ref': parent.lot_ref
+                        }"/>
+                <field name="lot_description" readonly="1" context="{
+                            'default_lot_description': parent.lot_description
+                        }"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="aly_view_stock_move_nosuggest_operations" model="ir.ui.view">
+        <field name="name">aly.stock.move.operations.nosuggest.form</field>
+        <field name="model">stock.move</field>
+        <field name="priority">1001</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="stock.view_stock_move_operations"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="before">
+                <field name="lot_ref" readonly="0" />
+                <field name="lot_description" readonly="1" />
+            </xpath>
+        </field>
+    </record>
     <record id="aly_view_stock_move_line_detailed_operation_tree" model="ir.ui.view">
         <field name="name">aly.stock.move.line.operations.tree.inherit</field>
         <field name="model">stock.move.line</field>

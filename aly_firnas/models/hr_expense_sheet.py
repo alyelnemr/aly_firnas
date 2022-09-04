@@ -5,6 +5,7 @@ from odoo.exceptions import UserError, ValidationError
 
 class HrExpenseSheet(models.Model):
     _inherit = "hr.expense.sheet"
+    _check_company_auto = False
 
     @api.onchange('user_id')
     def _check_user(self):
