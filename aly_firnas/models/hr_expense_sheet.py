@@ -39,3 +39,22 @@ class HrExpenseSheet(models.Model):
             self.write({'state': 'draft', 'account_move_id': False})
         self.activity_update()
         return True
+
+    def approve_expense_sheets(self):
+        if self.user_id.id != self.env.user.id:
+            raise UserError(_("You are not allowed to approve these expenses"))
+        if not self.user_has_groups('hr_expense.group_hr_expense_team_approver'):
+            raise UserError(_("Only Managers and HR Officers can approve expenses"))
+        elif not self.user_has_groups('hr_expense.group_hr_expense_manager'):
+            current_managers = self.employee_id.expense_manager_id | self.employee_id.parent_id.user_id | self.employee_id.department_id.manager_id.user_id
+
+            if self.employee_id.user_id == self.env.user:
+                raise UserError(_("You cannot approve your own expenses"))
+
+            if not self.env.user in current_managers and not self.user_has_groups(
+                    'hr_expense.group_hr_expense_user') and self.employee_id.expense_manager_id != self.env.user:
+                raise UserError(_("You can only approve your department expenses"))
+
+        responsible_id = self.user_id.id or self.env.user.id
+        self.write({'state': 'approve', 'user_id': responsible_id})
+        self.activity_update()
