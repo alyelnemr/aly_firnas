@@ -4,22 +4,6 @@ from odoo import models, fields, api
 class StockMove(models.Model):
     _inherit = "stock.move"
 
-    @api.model
-    def default_get(self, fields):
-        result = super(StockMove, self).default_get(fields)
-        if self._context.get('active_id') or self.picking_id:
-            move_line = self.env['stock.move'].browse(result['move_id'])
-
-            if 'lot_description' in fields and move_line.description_picking:
-                result['lot_description'] = move_line.description_picking
-
-            if 'lot_ref' in fields and move_line.description_picking:
-                result['lot_ref'] = move_line.description_picking
-        return result
-
-    lot_description = fields.Html(string='Lot Description', readonly=True)
-    lot_ref = fields.Char(string='Lot Internal Reference', readonly=True)
-
     def _prepare_procurement_values(self):
         res = super()._prepare_procurement_values()
         res.update({
