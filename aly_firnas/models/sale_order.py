@@ -14,9 +14,8 @@ class SaleOrder(models.Model):
         'crm.lead', string='Opportunity', check_company=True,
         domain="[('type', '=', 'opportunity'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]"
     , copy=False)
-    manual_currency_rate_active = fields.Boolean('Apply Manual Exchange')
-    manual_currency_rate = fields.Float('Rate', digits=(12, 4))
-    new_currency_id = fields.Many2one("res.currency", string="New Currency", readonly=False, required=False, default=lambda self: self.currency_id)
+    is_manual = fields.Boolean('Manual Rate', default=False, readonly=False)
+    custom_rate = fields.Float('Rate (Factor)', digits=(16, 2))
 
     @api.depends('pricelist_id', 'date_order', 'company_id')
     def _compute_currency_rate(self):
@@ -149,19 +148,3 @@ class SaleOrder(models.Model):
 
         if template.note:
             self.note = template.note
-
-
-class SaleOrderLine(models.Model):
-    _inherit = 'sale.order.line'
-
-    @api.onchange('product_id')
-    def product_id_change(self):
-        if self.order_id.manual_currency_rate_active:
-            self = self.with_context(override_currency_rate=self.order_id.manual_currency_rate)
-        return super(SaleOrderLine, self).product_id_change()
-
-    @api.onchange('product_uom', 'product_uom_qty')
-    def product_uom_change(self):
-        if self.order_id.manual_currency_rate_active:
-            self = self.with_context(override_currency_rate=self.order_id.manual_currency_rate)
-        # return super(SaleOrderLine, self).product_uom_change()

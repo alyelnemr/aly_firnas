@@ -17,6 +17,7 @@
             </xpath>
         </field>
     </record>
+
     <record id="aly_view_stock_move_nosuggest_operations" model="ir.ui.view">
         <field name="name">aly.stock.move.operations.nosuggest.form</field>
         <field name="model">stock.move</field>
@@ -30,6 +31,7 @@
             </xpath>
         </field>
     </record>
+
     <record id="aly_view_stock_move_line_detailed_operation_tree" model="ir.ui.view">
         <field name="name">aly.stock.move.line.operations.tree.inherit</field>
         <field name="model">stock.move.line</field>

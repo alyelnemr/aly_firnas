@@ -1,11 +1,25 @@
-# Copyright 2018 Tecnativa - Pedro M. Baeza
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-
-from odoo import models
+# -*- coding: utf-8 -*-
+from odoo import api, fields, models
 
 
 class StockMove(models.Model):
     _inherit = "stock.move"
+
+    @api.model
+    def default_get(self, fields):
+        result = super(StockMove, self).default_get(fields)
+        if self._context.get('active_id') and self.picking_id and 'move_id' in result:
+            move_line = self.env['stock.move'].browse(result['move_id'])
+
+            if 'lot_description' in fields and move_line.description_picking:
+                result['lot_description'] = move_line.description_picking
+
+            if 'lot_ref' in fields and move_line.description_picking:
+                result['lot_ref'] = move_line.description_picking
+        return result
+
+    lot_description = fields.Html(string='Lot Description', readonly=True)
+    lot_ref = fields.Char(string='Lot Internal Reference', readonly=True)
 
     def _get_price_unit(self):
         """Get correct price with discount replacing current price_unit

@@ -8,7 +8,7 @@ class StockMoveLine(models.Model):
     @api.model
     def default_get(self, fields):
         result = super(StockMoveLine, self).default_get(fields)
-        if self._context.get('active_id') or self.picking_id and 'move_id' in result:
+        if self._context.get('active_id') and self.picking_id and 'move_id' in result:
             move_line = self.env['stock.move'].browse(result['move_id'])
 
             if 'lot_description' in fields and move_line.description_picking:
