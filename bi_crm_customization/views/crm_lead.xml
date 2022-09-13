@@ -54,7 +54,7 @@
                         <group>
                             <field name="proposals_engineer_id"/>
                             <field name="rfp_ref_number"/>
-                            <field name="project_num" required="1"/>
+                            <field name="project_num" required="1" readonly="1"/>
                             <field name="type_custom" required="0"/>
                             <field name="type_custom_ids" widget="many2many_tags"/>
                             <field name="project_name"/>
@@ -69,7 +69,7 @@
                             <field name="partnership_model"/>
                             <field name="partner" widget="many2many_tags"/>
                             <field name="subcontractor_supplier_ids" widget="many2many_tags"/>
-                            <field name="client_name" widget="many2many_tags"/>
+                            <field name="end_client" widget="many2many_tags"/>
                             <field name="latest_proposal_submission_date"/>
                             <field name="result_date"/>
                             <field name="contract_signature_date"/>

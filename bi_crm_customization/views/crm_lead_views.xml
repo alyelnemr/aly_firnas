@@ -30,7 +30,7 @@
                             <group>
                                 <field name="proposals_engineer_id"/>
                                 <field name="rfp_ref_number"/>
-                                <field name="project_num"/>
+                                <field name="project_num" readonly="1"/>
                                 <field name="type_custom" required="1"/>
                                 <field name="internal_opportunity_name"/>
                                 <field name="project_name"/>
@@ -44,6 +44,8 @@
                                 <field name="fund"/>
                                 <field name="partnership_model"/>
                                 <field name="partner_ids" widget="many2many_tags"
+                                       options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"/>
+                                <field name="end_client" widget="many2many_tags"
                                        options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"/>
                                 <field name="company_id" invisible="0"/>
                             </group>

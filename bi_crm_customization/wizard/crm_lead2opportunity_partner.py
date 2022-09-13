@@ -8,7 +8,7 @@ class Lead2OpportunityPartner(models.TransientModel):
     parent_opportunity_id = fields.Many2one('crm.lead', string='Existing Opportunities')
     serial_number = fields.Char(string='Serial Number')
     original_serial_number = fields.Char(string='Original Serial Number')
-    type_custom = fields.Many2one('crm.type', string="Type", required=True)
+    type_custom = fields.Many2one('crm.type', string="Project Type", required=True)
     letter_identifier = fields.Char(string='Letter Identifier')
     project_num = fields.Char(string="Project Number", default='/', compute='_compute_project_num', store=True)
     internal_opportunity_name = fields.Char(string="Internal Opportunity Name", required=True)
@@ -18,10 +18,9 @@ class Lead2OpportunityPartner(models.TransientModel):
     partner_id = fields.Many2one('res.partner', string='Customer', index=True, required=False,
                                  domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
                                  help="Linked partner (optional). Usually created when converting the lead. You can find a partner by its Name, TIN, Email or Internal Reference.")
-    project_num = fields.Char(string="Project Number", store=True)
     project_name = fields.Char(string="Customer's Project Name / Proposal Title", store=True, )
     country = fields.Many2many('res.country', string='Countries')
-    start_date = fields.Date(string="Start Date")
+    start_date = fields.Date(string="Request Date")
     sub_date = fields.Datetime(string="Submission Deadline")
     sub_type = fields.Many2one('project.submission', string="Submission Type")
     # source = fields.Char(string="Source")
@@ -29,12 +28,38 @@ class Lead2OpportunityPartner(models.TransientModel):
     partnership_model = fields.Many2one('project.partnership', string="Partnership Model")
     partner_ids = fields.Many2many('res.partner', string="JV Partners")
     #client_name = fields.Many2many('res.partner', 'crmlead2opportunity_client_rel', string="End Client")
-    # client_name = fields.Many2many('client.name', string="End Client")
+    end_client = fields.Many2many('res.partner', 'crm2opportunity_end_client_rel', 'crm2opp_end_client_id', 'endclient_partner_id',
+                                  string="End Client")
     proposals_engineer_id = fields.Many2one('res.users', string='Proposals Engineer')
     rfp_ref_number = fields.Char(string='RfP Ref. Number')
     source_id = fields.Many2one('utm.source', string='Source', required=True, ondelete='cascade',
                                 help="This is the link source, e.g. Search Engine, another domain, or name of email list")
     company_id = fields.Many2one('res.company', string='Company', index=True, default=lambda self: self.env.company.id)
+
+    @api.onchange('parent_opportunity_id')
+    def get_related_country(self):
+        for rec in self:
+            if rec.parent_opportunity_id and rec.parent_opportunity_id.country:
+                rec.country = rec.parent_opportunity_id.country
+            else:
+                rec.country = False
+
+            # parent opprtunity letter sequence
+            if rec.parent_opportunity_id:
+                rec.letter_identifier = rec.parent_opportunity_id.next_letter_sequence or 'B'
+            else:
+                rec.letter_identifier = False
+
+    @api.depends('serial_number', 'type_custom.type_no', 'letter_identifier')
+    def _compute_project_num(self):
+        for record in self:
+            if record.type_custom:
+                if record.letter_identifier:
+                    record.project_num = (record.serial_number or '') + record.type_custom.type_no + record.letter_identifier
+                else:
+                    record.project_num = (record.serial_number or '') + record.type_custom.type_no
+            else:
+                record.project_num = '/'
 
     @api.model
     def default_get(self, fields):
@@ -48,8 +73,8 @@ class Lead2OpportunityPartner(models.TransientModel):
             lead = self.env['crm.lead'].browse(self._context['active_id'])
             result['name'] = 'convert'
 
-            if 'client_name' in fields and lead.client_name:
-                result['client_name'] = lead.client_name.ids
+            if 'end_client' in fields and lead.end_client:
+                result['end_client'] = lead.end_client.ids
             if 'fund' in fields and lead.fund:
                 result['fund'] = lead.fund.id
             if 'partnership_model' in fields and lead.partnership_model:
@@ -119,7 +144,7 @@ class Lead2OpportunityPartner(models.TransientModel):
                 'company_id': self.company_id.id,
                 'currency_id': self.currency_id.id,
                 'project_name': self.project_name,
-                # 'client_name': self.client_name.ids,
+                'end_client': self.end_client.ids,
                 'country': self.country,
                 'fund': self.fund.id,
                 'internal_opportunity_name': self.internal_opportunity_name,
@@ -140,3 +165,11 @@ class Lead2OpportunityPartner(models.TransientModel):
             })
 
         return leads[0].redirect_lead_opportunity_view()
+
+
+class Lead2OpportunityMassConvert(models.TransientModel):
+    _inherit = 'crm.lead2opportunity.partner.mass'
+
+    end_client = fields.Many2many('res.partner', 'crm2opportunity_mass_end_client_rel', 'crm2opp_mass_end_client_id',
+                                  'endclient_mass_partner_id',
+                                  string="End Client")

@@ -19,7 +19,7 @@ class CRMLeadInherit(models.Model):
         res['context']['default_fund'] = self.fund.id
         res['context']['default_partnership_model'] = self.partnership_model.id
         res['context']['default_partner'] = self.partner.ids
-        res['context']['default_client_name'] = self.client_name.ids
+        res['context']['default_end_client'] = self.end_client.ids
         res['context']['default_rfp_ref_number'] = self.rfp_ref_number
         res['context']['default_proposals_engineer_id'] = self.proposals_engineer_id.id
         return res
@@ -39,14 +39,13 @@ class CRMLeadInherit(models.Model):
     fund = fields.Many2one('project.fund', string="Funding")
     partnership_model = fields.Many2one('project.partnership', string="Partnership Model")
     partner = fields.Many2many('res.partner', string="JV Partners")
-    client_name = fields.Many2many('res.partner', 'crmlead_clientname_rel', string="End Client")
     subcontractor_supplier_ids = fields.Many2many('res.partner', 'crmlead_subcontractor_rel', string="Subcontractors/Suppliers")
     proposal_reviewer_ids = fields.Many2many('res.partner', 'crmlead_prop_reviewer_rel', string="Proposal Reviewers")
     latest_proposal_submission_date = fields.Date(string="Latest Proposal Submission Date")
     result_date = fields.Date(string="Result Date")
     contract_signature_date = fields.Date(string="Contract/PO Signature Date")
     initial_contact_date = fields.Date(string="Initial Contact Date")
-    # client_name = fields.Many2many('client.name', string="End Client")
+    end_client = fields.Many2many('res.partner', 'crm2opprtunity_endclient_rel', 'crm_end_client_id', 'end_client_partner_id', string="End Client")
     proposals_engineer_id = fields.Many2one('res.users', string='Proposals Engineer')
     rfp_ref_number = fields.Char(string='RfP Ref. Number')
     currency_id = fields.Many2one('res.currency', string="Currency", store=True)
