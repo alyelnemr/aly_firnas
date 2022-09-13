@@ -77,6 +77,7 @@ class DbBackup(models.Model):
                     # try to backup database and write it away
                     fp = open(file_path, 'wb')
                     backup_status['local_backup'], backup_status['local_backup_error'] = self._take_dump(rec.name, fp, 'db.backup', rec.backup_type)
+                    _logger.info("backup_status['local_backup'] ", backup_status['local_backup'])
                     if rec.upload_dropbox and backup_status['local_backup']:
                         backup_status['dbx_backup'], backup_status['dbx_backup_error'] = self.upload_file(rec.access_token, file_path, f'{rec.dropbox_folder}/{bkp_file}')
                     fp.close()
@@ -156,6 +157,7 @@ class DbBackup(models.Model):
         try:
             cmd = ['pg_dump', '--no-owner']
             cmd.append(db_name)
+            _logger.info('el cmdede ', cmd)
 
             if backup_format == 'zip':
                 with odoo.tools.osutil.tempdir() as dump_dir:
