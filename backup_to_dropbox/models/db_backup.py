@@ -49,7 +49,9 @@ class DbBackup(models.Model):
     def _access_dbx(self, access_token):
         dbx = None
         try:
-            dbx = dropbox.Dropbox(access_token, timeout=900)
+            dbx = dropbox.Dropbox(oauth2_access_token=
+                                  'sl.BPMtrFdMYwjgbX1lODR-y30DRD29LHuwedLY5sMxfhDtpE2ipghq1dJVr77QzasygwWE0HyDu1Y0-Z_OCmh0BjUoJS6eegxBMC61osRAfJqb_JKCQTQ2bCo3yb_V4mH6ZkcDcVs'
+                                  , app_key='z1hm3ffa8jpepzo', app_secret='50kmi1fsqbnrnvj', timeout=900)
         except Exception as e:
             print(e)
         return dbx
