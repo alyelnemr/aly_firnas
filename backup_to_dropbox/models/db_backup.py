@@ -54,7 +54,7 @@ class DbBackup(models.Model):
             print(e)
         return dbx
 
-    def schedule_backup(self):
+    def schedule_backup_old(self):
         conf_ids = self.search([])
         if conf_ids:
             for rec in conf_ids:
@@ -81,6 +81,7 @@ class DbBackup(models.Model):
                     if rec.upload_dropbox and backup_status['local_backup']:
                         backup_status['dbx_backup'], backup_status['dbx_backup_error'] = self.upload_file(rec.access_token, file_path, f'{rec.dropbox_folder}/{bkp_file}')
                     fp.close()
+                    _logger.info('fp closeeddddddddddddddddd')
                 except Exception as error:
                     backup_status['local_backup'] = False
                     backup_status['local_backup_error'] = error
@@ -190,6 +191,26 @@ class DbBackup(models.Model):
             os.remove(stream.name)
             print(e)
             return False, e
+
+    def schedule_backup(self):
+        """Dump database `db` into file-like object `stream` if stream is None
+        return a file object with the dump """
+
+        _logger.info('fol el fol')
+        try:
+            cmd = ['pg_dump', '--no-owner']
+            cmd.append(self._cr.dbname)
+            _logger.info('el cmdede ', cmd)
+
+            cmd.insert(-1, '--format=c')
+            _logger.info('cmmmmmmmmd ', cmd)
+            stdin, stdout = odoo.tools.exec_pg_command_pipe(*cmd)
+            _logger.info('stdin ', stdin)
+            _logger.info('stdout ', stdout)
+            shutil.copyfileobj(stdout, 'db.backup')
+            return True, ''
+        except Exception as e:
+            print(e)
 
     def _dump_db_manifest(self, cr):
         pg_version = "%d.%d" % divmod(cr._obj.connection.server_version / 100, 100)
