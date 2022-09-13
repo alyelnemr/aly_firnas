@@ -54,7 +54,7 @@ class DbBackup(models.Model):
             print(e)
         return dbx
 
-    def schedule_backup_old(self):
+    def schedule_backup(self):
         conf_ids = self.search([])
         if conf_ids:
             for rec in conf_ids:
@@ -189,10 +189,10 @@ class DbBackup(models.Model):
             return True, ''
         except Exception as e:
             os.remove(stream.name)
-            print(e)
+            _logger.info(e)
             return False, e
 
-    def schedule_backup(self):
+    def schedule_backupold(self):
         for rec in self:
             """Dump database `db` into file-like object `stream` if stream is None
                     return a file object with the dump """
