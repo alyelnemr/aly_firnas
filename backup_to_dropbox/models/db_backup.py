@@ -193,24 +193,37 @@ class DbBackup(models.Model):
             return False, e
 
     def schedule_backup(self):
-        """Dump database `db` into file-like object `stream` if stream is None
-        return a file object with the dump """
+        for rec in self:
+            """Dump database `db` into file-like object `stream` if stream is None
+                    return a file object with the dump """
 
-        _logger.info('fol el fol')
-        try:
-            cmd = ['pg_dump', '--no-owner']
-            cmd.append(self._cr.dbname)
-            _logger.info('el cmdede ', cmd)
+            try:
+                if not os.path.isdir(rec.folder):
+                    os.makedirs(rec.folder)
+            except:
+                raise
+            # Create name for dumpfile.
+            bkp_file = '%s_%s.%s' % (time.strftime('%Y_%m_%d_%H_%M_%S'), rec.name, rec.backup_type)
+            file_path = os.path.join(self.folder, bkp_file)
+            fp = open(file_path, 'wb')
+            # try to backup database and write it away
+            fp = open(file_path, 'wb')
 
-            cmd.insert(-1, '--format=c')
-            _logger.info('cmmmmmmmmd ', cmd)
-            stdin, stdout = odoo.tools.exec_pg_command_pipe(*cmd)
-            _logger.info('stdin ', stdin)
-            _logger.info('stdout ', stdout)
-            shutil.copyfileobj(stdout, 'db.backup')
-            return True, ''
-        except Exception as e:
-            print(e)
+            _logger.info('fol el fol')
+            try:
+                cmd = ['pg_dump', '--no-owner']
+                cmd.append(self._cr.dbname)
+                _logger.info('el cmdede ', cmd)
+
+                cmd.insert(-1, '--format=c')
+                _logger.info('cmmmmmmmmd ', cmd)
+                stdin, stdout = odoo.tools.exec_pg_command_pipe(*cmd)
+                _logger.info('stdin ', stdin)
+                _logger.info('stdout ', stdout)
+                shutil.copyfileobj(stdout, 'db.backup')
+                return True, ''
+            except Exception as e:
+                print(e)
 
     def _dump_db_manifest(self, cr):
         pg_version = "%d.%d" % divmod(cr._obj.connection.server_version / 100, 100)
