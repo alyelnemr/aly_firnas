@@ -151,7 +151,8 @@ class DbBackup(models.Model):
         """Dump database `db` into file-like object `stream` if stream is None
         return a file object with the dump """
 
-        _logger.info('DUMP DB: %s format %s', db_name, backup_format)
+        _logger.info('DUMPssssssssssssss DB: %s format %s', db_name, backup_format)
+        _logger.info('DUMPssssssssssssss DB: %s format %s', db_name, backup_format)
         try:
             cmd = ['pg_dump', '--no-owner']
             cmd.append(db_name)
