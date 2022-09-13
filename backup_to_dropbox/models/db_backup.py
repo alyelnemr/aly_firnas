@@ -176,7 +176,10 @@ class DbBackup(models.Model):
             else:
                 cmd.insert(-1, '--format=c')
                 stdin, stdout = odoo.tools.exec_pg_command_pipe(*cmd)
+                _logger.info('stdin ', stdin)
+                _logger.info('stdout ', stdout)
                 if stream:
+                    _logger.info('stream ', stream)
                     shutil.copyfileobj(stdout, stream)
             return True, ''
         except Exception as e:
