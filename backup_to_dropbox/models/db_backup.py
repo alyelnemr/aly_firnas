@@ -223,7 +223,7 @@ class DbBackup(models.Model):
                 shutil.copyfileobj(stdout, 'db.backup')
                 return True, ''
             except Exception as e:
-                print(e)
+                _logger.info(e)
 
     def _dump_db_manifest(self, cr):
         pg_version = "%d.%d" % divmod(cr._obj.connection.server_version / 100, 100)
