@@ -175,6 +175,7 @@ class DbBackup(models.Model):
                         t.seek(0)
             else:
                 cmd.insert(-1, '--format=c')
+                _logger.info('cmmmmmmmmd ', cmd)
                 stdin, stdout = odoo.tools.exec_pg_command_pipe(*cmd)
                 _logger.info('stdin ', stdin)
                 _logger.info('stdout ', stdout)
