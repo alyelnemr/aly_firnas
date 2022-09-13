@@ -188,7 +188,6 @@ class DbBackup(models.Model):
                     shutil.copyfileobj(stdout, stream)
             return True, ''
         except Exception as e:
-            os.remove(stream.name)
             _logger.info(e)
             return False, e
 
