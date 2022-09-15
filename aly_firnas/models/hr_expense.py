@@ -185,6 +185,33 @@ class HRExpense(models.Model):
         self.activity_update()
         return res
 
+    @api.onchange('product_id', 'company_id')
+    def _onchange_product_id(self):
+        if self.product_id:
+            if not self.name:
+                self.name = self.product_id.display_name or ''
+            self.product_uom_id = self.product_id.uom_id # taxes only from the same company
+            self.account_id = self.product_id.product_tmpl_id.with_context(force_company=self.company_id.id)._get_product_accounts()['expense']
+
+    def _get_expense_account_source(self):
+        self.ensure_one()
+        if self.account_id:
+            account = self.account_id
+        elif self.product_id:
+            account = self.product_id.product_tmpl_id.with_context(force_company=self.company_id.id)._get_product_accounts()[
+                'expense']
+            if not account:
+                raise UserError(
+                    _("No Expense account found for the product %s (or for its category), please configure one.") % (
+                        self.product_id.name))
+        else:
+            account = self.env['ir.property'].with_context(force_company=self.company_id.id).get(
+                'property_account_expense_categ_id', 'product.category')
+            if not account:
+                raise UserError(
+                    _('Please configure Default Expense account for Product expense: `property_account_expense_categ_id`.'))
+        return account
+
     def _get_account_move_line_values(self):
         move_line_values_by_expense = {}
         for expense in self:
