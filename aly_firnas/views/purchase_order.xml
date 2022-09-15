@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <data>
+
+        <record id="purchase_order_approve_view_form_inherit" model="ir.ui.view">
+            <field name="name">purchase.order.form.inherit</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='button_cancel']" position="attributes">
+                    <attribute name="states">draft,waiting approval,to approve,sent,purchase</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_confirm']" position="attributes">
+                    <attribute name="states">waiting approval</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_confirm'][2]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_confirm']" position="after">
+                    <button name="action_submit_to_approve" type="object"
+                            attrs="{'invisible':[('state', 'not in', ['draft','sent'])]}"
+                            string="Submit To Approve" class="oe_highlight"/>
+                </xpath>
+                <xpath expr="//field[@name='partner_ref']" position="after">
+                    <field name="purchase_order_approve_user_id"/>
+                </xpath>
+            </field>
+        </record>
+
         <record id="aly_purchase_order_view_form_inherit" model="ir.ui.view">
             <field name="name">aly.purchase.order.form.inherit</field>
             <field name="model">purchase.order</field>
@@ -56,5 +82,6 @@
                 </notebook>
             </field>
         </record>
+
     </data>
 </odoo>
