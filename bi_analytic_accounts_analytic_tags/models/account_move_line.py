@@ -25,15 +25,14 @@ class InheritAccountMoveLine(models.Model):
     def create(self, vals):
         lines = super(InheritAccountMoveLine, self).create(vals)
         for line in lines:
-            if line.move_id.invoice_line_ids:
-                analytic_account_id = line.move_id.invoice_line_ids[0].analytic_account_id
-                analytic_tag_ids = line.move_id.invoice_line_ids[0].analytic_tag_ids
+            analytic_account_id = line.move_id.analytic_account_id
+            analytic_tag_ids = line.move_id.analytic_tag_ids
 
-                if analytic_account_id:
-                    line.analytic_account_id = analytic_account_id.id if not line.analytic_account_id else line.analytic_account_id
+            if analytic_account_id:
+                line.analytic_account_id = analytic_account_id.id if not line.analytic_account_id else line.analytic_account_id
 
-                if analytic_tag_ids:
-                    line.analytic_tag_ids = analytic_tag_ids.ids if not line.analytic_tag_ids else line.analytic_tag_ids
+            if analytic_tag_ids:
+                line.analytic_tag_ids = analytic_tag_ids.ids if not line.analytic_tag_ids else line.analytic_tag_ids
 
         return lines
 

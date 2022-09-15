@@ -14,7 +14,7 @@ class InheritAccountMove(models.Model):
         res = super(InheritAccountMove, self).create(vals)
         for move in res:
             for item in move.line_ids:
-                if item.account_id and item.account_id.internal_type == 'payable':
+                if item.account_id and item.account_id.internal_type in ('payable', 'receivable'):
                     item.analytic_account_id = move.analytic_account_id
                     item.analytic_tag_ids = move.analytic_tag_ids
         return res
@@ -23,7 +23,7 @@ class InheritAccountMove(models.Model):
         lines = super(InheritAccountMove, self).write(vals)
         for move in self:
             for item in move.line_ids:
-                if item.account_id.internal_type == 'payable':
+                if item.account_id.internal_type in ('payable', 'receivable'):
                     item.analytic_account_id = move.analytic_account_id
                     item.analytic_tag_ids = move.analytic_tag_ids
                 else:
