@@ -36,17 +36,6 @@ class HRExpense(models.Model):
                                                 expense.employee_id.user_id.partner_id)
             expense.total_amount = taxes.get('total_included')
 
-    @api.onchange('product_id', 'company_id')
-    def _onchange_product_id(self):
-        for expense in self:
-            expense.is_readonly_analytic_tag = False
-            expense.is_readonly_analytic_account = False
-            if expense.product_id:
-                if expense.analytic_account_id:
-                    expense.is_readonly_analytic_account = True
-                if expense.analytic_tag_ids:
-                    expense.is_readonly_analytic_tag = True
-
     @api.onchange('project_id')
     def _set_project_data(self):
         for expense in self:
@@ -187,11 +176,20 @@ class HRExpense(models.Model):
 
     @api.onchange('product_id', 'company_id')
     def _onchange_product_id(self):
-        if self.product_id:
-            if not self.name:
-                self.name = self.product_id.display_name or ''
-            self.product_uom_id = self.product_id.uom_id # taxes only from the same company
-            self.account_id = self.product_id.product_tmpl_id.with_context(force_company=self.company_id.id)._get_product_accounts()['expense']
+        for expense in self:
+            if expense.product_id:
+                if not expense.name:
+                    expense.name = expense.product_id.display_name or ''
+                expense.product_uom_id = expense.product_id.uom_id  # taxes only from the same company
+                expense.is_readonly_analytic_tag = False
+                expense.is_readonly_analytic_account = False
+                if expense.product_id:
+                    if expense.analytic_account_id:
+                        expense.is_readonly_analytic_account = True
+                    if expense.analytic_tag_ids:
+                        expense.is_readonly_analytic_tag = True
+                expense.account_id = \
+                    expense.product_id.product_tmpl_id.with_context(force_company=expense.company_id.id)._get_product_accounts()['expense']
 
     def _get_expense_account_source(self):
         self.ensure_one()
