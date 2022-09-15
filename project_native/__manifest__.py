@@ -42,7 +42,8 @@
         "hr_timesheet",
         "web_gantt_native",
         "web_widget_time_delta",
-        "web_widget_colorpicker"
+        "web_widget_colorpicker",
+        "aly_firnas"
     ],
     "external_dependencies": {"python": [], "bin": []},
     "data": [

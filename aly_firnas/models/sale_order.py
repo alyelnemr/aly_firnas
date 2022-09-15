@@ -16,20 +16,6 @@ class SaleOrder(models.Model):
     , copy=False)
     is_manual = fields.Boolean('Manual Rate', default=False, readonly=False)
     custom_rate = fields.Float('Rate (Factor)', digits=(16, 12))
-    #
-    # @api.depends('pricelist_id', 'date_order', 'company_id')
-    # def _compute_currency_rate(self):
-    #     for order in self:
-    #         if order.manual_currency_rate_active:
-    #             order.currency_rate = self.env['res.currency'].with_context(override_currency_rate=self.manual_currency_rate)._get_conversion_rate(order.company_id.currency_id, order.currency_id, order.company_id, order.date_order)
-    #             for item in order.order_line:
-    #                 item.price_unit = order.currency_id.with_context(
-    #                     override_currency_rate=self.manual_currency_rate)._convert(
-    #                     item.price_unit, self.new_currency_id,
-    #                     self.company_id or self.env.company, self.date_order or fields.Date.today())
-    #             order.currency_id = self.new_currency_id
-    #         else:
-    #             order.currency_rate = self.env['res.currency']._get_conversion_rate(order.company_id.currency_id,order.currency_id, order.company_id,order.date_order)
 
     def _compute_option_data_for_template_change(self, option):
         if self.pricelist_id:

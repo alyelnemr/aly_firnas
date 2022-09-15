@@ -7,6 +7,9 @@ from odoo.exceptions import ValidationError
 class ResUsers(models.Model):
     _inherit = 'res.users'
 
+    expense_approve = fields.Boolean("Expense Approve", default=False)
+    is_user_to_approve = fields.Boolean("Is User To Approve", default=False)
+
     def _check_password_rules(self, password):
         self.ensure_one()
         if not password:
