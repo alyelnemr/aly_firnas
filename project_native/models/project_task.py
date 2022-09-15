@@ -372,6 +372,16 @@ class ProjectTaskNative(models.Model):
                 record.date_start = min(item.date for item in record.timesheet_ids)
                 record.date_end = max(item.date for item in record.timesheet_ids)
 
+    def write(self, vals):
+        for record in self:
+            if record.is_using_timesheet:
+                vals.update({
+                    'date_start': min(item.date for item in record.timesheet_ids),
+                    'date_end': max(item.date for item in record.timesheet_ids)
+                })
+        result = super(ProjectTaskNative, self).write(vals)
+        return result
+
     @api.depends('tag_ids')
     def _compute_tag_id_group_by(self):
         for record in self:
