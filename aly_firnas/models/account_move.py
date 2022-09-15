@@ -66,6 +66,7 @@ class AccountMove(models.Model):
                                             default=lambda self: self.company_id.currency_id.id, readonly=True)
     amount_line = fields.Monetary(string='Amount (Line)', store=False, readonly=True, compute='_get_amount_from_line',
                                   currency_field='amount_line_currency_field')
+    note = fields.Text(string='Notes')
 
     manual_currency = fields.Boolean()
     is_manual = fields.Boolean(compute="_compute_currency")

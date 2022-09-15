@@ -72,6 +72,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='name']" position="after">
                     <field name="partner_id"/>
+                    <field name="note"/>
                 </xpath>
                 <xpath expr="//field[@name='amount_total_signed']" position="before">
                     <field name="amount_line_currency_field" invisible="1"/>

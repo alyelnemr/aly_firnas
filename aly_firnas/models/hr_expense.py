@@ -260,6 +260,8 @@ class HRExpense(models.Model):
                     'tax_base_amount': base_amount,
                     'expense_id': expense.id,
                     'partner_id': partner_id,
+                    'analytic_account_id': expense.analytic_account_id.id,
+                    'analytic_tag_ids': [(6, 0, expense.analytic_tag_ids.ids)],
                     'currency_id': expense.currency_id.id if different_currency else False,
                     'analytic_account_id': expense.analytic_account_id.id if tax['analytic'] else False,
                     'analytic_tag_ids': [(6, 0, expense.analytic_tag_ids.ids)] if tax['analytic'] else False,
@@ -270,7 +272,7 @@ class HRExpense(models.Model):
 
             # destination move line
             move_line_dst = {
-                'name': move_line_name,
+                'name': expense.name,
                 'debit': total_amount > 0 and total_amount,
                 'credit': total_amount < 0 and -total_amount,
                 'account_id': account_dst,
@@ -279,6 +281,8 @@ class HRExpense(models.Model):
                 'currency_id': expense.currency_id.id if different_currency else False,
                 'expense_id': expense.id,
                 'partner_id': partner_id,
+                'analytic_account_id': expense.analytic_account_id.id,
+                'analytic_tag_ids': [(6, 0, expense.analytic_tag_ids.ids)],
             }
             move_line_values.append(move_line_dst)
 

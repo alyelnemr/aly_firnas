@@ -39,6 +39,7 @@ class InheritBankStatement(models.Model):
             'analytic_account_id': self.analytic_account_id.id,
             'analytic_tag_ids': self.analytic_tag_ids,
             'ref': ref,
+            'note': self.note,
         }
         if self.move_name:
             data.update(name=self.move_name)
