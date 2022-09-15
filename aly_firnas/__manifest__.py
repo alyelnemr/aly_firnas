@@ -4,10 +4,7 @@
     'summary': "Aly El Nemr, Odoo Development for Firnas Shuman",
     'description': """Aly El Nemr, aly5elnemr@gmail.com, Odoo Development for Firnas Shuman""",
     'author': "Aly El Nemr",
-    'depends': ['purchase', 'sale', 'sale_management', 'account', 'bi_product_bundle_report',
-                'bi_crm_concatenated_name', 'bi_crm_customization', 'bi_purchase_approval', 'bi_expense_portal',
-                'bi_actual_submission_date', 'bi_crm_stage_notification', 'bi_new_customized_fields',
-                'bi_analytic_accounts_analytic_tags', 'project_native'],
+    'depends': ['purchase', 'sale', 'sale_management', 'account', 'bi_product_bundle_report', 'bi_crm_concatenated_name', 'bi_crm_customization'],
 
     'data': [
         'security/ir.model.access.csv',
