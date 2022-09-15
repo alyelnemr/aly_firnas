@@ -140,22 +140,26 @@ class InheritBankStatement(models.Model):
                 payment_vals = self._prepare_payment_vals(total)
                 if not payment_vals['partner_id']:
                     payment_vals['partner_id'] = partner_id.id
-                if 'analytic_tag_ids' not in payment_vals:
-                    if len(new_aml_dicts) > 0 and 'analytic_tag_ids' in new_aml_dicts[0] and new_aml_dicts[0]['analytic_tag_ids']:
-                        payment_vals['analytic_tag_ids'] = new_aml_dicts[0]['analytic_tag_ids']
-                    elif self.analytic_tag_ids:
-                        payment_vals['analytic_tag_ids'] = self.analytic_tag_ids
-                    elif len(counterpart_aml_dicts) > 0 and counterpart_aml_dicts[0]['move_line'].analytic_tag_ids:
-                        if counterpart_aml_dicts[0]['move_line'].analytic_tag_ids:
-                            payment_vals['analytic_tag_ids'] = counterpart_aml_dicts[0]['move_line'].analytic_tag_ids
                 if 'analytic_account_id' not in payment_vals:
-                    if len(new_aml_dicts) > 0 and 'analytic_account_id' in new_aml_dicts[0]:
-                        payment_vals['analytic_account_id'] = new_aml_dicts[0]['analytic_account_id']
-                    elif self.analytic_account_id:
+                    if self.analytic_account_id:
                         payment_vals['analytic_account_id'] = self.analytic_account_id.id
+                    elif move.analytic_account_id:
+                        payment_vals['analytic_account_id'] = move.analytic_account_id.id
+                    elif len(new_aml_dicts) > 0 and 'analytic_account_id' in new_aml_dicts[0]:
+                        payment_vals['analytic_account_id'] = new_aml_dicts[0]['analytic_account_id']
                     elif len(counterpart_aml_dicts) > 0 and counterpart_aml_dicts[0]['move_line'].analytic_account_id:
                         if counterpart_aml_dicts[0]['move_line'].analytic_account_id:
                             payment_vals['analytic_account_id'] = counterpart_aml_dicts[0]['move_line'].analytic_account_id.id
+                if 'analytic_tag_ids' not in payment_vals:
+                    if self.analytic_tag_ids:
+                        payment_vals['analytic_tag_ids'] = self.analytic_tag_ids
+                    elif move.analytic_tag_ids:
+                        payment_vals['analytic_tag_ids'] = move.analytic_tag_ids
+                    elif len(new_aml_dicts) > 0 and 'analytic_tag_ids' in new_aml_dicts[0] and new_aml_dicts[0]['analytic_tag_ids']:
+                        payment_vals['analytic_tag_ids'] = new_aml_dicts[0]['analytic_tag_ids']
+                    elif len(counterpart_aml_dicts) > 0 and counterpart_aml_dicts[0]['move_line'].analytic_tag_ids:
+                        if counterpart_aml_dicts[0]['move_line'].analytic_tag_ids:
+                            payment_vals['analytic_tag_ids'] = counterpart_aml_dicts[0]['move_line'].analytic_tag_ids
                 if payment_vals['partner_id'] and len(account_types) == 1:
                     payment_vals['partner_type'] = 'customer' if account_types == receivable_account_type else 'supplier'
                 payment = payment.create(payment_vals)
@@ -164,18 +168,14 @@ class InheritBankStatement(models.Model):
             to_create = (counterpart_aml_dicts + new_aml_dicts)
             date = self.date or fields.Date.today()
             for index, aml_dict in enumerate(to_create):
-                # analytic_tag_ids = self.analytic_tag_ids
+                analytic_account_id = self.analytic_account_id.id
+                if not self.analytic_account_id:
+                    if aml_dict['move_line'].analytic_account_id:
+                        analytic_account_id = aml_dict['move_line'].analytic_account_id.id
+                analytic_tag_ids = self.analytic_tag_ids
                 if not self.analytic_tag_ids:
-                    if len(counterpart_aml_dicts) >= index + 1 and counterpart_aml_dicts[index]['move_line']:
-                        analytic_tag_ids = counterpart_aml_dicts[index]['move_line'].analytic_tag_ids
-                    if len(new_aml_dicts) >= index + 1 and new_aml_dicts[index]['analytic_tag_ids']:
-                        analytic_tag_ids = new_aml_dicts[index]['analytic_tag_ids']
-                # analytic_account_id = self.analytic_account_id.id
-                if not self.analytic_account_id.id:
-                    if len(counterpart_aml_dicts) >= index + 1 and counterpart_aml_dicts[index]['move_line']:
-                        analytic_account_id = counterpart_aml_dicts[index]['move_line'].analytic_account_id.id
-                    if len(new_aml_dicts) >= index + 1 and new_aml_dicts[index]['analytic_tag_ids']:
-                        analytic_account_id = new_aml_dicts[index]['analytic_account_id']
+                    if aml_dict['move_line'].analytic_tag_ids:
+                        analytic_tag_ids = aml_dict['move_line'].analytic_tag_ids
                 aml_dict['move_id'] = move.id
                 aml_dict['partner_id'] = self.partner_id.id
                 aml_dict['statement_line_id'] = self.id
