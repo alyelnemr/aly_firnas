@@ -10,6 +10,7 @@
         'security/ir.model.access.csv',
         'views/aly_po_report.xml',
         'views/aly_rfq_report.xml',
+        'views/res_users.xml',
         'views/product.xml',
         'views/projects.xml',
         'views/hr_expense.xml',
