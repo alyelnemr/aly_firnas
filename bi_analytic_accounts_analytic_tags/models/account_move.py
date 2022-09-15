@@ -24,8 +24,8 @@ class InheritAccountMove(models.Model):
         for move in self:
             for item in move.line_ids:
                 if item.account_id.internal_type == 'payable':
-                    item.analytic_account_id = move.analytic_account_id if not item.analytic_account_id else item.analytic_account_id
-                    item.analytic_tag_ids = move.analytic_tag_ids if not item.analytic_tag_ids else item.analytic_tag_ids
+                    item.analytic_account_id = move.analytic_account_id
+                    item.analytic_tag_ids = move.analytic_tag_ids
                 else:
                     item.analytic_account_id = move.invoice_line_ids[0].analytic_account_id if not item.analytic_account_id else item.analytic_account_id
                     item.analytic_tag_ids = move.invoice_line_ids[0].analytic_tag_ids if not item.analytic_tag_ids else item.analytic_tag_ids

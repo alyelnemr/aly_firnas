@@ -13,6 +13,14 @@ class InheritAccountMoveLine(models.Model):
 
     is_origin_so = fields.Boolean(copy=False)
 
+    @api.onchange('product_id')
+    def get_analytic_default(self):
+        for rec in self:
+            if not rec.analytic_account_id and rec.move_id.analytic_account_id:
+                rec.analytic_account_id = rec.move_id.analytic_account_id.id
+            if not rec.analytic_tag_ids and rec.move_id.analytic_tag_ids:
+                rec.analytic_tag_ids = rec.move_id.analytic_tag_ids.ids
+
     @api.model_create_multi
     def create(self, vals):
         lines = super(InheritAccountMoveLine, self).create(vals)
