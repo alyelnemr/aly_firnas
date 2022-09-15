@@ -198,20 +198,20 @@ class InheritBankStatement(models.Model):
                 aml_dict['payment_id'] = payment and payment.id or False
 
                 counterpart_move_line = aml_dict.pop('move_line')
-                new_aml = aml_obj.with_context(check_move_validity=False).create(aml_dict)
+                new_aml = aml_obj.with_context(check_move_validity=False, from_reconcile=True).create(aml_dict)
 
                 (new_aml | counterpart_move_line).reconcile()
 
-                self._check_invoice_state(counterpart_move_line.move_id)
+                self.with_context(from_reconcile=True)._check_invoice_state(counterpart_move_line.move_id)
 
             # Balance the move
             st_line_amount = -sum([x.balance for x in move.line_ids])
             aml_dict = self._prepare_reconciliation_move_line(move, st_line_amount)
             aml_dict['payment_id'] = payment and payment.id or False
-            aml_obj.with_context(check_move_validity=False).create(aml_dict)
+            aml_obj.with_context(check_move_validity=False, from_reconcile=True).create(aml_dict)
 
-            move.update_lines_tax_exigibility()  # Needs to be called manually as lines were created 1 by 1
-            move.post()
+            move.with_context(from_reconcile=True).update_lines_tax_exigibility()  # Needs to be called manually as lines were created 1 by 1
+            move.with_context(from_reconcile=True).post()
             # record the move name on the statement line to be able to retrieve it in case of unreconciliation
             self.write({'move_name': move.name})
             payment and payment.write({'payment_reference': move.name})
