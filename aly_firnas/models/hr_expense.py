@@ -6,6 +6,7 @@ from odoo.tools import email_split, float_is_zero
 
 class HRExpense(models.Model):
     _inherit = 'hr.expense'
+    _check_company_auto = False
 
     @api.model
     def _get_employee_id_domain(self):
@@ -43,11 +44,16 @@ class HRExpense(models.Model):
             if expense.project_id:
                 expense.company_id = expense.project_id.company_id.id
                 expense.analytic_account_id = expense.project_id.analytic_account_id.id
-                expense.employee_id = self.env.user.employee_id.id
+                expense.employee_id = self._default_employee_id()
             if expense.analytic_account_id:
                 expense.analytic_tag_ids = expense.analytic_account_id.analytic_tag_ids
             if expense.employee_id:
                 expense.analytic_tag_ids += expense.employee_id.analytic_tag_ids
+
+    @api.model
+    def _default_employee_id(self):
+        return self.env['hr.employee'].search([('user_id', '=', self.env.user.id)])
+
 
     @api.model
     def _default_company_id(self):
@@ -105,7 +111,7 @@ class HRExpense(models.Model):
                                       help="This will determine picking type of incoming shipment")
     employee_id = fields.Many2one('hr.employee', string="Employee", required=True,
                                   readonly=True, states={'draft': [('readonly', False)], 'reported': [('readonly', False)], 'refused': [('readonly', False)]},
-                                  default=lambda self: self.env.user.employee_id, check_company=False)
+                                  default=_default_employee_id, check_company=False)
     partner_id = fields.Many2one('res.partner', string='Vendor', required=True, change_default=True,
                                  tracking=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     vendor_contact_id = fields.Many2one('res.partner', string='Vendor Contacts', required=False,
