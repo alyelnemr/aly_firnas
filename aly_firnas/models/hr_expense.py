@@ -85,7 +85,14 @@ class HRExpense(models.Model):
 
     @api.model
     def _default_bank_journal_id(self):
-        return False
+        journal_id = int(self.env['ir.config_parameter'].sudo().get_param('aly_expense_bank_journal_id')) if self.env[
+            'ir.config_parameter'].sudo().get_param('aly_expense_bank_journal_id') else 0
+        if journal_id and journal_id > 0:
+            return self.env['account.journal'].search([('id', '=', journal_id)], limit=1)
+        else:
+            default_company_id = self.default_get(['company_id'])['company_id']
+            return self.env['account.journal'].search([('type', 'in', ['cash', 'bank']), ('company_id', '=', default_company_id)],
+                                                      limit=1)
 
     @api.depends('date', 'total_amount', 'company_currency_id')
     def _compute_total_amount_company(self):
@@ -145,6 +152,9 @@ class HRExpense(models.Model):
 
         if any(not sheet.journal_id for sheet in self):
             raise UserError(_("Expenses must have an expense journal specified to generate accounting entries."))
+
+        if any(not sheet.expense_line_ids for sheet in self):
+            raise UserError(_("Expenses must have at least one expense item to generate accounting entries."))
 
         expense_line_ids = self.mapped('expense_line_ids') \
             .filtered(lambda r: not float_is_zero(r.total_amount,
@@ -263,12 +273,10 @@ class HRExpense(models.Model):
                     'tag_ids': tax['tag_ids'],
                     'tax_base_amount': base_amount,
                     'expense_id': expense.id,
-                    'partner_id': partner_id,
+                    'partner_id': expense.partner_id.id,
                     'analytic_account_id': expense.analytic_account_id.id,
                     'analytic_tag_ids': [(6, 0, expense.analytic_tag_ids.ids)],
                     'currency_id': expense.currency_id.id if different_currency else False,
-                    'analytic_account_id': expense.analytic_account_id.id if tax['analytic'] else False,
-                    'analytic_tag_ids': [(6, 0, expense.analytic_tag_ids.ids)] if tax['analytic'] else False,
                 }
                 total_amount -= amount
                 total_amount_currency -= move_line_tax_values['amount_currency'] or amount
@@ -292,6 +300,41 @@ class HRExpense(models.Model):
 
             move_line_values_by_expense[expense.id] = move_line_values
         return move_line_values_by_expense
+
+    def _prepare_move_values(self):
+        """
+        This function prepares move values related to an expense
+        """
+        self.ensure_one()
+        journal = self.sheet_id.bank_journal_id if self.payment_mode == 'company_account' else self.sheet_id.journal_id
+        account_date = self.sheet_id.accounting_date or self.date
+        move_values = {
+            'journal_id': journal.id,
+            'company_id': self.sheet_id.company_id.id,
+            'date': account_date,
+            'analytic_account_id': self.analytic_account_id.id,
+            'analytic_tag_ids': self.analytic_tag_ids.ids,
+            'ref': self.sheet_id.name,
+            # force the name to the default value, to avoid an eventual 'default_name' in the context
+            # to set it to '' which cause no number to be given to the account.move when posted.
+            'name': '/',
+        }
+        return move_values
+
+    def _get_account_move_by_sheet(self):
+        """ Return a mapping between the expense sheet of current expense and its account move
+            :returns dict where key is a sheet id, and value is an account move record
+        """
+        move_grouped_by_sheet = {}
+        for expense in self:
+            # create the move that will contain the accounting entries
+            if expense.sheet_id.id not in move_grouped_by_sheet:
+                move_vals = expense._prepare_move_values()
+                move = self.env['account.move'].with_context(default_journal_id=move_vals['journal_id']).create(move_vals)
+                move_grouped_by_sheet[expense.sheet_id.id] = move
+            else:
+                move = move_grouped_by_sheet[expense.sheet_id.id]
+        return move_grouped_by_sheet
 
     def action_move_create(self):
         '''
