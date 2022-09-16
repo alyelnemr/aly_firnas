@@ -165,5 +165,14 @@
                 </xpath>
             </field>
         </record>
+
+        <menuitem id="aly_menu_hr_expense_report" name="Expense Reports" sequence="40" parent="account_accountant.menu_accounting"
+                  groups="account.group_account_invoice"/>
+        <menuitem id="aly_menu_hr_expense_sheet_all_to_approve" name="To Approve" sequence="1" parent="aly_menu_hr_expense_report"
+                  action="hr_expense.action_hr_expense_sheet_all_to_approve"/>
+        <menuitem id="aly_menu_hr_expense_sheet_all_to_post" name="To Post" sequence="2" parent="aly_menu_hr_expense_report"
+                  action="hr_expense.action_hr_expense_sheet_all_to_post" groups="account.group_account_user"/>
+        <menuitem id="aly_menu_hr_expense_sheet_all_to_pay" name="To Pay" sequence="3" parent="aly_menu_hr_expense_report"
+                  action="hr_expense.action_hr_expense_sheet_all_to_pay" groups="account.group_account_user"/>
     </data>
 </odoo>
