@@ -41,7 +41,7 @@
                 <xpath expr="//field[@name='employee_id']" position="replace">
                 </xpath>
                 <xpath expr="//field[@name='analytic_account_id']" position="replace">
-                    <field name="tax_ids" widget="many2many_tags" groups="account.group_account_user"
+                    <field name="tax_ids" widget="many2many_tags"
                            attrs="{'readonly': [('is_editable', '=', False)]}" context="{'default_company_id': company_id}"/>
                 </xpath>
                 <xpath expr="//field[@name='analytic_tag_ids']" position="replace">
@@ -80,7 +80,7 @@
                            groups="analytic.group_analytic_accounting" force_save="1" readonly="1"/>
                     <field name="analytic_tag_ids" widget="many2many_tags" groups="analytic.group_analytic_tags" force_save="1"
                            readonly="1"/>
-                    <field name="employee_id" groups="hr_expense.group_hr_expense_team_approver" readonly="1"/>
+                    <field name="employee_id" readonly="1"/>
                     <field name="payment_mode" widget="radio" context="{'default_payment_mode': 'company_account'}"
                            attrs="{'readonly': True}"/>
                 </xpath>
