@@ -48,7 +48,7 @@ class HRExpense(models.Model):
                 analytic_tag_ids = expense.analytic_account_id.analytic_tag_ids
             if expense.employee_id:
                 analytic_tag_ids += expense.employee_id.analytic_tag_ids
-            expense.analytic_tag_ids += analytic_tag_ids
+            expense.analytic_tag_ids = analytic_tag_ids
 
     @api.model
     def _default_company_id(self):
