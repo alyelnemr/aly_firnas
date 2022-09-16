@@ -39,16 +39,15 @@ class HRExpense(models.Model):
     @api.onchange('project_id', 'company_id', 'analytic_account_id')
     def _set_project_data(self):
         for expense in self:
-            analytic_tag_ids = []
+            expense.analytic_tag_ids = []
             if expense.project_id:
                 expense.company_id = expense.project_id.company_id.id
                 expense.analytic_account_id = expense.project_id.analytic_account_id.id
                 expense.employee_id = self.env.user.employee_id.id
             if expense.analytic_account_id:
-                analytic_tag_ids = expense.analytic_account_id.analytic_tag_ids
+                expense.analytic_tag_ids = expense.analytic_account_id.analytic_tag_ids
             if expense.employee_id:
-                analytic_tag_ids += expense.employee_id.analytic_tag_ids
-            expense.analytic_tag_ids = analytic_tag_ids
+                expense.analytic_tag_ids += expense.employee_id.analytic_tag_ids
 
     @api.model
     def _default_company_id(self):
