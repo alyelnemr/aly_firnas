@@ -13,7 +13,7 @@
                             <field name='is_user_to_approve'/>
                         </group>
                         <group>
-                            <field name='expense_approve'/>
+<!--                            <field name='expense_approve'/>-->
                         </group>
                     </group>
                 </xpath>
