@@ -13,7 +13,9 @@ class HrExpenseSheet(models.Model):
             expense.is_same_user_approver = expense.user_id == self.env.user and expense.state == 'submit'
 
     is_same_user_approver = fields.Boolean("Is Same User Approver", compute='_check_user')
-    user_id = fields.Many2one('res.users', 'Manager', readonly=True, copy=False, states={'draft': [('readonly', False)]},
+    user_id = fields.Many2one('res.users', 'Manager',
+                              domain=[('is_user_to_approve', '=', True)],
+                              readonly=True, copy=False, states={'draft': [('readonly', False)]},
                               tracking=True, required=True)
     payment_mode = fields.Selection([
         ("own_account", "Employee (to reimburse)"),
