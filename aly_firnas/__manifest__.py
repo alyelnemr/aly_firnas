@@ -14,6 +14,8 @@
         'views/product.xml',
         'views/projects.xml',
         'views/hr_expense.xml',
+        'views/hr_expense_sheet.xml',
+        'views/expense_settings.xml',
         'views/hr_employee.xml',
         'views/account_analytic_account.xml',
         'views/account_bank_statement.xml',

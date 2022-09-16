@@ -343,7 +343,10 @@ class HRExpense(models.Model):
 
             # link move lines to move, and move to expense sheet
             move.write({'line_ids': [(0, 0, line) for line in move_line_values]})
-            expense.sheet_id.write({'account_move_id': move.id})
+            expense.sheet_id.write({
+                'account_move_id': move.id,
+                'account_move_ids': [(4, move.id)]
+            })
 
             if expense.payment_mode == 'company_account':
                 company_payments |= payment

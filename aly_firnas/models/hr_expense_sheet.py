@@ -21,6 +21,8 @@ class HrExpenseSheet(models.Model):
         ("own_account", "Employee (to reimburse)"),
         ("company_account", "Company")
     ], default='company_account', readonly=True, string="Paid By")
+    account_move_ids = fields.Many2many('account.move', string='All Journal Entries',
+                                        copy=False, readonly=True)
 
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
@@ -60,3 +62,11 @@ class HrExpenseSheet(models.Model):
         responsible_id = self.user_id.id or self.env.user.id
         self.write({'state': 'approve', 'user_id': responsible_id})
         self.activity_update()
+
+    def action_view_journal_entries(self):
+        action = self.env.ref('account.action_move_journal_line').read()[0]
+        # operator = 'child_of' if self..is_company else '='
+        action['domain'] = [('id', 'in', self.account_move_ids.ids)]
+        action['view_mode'] = 'tree'
+        action['context'] = {}
+        return action
