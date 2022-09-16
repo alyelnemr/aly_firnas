@@ -73,6 +73,13 @@ class HRExpense(models.Model):
             expense.analytic_tag_ids += analytic_tag_ids
 
     @api.model
+    def _default_employee_id(self):
+        x = self.env.user.employee_ids
+        if x and len(x) > 0:
+            return x[0]
+        return False
+
+    @api.model
     def _default_company_id(self):
         if self.project_id:
             return self.project_id.company_id
@@ -128,7 +135,7 @@ class HRExpense(models.Model):
                                       help="This will determine picking type of incoming shipment")
     employee_id = fields.Many2one('hr.employee', string="Employee", required=True,
                                   readonly=True, states={'draft': [('readonly', False)], 'reported': [('readonly', False)], 'refused': [('readonly', False)]},
-                                  default=lambda self: self.env.user.employee_id, check_company=False)
+                                  check_company=False, default=_default_employee_id)
     partner_id = fields.Many2one('res.partner', string='Vendor', required=True, change_default=True,
                                  tracking=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     vendor_contact_id = fields.Many2one('res.partner', string='Vendor Contacts', required=False,
