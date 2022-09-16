@@ -83,8 +83,7 @@
                            groups="analytic.group_analytic_accounting" force_save="1" attrs="{'readonly': ['|', ('is_readonly_analytic_account', '!=', False), ('is_editable', '=', False)]}"/>
                     <field name="analytic_tag_ids" widget="many2many_tags" groups="analytic.group_analytic_tags" force_save="1"
                            attrs="{'readonly': ['|', ('is_readonly_analytic_tag', '!=', False), ('is_editable', '=', False)]}"/>
-                    <field name="employee_id" groups="hr_expense.group_hr_expense_team_approver"
-                           context="{'default_company_id': company_id}"/>
+                    <field name="employee_id" groups="hr_expense.group_hr_expense_team_approver" />
                     <field name="payment_mode" widget="radio" context="{'default_payment_mode': 'company_account'}"
                            attrs="{'readonly': True}"/>
                 </xpath>
