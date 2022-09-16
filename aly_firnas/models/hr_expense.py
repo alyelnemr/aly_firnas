@@ -36,10 +36,10 @@ class HRExpense(models.Model):
                                                 expense.employee_id.user_id.partner_id)
             expense.total_amount = taxes.get('total_included')
 
-    @api.onchange('project_id')
+    @api.onchange('project_id', 'company_id', 'analytic_account_id')
     def _set_project_data(self):
         for expense in self:
-            analytic_tag_ids = expense.analytic_tag_ids
+            analytic_tag_ids = []
             if expense.project_id:
                 expense.company_id = expense.project_id.company_id.id
                 expense.analytic_account_id = expense.project_id.analytic_account_id.id
@@ -49,35 +49,6 @@ class HRExpense(models.Model):
             if expense.employee_id:
                 analytic_tag_ids += expense.employee_id.analytic_tag_ids
             expense.analytic_tag_ids += analytic_tag_ids
-
-    @api.onchange('company_id')
-    def _set_current_user(self):
-        for expense in self:
-            analytic_tag_ids = expense.analytic_tag_ids
-            if self.env.user.employee_id:
-                expense.employee_id = self.env.user.employee_id.id
-            if expense.analytic_account_id:
-                analytic_tag_ids = expense.analytic_account_id.analytic_tag_ids
-            if expense.employee_id:
-                analytic_tag_ids += expense.employee_id.analytic_tag_ids
-            expense.analytic_tag_ids += analytic_tag_ids
-
-    @api.onchange('analytic_account_id')
-    def _set_analytic_account_data(self):
-        for expense in self:
-            analytic_tag_ids = expense.analytic_tag_ids
-            if expense.analytic_account_id:
-                analytic_tag_ids = expense.analytic_account_id.analytic_tag_ids
-            if expense.employee_id:
-                analytic_tag_ids += expense.employee_id.analytic_tag_ids
-            expense.analytic_tag_ids += analytic_tag_ids
-
-    @api.model
-    def _default_employee_id(self):
-        x = self.env.user.employee_ids
-        if x and len(x) > 0:
-            return x[0]
-        return False
 
     @api.model
     def _default_company_id(self):
@@ -135,7 +106,7 @@ class HRExpense(models.Model):
                                       help="This will determine picking type of incoming shipment")
     employee_id = fields.Many2one('hr.employee', string="Employee", required=True,
                                   readonly=True, states={'draft': [('readonly', False)], 'reported': [('readonly', False)], 'refused': [('readonly', False)]},
-                                  check_company=False, default=_default_employee_id)
+                                  default=lambda self: self.env.user.employee_id, check_company=False)
     partner_id = fields.Many2one('res.partner', string='Vendor', required=True, change_default=True,
                                  tracking=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     vendor_contact_id = fields.Many2one('res.partner', string='Vendor Contacts', required=False,
