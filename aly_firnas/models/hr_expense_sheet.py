@@ -23,6 +23,12 @@ class HrExpenseSheet(models.Model):
     ], default='company_account', readonly=True, string="Paid By")
     account_move_ids = fields.Many2many('account.move', string='All Journal Entries',
                                         copy=False, readonly=True)
+    is_account_move_ids = fields.Boolean(compute="_compute_account_move_ids", store=False)
+
+    @api.depends("account_move_ids")
+    def _compute_account_move_ids(self):
+        for rec in self:
+            rec.is_account_move_ids = len(rec.account_move_ids.ids) > 0
 
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
