@@ -103,21 +103,25 @@ class HRExpense(models.Model):
         for expense in self:
             expense.is_same_currency = expense.currency_id == expense.company_id.currency_id
 
-    is_readonly_analytic_account = fields.Boolean("Is Readonly Analytic Account", compute='_onchange_product_id', store=False)
-    is_readonly_analytic_tag = fields.Boolean("Is Readonly Analytic Tag", compute='_onchange_product_id', store=False)
+    @api.model
+    def _default_account_id(self):
+        return self.env['ir.property'].get('property_account_expense_categ_id', 'product.category')
+
     is_same_currency = fields.Boolean("Is Same Currency as Company Currency", compute='_change_currency')
     picking_type_id = fields.Many2one('stock.picking.type', 'Picking Type', required=True,
                                       default=_default_picking_receive,
                                       help="This will determine picking type of incoming shipment")
     employee_id = fields.Many2one('hr.employee', string="Employee", required=True,
-                                  readonly=True, states={'draft': [('readonly', False)], 'reported': [('readonly', False)], 'refused': [('readonly', False)]},
-                                  default=_default_employee_id, check_company=False)
+                                  readonly=True, default=_default_employee_id, check_company=False)
     partner_id = fields.Many2one('res.partner', string='Vendor', required=True, change_default=True,
                                  tracking=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     vendor_contact_id = fields.Many2one('res.partner', string='Vendor Contacts', required=False,
                                      domain="[('parent_id', '=', partner_id)]")
     project_id = fields.Many2one('project.project', 'Project', required=True, readonly=False)
-    company_id = fields.Many2one('res.company', string='Company', required=True, readonly=False, default=_default_company_id)
+    company_id = fields.Many2one('res.company', string='Company', required=True, readonly=True, default=_default_company_id)
+    account_id = fields.Many2one('account.account', string='Account', default=_default_account_id,
+                                 domain="[('internal_type', '=', 'other'), ('company_id', '=', company_id)]",
+                                 help="An expense account is expected", readonly=True)
     expense_picking_id = fields.Many2one('stock.picking', string="Picking ID")
     picking_count = fields.Integer(string="Count", compute='_compute_picking_count', store=False)
     payment_mode = fields.Selection([
@@ -164,13 +168,6 @@ class HRExpense(models.Model):
                 if not expense.name:
                     expense.name = expense.product_id.display_name or ''
                 expense.product_uom_id = expense.product_id.uom_id  # taxes only from the same company
-                expense.is_readonly_analytic_tag = False
-                expense.is_readonly_analytic_account = False
-                if expense.product_id:
-                    if expense.analytic_account_id:
-                        expense.is_readonly_analytic_account = True
-                    if expense.analytic_tag_ids:
-                        expense.is_readonly_analytic_tag = True
                 expense.account_id = expense.product_id.product_tmpl_id.with_context(force_company=expense.company_id.id)._get_product_accounts()['expense']
 
     def _get_expense_account_source(self):
