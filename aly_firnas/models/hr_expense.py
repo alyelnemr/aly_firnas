@@ -40,7 +40,7 @@ class HRExpense(models.Model):
     @api.onchange('project_id', 'company_id', 'analytic_account_id')
     def _set_project_data(self):
         for expense in self:
-            expense.analytic_tag_ids = []
+            expense.analytic_tag_ids = [(5)]
             if expense.project_id:
                 expense.company_id = expense.project_id.company_id.id
                 expense.analytic_account_id = expense.project_id.analytic_account_id.id
