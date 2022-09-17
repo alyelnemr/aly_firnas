@@ -7,6 +7,7 @@
     'depends': ['purchase', 'sale', 'sale_management', 'account', 'bi_product_bundle_report'],
 
     'data': [
+        'security/groups.xml',
         'security/ir.model.access.csv',
         'views/aly_po_report.xml',
         'views/aly_rfq_report.xml',
@@ -28,7 +29,6 @@
         'views/purchase_order.xml',
         'views/purchase_order_report.xml',
         'views/purchase_settings.xml',
-        'security/groups.xml',
     ],
     'installable': True,
     'application': True,

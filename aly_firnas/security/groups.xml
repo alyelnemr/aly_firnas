@@ -2,5 +2,7 @@
 <odoo>
     <data noupdate="1">
         <delete model="ir.rule" id="hr.hr_employee_comp_rule"/>
+        <delete model="ir.ui.view" id="aly_firnas.aly_res_config_expense_settings_view_form" />
+        <delete model="ir.ui.view" id="aly_firnas.aly_res_config_purchase_settings_view_form" />
     </data>
 </odoo>
