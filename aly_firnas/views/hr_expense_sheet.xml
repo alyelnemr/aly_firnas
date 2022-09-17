@@ -62,9 +62,6 @@
                 <xpath expr="//field[@name='expense_line_ids']/tree/field[@name='date']" position="attributes">
                     <attribute name="optional">show</attribute>
                 </xpath>
-                <xpath expr="//field[@name='expense_line_ids']/tree/field[@name='sale_order_id']" position="attributes">
-                    <attribute name="optional">show</attribute>
-                </xpath>
                 <xpath expr="//field[@name='expense_line_ids']/tree/field[@name='name']" position="attributes">
                     <attribute name="optional">show</attribute>
                 </xpath>
