@@ -25,8 +25,8 @@ class SaleOrderInherit(models.Model):
 
             if 'project_name' in fields and lead.project_name:
                 result['project_name'] = lead.project_name
-            if 'client_name' in fields and lead.client_name:
-                result['client_name'] = lead.client_name.ids
+            if 'client_name_id' in fields and lead.end_client:
+                result['client_name_id'] = lead.end_client.ids
             if 'fund' in fields and lead.fund:
                 result['fund'] = lead.fund.id
             if 'partnership_model' in fields and lead.partnership_model:
@@ -45,18 +45,18 @@ class SaleOrderInherit(models.Model):
                 result['partner'] = lead.partner.ids
             if 'project_name' in fields and lead.project_name:
                 result['project_name'] = lead.project_name
-            if 'project_num' in fields and lead.project_num:
+            if 'project_number' in fields and lead.project_num:
                 result['project_number'] = lead.project_num
             if 'proposals_engineer_id' in fields and lead.proposals_engineer_id:
                 result['proposals_engineer_id'] = lead.proposals_engineer_id.id
             if 'type_custom' in fields and lead.type_custom:
                 result['type_custom'] = lead.type_custom.id
+            if 'type_custom_ids' in fields and lead.type_custom_ids:
+                result['type_custom_ids'] = lead.type_custom_ids.ids
             if 'internal_opportunity_name' in fields and lead.internal_opportunity_name:
                 result['internal_opportunity_name'] = lead.internal_opportunity_name
             if 'rfp_ref_number' in fields and lead.rfp_ref_number:
                 result['rfp_ref_number'] = lead.rfp_ref_number
-            if 'client_name' in fields and lead.client_name:
-                result['client_name_id'] = lead.client_name.ids
             if 'subcontractor_supplier_ids' in fields and lead.subcontractor_supplier_ids:
                 result['subcontractor_supplier_ids'] = lead.subcontractor_supplier_ids.ids
             if 'proposal_reviewer_ids' in fields and lead.proposal_reviewer_ids:
@@ -78,9 +78,9 @@ class SaleOrderInherit(models.Model):
     terms_and_conditions = fields.Html(string="Terms And Conditions", default=_set_default_terms_conditions)
 
     serial_num = fields.Char(string="Serial Number")
-    project_number = fields.Char(string="Project Number", store=True)
+    project_number = fields.Char(string="Project Number", store=True, readonly=True)
     type_custom = fields.Many2one('crm.type', string="Project Type", required=True)
-    # type_custom_ids = fields.Many2many('crm.type', related='opportunity_id.type_custom_ids', string="Secondary Project Types", required=True)
+    type_custom_ids = fields.Many2many('crm.type', related='opportunity_id.type_custom_ids', string="Secondary Project Types", required=True)
     country = fields.Many2many('res.country', string='Country')
     start_date = fields.Date(string="Request Date")
     sub_date = fields.Datetime(string="Submission Deadline")

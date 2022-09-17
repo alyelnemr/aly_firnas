@@ -29,8 +29,9 @@
                             <group>
                                 <field name="proposals_engineer_id"/>
                                 <field name="rfp_ref_number"/>
-                                <field name="project_number" required="1"/>
-<!--                                <field name="type_custom" required="1"/>-->
+                                <field name="project_number" readonly="1"/>
+                                <field name="type_custom" required="0"/>
+                                <field name="type_custom_ids" widget="many2many_tags"/>
                                 <field name="project_name" required="1"/>
                                 <field name="country" required="1" widget="many2many_tags"/>
                                 <field name="start_date" required="1"/>

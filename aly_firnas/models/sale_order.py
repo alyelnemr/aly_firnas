@@ -131,6 +131,5 @@ class SaleOrder(models.Model):
 
         self.require_signature = template.require_signature
         self.require_payment = template.require_payment
-
         if template.note:
             self.note = template.note
