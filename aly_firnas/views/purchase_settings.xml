@@ -48,6 +48,19 @@
                         </group>
                     </group>
                 </xpath>
+                <xpath expr="//div[@data-key='hr_expense']" position="inside">
+                    <h2>Expenses Default Journal</h2>
+                    <group>
+                        <group>
+                            <div class="row mt16 o_settings_container">
+                                <b>
+                                    <label for="aly_expense_bank_journal_id"/>
+                                </b>
+                                <field name="aly_expense_bank_journal_id"/>
+                            </div>
+                        </group>
+                    </group>
+                </xpath>
             </field>
         </record>
     </data>
