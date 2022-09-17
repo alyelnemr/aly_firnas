@@ -133,8 +133,18 @@ class Lead2OpportunityPartner(models.TransientModel):
             self._convert_opportunity(values)
 
         for lead in leads:
-            new_serial_no = self.env['ir.sequence'].next_by_code('bi_crm_concatenated_name.serial_no') or _('New')
-            lead.update({
+            if self.is_existing_opportunity:
+                parent_opp = self.env['crm.lead'].browse(self.parent_opportunity_id.id)
+                new_serial_no = parent_opp.serial_number
+
+                # parent opportunity next letter sequence
+                if self.letter_identifier:
+                    next_letter_sequence = chr(ord(self.letter_identifier) + 1)
+                    parent_opp.sudo().write({'next_letter_sequence': next_letter_sequence})
+            else:
+                new_serial_no = self.env['ir.sequence'].next_by_code('bi_crm_concatenated_name.serial_no') or _(
+                    'New')
+            lead.write({
                 'serial_number': new_serial_no,
                 'original_serial_number': new_serial_no,
                 'is_existing_opportunity': self.is_existing_opportunity,
@@ -151,18 +161,28 @@ class Lead2OpportunityPartner(models.TransientModel):
                 'letter_identifier': self.letter_identifier,
                 'next_letter_sequence': self.next_letter_sequence,
                 'parent_opportunity_id': self.parent_opportunity_id.id,
-                'original_serial_number': self.original_serial_number,
                 'partnership_model': self.partnership_model,
                 'project_num': self.project_num,
                 'proposals_engineer_id': self.proposals_engineer_id.id,
                 'rfp_ref_number': self.rfp_ref_number,
-                'serial_number': self.serial_number,
                 'source_id': self.source_id.id,
                 'start_date': self.start_date,
                 'sub_date': self.sub_date,
                 'sub_type': self.sub_type,
                 'type_custom': self.type_custom.id,
             })
+            if lead.type_custom:
+                if lead.letter_identifier:
+                    lead.project_num = (lead.serial_number or '') + lead.type_custom.type_no + lead.letter_identifier
+                else:
+                    lead.project_num = (lead.serial_number or '') + lead.type_custom.type_no
+            else:
+                lead.project_num = '/'
+            if lead.project_num and lead.country and lead.internal_opportunity_name:
+                countries_code = "-".join(lead.country.mapped('code'))
+                lead.name = lead.project_num + ' -' + countries_code + '- ' + lead.internal_opportunity_name
+            else:
+                lead.name = '/'
 
         return leads[0].redirect_lead_opportunity_view()
 
