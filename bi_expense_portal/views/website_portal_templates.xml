@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <data>
         <template id="assets_frontend" inherit_id="web.assets_frontend">
             <xpath expr="script[last()]" position="after">
                 <script type="text/javascript" src="/bi_expense_portal/static/src/js/website_expense.js"></script>
