@@ -15,7 +15,7 @@ class SaleOrder(models.Model):
         domain="[('type', '=', 'opportunity'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]"
     , copy=False)
     is_manual = fields.Boolean('Manual Rate', default=False, readonly=False)
-    custom_rate = fields.Float('Rate (Factor)', digits=(16, 12))
+    custom_rate = fields.Float('Rate (Factor)', digits=(16, 12), tracking=True)
 
     def _compute_option_data_for_template_change(self, option):
         if self.pricelist_id:
