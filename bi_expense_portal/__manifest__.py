@@ -13,7 +13,6 @@
     'depends': [
         'portal',
         'hr_expense',
-        'aly_firnas',
     ],
     'data': [
         'security/expense_security.xml',
