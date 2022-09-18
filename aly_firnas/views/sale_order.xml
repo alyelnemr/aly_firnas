@@ -6,11 +6,33 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
-                <field name="payment_term_id" position="after">
-                    <field name="is_manual" />
-                    <field name="custom_rate"
-                           attrs="{'invisible': [('is_manual', '=', False)], 'required':[('is_manual', '=', True)]}"/>
-                </field>
+                <xpath expr="//field[@name='payment_term_id']/parent::group" name="payment_term_id" position="after">
+                    <group>
+                        <div class="o_row" name="div_custom_rate">
+                            <label for="custom_rate"/>
+                            <field name="is_manual"/>
+                            <field name="custom_rate"
+                                   attrs="{'invisible': [('is_manual', '=', False)], 'required':[('is_manual', '=', True)]}"/>
+                            <button
+                                    aria-label="Opened"
+                                    type="object"
+                                    name="action_update_factor"
+                                    class="btn-link"
+                            >
+                                <i
+                                        title="Update Factor"
+                                        class="fa fa-fw fa-refresh"
+                                        attrs="{'invisible': [('is_manual', '=', False)]}"
+                                />
+                            </button>
+                        </div>
+<!--                        <group>-->
+<!--                        </group>-->
+<!--                        <group>-->
+<!--                            -->
+<!--                        </group>-->
+                    </group>
+                </xpath>
             </field>
         </record>
     </data>

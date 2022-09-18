@@ -133,3 +133,8 @@ class SaleOrder(models.Model):
         self.require_payment = template.require_payment
         if template.note:
             self.note = template.note
+
+    def action_update_factor(self):
+        for rec in self:
+            for line in rec.order_line:
+                line.action_update_factor()
