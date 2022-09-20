@@ -13,10 +13,11 @@ class InheritAccountMove(models.Model):
     def create(self, vals):
         res = super(InheritAccountMove, self).create(vals)
         for move in res:
-            for item in move.line_ids:
-                if item.account_id and item.account_id.internal_type == 'payable':
-                    item.analytic_account_id = move.analytic_account_id
-                    item.analytic_tag_ids = move.analytic_tag_ids
+            for line in move.line_ids:
+                if line.account_id and line.account_id.internal_type == 'payable' and not line.analytic_account_id:
+                    line.analytic_account_id = move.analytic_account_id.id
+                if line.account_id and line.account_id.internal_type == 'payable' and not line.analytic_tag_ids:
+                        line.analytic_tag_ids = move.analytic_tag_ids.ids
         return res
 
     def write(self, vals):
