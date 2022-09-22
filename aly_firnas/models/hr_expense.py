@@ -8,6 +8,12 @@ class HRExpense(models.Model):
     _inherit = 'hr.expense'
     _check_company_auto = False
 
+    analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account', check_company=True,
+                                          required=True)
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True,
+                                        states={'post': [('readonly', True)], 'done': [('readonly', True)]},
+                                        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+
     @api.model
     def _get_employee_id_domain(self):
         res = [('id', '=', 0)]  # Nothing accepted by domain, by default

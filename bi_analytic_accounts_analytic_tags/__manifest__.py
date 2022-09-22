@@ -14,11 +14,6 @@
     'version': '0.1',
     'depends': ['base', 'account_accountant', 'hr_expense', 'purchase', 'sale_management'],
     'data': [
-        'views/inherit_account_payment_view.xml',
-        'views/inherit_picking_view.xml',
-        'views/inherit_sales_view.xml',
-        'views/inherit_purchase_view.xml',
-        'views/account_move.xml',
     ],
     'installable': True,
     'auto_install': False,

@@ -56,6 +56,19 @@ class PurchaseOrder(models.Model):
     po_scope_schedule = fields.Html(string="Scope and Schedule", default=_get_default_po_scope_schedule)
     po_payment_schedule = fields.Html(string="Payment Schedule and Term", default=_get_default_po_payment_schedule)
     po_acceptance = fields.Html(string="Acceptance", default=_get_default_po_acceptance)
+    analytic_account_id = fields.Many2one('account.analytic.account', 'Analytic Account', required=True)
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True)
+    is_origin_so = fields.Boolean(default=False, copy=False)
+
+    @api.onchange('analytic_account_id')
+    def update_analytic_account(self):
+        for line in self.order_line:
+            line.account_analytic_id = self.analytic_account_id.id
+
+    @api.onchange('analytic_tag_ids')
+    def update_analytic_tags(self):
+        for line in self.order_line:
+            line.analytic_tag_ids = self.analytic_tag_ids.ids
 
     def action_submit_to_approve(self):
         for rec in self:

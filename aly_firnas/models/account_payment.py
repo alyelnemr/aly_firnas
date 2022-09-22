@@ -2,8 +2,8 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 
 
-class AcountMove(models.Model):
-    _inherit = "account.payment"
+class AccountPayment(models.Model):
+    _inherit = 'account.payment'
 
     manual_currency = fields.Boolean()
     is_manual = fields.Boolean(compute="_compute_currency")
@@ -14,6 +14,18 @@ class AcountMove(models.Model):
              "This rate will be taken in order to convert amounts between the "
              "current currency and last currency",
     )
+
+    analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account', index=True,
+                                          required=False)
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=False)
+
+    def _prepare_payment_moves(self):
+        res = super(AccountPayment, self)._prepare_payment_moves()
+        for move_vals in res:
+            for line in move_vals['line_ids']:
+                line[2]['analytic_account_id'] = self.analytic_account_id.id
+                line[2]['analytic_tag_ids'] = self.analytic_tag_ids.ids
+        return res
 
     def check_reconciliation(self):
         # when making a reconciliation on an existing liquidity journal item, mark the payment as reconciled

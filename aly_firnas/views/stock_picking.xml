@@ -1,5 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record id="aly_view_picking_form_inherit" model="ir.ui.view">
+        <field name="name">aly.view.picking.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="is_origin_so" invisible="1"/>
+                <field name="required_analytic_account_and_tags" invisible="1"/>
+                <field name="analytic_account_id" options="{'no_create': False, 'no_quick_create': False, 'no_create_edit':False}"
+                       attrs="{'required':[('required_analytic_account_and_tags','=',True)],'readonly':[('is_origin_so','=',True)],'invisible':[('required_analytic_account_and_tags','=',False)]}"/>
+                <field name="analytic_tag_ids" widget="many2many_tags"
+                       options="{'no_create': False, 'no_quick_create': False, 'no_create_edit':False}"
+                       attrs="{'required':[('required_analytic_account_and_tags','=',True)],'readonly':[('is_origin_so','=',True)],'invisible':[('required_analytic_account_and_tags','=',False)]}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="aly_view_picking_tree_inherit" model="ir.ui.view">
+        <field name="name">aly.view.picking.tree.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="analytic_account_id" optional="show"/>
+                <field name="analytic_tag_ids" widget="many2many_tags" optional="show"/>
+            </xpath>
+        </field>
+    </record>
 
     <record id="aly_view_stock_move_line_operation_tree_add_internal_ref_desc" model="ir.ui.view">
         <field name="name">aly.stock.move.line.operations.tree.add.internal.ref.desc</field>

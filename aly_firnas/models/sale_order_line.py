@@ -10,6 +10,42 @@ from datetime import timedelta
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
+    @api.onchange('product_id')
+    def get_analytic_tags(self):
+        for line in self:
+            line.analytic_tag_ids = line.order_id.analytic_tag_ids.ids
+
+    def _prepare_invoice_line(self):
+        res = super(InheritSaleLines, self)._prepare_invoice_line()
+        res['analytic_account_id'] = self.order_id.analytic_account_id.id
+        res['analytic_tag_ids'] = self.order_id.analytic_tag_ids.ids
+        return res
+
+    def _prepare_procurement_values(self, group_id=False):
+        res = super()._prepare_procurement_values(group_id)
+        res.update({
+            "analytic_account_id": self.order_id.analytic_account_id.id,
+            "analytic_tag_ids": self.order_id.analytic_tag_ids.ids,
+            "is_origin_so": True,
+
+        })
+        return res
+
+    def _purchase_service_prepare_line_values(self, purchase_order, quantity=False):
+        res = super()._purchase_service_prepare_line_values(
+            purchase_order=purchase_order, quantity=quantity
+        )
+        # update PO with analytic_account and analytic_tags
+        purchase_order.analytic_account_id = self.order_id.analytic_account_id.id
+        purchase_order.analytic_tag_ids = self.order_id.analytic_tag_ids.ids
+        res.update({
+            "account_analytic_id": self.order_id.analytic_account_id.id,
+            "analytic_tag_ids": self.order_id.analytic_tag_ids.ids,
+            "is_origin_so": True,
+        })
+
+        return res
+
     def action_update_factor(self):
         """
         Compute the amounts of the SO line.

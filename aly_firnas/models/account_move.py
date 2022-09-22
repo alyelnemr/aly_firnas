@@ -5,6 +5,65 @@ from odoo.exceptions import UserError, ValidationError
 class AccountMove(models.Model):
     _inherit = "account.move"
 
+    analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account')
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
+
+    @api.model
+    def create(self, vals):
+        res = super(AccountMove, self).create(vals)
+        if not self._context.get('from_reconcile', False):
+            for move in res:
+                for line in move.line_ids:
+                    if line.account_id and line.account_id.internal_type in (
+                    'payable', 'receivable') and not line.analytic_account_id:
+                        line.analytic_account_id = move.analytic_account_id.id
+                    if line.account_id and line.account_id.internal_type in (
+                    'payable', 'receivable') and not line.analytic_tag_ids:
+                        line.analytic_tag_ids = move.analytic_tag_ids.ids
+        return res
+
+    def write(self, vals):
+        lines = super(AccountMove, self).write(vals)
+        if not self._context.get('from_reconcile', False):
+            if 'analytic_account_id' in vals or 'analytic_tag_ids' in vals:
+                for move in self:
+                    for line in move.line_ids:
+                        if line.account_id.internal_type in ('payable', 'receivable'):
+                            line.analytic_account_id = move.analytic_account_id.id if not line.analytic_account_id else line.analytic_account_id.id
+                            line.analytic_tag_ids = move.analytic_tag_ids.ids if not line.analytic_tag_ids else line.analytic_tag_ids.ids
+                        else:
+                            line.analytic_account_id = move.invoice_line_ids[
+                                0].analytic_account_id.id if not line.analytic_account_id else line.analytic_account_id.id
+                            line.analytic_tag_ids = move.invoice_line_ids[
+                                0].analytic_tag_ids.ids if not line.analytic_tag_ids else line.analytic_tag_ids.ids
+        return lines
+
+    @api.depends('line_ids.analytic_account_id', 'line_ids.analytic_tag_ids', 'invoice_line_ids.analytic_account_id',
+                 'invoice_line_ids.analytic_tag_ids')
+    def _compute_analytic_account_tag(self):
+        for record in self:
+            if record.line_ids:
+                if record.line_ids[0].analytic_account_id:
+                    record.analytic_account_id = record.line_ids[0].analytic_account_id.id
+                else:
+                    record.analytic_account_id = False
+
+                if record.line_ids[0].analytic_tag_ids:
+                    record.analytic_tag_ids = record.line_ids[0].analytic_tag_ids.ids
+                else:
+                    record.analytic_tag_ids = False
+            else:
+                record.analytic_account_id = False
+                record.analytic_tag_ids = False
+
+    def action_invoice_register_payment(self):
+        res = super(AccountMove, self).action_invoice_register_payment()
+        new_context = res['context'].copy()
+        new_context['default_analytic_account_id'] = self.invoice_line_ids[0].analytic_account_id.id
+        new_context['default_analytic_tag_ids'] = self.invoice_line_ids[0].analytic_tag_ids.ids
+        res['context'] = new_context
+        return res
+
     def _get_amount_from_line(self):
         for move in self:
             total = 0

@@ -3,7 +3,7 @@
 from odoo import models, fields, api
 
 
-class InheritPicking(models.Model):
+class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
     analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account')
@@ -39,5 +39,5 @@ class InheritPicking(models.Model):
 
                 vals['is_origin_so'] = True
 
-        res = super(InheritPicking, self).create(vals)
+        res = super(StockPicking, self).create(vals)
         return res
