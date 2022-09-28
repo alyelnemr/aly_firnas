@@ -58,6 +58,7 @@ class StockMoveLine(models.Model):
                                         'product_id': ml.product_id.id,
                                         'ref': ml.lot_ref,
                                         'note': ml.lot_description,
+                                        'calibration_date': ml.calibration_date,
                                         'company_id': ml.move_id.company_id.id
                                     })
                                 associate_line_lot.append(ml)
