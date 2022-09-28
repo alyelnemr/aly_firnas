@@ -20,7 +20,6 @@ class WHSelectOperationType(models.TransientModel):
         'stock.picking', 'Source WH Transaction ID')
 
     def action_send_mail(self):
-        lines = []
         records = self.env[self.env.context.get('active_model')].browse(self.env.context.get('active_ids'))
         for rec in records:
             wh_id = str(rec.id)

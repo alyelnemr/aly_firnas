@@ -92,7 +92,7 @@
                     <group>
                         <group>
                             <field name="partner_id" options="{'no_create_edit': True, 'no_create': True}"/>
-                            <field name="current_url"/>
+<!--                            <field name="current_url"/>-->
                         </group>
                     </group>
                     <footer>
