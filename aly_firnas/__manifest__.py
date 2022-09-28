@@ -9,6 +9,7 @@
     'data': [
         'security/groups.xml',
         'security/ir.model.access.csv',
+        'wizard/wh_email.xml',
         'views/aly_po_report.xml',
         'views/aly_rfq_report.xml',
         'views/res_users.xml',
