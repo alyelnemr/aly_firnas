@@ -132,8 +132,16 @@
     </record>
 
     <!--kanban view-->
-    <record id="inherited_view_crm_lead_new_fields_kanban" model="ir.ui.view">
-        <field name="name">crm.lead.inherit.kanban</field>
+<!--    <record id="inherited_view_crm_lead_new_fields_kanban" model="ir.ui.view">-->
+<!--        <field name="name">crm.lead.inherit.kanban</field>-->
+<!--        <field name="model">crm.lead</field>-->
+<!--        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--        </field>-->
+<!--    </record>-->
+
+    <record id="crm_case_kanban_view_leads_inherit" model="ir.ui.view">
+        <field name="name">crm.case.kanban.view.leads.inherit</field>
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
         <field name="arch" type="xml">
@@ -148,16 +156,6 @@
 
             <xpath expr="//kanban" position="attributes">
                 <attribute name="default_order">sub_date DESC</attribute>
-            </xpath>
-        </field>
-    </record>
-
-    <record id="crm_case_kanban_view_leads_inherit" model="ir.ui.view">
-        <field name="name">crm.case.kanban.view.leads.inherit</field>
-        <field name="model">crm.lead</field>
-        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
-        <field name="arch" type="xml">
-            <xpath expr="//kanban" position="attributes">
                 <attribute name="on_create">bi_opportunity_creation_wizard.create_opportunity</attribute>
                 <attribute name="quick_create_view"></attribute>
             </xpath>
