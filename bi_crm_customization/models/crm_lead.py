@@ -128,8 +128,8 @@ class CRMLeadInherit(models.Model):
                 if vals['parent_opportunity_id']:
                     parent_opp = self.env['crm.lead'].browse(vals['parent_opportunity_id'])
                     vals['serial_number'] = parent_opp.serial_number
-                else:
-                    vals['serial_number'] = self.original_serial_number
+                # else:
+                #     vals['serial_number'] = self.original_serial_number
         if 'type' in vals and self.type != vals['type']:
             is_conversion = True
         res = super(CRMLeadInherit, self).write(vals)
