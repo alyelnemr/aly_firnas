@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
     <record id="aly_view_crm_lead_inherit_form" model="ir.ui.view">
         <field name="name">crm.lead.inherit</field>
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//button[@name='%(crm.action_crm_lead2opportunity_partner)d']" position="replace">
+                <button name="%(bi_crm_customization.aly_action_crm_lead2opportunity_partner)d"
+                        string="Convert to Opportunity" type="action"
+                        help="Convert to Opportunity"
+                        class="oe_highlight" attrs="{'invisible': ['|', ('type', '=', 'opportunity'), ('active', '=', False)]}"/>
+            </xpath>
             <xpath expr="//div[@name='button_box']" position="inside">
                 <field name="project_id" invisible="1"/>
                 <button class="oe_stat_button o_res_partner_tip_opp" type="object"
@@ -31,12 +38,15 @@
                                         'show_vat': True
                                     }" required="0"/>
             </xpath>
+            <xpath expr="//page[@name='lead']//group//group//field[@name='source_id']" position="replace">
+            </xpath>
             <xpath expr="//group/group/field[@name='date_deadline']" position="before">
                 <field name="currency_id"/>
                 <field name="forecast"/>
             </xpath>
             <xpath expr="//div/h2/div[1]" position="replace"></xpath>
-            <xpath expr="//div/h2/div[@class='col']" position="replace"></xpath>
+            <xpath expr="//div/h2/div[@class='col']" position="replace">
+            </xpath>
             <xpath expr="//group/group/field[@name='partner_id']" position="attributes">
                 <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}
                 </attribute>
@@ -47,15 +57,30 @@
             </xpath>
             <xpath expr="//field[@name='team_id']" position="after">
                 <field name="sub_date" required="0"/>
+                <field name="actual_sub_date"/>
+            </xpath>
+            <xpath expr="//page/group/group/field[@name='sub_date']" position="after">
+                <field name="actual_sub_date"/>
             </xpath>
             <xpath expr="//notebook" position="inside">
                 <page name="info" string="Information">
                     <group>
                         <group>
+                            <label for="is_existing_opportunity" string="Is it an existing opportunity?"
+                                   attrs="{'invisible': [('type', '!=', 'opportunity')]}"/>
+                            <field name="is_existing_opportunity" nolabel="1"
+                                   attrs="{'invisible': [('type', '!=', 'opportunity')]}"/>
+                            <field name="parent_opportunity_id"
+                                   attrs="{'invisible':['|', ('is_existing_opportunity', '=', False), ('type', '!=', 'opportunity')], 'required':[('is_existing_opportunity', '=', True)]}"/>
+                            <field name="letter_identifier" force_save="1"
+                                   attrs="{'invisible':['|', ('is_existing_opportunity', '=', False), ('type', '!=', 'opportunity')], 'required':[('is_existing_opportunity', '=', True)], 'readonly':True}"/>
+                            <field name="next_letter_sequence" invisible="1"/>
+                            <field name="serial_number" attrs="{'invisible': [('type', '!=', 'opportunity')]}" readonly="1"/>
                             <field name="proposals_engineer_id"/>
                             <field name="rfp_ref_number"/>
-                            <field name="project_num" required="1" readonly="1"/>
+                            <field name="project_num" required="0" readonly="1"/>
                             <field name="type_custom" required="0"/>
+                            <field name="internal_opportunity_name"/>
                             <field name="type_custom_ids" widget="many2many_tags"/>
                             <field name="project_name"/>
                             <field name="country" required="1" widget="many2many_tags"/>
@@ -63,7 +88,8 @@
                             <field name="source_id" required="1"/>
                         </group>
                         <group>
-<!--                            <field name="actual_sub_date"/>-->
+                            <field name="sub_date" required="0"/>
+                            <field name="actual_sub_date"/>
                             <field name="sub_type"/>
                             <field name="fund"/>
                             <field name="partnership_model"/>
@@ -81,6 +107,7 @@
             </xpath>
         </field>
     </record>
+
     <record id="view_crm_lead_inherit_tree" model="ir.ui.view">
         <field name="name">crm.lead.inherit</field>
         <field name="model">crm.lead</field>

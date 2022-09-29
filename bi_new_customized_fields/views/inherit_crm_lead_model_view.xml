@@ -1,58 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="inherited_view_crm_lead_new_fields_form" model="ir.ui.view">
-            <field name="name">crm.lead.form.inherit.form</field>
-            <field name="model">crm.lead</field>
-            <field name="inherit_id" ref="crm.crm_lead_view_form"/>
-            <field name="arch" type="xml">
-
-
-                <xpath expr="//group/group/field[@name='partner_id']" position="attributes">
-                    <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}
-                    </attribute>
-                </xpath>
-                <xpath expr="//group/group[2]/field[@name='partner_id']" position="attributes">
-                    <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}
-                    </attribute>
-                </xpath>
-                <xpath expr="//page[@name='lead']//group//group//field[@name='source_id']" position="replace">
-                </xpath>
-            </field>
-        </record>
-
-        <!--calendar view-->
-        <record id="inherited_view_crm_lead_new_fields_calendar" model="ir.ui.view">
-            <field name="name">crm.lead.inherit.calendar</field>
-            <field name="model">crm.lead</field>
-            <field name="inherit_id" ref="crm.crm_case_calendar_view_leads"/>
-            <field name="arch" type="xml">
-                <xpath expr="//calendar" position="attributes">
-                    <attribute name="date_start">sub_date</attribute>
-                </xpath>
-            </field>
-        </record>
-
-        <!--kanban view-->
-        <record id="inherited_view_crm_lead_new_fields_kanban" model="ir.ui.view">
-            <field name="name">crm.lead.inherit.kanban</field>
-            <field name="model">crm.lead</field>
-            <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
-            <field name="arch" type="xml">
-                <templates position="before">
-                    <field name="sub_date"/>
-                </templates>
-                <xpath expr="//div[@class='o_kanban_record_bottom']" position="before">
-                    <div>
-                        <field name="sub_date"/>
-                    </div>
-                </xpath>
-
-                <xpath expr="//kanban" position="attributes">
-                    <attribute name="default_order">sub_date DESC</attribute>
-                </xpath>
-            </field>
-        </record>
-
     </data>
 </odoo>
