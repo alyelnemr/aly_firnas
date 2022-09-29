@@ -6,12 +6,6 @@
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//button[@name='%(crm.action_crm_lead2opportunity_partner)d']" position="replace">
-                <button name="%(bi_crm_customization.aly_action_crm_lead2opportunity_partner)d"
-                        string="Convert to Opportunity" type="action"
-                        help="Convert to Opportunity"
-                        class="oe_highlight" attrs="{'invisible': ['|', ('type', '=', 'opportunity'), ('active', '=', False)]}"/>
-            </xpath>
             <xpath expr="//div[@name='button_box']" position="inside">
                 <field name="project_id" invisible="1"/>
                 <button class="oe_stat_button o_res_partner_tip_opp" type="object"
