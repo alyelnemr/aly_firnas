@@ -10,9 +10,9 @@
             <xpath expr="//field[@name='lot_name']" position="after">
                 <field name="is_readonly" invisible="1"/>
                 <field name="lot_ref" attrs="{'readonly': [('is_readonly', '=', True)]}"  />
-                <field name="lot_description" attrs="{'readonly': [('is_readonly', '=', True), 'invisible': [('is_readonly', '=', False)]}" widget="html"/>
+                <field name="lot_description" attrs="{'readonly': [('is_readonly', '=', True)], 'invisible': [('is_readonly', '=', False)]}" widget="html"/>
                 <field name="lot_description"
-                       attrs="{'readonly': [('is_readonly', '=', True), 'invisible': [('is_readonly', '=', True)]}"/>
+                       attrs="{'readonly': [('is_readonly', '=', True)], 'invisible': [('is_readonly', '=', True)]}"/>
             </xpath>
         </field>
     </record>
