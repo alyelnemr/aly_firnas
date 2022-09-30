@@ -115,6 +115,14 @@
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
         <field name="arch" type="xml">
+            <templates position="before">
+                <field name="sub_date"/>
+            </templates>
+            <xpath expr="//div[@class='o_kanban_record_bottom']" position="before">
+                <div>
+                    <field name="sub_date"/>
+                </div>
+            </xpath>
             <xpath expr="//progressbar" position="before">
                 <field name="currency_id"/>
                 <field name="forecast"/>
@@ -128,6 +136,11 @@
                     <field name="currency_id"/>
                 </t>
             </xpath>
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="default_order">sub_date DESC</attribute>
+                <attribute name="on_create">bi_opportunity_creation_wizard.create_opportunity</attribute>
+                <attribute name="quick_create_view"></attribute>
+            </xpath>
         </field>
     </record>
 
@@ -140,27 +153,14 @@
 <!--        </field>-->
 <!--    </record>-->
 
-    <record id="crm_case_kanban_view_leads_inherit" model="ir.ui.view">
-        <field name="name">crm.case.kanban.view.leads.inherit</field>
-        <field name="model">crm.lead</field>
-        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
-        <field name="arch" type="xml">
-            <templates position="before">
-                <field name="sub_date"/>
-            </templates>
-            <xpath expr="//div[@class='o_kanban_record_bottom']" position="before">
-                <div>
-                    <field name="sub_date"/>
-                </div>
-            </xpath>
+<!--    <record id="crm_case_kanban_view_leads_inherit" model="ir.ui.view">-->
+<!--        <field name="name">crm.case.kanban.view.leads.inherit</field>-->
+<!--        <field name="model">crm.lead</field>-->
+<!--        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>-->
+<!--        <field name="arch" type="xml">-->
 
-            <xpath expr="//kanban" position="attributes">
-                <attribute name="default_order">sub_date DESC</attribute>
-                <attribute name="on_create">bi_opportunity_creation_wizard.create_opportunity</attribute>
-                <attribute name="quick_create_view"></attribute>
-            </xpath>
-        </field>
-    </record>
+<!--        </field>-->
+<!--    </record>-->
 
 
     <!--    333333333333333333333333333333333333333333333333333333333-->
