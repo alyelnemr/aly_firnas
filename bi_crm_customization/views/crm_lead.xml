@@ -70,8 +70,8 @@
                             <field name="rfp_ref_number"/>
                             <field name="project_num" required="0" readonly="1"/>
                             <field name="type_custom" required="0"/>
-                            <field name="internal_opportunity_name"/>
                             <field name="type_custom_ids" widget="many2many_tags"/>
+                            <field name="internal_opportunity_name"/>
                             <field name="project_name"/>
                             <field name="country" required="1" widget="many2many_tags"/>
                             <field name="start_date" required="1"/>
