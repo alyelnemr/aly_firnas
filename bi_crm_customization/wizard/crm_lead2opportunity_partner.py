@@ -18,7 +18,8 @@ class Lead2OpportunityPartner(models.TransientModel):
     partner_id = fields.Many2one('res.partner', string='Customer', index=True, required=False,
                                  domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
                                  help="Linked partner (optional). Usually created when converting the lead. You can find a partner by its Name, TIN, Email or Internal Reference.")
-    type_custom_ids = fields.Many2many('crm.type', 'type_custom_crmlead_rel', string="Secondary Project Types", required=False)
+    type_custom_ids = fields.Many2many(comodel_name='crm.type', relation='type_custom_oppor_crmlead_rel', column1='type_custom_ids_oppor_id', column2='type_custom_ids_oppor_crm_type_id',
+                                       string="Secondary Project Types", required=False)
     project_name = fields.Char(string="Customer's Project Name / Proposal Title", store=True, )
     country = fields.Many2many('res.country', string='Countries')
     start_date = fields.Date(string="Request Date")
@@ -29,13 +30,14 @@ class Lead2OpportunityPartner(models.TransientModel):
     fund = fields.Many2one('project.fund', string="Funding")
     partnership_model = fields.Many2one('project.partnership', string="Partnership Model")
     partner_ids = fields.Many2many('res.partner', string="JV Partners")
-    subcontractor_supplier_ids = fields.Many2many('res.partner', 'crmlead_subcontractor_rel', string="Subcontractors/Suppliers")
-    proposal_reviewer_ids = fields.Many2many('res.partner', 'crmlead_prop_reviewer_rel', string="Proposal Reviewers")
+    subcontractor_supplier_ids = fields.Many2many(comodel_name='res.partner', relation='crmlead_oppor_subcontractor_rel', column1='subctractor_oppor_id', column2='subcontractor_oppor_partner_id', string="Subcontractors/Suppliers")
+    proposal_reviewer_ids = fields.Many2many(comodel_name='res.partner', relation='crmlead_prop_reviewer_oppor_rel',
+                                             column1='prop_reviewer_oppor_id', column2='prop_reviewer_oppor_partner_id', string="Proposal Reviewers")
     latest_proposal_submission_date = fields.Date(string="Latest Proposal Submission Date")
     contract_signature_date = fields.Date(string="Contract/PO Signature Date")
     initial_contact_date = fields.Date(string="Initial Contact Date")
     result_date = fields.Date(string="Result Date")
-    end_client = fields.Many2many('res.partner', 'crm2opportunity_end_client_rel', 'crm2opp_end_client_id', 'endclient_partner_id',
+    end_client = fields.Many2many(comodel_name='res.partner', relation='crm2opportunity_end_client_rel', column1='crm2opp_end_client_id', column2='endclient_partner_id',
                                   string="End Client")
     proposals_engineer_id = fields.Many2one('res.users', string='Proposals Engineer')
     rfp_ref_number = fields.Char(string='RfP Ref. Number')
@@ -215,3 +217,12 @@ class Lead2OpportunityMassConvert(models.TransientModel):
     end_client = fields.Many2many('res.partner', 'crm2opportunity_mass_end_client_rel', 'crm2opp_mass_end_client_id',
                                   'endclient_mass_partner_id',
                                   string="End Client")
+    type_custom_ids = fields.Many2many('crm.type', 'type_custom_mass_crmlead_rel', 'type_custom_ids_mass_oppor_id',
+                                       'type_custom_ids_mass_oppor_crm_type_id',
+                                       string="Secondary Project Types", required=False)
+    subcontractor_supplier_ids = fields.Many2many(comodel_name='res.partner', relation='crmlead_oppor_mass_subcontractor_rel',
+                                                  column1='subctractor_oppor_mass_id', column2='subcontractor_oppor_mass_partner_id',
+                                                  string="Subcontractors/Suppliers")
+    proposal_reviewer_ids = fields.Many2many(comodel_name='res.partner', relation='crmlead_prop_reviewer_oppor_mass_rel',
+                                             column1='prop_reviewer_oppor_mass_id', column2='prop_reviewer_oppor_mass_partner_id',
+                                             string="Proposal Reviewers")
