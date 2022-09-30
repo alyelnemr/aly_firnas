@@ -18,16 +18,23 @@ class Lead2OpportunityPartner(models.TransientModel):
     partner_id = fields.Many2one('res.partner', string='Customer', index=True, required=False,
                                  domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
                                  help="Linked partner (optional). Usually created when converting the lead. You can find a partner by its Name, TIN, Email or Internal Reference.")
+    type_custom_ids = fields.Many2many('crm.type', 'type_custom_crmlead_rel', string="Secondary Project Types", required=False)
     project_name = fields.Char(string="Customer's Project Name / Proposal Title", store=True, )
     country = fields.Many2many('res.country', string='Countries')
     start_date = fields.Date(string="Request Date")
     sub_date = fields.Datetime(string="Submission Deadline")
+    actual_sub_date = fields.Date(string="Actual Submission Date")
     sub_type = fields.Many2one('project.submission', string="Submission Type")
     # source = fields.Char(string="Source")
     fund = fields.Many2one('project.fund', string="Funding")
     partnership_model = fields.Many2one('project.partnership', string="Partnership Model")
     partner_ids = fields.Many2many('res.partner', string="JV Partners")
-    #client_name = fields.Many2many('res.partner', 'crmlead2opportunity_client_rel', string="End Client")
+    subcontractor_supplier_ids = fields.Many2many('res.partner', 'crmlead_subcontractor_rel', string="Subcontractors/Suppliers")
+    proposal_reviewer_ids = fields.Many2many('res.partner', 'crmlead_prop_reviewer_rel', string="Proposal Reviewers")
+    latest_proposal_submission_date = fields.Date(string="Latest Proposal Submission Date")
+    contract_signature_date = fields.Date(string="Contract/PO Signature Date")
+    initial_contact_date = fields.Date(string="Initial Contact Date")
+    result_date = fields.Date(string="Result Date")
     end_client = fields.Many2many('res.partner', 'crm2opportunity_end_client_rel', 'crm2opp_end_client_id', 'endclient_partner_id',
                                   string="End Client")
     proposals_engineer_id = fields.Many2one('res.users', string='Proposals Engineer')
@@ -83,6 +90,8 @@ class Lead2OpportunityPartner(models.TransientModel):
                 result['sub_type'] = lead.sub_type.id
             if 'sub_date' in fields and lead.sub_date:
                 result['sub_date'] = lead.sub_date
+            if 'actual_sub_date' in fields and lead.actual_sub_date:
+                result['actual_sub_date'] = lead.actual_sub_date
             if 'start_date' in fields and lead.start_date:
                 result['start_date'] = lead.start_date
             if 'source_id' in fields and lead.source_id:
