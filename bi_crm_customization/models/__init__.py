@@ -8,3 +8,4 @@ from . import expected_revenue
 from . import res_config_settings
 from . import res_company
 from . import crm_type
+from . import sale_order

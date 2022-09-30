@@ -17,6 +17,7 @@
         'views/crm_type.xml',
         'views/crm_lead.xml',
         'views/crm_lead_convert_opportunity_views.xml',
+        'views/sale_order.xml',
     ],
     'installable': True,
     'auto_install': False,
