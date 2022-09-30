@@ -48,8 +48,6 @@ class Lead2OpportunityPartner(models.TransientModel):
         for rec in self:
             if rec.parent_opportunity_id and rec.parent_opportunity_id.country:
                 rec.country = rec.parent_opportunity_id.country
-            else:
-                rec.country = False
 
             # parent opprtunity letter sequence
             if rec.parent_opportunity_id:
@@ -100,6 +98,18 @@ class Lead2OpportunityPartner(models.TransientModel):
                 result['country'] = lead.country.ids
             if 'partner_ids' in fields and lead.partner:
                 result['partner_ids'] = lead.partner.ids
+            if 'subcontractor_supplier_ids' in fields and lead.subcontractor_supplier_ids:
+                result['subcontractor_supplier_ids'] = lead.subcontractor_supplier_ids.ids
+            if 'proposal_reviewer_ids' in fields and lead.proposal_reviewer_ids:
+                result['proposal_reviewer_ids'] = lead.proposal_reviewer_ids.ids
+            if 'latest_proposal_submission_date' in fields and lead.latest_proposal_submission_date:
+                result['latest_proposal_submission_date'] = lead.latest_proposal_submission_date
+            if 'contract_signature_date' in fields and lead.contract_signature_date:
+                result['contract_signature_date'] = lead.contract_signature_date
+            if 'initial_contact_date' in fields and lead.initial_contact_date:
+                result['initial_contact_date'] = lead.initial_contact_date
+            if 'result_date' in fields and lead.result_date:
+                result['result_date'] = lead.result_date
             if 'project_name' in fields and lead.project_name:
                 result['project_name'] = lead.project_name
             if 'project_num' in fields and lead.project_num:
@@ -166,7 +176,7 @@ class Lead2OpportunityPartner(models.TransientModel):
                 'currency_id': self.currency_id.id,
                 'project_name': self.project_name,
                 'end_client': self.end_client.ids,
-                'country': self.country,
+                'country': self.country.ids,
                 'fund': self.fund.id,
                 'internal_opportunity_name': self.internal_opportunity_name,
                 'letter_identifier': self.letter_identifier,
