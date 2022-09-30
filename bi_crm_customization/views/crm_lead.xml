@@ -52,6 +52,11 @@
             <xpath expr="//field[@name='team_id']" position="after">
                 <field name="sub_date" required="0"/>
             </xpath>
+            <xpath expr="//field[@name='company_id']" position="replace">
+            </xpath>
+            <xpath expr="//field[@name='tag_ids']" position="replace">
+                <field name="company_id" groups="base.group_multi_company"/>
+            </xpath>
             <xpath expr="//notebook" position="inside">
                 <page name="info" string="Information">
                     <group>

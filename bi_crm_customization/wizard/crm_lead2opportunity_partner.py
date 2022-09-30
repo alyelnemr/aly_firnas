@@ -108,6 +108,8 @@ class Lead2OpportunityPartner(models.TransientModel):
                 result['proposals_engineer_id'] = lead.proposals_engineer_id.id
             if 'type_custom' in fields and lead.type_custom:
                 result['type_custom'] = lead.type_custom.id
+            if 'type_custom_ids' in fields and lead.type_custom_ids:
+                result['type_custom_ids'] = lead.type_custom_ids.ids
             if 'internal_opportunity_name' in fields and lead.internal_opportunity_name:
                 result['internal_opportunity_name'] = lead.internal_opportunity_name
             if 'rfp_ref_number' in fields and lead.rfp_ref_number:
@@ -179,6 +181,7 @@ class Lead2OpportunityPartner(models.TransientModel):
                 'sub_date': self.sub_date,
                 'sub_type': self.sub_type,
                 'type_custom': self.type_custom.id,
+                'type_custom_ids': self.type_custom_ids.ids,
             })
             if lead.type_custom:
                 if lead.letter_identifier:
