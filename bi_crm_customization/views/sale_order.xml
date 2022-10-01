@@ -31,7 +31,8 @@
                                 <field name="rfp_ref_number"/>
                                 <field name="project_number" readonly="1"/>
                                 <field name="type_custom" required="0"/>
-                                <field name="type_custom_ids" widget="many2many_tags"/>
+                                <field name="type_custom_ids" widget="many2many_tags" readonly="0"/>
+                                <field name="internal_opportunity_name"/>
                                 <field name="project_name" required="1"/>
                                 <field name="country" required="1" widget="many2many_tags"/>
                                 <field name="start_date" required="1"/>
