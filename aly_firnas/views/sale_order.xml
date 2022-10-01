@@ -44,6 +44,7 @@
                            groups="analytic.group_analytic_accounting" force_save="1"/>
                     <field name="analytic_tag_ids" widget="many2many_tags"
                            options="{'no_create': False, 'no_quick_create': False, 'no_create_edit':False}"/>
+                    <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
 
                 </xpath>
             </field>
