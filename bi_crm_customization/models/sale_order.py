@@ -2,7 +2,7 @@
 from odoo import api, fields, models
 
 
-class SaleOrderInherit(models.Model):
+class SaleOrderCRMInherit(models.Model):
     _inherit = 'sale.order'
 
     def _set_default_standard_payment(self):
@@ -17,7 +17,7 @@ class SaleOrderInherit(models.Model):
             If there is an exisitng partner link to the lead, find all existing
             opportunities links with this partner to merge all information together
         """
-        result = super(SaleOrderInherit, self).default_get(fields)
+        result = super(SaleOrderCRMInherit, self).default_get(fields)
         if self._context.get('active_id') or self.opportunity_id:
 
             lead = self.env['crm.lead'].browse(self._context['active_id'])
