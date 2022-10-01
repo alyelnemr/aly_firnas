@@ -63,7 +63,10 @@ class HRExpense(models.Model):
             if expense.analytic_account_id:
                 expense.analytic_tag_ids = expense.analytic_account_id.analytic_tag_ids
             if expense.employee_id:
-                expense.analytic_tag_ids += expense.employee_id.analytic_tag_ids
+                if expense.analytic_tag_ids:
+                    expense.analytic_tag_ids += expense.sudo().employee_id.analytic_tag_ids
+                else:
+                    expense.analytic_tag_ids = expense.sudo().employee_id.analytic_tag_ids
 
     @api.model
     def _default_employee_id(self):
