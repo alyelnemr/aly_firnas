@@ -13,6 +13,7 @@ class HRExpense(models.Model):
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True,
                                         states={'post': [('readonly', True)], 'done': [('readonly', True)]},
                                         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+    discount = fields.Float(string="Discount (%)", digits="Discount")
 
     @api.model
     def _get_employee_id_domain(self):
@@ -35,11 +36,19 @@ class HRExpense(models.Model):
             res = [('id', '=', employee.id), '|', ('company_id', '=', employee.company_id.id), ('company_id', 'in', [c.id for c in self.env.user.company_ids])]
         return ['|', ('company_id', '=', False), ('company_id', 'in', [c.id for c in self.env.user.company_ids])]
 
-    @api.depends('quantity', 'unit_amount', 'tax_ids', 'currency_id')
+    def _get_discounted_price_unit(self):
+        self.ensure_one()
+        if self.discount:
+            return self.unit_amount * (1 - self.discount / 100)
+        return self.unit_amount
+
+    @api.depends('quantity', 'discount', 'unit_amount', 'tax_ids', 'currency_id')
     def _compute_amount(self):
         for expense in self:
-            expense.untaxed_amount = expense.unit_amount * expense.quantity
-            taxes = expense.tax_ids.compute_all(expense.unit_amount, expense.currency_id, expense.quantity, expense.product_id,
+            # expense.untaxed_amount = expense.unit_amount * expense.quantity
+            unit_amount = self._get_discounted_price_unit()
+            expense.untaxed_amount = unit_amount * expense.quantity
+            taxes = expense.tax_ids.compute_all(unit_amount, expense.currency_id, expense.quantity, expense.product_id,
                                                 expense.employee_id.user_id.partner_id)
             expense.total_amount = taxes.get('total_included')
 

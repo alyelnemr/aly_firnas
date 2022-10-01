@@ -87,6 +87,36 @@
             </field>
         </record>
 
+        <record id="aly_hr_expense_view_tree" model="ir.ui.view">
+            <field name="name">hr_expense_view_tree.inherit</field>
+            <field name="model">hr.expense</field>
+            <field name="inherit_id" ref="hr_expense.view_expenses_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='payment_mode']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='analytic_account_id']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='company_id']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='analytic_tag_ids']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='total_amount']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='employee_id']" position="after">
+                    <field name="name" optional="show"/>
+                    <field name="analytic_account_id" groups="analytic.group_analytic_accounting" optional="show"/>
+                    <field name="analytic_tag_ids" widget="many2many_tags" groups="analytic.group_analytic_tags" optional="show"/>
+                    <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                    <field name="total_amount" sum="Total Amount" widget="monetary" options="{'currency_field': 'currency_id'}"
+                           optional="show"/>
+                    <field name="payment_mode" optional="show"/>
+                    <field name="state" optional="show"/>
+                </xpath>
+            </field>
+        </record>
+
         <menuitem id="aly_menu_hr_expense_report" name="Expense Reports" sequence="40" parent="account_accountant.menu_accounting"
                   groups="account.group_account_invoice"/>
         <menuitem id="aly_menu_hr_expense_sheet_all_to_approve" name="To Approve" sequence="1" parent="aly_menu_hr_expense_report"
