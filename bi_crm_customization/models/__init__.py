@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from . import client_name
 from . import project_sale_submission
 from . import project_sale_fund
 from . import project_sale_partnership

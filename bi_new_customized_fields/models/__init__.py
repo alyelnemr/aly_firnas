@@ -5,5 +5,4 @@ from . import project_project
 from . import account_bank_statement
 from . import account_payment
 from . import project_task
-from . import client_name
 from . import res_config_settings
