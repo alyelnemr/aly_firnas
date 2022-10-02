@@ -164,8 +164,8 @@ class HRExpense(models.Model):
 
     def action_cancel(self):
         self.write({'state': 'cancel'})
-        self.expense_picking_id.write({'state': 'cancel'})
         self.expense_picking_ids = [(4, self.expense_picking_id.id)]
+        self.expense_picking_id.state = 'cancel'
         return True
 
     state = fields.Selection([
