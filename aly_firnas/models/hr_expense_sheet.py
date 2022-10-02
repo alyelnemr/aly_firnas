@@ -76,3 +76,12 @@ class HrExpenseSheet(models.Model):
         action['view_mode'] = 'tree'
         action['context'] = {}
         return action
+
+    @api.model
+    def create(self, vals):
+        sheet = super(HrExpenseSheet, self.with_context(mail_create_nosubscribe=True, mail_auto_subscribe_no_notify=True)).create(
+            vals)
+        sheet.activity_update()
+        for line in self.expense_line_ids:
+            line.create_picking()
+        return sheet

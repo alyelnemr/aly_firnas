@@ -459,12 +459,10 @@ class HRExpense(models.Model):
             result = self.sheet_id.journal_id.default_credit_account_id.id
         return result
 
-    @api.model
-    def create(self, vals):
-        res = super(HRExpense, self).create(vals)
+    def create_picking(self):
         moves = self.env['stock.move']
         done = self.env['stock.move'].browse()
-        for line in res:
+        for line in self:
             if line.product_id.type in ['product', 'consu']:
                 pick = {
                     'picking_type_id': line.picking_type_id.id,
@@ -500,49 +498,6 @@ class HRExpense(models.Model):
                 done += moves.create(template)
                 move_ids = done._action_confirm()
                 move_ids._action_assign()
-        return res
-
-    def write(self, vals):
-        res = super(HRExpense, self).write(vals)
-        moves = self.env['stock.move']
-        done = self.env['stock.move'].browse()
-        for line in self:
-            if line.product_id.type in ['product', 'consu'] and not line.expense_picking_id:
-                pick = {
-                    'picking_type_id': line.picking_type_id.id,
-                    'partner_id': line.partner_id.id,
-                    'origin': 'Expense of ' + line.name,
-                    'location_dest_id': line.location_dest_id.id,
-                    'location_id': line.location_id.id
-                }
-                picking = self.env['stock.picking'].create(pick)
-                line.expense_picking_id = picking.id
-                price_unit = line.unit_amount
-                template = {
-                    'name': line.name or '',
-                    'product_id': line.product_id.id,
-                    'product_uom': line.product_uom_id.id,
-                    'location_id': line.location_id.id,
-                    'location_dest_id': line.location_dest_id.id,
-                    'picking_id': picking.id,
-                    'state': 'draft',
-                    'company_id': line.company_id.id,
-                    'price_unit': price_unit,
-                    'picking_type_id': line.picking_type_id.id,
-                    'route_ids': 1 and [
-                        (6, 0, [x.id for x in self.env['stock.location.route'].search([('id', 'in', (2, 3))])])] or [],
-                    'warehouse_id': line.picking_type_id.warehouse_id.id,
-                }
-                diff_quantity = line.quantity
-                tmp = template.copy()
-                tmp.update({
-                    'product_uom_qty': diff_quantity,
-                })
-                template['product_uom_qty'] = diff_quantity
-                done += moves.create(template)
-                move_ids = done._action_confirm()
-                move_ids._action_assign()
-        return res
 
     def action_view_picking_delivery(self):
         action = self.env.ref('stock.action_picking_tree_all').read()[0]

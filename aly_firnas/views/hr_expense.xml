@@ -41,9 +41,9 @@
                     <field name="picking_type_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                     <field name="dest_address_id" groups="stock.group_stock_multi_locations"
                            attrs="{'invisible': [('default_location_dest_id_usage', '!=', 'customer')], 'required': [('default_location_dest_id_usage', '=', 'customer')]}"/>
-                    <field name="dest_address_id" options="{'no_create': True}" invisible="0" />
-                    <field name="location_id" options="{'no_create': True}" invisible="0" />
-                    <field name="location_dest_id" options="{'no_create': True}" invisible="0"/>
+                    <field name="dest_address_id" options="{'no_create': True}" invisible="1" />
+                    <field name="location_id" options="{'no_create': True}" invisible="1" />
+                    <field name="location_dest_id" options="{'no_create': True}" invisible="1"/>
                 </xpath>
                 <xpath expr="//field[@name='employee_id']" position="replace">
                 </xpath>
