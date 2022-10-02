@@ -123,19 +123,6 @@
                 <xpath expr="//field[@name='activity_exception_decoration']" position="attributes">
                     <attribute name="optional">show</attribute>
                 </xpath>
-                <tree string="Expense Reports" decoration-warning="state=='draft'" decoration-bf="message_unread == True"
-                      decoration-danger="state=='cancel'">
-                    <field name="name" string="Expense Report"/>
-                    <field name="employee_id"/>
-                    <field name="create_date"/>
-                    <field name="accounting_date" groups="account.group_account_manager"/>
-                    <field name="total_amount" sum="Total Amount"/>
-                    <field name="currency_id" invisible="1"/>
-                    <field name="state"/>
-                    <field name="message_unread" invisible="1"/>
-                    <field name="company_id" groups="base.group_multi_company"/>
-                    <field name="activity_exception_decoration" widget="activity_exception"/>
-                </tree>
             </field>
         </record>
 
