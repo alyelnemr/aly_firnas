@@ -121,7 +121,7 @@ class HRExpense(models.Model):
         for expense in self:
             expense.is_same_currency = expense.currency_id == expense.company_id.currency_id
 
-    @api.depends('picking_type_id', 'partner_id')
+    @api.depends('picking_type_id', 'partner_id', 'product_id', 'company_id')
     def onchange_picking_type(self):
         if self.picking_type_id:
             if self.picking_type_id.default_location_src_id:
@@ -152,11 +152,12 @@ class HRExpense(models.Model):
                                         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     discount = fields.Float(string="Discount (%)", digits="Discount")
     is_same_currency = fields.Boolean("Is Same Currency as Company Currency", compute='_change_currency')
-    picking_type_id = fields.Many2one('stock.picking.type', 'Picking Type', required=True,
+    product_type = fields.Selection(related='product_id.type')
+    picking_type_id = fields.Many2one('stock.picking.type', 'Picking Type', required=True, check_company=True,
                                       default=_default_picking_receive, domain=[('code', '=', 'incoming')])
     picking_type_code = fields.Selection(related='picking_type_id.code')
-    location_id = fields.Many2one('stock.location', "Source Location", compute=onchange_picking_type, store=False, check_company=False, readonly=False, required=True)
-    location_dest_id = fields.Many2one('stock.location', "Destination Location", compute=onchange_picking_type, store=False, check_company=False, readonly=False, required=True)
+    location_id = fields.Many2one('stock.location', "Source Location", compute=onchange_picking_type, store=False, check_company=True, readonly=False, required=True)
+    location_dest_id = fields.Many2one('stock.location', "Destination Location", compute=onchange_picking_type, store=False, check_company=True, readonly=False, required=True)
     dest_address_id = fields.Many2one('res.partner', string='Dropship Address')
     default_location_dest_id_usage = fields.Selection(related='picking_type_id.default_location_dest_id.usage',
                                                       string='Destination Location Type', readonly=True)
