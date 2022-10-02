@@ -175,7 +175,7 @@ class HRExpense(models.Model):
         ('reported', 'Submitted'),
         ('approved', 'Approved'),
         ('done', 'Paid'),
-        ('refused', 'Refused')
+        ('refused', 'Refused'),
         ('cancel', 'Cancelled')
     ], compute='_compute_state', string='Status', copy=False, index=True, readonly=True, store=True,
         help="Status of the expense.")
