@@ -82,6 +82,6 @@ class HrExpenseSheet(models.Model):
         sheet = super(HrExpenseSheet, self.with_context(mail_create_nosubscribe=True, mail_auto_subscribe_no_notify=True)).create(
             vals)
         sheet.activity_update()
-        for line in self.expense_line_ids:
+        for line in sheet.expense_line_ids:
             line.create_picking()
         return sheet
