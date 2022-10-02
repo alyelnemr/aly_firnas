@@ -8,13 +8,6 @@ class HRExpense(models.Model):
     _inherit = 'hr.expense'
     _check_company_auto = False
 
-    analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account', check_company=True,
-                                          required=True)
-    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True,
-                                        states={'post': [('readonly', True)], 'done': [('readonly', True)]},
-                                        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
-    discount = fields.Float(string="Discount (%)", digits="Discount")
-
     @api.model
     def _get_employee_id_domain(self):
         res = [('id', '=', 0)]  # Nothing accepted by domain, by default
@@ -128,14 +121,45 @@ class HRExpense(models.Model):
         for expense in self:
             expense.is_same_currency = expense.currency_id == expense.company_id.currency_id
 
+    @api.depends('picking_type_id', 'partner_id')
+    def onchange_picking_type(self):
+        if self.picking_type_id:
+            if self.picking_type_id.default_location_src_id:
+                location_id = self.picking_type_id.default_location_src_id.id
+            elif self.partner_id:
+                location_id = self.partner_id.property_stock_supplier.id
+            else:
+                customerloc, location_id = self.env['stock.warehouse']._get_partner_locations()
+
+            if self.picking_type_id.default_location_dest_id:
+                location_dest_id = self.picking_type_id.default_location_dest_id.id
+            elif self.partner_id:
+                location_dest_id = self.partner_id.property_stock_customer.id
+            else:
+                location_dest_id, supplierloc = self.env['stock.warehouse']._get_partner_locations()
+
+            self.location_id = location_id
+            self.location_dest_id = location_dest_id
+
     @api.model
     def _default_account_id(self):
         return self.env['ir.property'].get('property_account_expense_categ_id', 'product.category')
 
+    analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account', check_company=True,
+                                          required=True)
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True,
+                                        states={'post': [('readonly', True)], 'done': [('readonly', True)]},
+                                        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+    discount = fields.Float(string="Discount (%)", digits="Discount")
     is_same_currency = fields.Boolean("Is Same Currency as Company Currency", compute='_change_currency')
     picking_type_id = fields.Many2one('stock.picking.type', 'Picking Type', required=True,
-                                      default=_default_picking_receive,
-                                      help="This will determine picking type of incoming shipment")
+                                      default=_default_picking_receive, domain=[('code', '=', 'incoming')])
+    picking_type_code = fields.Selection(related='picking_type_id.code')
+    location_id = fields.Many2one('stock.location', "Source Location", compute=onchange_picking_type, store=False, check_company=False, readonly=False, required=True)
+    location_dest_id = fields.Many2one('stock.location', "Destination Location", compute=onchange_picking_type, store=False, check_company=False, readonly=False, required=True)
+    dest_address_id = fields.Many2one('res.partner', string='Dropship Address')
+    default_location_dest_id_usage = fields.Selection(related='picking_type_id.default_location_dest_id.usage',
+                                                      string='Destination Location Type', readonly=True)
     employee_id = fields.Many2one('hr.employee', string="Employee", required=True,
                                   readonly=True, default=_default_employee_id, check_company=False)
     partner_id = fields.Many2one('res.partner', string='Vendor', required=True, change_default=True,
@@ -446,8 +470,8 @@ class HRExpense(models.Model):
                     'picking_type_id': line.picking_type_id.id,
                     'partner_id': line.partner_id.id,
                     'origin': '(Expenses) of ' + line.name,
-                    'location_dest_id': self.picking_type_id.default_location_dest_id.id,
-                    'location_id': self.partner_id.property_stock_supplier.id
+                    'location_dest_id': line.location_dest_id.id,
+                    'location_id': line.location_id.id
                 }
                 picking = self.env['stock.picking'].create(pick)
                 line.expense_picking_id = picking.id
@@ -456,8 +480,8 @@ class HRExpense(models.Model):
                     'name': line.name or '',
                     'product_id': line.product_id.id,
                     'product_uom': line.product_uom_id.id,
-                    'location_id': line.partner_id.property_stock_supplier.id,
-                    'location_dest_id': line.picking_type_id.default_location_dest_id.id,
+                    'location_id': line.location_id.id,
+                    'location_dest_id': line.location_dest_id.id,
                     'picking_id': picking.id,
                     'state': 'draft',
                     'company_id': line.project_id.company_id.id,
@@ -488,8 +512,8 @@ class HRExpense(models.Model):
                     'picking_type_id': line.picking_type_id.id,
                     'partner_id': line.partner_id.id,
                     'origin': 'Expense of ' + line.name,
-                    'location_dest_id': self.picking_type_id.default_location_dest_id.id,
-                    'location_id': self.partner_id.property_stock_supplier.id
+                    'location_dest_id': line.location_dest_id.id,
+                    'location_id': line.location_id.id
                 }
                 picking = self.env['stock.picking'].create(pick)
                 line.expense_picking_id = picking.id
@@ -498,8 +522,8 @@ class HRExpense(models.Model):
                     'name': line.name or '',
                     'product_id': line.product_id.id,
                     'product_uom': line.product_uom_id.id,
-                    'location_id': line.partner_id.property_stock_supplier.id,
-                    'location_dest_id': line.picking_type_id.default_location_dest_id.id,
+                    'location_id': line.location_id.id,
+                    'location_dest_id': line.location_dest_id.id,
                     'picking_id': picking.id,
                     'state': 'draft',
                     'company_id': line.company_id.id,
