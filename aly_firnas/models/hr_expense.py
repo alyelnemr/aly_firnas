@@ -145,6 +145,40 @@ class HRExpense(models.Model):
     def _default_account_id(self):
         return self.env['ir.property'].get('property_account_expense_categ_id', 'product.category')
 
+    @api.depends('sheet_id', 'sheet_id.account_move_id', 'sheet_id.state')
+    def _compute_state(self):
+        for expense in self:
+            if not expense.sheet_id or expense.sheet_id.state == 'draft':
+                expense.state = "draft"
+            elif expense.sheet_id.state == "cancel":
+                expense.state = "refused"
+            elif expense.sheet_id.state == "approve" or expense.sheet_id.state == "post":
+                expense.state = "approved"
+            elif not expense.sheet_id.account_move_id:
+                expense.state = "reported"
+            else:
+                expense.state = "done"
+
+    def action_reset_to_draft(self):
+        self.write({'state': 'draft'})
+        self.expense_picking_id.write({'state': 'draft'})
+        return True
+
+    def action_cancel(self):
+        self.write({'state': 'cancel'})
+        self.expense_picking_id.write({'state': 'cancel'})
+        self.expense_picking_ids = [(4, self.expense_picking_id.id)]
+        return True
+
+    state = fields.Selection([
+        ('draft', 'To Submit'),
+        ('reported', 'Submitted'),
+        ('approved', 'Approved'),
+        ('done', 'Paid'),
+        ('refused', 'Refused')
+        ('cancel', 'Cancelled')
+    ], compute='_compute_state', string='Status', copy=False, index=True, readonly=True, store=True,
+        help="Status of the expense.")
     analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account', check_company=True,
                                           required=True)
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True,
@@ -173,6 +207,7 @@ class HRExpense(models.Model):
                                  domain="[('internal_type', '=', 'other'), ('company_id', '=', company_id)]",
                                  help="An expense account is expected", readonly=True)
     expense_picking_id = fields.Many2one('stock.picking', string="Picking ID")
+    expense_picking_ids = fields.Many2many('stock.picking', string="All Picking IDs")
     picking_count = fields.Integer(string="Count", compute='_compute_picking_count', store=False)
     payment_mode = fields.Selection([
         ("own_account", "Employee (to reimburse)"),
@@ -464,41 +499,43 @@ class HRExpense(models.Model):
         moves = self.env['stock.move']
         done = self.env['stock.move'].browse()
         for line in self:
-            if line.product_id.type in ['product', 'consu']:
-                pick = {
-                    'picking_type_id': line.picking_type_id.id,
-                    'partner_id': line.partner_id.id,
-                    'origin': '(Expenses) of ' + line.name,
-                    'location_dest_id': line.location_dest_id.id,
-                    'location_id': line.location_id.id
-                }
-                picking = self.env['stock.picking'].create(pick)
-                line.expense_picking_id = picking.id
-                price_unit = line.unit_amount
-                template = {
-                    'name': line.name or '',
-                    'product_id': line.product_id.id,
-                    'product_uom': line.product_uom_id.id,
-                    'location_id': line.location_id.id,
-                    'location_dest_id': line.location_dest_id.id,
-                    'picking_id': picking.id,
-                    'state': 'draft',
-                    'company_id': line.project_id.company_id.id,
-                    'price_unit': price_unit,
-                    'picking_type_id': line.picking_type_id.id,
-                    'route_ids': 1 and [
-                        (6, 0, [x.id for x in self.env['stock.location.route'].search([('id', 'in', (2, 3))])])] or [],
-                    'warehouse_id': line.picking_type_id.warehouse_id.id,
-                }
-                diff_quantity = line.quantity
-                tmp = template.copy()
-                tmp.update({
-                    'product_uom_qty': diff_quantity,
-                })
-                template['product_uom_qty'] = diff_quantity
-                done += moves.create(template)
-                move_ids = done._action_confirm()
-                move_ids._action_assign()
+            if not line.expense_picking_id or line.picking_type_id.state == 'cancel':
+                if line.product_id.type in ['product', 'consu']:
+                    pick = {
+                        'picking_type_id': line.picking_type_id.id,
+                        'partner_id': line.partner_id.id,
+                        'origin': '(Expenses) of ' + line.name,
+                        'location_dest_id': line.location_dest_id.id,
+                        'location_id': line.location_id.id
+                    }
+                    picking = self.env['stock.picking'].create(pick)
+                    line.expense_picking_ids = [(4, line.expense_picking_id.id)]
+                    line.expense_picking_id = picking.id
+                    price_unit = line.unit_amount
+                    template = {
+                        'name': line.name or '',
+                        'product_id': line.product_id.id,
+                        'product_uom': line.product_uom_id.id,
+                        'location_id': line.location_id.id,
+                        'location_dest_id': line.location_dest_id.id,
+                        'picking_id': picking.id,
+                        'state': 'draft',
+                        'company_id': line.project_id.company_id.id,
+                        'price_unit': price_unit,
+                        'picking_type_id': line.picking_type_id.id,
+                        'route_ids': 1 and [
+                            (6, 0, [x.id for x in self.env['stock.location.route'].search([('id', 'in', (2, 3))])])] or [],
+                        'warehouse_id': line.picking_type_id.warehouse_id.id,
+                    }
+                    diff_quantity = line.quantity
+                    tmp = template.copy()
+                    tmp.update({
+                        'product_uom_qty': diff_quantity,
+                    })
+                    template['product_uom_qty'] = diff_quantity
+                    done += moves.create(template)
+                    move_ids = done._action_confirm()
+                    move_ids._action_assign()
 
     def action_view_picking_delivery(self):
         action = self.env.ref('stock.action_picking_tree_all').read()[0]

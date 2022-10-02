@@ -6,13 +6,18 @@
             <field name="model">hr.expense</field>
             <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_view_sheet']" position="after">
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object"
+                            attrs="{'invisible': [('state', 'not in', ['submit', 'cancel'])]}"/>
+                    <button name="action_cancel" string="Cancel" type="action" />
+                </xpath>
                 <xpath expr="//div[@name='button_box']" position="inside">
                     <button type="object"
                             name="action_view_picking_delivery"
                             class="oe_stat_button"
                             attrs="{'invisible':['|', ('picking_count', '=', 0), ('picking_count', '=', False)]}"
                             icon="fa-truck">
-                        <field name="picking_count" string="Delivery" widget="statinfo"
+                        <field name="picking_count" string="Receipts" widget="statinfo"
                                attrs="{'invisible':['|', ('picking_count', '=', 0), ('picking_count', '=', False)]}"
                         />
                     </button>
