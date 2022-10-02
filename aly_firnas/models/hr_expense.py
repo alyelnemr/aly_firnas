@@ -73,12 +73,10 @@ class HRExpense(models.Model):
         return self.env.user.company_id
 
     def _compute_picking_count(self):
-        if self.expense_picking_id:
-            picking_type_ids = self.env['stock.picking'].browse(self.expense_picking_id.id)
-            if picking_type_ids:
-                self.picking_count = len(picking_type_ids)
-            else:
-                self.picking_count = 0
+        if self.expense_picking_ids:
+            self.picking_count = len(self.expense_picking_ids)
+        elif self.expense_picking_id:
+            self.picking_count = len(self.expense_picking_id)
         else:
             self.picking_count = 0
 
@@ -499,7 +497,7 @@ class HRExpense(models.Model):
         moves = self.env['stock.move']
         done = self.env['stock.move'].browse()
         for line in self:
-            if not line.expense_picking_id or line.picking_type_id.state == 'cancel':
+            if not line.expense_picking_id or line.expense_picking_id.state == 'cancel':
                 if line.product_id.type in ['product', 'consu']:
                     pick = {
                         'picking_type_id': line.picking_type_id.id,
