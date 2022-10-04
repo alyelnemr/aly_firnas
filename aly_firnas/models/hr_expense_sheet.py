@@ -12,6 +12,9 @@ class HrExpenseSheet(models.Model):
         for expense in self:
             expense.is_same_user_approver = expense.user_id == self.env.user and expense.state == 'submit'
 
+    bank_journal_id = fields.Many2one('account.journal', string='Journal',
+                                      states={'done': [('readonly', True)], 'post': [('readonly', True)]}, check_company=True,
+                                      domain="[('type', 'in', ['cash', 'bank']), ('is_expense_module', '=', True), ('company_id', '=', company_id)]")
     is_same_user_approver = fields.Boolean("Is Same User Approver", compute='_check_user')
     user_id = fields.Many2one('res.users', 'Manager',
                               domain=[('expense_approve', '=', True)],
@@ -24,6 +27,11 @@ class HrExpenseSheet(models.Model):
     account_move_ids = fields.Many2many('account.move', string='All Journal Entries',
                                         copy=False, readonly=True)
     is_account_move_ids = fields.Boolean(compute="_compute_account_move_ids", store=False)
+    analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account', check_company=True,
+                                          required=False)
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=False,
+                                        states={'post': [('readonly', True)], 'done': [('readonly', True)]},
+                                        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
 
     @api.depends("account_move_ids")
     def _compute_account_move_ids(self):
@@ -77,11 +85,32 @@ class HrExpenseSheet(models.Model):
         action['context'] = {}
         return action
 
+    @api.onchange('expense_line_ids')
+    def _onchange_expense_line_ids(self):
+        for rec in self:
+            if not rec.analytic_account_id and len(rec.expense_line_ids):
+                rec.analytic_account_id = rec.expense_line_ids[0].analytic_account_id
+            if not rec.analytic_tag_ids and len(rec.expense_line_ids):
+                rec.analytic_tag_ids = rec.expense_line_ids[0].analytic_tag_ids
+
     @api.model
     def create(self, vals):
         sheet = super(HrExpenseSheet, self.with_context(mail_create_nosubscribe=True, mail_auto_subscribe_no_notify=True)).create(
             vals)
         sheet.activity_update()
-        for line in sheet.expense_line_ids:
-            line.create_picking()
+        for rec in sheet.expense_line_ids:
+            if not rec.analytic_account_id and len(rec.expense_line_ids):
+                rec.analytic_account_id = rec.expense_line_ids[0].analytic_account_id
+            if not rec.analytic_tag_ids and len(rec.expense_line_ids):
+                rec.analytic_tag_ids = rec.expense_line_ids[0].analytic_tag_ids
+            rec.create_picking()
         return sheet
+
+    def write(self, vals):
+        res = super(HrExpenseSheet, self).write(vals)
+        for rec in self:
+            if not rec.analytic_account_id and len(rec.expense_line_ids):
+                rec.analytic_account_id = rec.expense_line_ids[0].analytic_account_id
+            if not rec.analytic_tag_ids and len(rec.expense_line_ids):
+                rec.analytic_tag_ids = rec.expense_line_ids[0].analytic_tag_ids
+        return res

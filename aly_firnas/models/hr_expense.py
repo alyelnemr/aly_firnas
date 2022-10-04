@@ -545,3 +545,24 @@ class HRExpense(models.Model):
             action['views'] = [(self.env.ref('stock.view_picking_form').id, 'form')]
             action['res_id'] = pickings[0].id
         return action
+
+    def _create_sheet_from_expenses(self):
+        if any(expense.state != 'draft' or expense.sheet_id for expense in self):
+            raise UserError(_("You cannot report twice the same line!"))
+        if len(self.mapped('employee_id')) != 1:
+            raise UserError(_("You cannot report expenses for different employees in the same report."))
+        if any(not expense.product_id for expense in self):
+            raise UserError(_("You can not create report without product."))
+        if self.company_id and len(self.company_id) > 1:
+            raise UserError(_("You can not create report from different companies."))
+
+        todo = self.filtered(lambda x: x.payment_mode == 'own_account') or self.filtered(
+            lambda x: x.payment_mode == 'company_account')
+        sheet = self.env['hr.expense.sheet'].create({
+            'company_id': self.company_id.id,
+            'employee_id': self[0].employee_id.id,
+            'name': todo[0].name if len(todo) == 1 else '',
+            'expense_line_ids': [(6, 0, todo.ids)]
+        })
+        sheet._onchange_employee_id()
+        return sheet

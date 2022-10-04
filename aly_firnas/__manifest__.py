@@ -4,7 +4,7 @@
     'summary': "Aly El Nemr, Odoo Development for Firnas Shuman",
     'description': """Aly El Nemr, aly5elnemr@gmail.com, Odoo Development for Firnas Shuman""",
     'author': "Aly El Nemr",
-    'depends': ['base', 'purchase', 'sale', 'sale_management', 'account', 'bi_product_bundle_report'],
+    'depends': ['base', 'purchase', 'sale', 'sale_expense', 'sale_management', 'account', 'bi_product_bundle_report'],
 
     'data': [
         'security/groups.xml',
