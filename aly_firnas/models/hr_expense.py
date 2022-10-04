@@ -185,7 +185,7 @@ class HRExpense(models.Model):
     discount = fields.Float(string="Discount (%)", digits="Discount")
     is_same_currency = fields.Boolean("Is Same Currency as Company Currency", compute='_change_currency')
     product_type = fields.Selection(related='product_id.type')
-    picking_type_id = fields.Many2one('stock.picking.type', 'Picking Type', required=True, check_company=True,
+    picking_type_id = fields.Many2one('stock.picking.type', 'Deliver To', required=True, check_company=True,
                                       default=_default_picking_receive, domain=[('code', '=', 'incoming')])
     picking_type_code = fields.Selection(related='picking_type_id.code')
     location_id = fields.Many2one('stock.location', "Source Location", compute=onchange_picking_type, store=False, check_company=True, readonly=False, required=True)
