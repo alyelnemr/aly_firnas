@@ -507,8 +507,8 @@ class HRExpense(models.Model):
                         'location_id': line.location_id.id
                     }
                     picking = self.env['stock.picking'].create(pick)
-                    line.expense_picking_ids = [(4, line.expense_picking_id.id)]
                     line.expense_picking_id = picking.id
+                    line.expense_picking_ids = [(4, line.expense_picking_id.id)]
                     price_unit = line.unit_amount
                     template = {
                         'name': line.name or '',
