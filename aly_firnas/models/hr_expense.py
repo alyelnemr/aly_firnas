@@ -504,6 +504,8 @@ class HRExpense(models.Model):
                         'partner_id': line.partner_id.id,
                         'origin': '(Expenses) of ' + line.name,
                         'location_dest_id': line.location_dest_id.id,
+                        'analytic_account_id': line.analytic_account_id.id,
+                        'analytic_tag_ids': line.analytic_account_id.analytic_tag_ids.ids,
                         'location_id': line.location_id.id
                     }
                     picking = self.env['stock.picking'].create(pick)
@@ -518,7 +520,6 @@ class HRExpense(models.Model):
                         'location_dest_id': line.location_dest_id.id,
                         'picking_id': picking.id,
                         'state': 'draft',
-                        'analytic_account_id': line.analytic_account_id,
                         'company_id': line.project_id.company_id.id,
                         'price_unit': price_unit,
                         'picking_type_id': line.picking_type_id.id,
