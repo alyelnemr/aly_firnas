@@ -16,9 +16,6 @@
                        position="after">
                     <field name="internal_notes" optional="show"/>
                 </xpath>
-                <xpath expr="//notebook/page[@name='other_information']/field[@name='company_id']"
-                       position="replace">
-                </xpath>
                 <xpath expr="//notebook" position="inside">
                     <page name="info" string="Information">
                         <group>
