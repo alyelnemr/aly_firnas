@@ -81,7 +81,8 @@ class SaleOrderCRMInherit(models.Model):
     project_number = fields.Char(string="Project Number", store=True, readonly=True)
     type_custom = fields.Many2one('crm.type', string="Project Type", required=True)
     internal_opportunity_name = fields.Char(string="Internal Opportunity Name", required=True)
-    type_custom_ids = fields.Many2many('crm.type', related='opportunity_id.type_custom_ids', string="Secondary Project Types", required=True)
+    type_custom_ids = fields.Many2many('crm.type', relation='type_custom_saleorder_rel', column1='type_custom_ids_id',
+                                       column2='type_custom_ids_crm_type_id', string="Secondary Project Types")
     country = fields.Many2many('res.country', string='Country')
     start_date = fields.Date(string="Request Date")
     sub_date = fields.Datetime(string="Submission Deadline")
