@@ -4,7 +4,7 @@ from odoo import api, fields, models, tools, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import OrderedSet
 from odoo.tools.float_utils import float_round, float_compare, float_is_zero
-
+import json
 
 class StockMoveLine(models.Model):
     _inherit = 'stock.move.line'
@@ -16,6 +16,25 @@ class StockMoveLine(models.Model):
     product_tracking = fields.Selection(string="sel", related="product_id.tracking")
     picking_type_id = fields.Many2one('stock.picking.type', 'Picking Type', related="move_id.picking_type_id")
     is_readonly = fields.Boolean("Is Description and Ref Readonly")
+    lot_id_domain = fields.Char(
+        compute="_compute_lot_domain",
+        readonly=True,
+        store=False,
+    )
+
+    @api.depends('location_id', 'product_id')
+    def _compute_lot_domain(self):
+        for rec in self:
+            rec.lot_id_domain = []
+            if rec.product_id:
+                if rec.move_id.picking_type_id not in ['incoming']:
+                    current_domain = [('product_id', '=', rec.product_id.id), ('company_id', '=', rec.company_id.id),
+                                      ('location_id', '=', rec.move_id.location_id.id)]
+                    quant = self.env['stock.quant'].search(current_domain)
+                    ids = quant.lot_id.ids or []
+                    rec.lot_id_domain = json.dumps(
+                        [('id', 'in', ids)]
+                    )
 
     @api.onchange('lot_id')
     def change_calibration_date(self):
