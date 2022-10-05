@@ -52,9 +52,14 @@
             <xpath expr="//field[@name='team_id']" position="after">
                 <field name="sub_date" required="0"/>
             </xpath>
+            <xpath expr="//field[@name='partner_address_phone']" position="before">
+                <field name="email_cc" />
+            </xpath>
             <xpath expr="//field[@name='company_id']" position="replace">
             </xpath>
             <xpath expr="//field[@name='tag_ids']" position="replace">
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                <field name="probability"/>
                 <field name="company_id" groups="base.group_multi_company"/>
             </xpath>
             <xpath expr="//notebook" position="inside">
