@@ -1,21 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="inherited_view_sale_order_new_fields_form123" model="ir.ui.view">
-            <field name="name">sale.order.form.inherit.form123</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_order_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//group//group[@name='utm_link']//field[@name='source_id']" position="replace">
-                </xpath>
-            </field>
-        </record>
 
         <record id="inherited_view_sale_order_new_fields_form" model="ir.ui.view">
             <field name="name">sale.order.form.inherit.form</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//group//group[@name='utm_link']//field[@name='source_id']" position="replace">
+                </xpath>
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="serial_num" required="0"/>
                 </xpath>
