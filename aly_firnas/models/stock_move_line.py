@@ -14,8 +14,6 @@ class StockMoveLine(models.Model):
     calibration_date = fields.Date(string="Calibration Date")
     product_dates_required = fields.Boolean(string="bol", related="product_id.is_required")
     product_tracking = fields.Selection(string="sel", related="product_id.tracking")
-    picking_type_id = fields.Many2one('stock.picking.type', 'Picking Type', related="move_id.picking_type_id")
-    is_readonly = fields.Boolean("Is Description and Ref Readonly")
     lot_id_domain = fields.Char(
         compute="_compute_lot_domain",
         readonly=True,
@@ -39,8 +37,6 @@ class StockMoveLine(models.Model):
     @api.onchange('lot_id')
     def change_calibration_date(self):
         for rec in self:
-            picking_type = rec.picking_type_id or rec.move_id.picking_type_id
-            rec.is_readonly = picking_type.code in ['outgoing', 'internal']
             if rec.lot_id:
                 rec.calibration_date = rec.lot_id.calibration_date
                 rec.lot_description = rec.lot_id.note
