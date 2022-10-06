@@ -9,7 +9,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='lot_name']" position="after">
                 <field name="lot_description" readonly="1" invisible="not context.get('show_lots_m2o')" widget="html"/>
-                <field name="lot_description" invisible="not context.get('show_lots_text')"/>
+                <field name="lot_description" invisible="not context.get('show_lots_text')" widget="char"/>
             </xpath>
             <xpath expr="//field[@name='lot_id']" position="replace">
                 <field name="lot_id_domain" invisible="1"/>

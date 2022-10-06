@@ -39,7 +39,7 @@ class StockMoveLine(models.Model):
         for rec in self:
             if rec.lot_id:
                 rec.calibration_date = rec.lot_id.calibration_date
-                rec.lot_description = rec.lot_id.note.replace("<p>", "").replace("</p>", "")
+                rec.lot_description = rec.lot_id.note
                 rec.lot_ref = rec.lot_id.ref
             else:
                 rec.calibration_date = False
@@ -182,7 +182,7 @@ class StockMoveLine(models.Model):
             if not self.qty_done:
                 self.qty_done = 1
             if not self.lot_description:
-                self.lot_description = self.move_id.description_picking.replace("<p>", "").replace("</p>", "")
+                self.lot_description = self.move_id.description_picking
 
             message = None
             if self.lot_name or self.lot_id:
