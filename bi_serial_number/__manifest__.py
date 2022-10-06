@@ -11,7 +11,6 @@
     'depends': ['base', 'stock', 'product_expiry'],
     'data': [
         'views/product_product_form.xml',
-        'views/stock_move_line_form.xml',
     ],
     'installable': True,
     'auto_install': False,
