@@ -29,7 +29,6 @@ class AccountMoveLine(models.Model):
                 line.analytic_account_id = analytic_account_id if not line.analytic_account_id else line.analytic_account_id.id
             if analytic_tag_ids:
                 line.analytic_tag_ids = analytic_tag_ids if not line.analytic_tag_ids else line.analytic_tag_ids.ids
-
         return lines
 
     def write(self, vals):

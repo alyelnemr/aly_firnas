@@ -11,31 +11,39 @@ class AccountMove(models.Model):
     @api.model
     def create(self, vals):
         res = super(AccountMove, self).create(vals)
-        if not self._context.get('from_reconcile', False):
-            for move in res:
-                for line in move.line_ids:
-                    if line.account_id and line.account_id.internal_type in (
-                    'payable', 'receivable') and not line.analytic_account_id:
+        for move in res:
+            for line in move.line_ids:
+                if line.tax_line_id:
+                    line.analytic_account_id = move.analytic_account_id.id
+                if line.tax_line_id:
+                    line.analytic_tag_ids = move.analytic_tag_ids.ids
+                if line.account_id and line.account_id.internal_type in ('payable', 'receivable'):
+                    if self._context.get('from_reconcile', False):
+                        line.analytic_account_id = move.analytic_account_id.id if not line.analytic_account_id else line.analytic_account_id.id
+                    else:
                         line.analytic_account_id = move.analytic_account_id.id
-                    if line.account_id and line.account_id.internal_type in (
-                    'payable', 'receivable') and not line.analytic_tag_ids:
+                if line.account_id and line.account_id.internal_type in ('payable', 'receivable'):
+                    if self._context.get('from_reconcile', False):
+                        line.analytic_tag_ids = move.analytic_tag_ids.ids if not line.analytic_tag_ids else line.analytic_tag_ids.ids
+                    else:
                         line.analytic_tag_ids = move.analytic_tag_ids.ids
         return res
 
     def write(self, vals):
         lines = super(AccountMove, self).write(vals)
-        if not self._context.get('from_reconcile', False):
-            if 'analytic_account_id' in vals or 'analytic_tag_ids' in vals:
-                for move in self:
-                    for line in move.line_ids:
-                        if line.account_id.internal_type in ('payable', 'receivable'):
+        for move in self:
+            for line in move.line_ids:
+                if ('analytic_account_id' in vals or 'analytic_tag_ids' in vals) and (not line.analytic_account_id or not line.analytic_tag_ids):
+                    if line.account_id.internal_type in ('payable', 'receivable'):
+                        if self._context.get('from_reconcile', False):
                             line.analytic_account_id = move.analytic_account_id.id if not line.analytic_account_id else line.analytic_account_id.id
                             line.analytic_tag_ids = move.analytic_tag_ids.ids if not line.analytic_tag_ids else line.analytic_tag_ids.ids
                         else:
-                            line.analytic_account_id = move.invoice_line_ids[
-                                0].analytic_account_id.id if not line.analytic_account_id else line.analytic_account_id.id
-                            line.analytic_tag_ids = move.invoice_line_ids[
-                                0].analytic_tag_ids.ids if not line.analytic_tag_ids else line.analytic_tag_ids.ids
+                            line.analytic_account_id = move.analytic_account_id.id
+                            line.analytic_tag_ids = move.analytic_tag_ids.ids
+                    else:
+                        line.analytic_account_id = move.invoice_line_ids[0].analytic_account_id.id if not line.analytic_account_id else line.analytic_account_id.id
+                        line.analytic_tag_ids = move.invoice_line_ids[0].analytic_tag_ids.ids if not line.analytic_tag_ids else line.analytic_tag_ids.ids
         return lines
 
     @api.depends('line_ids.analytic_account_id', 'line_ids.analytic_tag_ids', 'invoice_line_ids.analytic_account_id',
