@@ -9,7 +9,7 @@ import json
 class StockMoveLine(models.Model):
     _inherit = 'stock.move.line'
 
-    lot_description = fields.Char(string='Lot Description')
+    lot_description = fields.Html(string='Lot Description')
     lot_ref = fields.Char(string='Lot Internal Reference')
     calibration_date = fields.Date(string="Calibration Date")
     product_dates_required = fields.Boolean(string="bol", related="product_id.is_required")

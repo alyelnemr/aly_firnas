@@ -5,7 +5,7 @@ from odoo import api, fields, models
 class StockMove(models.Model):
     _inherit = "stock.move"
 
-    lot_description = fields.Char(string='Lot Description')
+    lot_description = fields.Html(string='Lot Description')
     lot_ref = fields.Char(string='Lot Internal Reference')
 
     def _prepare_procurement_values(self):
