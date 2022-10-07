@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
+
+from collections import defaultdict
 from odoo import api, fields, models
+from odoo.tools import float_compare, float_round, float_is_zero, OrderedSet
 
 
 class StockMove(models.Model):
@@ -7,6 +10,7 @@ class StockMove(models.Model):
 
     lot_description = fields.Html(string='Lot Description')
     lot_ref = fields.Char(string='Lot Internal Reference')
+    is_bonus_item = fields.Boolean(string='Is Bonus')
 
     def _prepare_procurement_values(self):
         res = super()._prepare_procurement_values()
@@ -121,3 +125,38 @@ class StockMove(models.Model):
                 move_line_cmd = dict(move_line_vals, lot_name=lot_name)
                 move_lines_commands.append((0, 0, move_line_cmd))
         return move_lines_commands
+
+    def product_price_update_before_done(self, forced_qty=None):
+        tmpl_dict = defaultdict(lambda: 0.0)
+        # adapt standard price on incomming moves if the product cost_method is 'average'
+        std_price_update = {}
+        for move in self.filtered(lambda move: move._is_in() and move.with_context(
+                force_company=move.company_id.id).product_id.cost_method == 'average'):
+            if not move.is_bonus_item:
+                product_tot_qty_available = move.product_id.sudo().with_context(force_company=move.company_id.id).quantity_svl + \
+                                            tmpl_dict[move.product_id.id]
+                rounding = move.product_id.uom_id.rounding
+
+                valued_move_lines = move._get_in_move_lines()
+                qty_done = 0
+                for valued_move_line in valued_move_lines:
+                    qty_done += valued_move_line.product_uom_id._compute_quantity(valued_move_line.qty_done,
+                                                                                  move.product_id.uom_id)
+
+                qty = forced_qty or qty_done
+                if float_is_zero(product_tot_qty_available, precision_rounding=rounding):
+                    new_std_price = move._get_price_unit()
+                elif float_is_zero(product_tot_qty_available + move.product_qty, precision_rounding=rounding) or \
+                        float_is_zero(product_tot_qty_available + qty, precision_rounding=rounding):
+                    new_std_price = move._get_price_unit()
+                else:
+                    # Get the standard price
+                    amount_unit = std_price_update.get((move.company_id.id, move.product_id.id)) or move.product_id.with_context(
+                        force_company=move.company_id.id).standard_price
+                    new_std_price = ((amount_unit * product_tot_qty_available) + (move._get_price_unit() * qty)) / (
+                            product_tot_qty_available + qty)
+
+                tmpl_dict[move.product_id.id] += qty_done
+                # Write the standard price, as SUPERUSER_ID because a warehouse manager may not have the right to write on products
+                move.product_id.with_context(force_company=move.company_id.id).sudo().write({'standard_price': new_std_price})
+                std_price_update[move.company_id.id, move.product_id.id] = new_std_price

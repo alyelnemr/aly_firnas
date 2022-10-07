@@ -17,6 +17,9 @@
                        options="{'no_create': False, 'no_quick_create': False, 'no_create_edit':False}"
                        attrs="{'required':[('required_analytic_account_and_tags','=',True)],'readonly':[('is_origin_so','=',True)],'invisible':[('required_analytic_account_and_tags','=',False)]}"/>
             </xpath>
+            <xpath expr="//tree/field[@name='product_uom']" position="after">
+                <field name="is_bonus_item" invisible="1" />
+            </xpath>
         </field>
     </record>
 
