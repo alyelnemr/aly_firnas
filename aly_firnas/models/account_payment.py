@@ -31,12 +31,21 @@ class AccountPayment(models.Model):
         # when making a reconciliation on an existing liquidity journal item, mark the payment as reconciled
         for payment in self:
             for line in payment.move_line_ids:
+                # count of all lines, then remove 1 to count all without the same line of comparison
+                main_counter = len(payment.move_line_ids) - 1
+                counter = 0
                 if line.payment_id:
-                    # In case of an internal transfer, there are 2 liquidity move lines to match with a bank statement
-                    if any(_line.statement_id for _line in line.payment_id.move_line_ids.filtered(
-                            lambda r: r.id != line.id and r.account_id.internal_type == 'liquidity')):
-                        line.payment_id.state = 'reconciled'
-                        break
+                    for _line in line.payment_id.move_line_ids:
+                        if _line.id != line.id and _line.account_id.internal_type == 'liquidity':
+                            if _line.statement_id:
+                                counter += 1
+                if counter == main_counter:
+                    line.payment_id.state = 'reconciled'
+                    # # In case of an internal transfer, there are 2 liquidity move lines to match with a bank statement
+                    # if any(_line.statement_id for _line in line.payment_id.move_line_ids.filtered(
+                    #         lambda r: r.id != line.id and r.account_id.internal_type == 'liquidity')):
+                    #     line.payment_id.state = 'reconciled'
+                    #     break
 
     @api.depends("currency_id")
     def _compute_currency(self):

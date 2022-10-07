@@ -171,12 +171,16 @@ class InheritBankStatement(models.Model):
             for index, aml_dict in enumerate(to_create):
                 analytic_account_id = self.analytic_account_id.id
                 if not self.analytic_account_id:
-                    if aml_dict['move_line'].analytic_account_id:
+                    if 'move_line' in aml_dict and aml_dict['move_line'].analytic_account_id:
                         analytic_account_id = aml_dict['move_line'].analytic_account_id.id
+                    else:
+                        analytic_account_id = aml_dict['analytic_account_id']
                 analytic_tag_ids = self.analytic_tag_ids
                 if not self.analytic_tag_ids:
-                    if aml_dict['move_line'].analytic_tag_ids:
+                    if 'move_line' in aml_dict and aml_dict['move_line'].analytic_tag_ids:
                         analytic_tag_ids = aml_dict['move_line'].analytic_tag_ids
+                    else:
+                        analytic_tag_ids = aml_dict['analytic_tag_ids']
                 aml_dict['move_id'] = move.id
                 aml_dict['partner_id'] = self.partner_id.id
                 aml_dict['statement_line_id'] = self.id
