@@ -15,6 +15,7 @@ class CRMLeadInherit(models.Model):
         res['context']['default_country'] = self.country.ids
         res['context']['default_country'] = self.country.ids
         res['context']['default_start_date'] = self.start_date
+        res['context']['default_forecast'] = self.forecast
         res['context']['default_sub_date'] = self.sub_date
         res['context']['default_sub_type'] = self.sub_type.id
         res['context']['default_fund'] = self.fund.id
@@ -23,6 +24,7 @@ class CRMLeadInherit(models.Model):
         res['context']['default_end_client'] = self.end_client.ids
         res['context']['default_rfp_ref_number'] = self.rfp_ref_number
         res['context']['default_proposals_engineer_id'] = self.proposals_engineer_id.id
+        res['context']['default_currency_id'] = self.currency_id.id
         return res
 
     partner_id = fields.Many2one('res.partner', string='Customer', tracking=10, index=True, required=False,
