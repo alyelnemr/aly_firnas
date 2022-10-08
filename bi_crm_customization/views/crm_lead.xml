@@ -39,8 +39,8 @@
                 <field name="forecast"/>
             </xpath>
 <!--            <xpath expr="//div/h2/div[1]" position="replace"></xpath>-->
-            <xpath expr="//div/h2/div[@class='col']" position="replace">
-            </xpath>
+<!--            <xpath expr="//div/h2/div[@class='col']" position="replace">-->
+<!--            </xpath>-->
             <xpath expr="//group/group/field[@name='partner_id']" position="attributes">
                 <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}
                 </attribute>
