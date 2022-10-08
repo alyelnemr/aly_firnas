@@ -1,2 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_expected_revenue,model.expected.revenue,model_expected_revenue,,1,1,1,1
+access_crm_type,access.crm.type,model_crm_type,base.group_user,1,1,1,1
+access_project_submission,access.project.submission,model_project_submission,bi_new_customized_fields.group_project_submission,1,1,1,1
+access_project_fund,access.project.fund,model_project_fund,bi_new_customized_fields.group_project_fund,1,1,1,1
+access_project_source,access.project.source,model_project_source,bi_new_customized_fields.group_project_source,1,1,1,1
+access_project_partnership,access.project.partnership,model_project_partnership,bi_new_customized_fields.group_project_partnership,1,1,1,1

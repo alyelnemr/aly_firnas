@@ -1,0 +1,114 @@
+<odoo>
+    <data>
+        <template id="thankyou_page">
+            <t t-call="portal.portal_layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h1 class="text-center">Done!</h1>
+                                    <p class="text-center">
+                                        Your <b>Approved</b> your WH Transaction.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <template id="thankyou_page_reject">
+            <t t-call="portal.portal_layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h1 class="text-center">Done!</h1>
+                                    <p class="text-center">
+                                        Your <b>Rejected</b> your WH Transaction.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <record id="aly_wh_mail_template" model="mail.template">
+            <field name="name">WH Transaction: Send by email</field>
+            <field name="model_id" ref="aly_firnas.model_wh_email_wizard"/>
+            <field name="email_from">${(object.partner_id.email_formatted or user.email_formatted) |safe}</field>
+            <field name="partner_to">${object.partner_id.id}</field>
+            <field name="subject">${ object.wh_id.name } Confirmation </field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Dear
+                        % if object.partner_id.parent_id:
+                        ${object.partner_id.name} (${object.partner_id.parent_id.name}),
+                        % else:
+                        ${object.partner_id.name},
+                        % endif
+                        <br/>
+                        <br/>
+                        Here is your WH Transaction
+                        % if object.wh_id:
+                        <strong>${object.wh_id.name}</strong>
+                        %endif
+                        for your confirmation,
+
+                        % if object.current_url:
+                        <br/>
+                        <br/>
+                        <br/>
+                        <table class="table table-sm text-center" style="width:40%;border: 1px double black;">
+                            <tr>
+                                <td style="background-color:#83eb34 !important;color:#FFF !important;width:50%;">
+                                    <a href="${ object.approve_url }">Approve</a>
+                                </td>
+                                <td style="background-color:#cadbbd !important;color:#FFF !important;width:50%;">
+                                    <a href="${ object.reject_url }">Reject</a>
+                                </td>
+                            </tr>
+                        </table>
+                        %endif
+
+                    </p>
+                </div>
+            </field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="user_signature" eval="False"/>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="aly_wh_email_form" model="ir.ui.view">
+            <field name="name">aly_wh_email_form</field>
+            <field name="model">wh.email.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Select User">
+                    <group>
+                        <group>
+                            <field name="partner_id" options="{'no_create_edit': True, 'no_create': True}"/>
+<!--                            <field name="current_url"/>-->
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="action_send_mail" type="object" string="Send WH Confirmation Mail" class="btn-primary" />
+                        <button special="cancel" string="Cancel" class="btn-secondary" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="aly_wh_send_mail_wizard_action" model="ir.actions.act_window">
+            <field name="name">Select User</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wh.email.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="aly_wh_email_form"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

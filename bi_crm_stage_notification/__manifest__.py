@@ -11,7 +11,7 @@
     'depends': ['base', 'crm'],
     'data': [
         'security/security.xml',
-        'views/crm_stage_view.xml',
+        'views/crm_stage.xml',
     ],
     'installable': True,
     'auto_install': False,

@@ -17,6 +17,7 @@
     'data': [
         'security/expense_security.xml',
         'views/website_portal_templates.xml',
+        'views/website_portal_templates2.xml',
     ],
     'installable': True,
     'auto_install': False,

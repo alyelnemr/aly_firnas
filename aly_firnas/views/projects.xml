@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+<!--        <record id="project.open_view_project_all" model="ir.actions.act_window">-->
+<!--            <field name="view_mode">tree,kanban,ganttaps,form</field>-->
+<!--            <field name="view_id" />-->
+<!--        </record>-->
+
+        <record id="aly_view_task_search_form" model="ir.ui.view">
+            <field name="name">aly.project.task.search.form</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_search_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search/group" position="inside">
+                    <separator/>
+                    <filter string="Parent Task" name="parent_task_group_by" context="{'group_by': 'parent_id'}"/>
+                    <separator/>
+                    <filter string="Tags" name="task_tags_group_by" context="{'group_by': 'tag_id_group_by'}"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="aly_edit_project_form" model="ir.ui.view">
+            <field name="name">aly.edit.project.form</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.edit_project"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <field name="opportunity_id" invisible="1"/>
+                    <button class="oe_stat_button o_res_partner_tip_opp" type="object"
+                            name="action_view_opportunity"
+                            icon="fa-star" attrs="{'invisible': [('opportunity_id', '=', False)]}"
+                            context="{'default_partner_id': active_id}">
+                        <span>Opportunities</span>
+                    </button>
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="replace">
+                    <field name="user_id" string="Project Engineer" attrs="{'readonly':[('active','=',False)]}"/>
+                    <field name="project_manager_id" string="Project Manager" attrs="{'readonly':[('active','=',False)]}"/>
+                    <field name="opportunity_id" />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="aly_project_view_form_simplified_inherit" model="ir.ui.view">
+            <field name="name">aly.project.view.form.simplified.inherit</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.project_project_view_form_simplified"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[last()]" position="after">
+                    <field name="company_id" />
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

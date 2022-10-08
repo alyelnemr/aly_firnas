@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="aly_hr_expense_view_form">
+            <field name="name">hr_expense_view_form.inherit</field>
+            <field name="model">hr.expense</field>
+            <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_view_sheet']" position="after">
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object"
+                            attrs="{'invisible': [('state', 'not in', ['submit', 'cancel'])]}"/>
+                    <button name="action_cancel" string="Cancel" type="object" />
+                </xpath>
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button type="object"
+                            name="action_view_picking_delivery"
+                            class="oe_stat_button"
+                            attrs="{'invisible':['|', ('picking_count', '=', 0), ('picking_count', '=', False)]}"
+                            icon="fa-truck">
+                        <field name="picking_count" string="Receipts" widget="statinfo"
+                               attrs="{'invisible':['|', ('picking_count', '=', 0), ('picking_count', '=', False)]}"
+                        />
+                    </button>
+                </xpath>
+                <xpath expr="//field[@name='payment_mode']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='unit_amount']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='tax_ids']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='total_amount']" position="replace">
+                </xpath>
+                <xpath expr="//label[@for='quantity']" position="replace">
+                </xpath>
+                <xpath expr="//label[@for='payment_mode']" position="replace">
+                </xpath>
+                <xpath expr="//div[@class='o_row']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='company_id']" position="replace">
+                    <field name="total_amount_company" attrs="{'readonly': [('is_same_currency', '=', True)]}"/>
+                    <field name="is_same_currency" invisible="1"/>
+                    <field name="product_type" invisible="1"/>
+                    <field name="default_location_dest_id_usage" invisible="1"/>
+                    <field name="account_id" force_save="1" options="{'no_create': True}" readonly="1"
+                           domain="[('internal_type', '=', 'other'), ('company_id', '=', company_id)]"
+                           context="{'default_company_id': company_id}"/>
+                    <field name="picking_type_id" attrs="{'invisible': [('product_type', 'not in', ('product', 'consu'))]}"
+                           options="{'no_create': True}"/>
+                    <field name="dest_address_id" groups="stock.group_stock_multi_locations"
+                           attrs="{'invisible': [('default_location_dest_id_usage', '!=', 'customer')], 'required': [('default_location_dest_id_usage', '=', 'customer')]}"/>
+                    <field name="dest_address_id" options="{'no_create': True}" invisible="1" />
+                    <field name="location_id" options="{'no_create': True}" invisible="1" />
+                    <field name="location_dest_id" options="{'no_create': True}" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='employee_id']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='analytic_account_id']" position="replace">
+                    <field name="tax_ids" widget="many2many_tags"
+                           attrs="{'readonly': [('is_editable', '=', False)]}" context="{'default_company_id': company_id}"/>
+                </xpath>
+                <xpath expr="//field[@name='analytic_tag_ids']" position="replace">
+                    <field name="total_amount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                </xpath>
+                <xpath expr="//field[@name='currency_id']" position="replace">
+                    <field name="currency_id" groups="base.group_multi_currency"/>
+                    <field name="unit_amount" required="1" widget="monetary"
+                           options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                    <field name="discount" />
+                </xpath>
+                <xpath expr="//field[@name='reference']" position="replace">
+                    <field name="product_id" required="1"
+                           context="{'default_can_be_expensed': 1, 'tree_view_ref': 'hr_expense.product_product_expense_tree_view'}"
+                           widget="many2one_barcode"
+                    />
+                </xpath>
+                <xpath expr="//field[@name='date']" position="replace">
+                    <field name="name" placeholder="e.g. Lunch with Customer"/>
+                </xpath>
+                <xpath expr="//field[@name='account_id']" position="replace">
+                    <label for="quantity"/>
+                    <div class="o_row">
+                        <field name="quantity" class="oe_inline"/>
+                        <field name="product_uom_id" required="1" widget="selection" class="oe_inline" groups="uom.group_uom"/>
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='product_id']" position="replace">
+                    <field name="partner_id"/>
+                    <field name="vendor_contact_id"/>
+                    <field name="reference" attrs="{'readonly': [('is_ref_editable', '=', False)]}"/>
+                    <field name="date" attrs="{'invisible': False}" modifiers="{'invisible':False,'readonly':[['state','not
+                        in',['draft']]],'required':true}"/>
+                    <field name="project_id"/>
+                    <field name="company_id" groups="base.group_multi_company" force_save="1" readonly="1" />
+                    <field name="analytic_account_id" domain="['|', ('company_id', '=', company_id), ('company_id', '=', False)]"
+                           groups="analytic.group_analytic_accounting" force_save="1" readonly="1"/>
+                    <field name="analytic_tag_ids" widget="many2many_tags" groups="analytic.group_analytic_tags" force_save="1"
+                           readonly="1"/>
+                    <field name="employee_id" readonly="1"/>
+                    <field name="payment_mode" widget="radio" context="{'default_payment_mode': 'company_account'}"
+                           attrs="{'readonly': True}"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="aly_hr_expense_view_tree" model="ir.ui.view">
+            <field name="name">hr_expense_view_tree.inherit</field>
+            <field name="model">hr.expense</field>
+            <field name="inherit_id" ref="hr_expense.view_expenses_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date']" position="attributes">
+                    <attribute name="optional">show</attribute>
+                </xpath>
+                <xpath expr="//field[@name='employee_id']" position="attributes">
+                    <attribute name="optional">show</attribute>
+                </xpath>
+                <xpath expr="//field[@name='name']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='payment_mode']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='analytic_account_id']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='company_id']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='analytic_tag_ids']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='total_amount']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='employee_id']" position="after">
+                    <field name="name" optional="show"/>
+                    <field name="analytic_account_id" groups="analytic.group_analytic_accounting" optional="show"/>
+                    <field name="analytic_tag_ids" widget="many2many_tags" groups="analytic.group_analytic_tags" optional="show"/>
+                    <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                    <field name="total_amount" sum="Total Amount" widget="monetary" options="{'currency_field': 'currency_id'}"
+                           optional="show"/>
+                    <field name="payment_mode" optional="show"/>
+                    <field name="state" optional="show"/>
+                </xpath>
+            </field>
+        </record>
+
+        <menuitem id="aly_menu_hr_expense_report" name="Expense Reports" sequence="40" parent="account_accountant.menu_accounting"
+                  groups="account.group_account_invoice"/>
+        <menuitem id="aly_menu_hr_expense_sheet_all_to_approve" name="To Approve" sequence="1" parent="aly_menu_hr_expense_report"
+                  action="hr_expense.action_hr_expense_sheet_all_to_approve"/>
+        <menuitem id="aly_menu_hr_expense_sheet_all_to_post" name="To Post" sequence="2" parent="aly_menu_hr_expense_report"
+                  action="hr_expense.action_hr_expense_sheet_all_to_post" groups="account.group_account_user"/>
+        <menuitem id="aly_menu_hr_expense_sheet_all_to_pay" name="To Pay" sequence="3" parent="aly_menu_hr_expense_report"
+                  action="hr_expense.action_hr_expense_sheet_all_to_pay" groups="account.group_account_user"/>
+    </data>
+</odoo>
