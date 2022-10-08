@@ -8,7 +8,7 @@ from odoo.tools import float_compare, float_round, float_is_zero, OrderedSet
 class StockMove(models.Model):
     _inherit = "stock.move"
 
-    lot_description = fields.Html(string='Lot Description')
+    lot_description = fields.Char(string='Lot Description')
     lot_ref = fields.Char(string='Lot Internal Reference')
     is_bonus_item = fields.Boolean(string='Is Bonus')
 
@@ -96,7 +96,7 @@ class StockMove(models.Model):
             'picking_id': self.picking_id.id,
             'location_dest_id': location_dest.id or self.location_dest_id.id,
             'location_id': self.location_id.id,
-            'lot_description': self.description_picking,
+            'lot_description': self.description_picking.replace("<p>", "").replace("</p>", ""),
             'product_id': self.product_id.id,
             'product_uom_id': self.product_id.uom_id.id,
             'qty_done': 1,
