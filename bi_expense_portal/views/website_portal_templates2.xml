@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="expense_request_edit" name="Expense: Edit an Expense Request">
+            <t t-call="portal.portal_layout">
+                <t t-set="additional_title">Expenses</t>
+                <div id="wrap" class='container'>
+                    <h1 class="text-center mt-2">
+                        Expense Form - Edit
+                    </h1>
+                    <div class="row mt-3">
+                        <section id="forms" class="col expense_form">
+                            <form action="/expense_request_submit" method="post" enctype="multipart/form-data">
+                                <input type="hidden" name="hdn_expense_id"
+                                       t-att-value="expense_sudo.id"/>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-8 col-md-8">
+                                        <label class="col-form-label" for="description">Description</label>
+                                        <input type="text" class="form-control" name="name" t-att-value="expense_sudo.name" required="1"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="partner_id">Vendor</label>
+                                        <select id="partner_id" class="form-control" name="partner_id" required="1">
+                                            <t t-foreach="vendors" t-as="vendor">
+                                                <option t-att-value="vendor.id"
+                                                        t-att-selected="vendor.id == expense_sudo.partner_id.id">
+                                                    <t t-esc="vendor.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="vendor_contact_id">Vendor Contacts</label>
+                                        <input type="hidden" name="hdn_vendor_contact_id"
+                                               t-att-value="expense_sudo.vendor_contact_id.id"/>
+                                        <select id="vendor_contact_id" class="form-control"
+                                                data-init="0" name="vendor_contact_id">
+                                            <t t-foreach="vendor_contact_id" t-as="v_contact">
+                                                <option t-att-value="v_contact.id">
+                                                    <t t-esc="v_contact.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="project_id">Projects</label>
+                                        <select id="project_id" class="form-control" name="project_id" required="1">
+                                            <t t-foreach="projects" t-as="project">
+                                                <option t-att-value="project.id"
+                                                        t-att-selected="project.id == expense_sudo.project_id.id">
+                                                    <t t-esc="project.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="company_id">Company</label>
+                                        <select id="company_id" class="form-control company_autoformat" name="company_id">
+                                            <option t-att-value="default_company.id"
+                                                    t-att-selected="default_company.id == expense_sudo.company_id.id">
+                                                <t t-esc="default_company.name"/>
+                                            </option>
+                                            <t t-foreach="companies" t-as="company">
+                                                <option t-att-value="company.id"
+                                                        t-att-selected="company.id == expense_sudo.company_id.id">
+                                                    <t t-esc="company.display_name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="employee_id">Employee</label>
+                                        <select class="form-control" name="employee_id" required="1">
+                                            <t t-foreach="employees" t-as="employee">
+                                                <option t-att-value="employee.id">
+                                                    <t t-esc="employee.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="date">Date</label>
+                                        <div class="input-append date">
+                                            <input type="date" name="date" t-att-value="expense_sudo.date"/>
+                                            <span class="add-on">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="product_id">Product</label>
+                                        <select class="form-control" id="product_id" name="product_id" required="1" data-init="0">
+                                            <t t-foreach="products" t-as="product">
+                                                <option t-att-value="product.id"
+                                                        t-att-selected="product.id == expense_sudo.product_id.id">
+                                                    <t t-esc="product.display_name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="reference">Bill Reference</label>
+                                        <input type="text" class="form-control" name="reference" t-att-value="expense_sudo.reference"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-2 col-md-2">
+                                        <label class="col-form-label" for="unit_amount">Unit Price</label>
+                                        <input type="number" step="0.01" class="form-control" id="unit_amount"
+                                               name="unit_amount" required="1" t-att-value="expense_sudo.unit_amount"/>
+                                    </div>
+                                    <div class="col-lg-2 col-md-2">
+                                        <label class="col-form-label" for="quantity">Quantity</label>
+                                        <input type="number" step="0.01" class="form-control" id="quantity"
+                                               name="quantity" value="1.0" required="1" t-att-value="expense_sudo.quantity"/>
+                                    </div>
+                                    <div class="col-lg-2 col-md-2">
+                                        <label class="col-form-label" for="taxes">Taxes</label>
+                                        <select class="form-control" id="tax_ids" name="tax_ids" required="1">
+                                            <t t-foreach="tax_ids" t-as="tax">
+                                                <t t-if="expense_sudo.tax_ids">
+                                                    <option t-att-value="tax.id"
+                                                            t-att-selected="tax.id == expense_sudo.tax_ids[0].id">
+                                                        <t t-esc="tax.sudo().display_name"/>
+                                                    </option>
+                                                </t>
+                                                <option t-att-value="tax.id">
+                                                    <t t-esc="tax.sudo().display_name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-2 col-md-2">
+                                        <label class="col-form-label" for="total_amount">Total</label>
+                                        <input type="number" step="0.01" class="form-control" name="total_amount" value="0.0"
+                                               readonly="1" t-att-value="expense_sudo.total_amount"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="payment_mode">Paid By</label>
+                                        <select class="form-control" name="payment_mode" required="1">
+<!--                                            <option value="own_account">-->
+<!--                                                Employee (to reimburse)-->
+<!--                                            </option>-->
+                                            <option value="company_account">
+                                                Company
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div t-if="default_account" class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="account_id">Account</label>
+                                        <select class="form-control" name="account_id" required="1">
+                                            <t t-foreach="default_account" t-as="acc">
+                                                <option t-att-value="acc.id"
+                                                        t-att-selected="acc.id == expense_sudo.account_id.id">
+                                                    <t t-esc="acc.sudo().display_name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="currency_id">Currency</label>
+                                        <select class="form-control" name="currency_id">
+                                            <option t-att-value="default_currency.id"
+                                                    t-att-selected="default_currency.id == expense_sudo.currency_id.id">
+                                                <t t-esc="default_currency.sudo().display_name"/>
+                                            </option>
+                                            <t t-foreach="currencies - default_currency" t-as="currency">
+                                                <option t-att-value="currency.id"
+                                                        t-att-selected="currency.id == expense_sudo.currency_id.id">
+                                                    <t t-esc="currency.sudo().display_name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-2 col-md-2">
+                                        <label class="col-form-label" for="analytic_account_id">Analytic Account</label>
+                                        <select class="form-control" id="analytic_account_id" name="analytic_account_id"
+                                                required="1" data-init="0">
+                                            <t t-foreach="analytic_account_id" t-as="analytic_account">
+                                                <option t-att-value="analytic_account.id">
+                                                    <t t-esc="analytic_account.display_name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-2 col-md-2">
+                                        <label class="col-form-label" for="analytic_tag_id">Analytic Tag</label>
+                                        <select multiple="multiple" class="form-control" id="analytic_tag_id" name="analytic_tag_id" required="1"
+                                                data-init="0">
+                                            <t t-foreach="analytic_tag_id" t-as="analytic_tag">
+                                                <option t-att-value="analytic_tag.id" selected="selected">
+                                                    <t t-esc="analytic_tag.display_name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="attachment">Attachment</label>
+                                        <input type="file" class="form-control o_website_form_input" name="attachment"/>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="description">Notes</label>
+                                        <input type="text" class="form-control" name="description"
+                                               t-att-value="expense_sudo.description"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-8 col-lg-7">
+                                        <button type="submit"
+                                                class="btn btn-primary btn-lg o_website_form_send o_default_snippet_text">
+                                            Save
+                                        </button>
+                                        <span style="color: red;">
+                                            <t t-if="error_fields" t-esc="error_fields"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </form>
+                        </section>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <template id="expense_report_edit" name="Expense Report: Edit an Expense Report">
+            <t t-call="portal.portal_layout">
+                <t t-set="additional_title">Expenses Report</t>
+                <div id="wrap" class='container'>
+                    <h1 class="text-center mt-2">
+                        Expense Report Form - Edit
+                    </h1>
+                    <div class="row mt-3">
+                        <section id="forms" class="col expense_form">
+                            <form action="/expense_report_submit" method="post" enctype="multipart/form-data">
+                                <input type="hidden" name="hdn_expense_id"
+                                       t-att-value="expense_sudo.id"/>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-8 col-md-8">
+                                        <label class="col-form-label" for="description">Description</label>
+                                        <input type="text" class="form-control" name="name" t-att-value="expense_sudo.name" required="1"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="employee_id">Employee</label>
+                                        <select class="form-control" name="employee_id" required="1">
+                                            <t t-foreach="employees" t-as="employee">
+                                                <option t-att-value="employee.id">
+                                                    <t t-esc="employee.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="payment_mode">Paid By</label>
+                                        <select class="form-control" name="payment_mode">
+                                            <option value="company_account">
+                                                Company
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="user_id">Manager</label>
+                                        <select class="form-control" name="user_id" required="1">
+                                            <t t-foreach="default_managers" t-as="manager">
+                                                <option t-att-value="manager.id"
+                                                        t-att-selected="manager.id == expense_sudo.user_id.id">
+                                                <t t-esc="manager.name"/>
+                                                </option>
+                                            </t>
+                                            <t t-foreach="managers" t-as="manager">
+                                                <option t-att-value="manager.id"
+                                                        t-att-selected="manager.id == expense_sudo.user_id.id">
+                                                <t t-esc="manager.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="company_id">Company</label>
+                                        <select id="company_id" class="form-control company_autoformat" name="company_id">
+                                            <option t-att-value="default_company.id"
+                                                    t-att-selected="default_company.id == expense_sudo.company_id.id">
+                                                <t t-esc="default_company.name"/>
+                                            </option>
+                                            <t t-foreach="companies" t-as="company">
+                                                <option t-att-value="company.id"
+                                                        t-att-selected="company.id == expense_sudo.company_id.id">
+                                                    <t t-esc="company.display_name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2 text-center">
+                                        <strong>Select</strong>
+                                    </div>
+                                    <div class="col-lg-2 text-left">
+                                        <strong>Date</strong>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <strong>Product</strong>
+                                    </div>
+                                    <div class="col-lg-2 text-right">
+                                        <strong>Unit Price</strong>
+                                    </div>
+                                    <div class="col-lg-2 text-right">
+                                        <strong>Quantity</strong>
+                                    </div>
+                                    <div class="col-lg-2 text-right">
+                                        <strong>Subtotal</strong>
+                                    </div>
+                                </div>
+                                <t t-set="to_be_added_index" t-value="1"/>
+                                <t t-foreach="expense_sudo.expense_line_ids" t-as="expense_request">
+                                    <div class="row">
+                                        <div class="col-lg-2 text-center">
+                                            <!--                                            <input type="checkbox" t-att-value="'%s' % (expense_request.id)" t-att-name="'to_be_added_[''%s'']' % (to_be_added_index)" />-->
+                                            <input type="checkbox" checked="checked" t-att-value="'%s' % (expense_request.id)"
+                                                   name="to_be_added_ids"/>
+                                        </div>
+                                        <div class="col-lg-2 text-left">
+                                            <span t-field="expense_request.date" t-options='{"widget": "date"}'/>
+                                        </div>
+                                        <div id='product_name' class="col-lg-2">
+                                            <span t-esc="expense_request.product_id.name"/>
+                                        </div>
+                                        <div class="col-lg-2 text-right">
+                                            <span t-field="expense_request.unit_amount"
+                                                  t-options='{"widget": "monetary", "display_currency": expense_request.currency_id}'/>
+                                        </div>
+                                        <div class="col-lg-2 text-right">
+                                            <span t-esc="expense_request.quantity"/>
+                                        </div>
+                                        <div class="col-lg-2 text-right">
+                                            <span t-field="expense_request.untaxed_amount"
+                                                  t-options='{"widget": "monetary", "display_currency": expense_request.currency_id}'/>
+                                        </div>
+                                    </div>
+                                    <t t-set="to_be_added_index" t-value="to_be_added_index+1"/>
+                                </t>
+                                <t t-foreach="expenses_to_be_added" t-as="expense_request">
+                                    <div class="row">
+                                        <div class="col-lg-2 text-center">
+                                            <!--                                            <input type="checkbox" t-att-value="'%s' % (expense_request.id)" t-att-name="'to_be_added_[''%s'']' % (to_be_added_index)" />-->
+                                            <input type="checkbox" t-att-value="'%s' % (expense_request.id)"
+                                                   name="to_be_added_ids"/>
+                                        </div>
+                                        <div class="col-lg-2 text-left">
+                                            <span t-field="expense_request.date" t-options='{"widget": "date"}'/>
+                                        </div>
+                                        <div id='product_name' class="col-lg-2">
+                                            <span t-esc="expense_request.product_id.name"/>
+                                        </div>
+                                        <div class="col-lg-2 text-right">
+                                            <span t-field="expense_request.unit_amount"
+                                                  t-options='{"widget": "monetary", "display_currency": expense_request.currency_id}'/>
+                                        </div>
+                                        <div class="col-lg-2 text-right">
+                                            <span t-esc="expense_request.quantity"/>
+                                        </div>
+                                        <div class="col-lg-2 text-right">
+                                            <span t-field="expense_request.untaxed_amount"
+                                                  t-options='{"widget": "monetary", "display_currency": expense_request.currency_id}'/>
+                                        </div>
+                                    </div>
+                                    <t t-set="to_be_added_index" t-value="to_be_added_index+1"/>
+                                </t>
+                                <hr style="width: 70%"/>
+                                <div class="form-group row">
+                                    <div class="col-md-8 col-lg-7">
+                                        <button type="submit"
+                                                class="btn btn-primary btn-lg o_website_form_send o_default_snippet_text">
+                                            Save
+                                        </button>
+                                        <span style="color: red;">
+                                            <t t-if="error_fields" t-esc="error_fields"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </form>
+                        </section>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

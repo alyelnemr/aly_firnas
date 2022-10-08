@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+
+        <record id="aly_res_users_expense_approve_form_view" model="ir.ui.view">
+            <field name="name">aly.res.users.expense.approve.view</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div/group/field[@name='partner_id']" position="after">
+                    <field name='is_user_to_approve'/>
+                    <field name='expense_approve'/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

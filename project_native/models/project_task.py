@@ -81,8 +81,6 @@ class Project(models.Model):
     cp_shows = fields.Boolean(name="Critical Path", help="Critical Path Shows", default=True)
     cp_detail = fields.Boolean(name="Critical Path Detail", help="Critical Path Shows Detail on Gantt", default=False)
 
-
-
     @api.depends('tz')
     def _compute_tz_offset(self):
         for project in self:
@@ -364,7 +362,30 @@ class ProjectTaskNative(models.Model):
     summary_date_end = fields.Datetime(compute='_get_summary_date', string="Summary Date End")
 
     p_loop = fields.Boolean("Loop Detected")
+    tag_id_group_by = fields.Many2one('project.tags', string='Tags for Group by', compute='_compute_tag_id_group_by', store=True)
+    is_using_timesheet = fields.Boolean(string='Using Timesheet', default=False)
 
+    @api.onchange('is_using_timesheet')
+    def _compute_start_end_date(self):
+        for record in self:
+            if record.is_using_timesheet:
+                record.date_start = min(item.date for item in record.timesheet_ids)
+                record.date_end = max(item.date for item in record.timesheet_ids)
+
+    def write(self, vals):
+        for record in self:
+            if record.is_using_timesheet:
+                vals.update({
+                    'date_start': min(item.date for item in record.timesheet_ids),
+                    'date_end': max(item.date for item in record.timesheet_ids)
+                })
+        result = super(ProjectTaskNative, self).write(vals)
+        return result
+
+    @api.depends('tag_ids')
+    def _compute_tag_id_group_by(self):
+        for record in self:
+            record.tag_id_group_by = record.tag_ids and record.tag_ids[0].id or False
 
     @api.onchange('project_id')
     def _onchange_project(self):

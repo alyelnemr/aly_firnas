@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-
+    <data noupdate="1">
+        <delete model="ir.rule" id="hr.hr_employee_comp_rule"/>
     </data>
 </odoo>

@@ -39,6 +39,7 @@ class InheritBankStatement(models.Model):
             'analytic_account_id': self.analytic_account_id.id,
             'analytic_tag_ids': self.analytic_tag_ids,
             'ref': ref,
+            'note': self.note,
         }
         if self.move_name:
             data.update(name=self.move_name)
@@ -140,22 +141,26 @@ class InheritBankStatement(models.Model):
                 payment_vals = self._prepare_payment_vals(total)
                 if not payment_vals['partner_id']:
                     payment_vals['partner_id'] = partner_id.id
-                if 'analytic_tag_ids' not in payment_vals:
-                    if len(new_aml_dicts) > 0 and 'analytic_tag_ids' in new_aml_dicts[0] and new_aml_dicts[0]['analytic_tag_ids']:
-                        payment_vals['analytic_tag_ids'] = new_aml_dicts[0]['analytic_tag_ids']
-                    elif self.analytic_tag_ids:
-                        payment_vals['analytic_tag_ids'] = self.analytic_tag_ids
-                    elif len(counterpart_aml_dicts) > 0 and counterpart_aml_dicts[0]['move_line'].analytic_tag_ids:
-                        if counterpart_aml_dicts[0]['move_line'].analytic_tag_ids:
-                            payment_vals['analytic_tag_ids'] = counterpart_aml_dicts[0]['move_line'].analytic_tag_ids
                 if 'analytic_account_id' not in payment_vals:
-                    if len(new_aml_dicts) > 0 and 'analytic_account_id' in new_aml_dicts[0]:
-                        payment_vals['analytic_account_id'] = new_aml_dicts[0]['analytic_account_id']
-                    elif self.analytic_account_id:
+                    if self.analytic_account_id:
                         payment_vals['analytic_account_id'] = self.analytic_account_id.id
+                    elif move.analytic_account_id:
+                        payment_vals['analytic_account_id'] = move.analytic_account_id.id
+                    elif len(new_aml_dicts) > 0 and 'analytic_account_id' in new_aml_dicts[0]:
+                        payment_vals['analytic_account_id'] = new_aml_dicts[0]['analytic_account_id']
                     elif len(counterpart_aml_dicts) > 0 and counterpart_aml_dicts[0]['move_line'].analytic_account_id:
                         if counterpart_aml_dicts[0]['move_line'].analytic_account_id:
                             payment_vals['analytic_account_id'] = counterpart_aml_dicts[0]['move_line'].analytic_account_id.id
+                if 'analytic_tag_ids' not in payment_vals:
+                    if self.analytic_tag_ids:
+                        payment_vals['analytic_tag_ids'] = self.analytic_tag_ids
+                    elif move.analytic_tag_ids:
+                        payment_vals['analytic_tag_ids'] = move.analytic_tag_ids
+                    elif len(new_aml_dicts) > 0 and 'analytic_tag_ids' in new_aml_dicts[0] and new_aml_dicts[0]['analytic_tag_ids']:
+                        payment_vals['analytic_tag_ids'] = new_aml_dicts[0]['analytic_tag_ids']
+                    elif len(counterpart_aml_dicts) > 0 and counterpart_aml_dicts[0]['move_line'].analytic_tag_ids:
+                        if counterpart_aml_dicts[0]['move_line'].analytic_tag_ids:
+                            payment_vals['analytic_tag_ids'] = counterpart_aml_dicts[0]['move_line'].analytic_tag_ids
                 if payment_vals['partner_id'] and len(account_types) == 1:
                     payment_vals['partner_type'] = 'customer' if account_types == receivable_account_type else 'supplier'
                 payment = payment.create(payment_vals)
@@ -164,18 +169,18 @@ class InheritBankStatement(models.Model):
             to_create = (counterpart_aml_dicts + new_aml_dicts)
             date = self.date or fields.Date.today()
             for index, aml_dict in enumerate(to_create):
-                analytic_tag_ids = self.analytic_tag_ids
-                if not analytic_tag_ids:
-                    if len(counterpart_aml_dicts) > 0 and counterpart_aml_dicts[index]['move_line']:
-                        analytic_tag_ids = counterpart_aml_dicts[index]['move_line'].analytic_tag_ids
-                    if len(new_aml_dicts) > 0 and new_aml_dicts[index]['analytic_tag_ids']:
-                        analytic_tag_ids = new_aml_dicts[index]['analytic_tag_ids']
                 analytic_account_id = self.analytic_account_id.id
-                if not analytic_account_id:
-                    if len(counterpart_aml_dicts) > 0 and counterpart_aml_dicts[index]['move_line']:
-                        analytic_account_id = counterpart_aml_dicts[index]['move_line'].analytic_account_id.id
-                    if len(new_aml_dicts) > 0 and new_aml_dicts[index]['analytic_tag_ids']:
-                        analytic_account_id = new_aml_dicts[index]['analytic_account_id']
+                if not self.analytic_account_id:
+                    if 'move_line' in aml_dict and aml_dict['move_line'].analytic_account_id:
+                        analytic_account_id = aml_dict['move_line'].analytic_account_id.id
+                    else:
+                        analytic_account_id = aml_dict['analytic_account_id']
+                analytic_tag_ids = self.analytic_tag_ids
+                if not self.analytic_tag_ids:
+                    if 'move_line' in aml_dict and aml_dict['move_line'].analytic_tag_ids:
+                        analytic_tag_ids = aml_dict['move_line'].analytic_tag_ids
+                    else:
+                        analytic_tag_ids = aml_dict['analytic_tag_ids']
                 aml_dict['move_id'] = move.id
                 aml_dict['partner_id'] = self.partner_id.id
                 aml_dict['statement_line_id'] = self.id
@@ -198,20 +203,20 @@ class InheritBankStatement(models.Model):
                 aml_dict['payment_id'] = payment and payment.id or False
 
                 counterpart_move_line = aml_dict.pop('move_line')
-                new_aml = aml_obj.with_context(check_move_validity=False).create(aml_dict)
+                new_aml = aml_obj.with_context(check_move_validity=False, from_reconcile=True).create(aml_dict)
 
                 (new_aml | counterpart_move_line).reconcile()
 
-                self._check_invoice_state(counterpart_move_line.move_id)
+                self.with_context(from_reconcile=True)._check_invoice_state(counterpart_move_line.move_id)
 
             # Balance the move
             st_line_amount = -sum([x.balance for x in move.line_ids])
             aml_dict = self._prepare_reconciliation_move_line(move, st_line_amount)
             aml_dict['payment_id'] = payment and payment.id or False
-            aml_obj.with_context(check_move_validity=False).create(aml_dict)
+            aml_obj.with_context(check_move_validity=False, from_reconcile=True).create(aml_dict)
 
-            move.update_lines_tax_exigibility()  # Needs to be called manually as lines were created 1 by 1
-            move.post()
+            move.with_context(from_reconcile=True).update_lines_tax_exigibility()  # Needs to be called manually as lines were created 1 by 1
+            move.with_context(from_reconcile=True).post()
             # record the move name on the statement line to be able to retrieve it in case of unreconciliation
             self.write({'move_name': move.name})
             payment and payment.write({'payment_reference': move.name})

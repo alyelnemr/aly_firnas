@@ -35,9 +35,20 @@
                         </group>
                     </group>
                 </xpath>
+                <xpath expr="//div[@data-key='general_settings']" position="inside">
+                    <h2>Firnas Shuman - Activate Complex Password</h2>
+                    <group>
+                        <group>
+                            <div class="row mt16 o_settings_container">
+                                <b>
+                                    <label for="aly_complex_password"/>
+                                </b>
+                                <field name="aly_complex_password"/>
+                            </div>
+                        </group>
+                    </group>
+                </xpath>
             </field>
         </record>
-
-
     </data>
 </odoo>

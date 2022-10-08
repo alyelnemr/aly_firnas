@@ -40,8 +40,9 @@
                                     </div>
 
 
-                                    <field name="date_start" attrs="{'readonly': [('schedule_mode', '=', 'auto')]}" />
-                                    <field name="date_end" attrs="{'readonly': [('schedule_mode', '=', 'auto')]}"/>
+                                    <field name="is_using_timesheet"/>
+                                    <field name="date_start" attrs="{'readonly': ['|', ('is_using_timesheet', '=', True), ('schedule_mode', '=', 'auto')]}" />
+                                    <field name="date_end" attrs="{'readonly': ['|', ('is_using_timesheet', '=', True), ('schedule_mode', '=', 'auto')]}"/>
 
                                     <label for="duration"/>
                                     <div>

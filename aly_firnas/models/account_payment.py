@@ -2,8 +2,8 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 
 
-class AcountMove(models.Model):
-    _inherit = "account.payment"
+class AccountPayment(models.Model):
+    _inherit = 'account.payment'
 
     manual_currency = fields.Boolean()
     is_manual = fields.Boolean(compute="_compute_currency")
@@ -15,16 +15,37 @@ class AcountMove(models.Model):
              "current currency and last currency",
     )
 
+    analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account', index=True,
+                                          required=False)
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=False)
+
+    def _prepare_payment_moves(self):
+        res = super(AccountPayment, self)._prepare_payment_moves()
+        for move_vals in res:
+            for line in move_vals['line_ids']:
+                line[2]['analytic_account_id'] = self.analytic_account_id.id
+                line[2]['analytic_tag_ids'] = self.analytic_tag_ids.ids
+        return res
+
     def check_reconciliation(self):
+        # when making a reconciliation on an existing liquidity journal item, mark the payment as reconciled
         for payment in self:
-            rec = False
-            for aml in payment.move_line_ids.filtered(lambda x: x.account_id.reconcile):
-                if aml.reconciled:
-                    rec = True
-                    break
-            payment.move_reconciled = rec
-            if payment.move_reconciled:
-                payment.write({'state': 'reconciled'})
+            for line in payment.move_line_ids:
+                # count of all lines, then remove 1 to count all without the same line of comparison
+                main_counter = len(payment.move_line_ids) - 1
+                counter = 0
+                if line.payment_id:
+                    for _line in line.payment_id.move_line_ids:
+                        if _line.id != line.id and _line.account_id.internal_type == 'liquidity':
+                            if _line.statement_id:
+                                counter += 1
+                if counter == main_counter:
+                    line.payment_id.state = 'reconciled'
+                    # # In case of an internal transfer, there are 2 liquidity move lines to match with a bank statement
+                    # if any(_line.statement_id for _line in line.payment_id.move_line_ids.filtered(
+                    #         lambda r: r.id != line.id and r.account_id.internal_type == 'liquidity')):
+                    #     line.payment_id.state = 'reconciled'
+                    #     break
 
     @api.depends("currency_id")
     def _compute_currency(self):
