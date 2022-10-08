@@ -9,7 +9,7 @@ import json
 class StockMoveLine(models.Model):
     _inherit = 'stock.move.line'
 
-    lot_description = fields.Html(string='Lot Description')
+    lot_description = fields.Char(string='Lot Description')
     lot_ref = fields.Char(string='Lot Internal Reference')
     calibration_date = fields.Date(string="Calibration Date")
     product_dates_required = fields.Boolean(string="bol", related="product_id.is_required")
@@ -45,6 +45,8 @@ class StockMoveLine(models.Model):
                 rec.calibration_date = False
                 rec.lot_description = False
                 rec.lot_ref = False
+            if rec.lot_description:
+                rec.lot_description.replace("<p>", "").replace("</p>", "")
 
     def _action_done(self):
         """ This method is called during a move's `action_done`. It'll actually move a quant from
@@ -183,6 +185,8 @@ class StockMoveLine(models.Model):
                 self.qty_done = 1
             if not self.lot_description:
                 self.lot_description = self.move_id.description_picking.replace("<p>", "").replace("</p>", "")
+            if self.lot_description:
+                self.lot_description = self.lot_description.replace("<p>", "").replace("</p>", "")
 
             message = None
             if self.lot_name or self.lot_id:

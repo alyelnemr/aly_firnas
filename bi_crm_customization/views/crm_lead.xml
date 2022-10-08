@@ -50,11 +50,15 @@
                 <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}
                 </attribute>
             </xpath>
+<!--            <xpath expr="//field[@name='email_cc']" position="replace"></xpath>-->
             <xpath expr="//field[@name='team_id']" position="after">
                 <field name="sub_date" required="0"/>
             </xpath>
+            <xpath expr="//field[@name='function']" position="before">
+                <field name="email_cc" attrs="{'invisible': [('type', '=', 'opportunity')]}" />
+            </xpath>
             <xpath expr="//field[@name='partner_address_phone']" position="before">
-                <field name="email_cc" />
+                <field name="email_cc" attrs="{'invisible': [('type', '=', 'lead')]}" />
             </xpath>
             <xpath expr="//field[@name='company_id']" position="replace">
             </xpath>
@@ -89,6 +93,7 @@
                             <field name="source_id" required="1"/>
                         </group>
                         <group>
+                            <field name="sub_date"/>
                             <field name="actual_sub_date"/>
                             <field name="sub_type"/>
                             <field name="fund"/>

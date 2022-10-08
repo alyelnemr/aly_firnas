@@ -15,6 +15,7 @@ class CRMLeadInherit(models.Model):
         res['context']['default_country'] = self.country.ids
         res['context']['default_country'] = self.country.ids
         res['context']['default_start_date'] = self.start_date
+        res['context']['default_forecast'] = self.forecast
         res['context']['default_sub_date'] = self.sub_date
         res['context']['default_sub_type'] = self.sub_type.id
         res['context']['default_fund'] = self.fund.id

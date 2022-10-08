@@ -33,18 +33,24 @@ class SaleOrderCRMInherit(models.Model):
                 result['partnership_model'] = lead.partnership_model.id
             if 'sub_type' in fields and lead.sub_type:
                 result['sub_type'] = lead.sub_type.id
+            if 'actual_sub_date' in fields and lead.actual_sub_date:
+                result['actual_sub_date'] = lead.actual_sub_date
             if 'sub_date' in fields and lead.sub_date:
                 result['sub_date'] = lead.sub_date
             if 'start_date' in fields and lead.start_date:
                 result['start_date'] = lead.start_date
             if 'source_id' in fields and lead.source_id:
                 result['source_id'] = lead.source_id.id
+            if 'currency_id' in fields and lead.currency_id:
+                result['currency_id'] = lead.currency_id.id
             if 'country' in fields and lead.country:
                 result['country'] = lead.country.ids
             if 'partner' in fields and lead.partner:
                 result['partner'] = lead.partner.ids
             if 'project_name' in fields and lead.project_name:
                 result['project_name'] = lead.project_name
+            if 'forecast' in fields and lead.forecast:
+                result['forecast'] = lead.forecast
             if 'project_number' in fields and lead.project_num:
                 result['project_number'] = lead.project_num
             if 'proposals_engineer_id' in fields and lead.proposals_engineer_id:
@@ -85,8 +91,10 @@ class SaleOrderCRMInherit(models.Model):
                                        column2='type_custom_ids_crm_type_id', string="Secondary Project Types")
     country = fields.Many2many('res.country', string='Country')
     start_date = fields.Date(string="Request Date")
+    actual_sub_date = fields.Date(string="Actual Submission Date")
     sub_date = fields.Datetime(string="Submission Deadline")
     sub_type = fields.Many2one('project.submission', string="Submission Type")
+    forecast = fields.Monetary(string="Forecast", store=True)
     # source = fields.Many2one('project.source', string="Source", store=True)
     fund = fields.Many2one('project.fund', string="Funding")
     partnership_model = fields.Many2one('project.partnership', string="Partnership Model")
