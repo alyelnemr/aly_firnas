@@ -52,8 +52,11 @@
             <xpath expr="//field[@name='team_id']" position="after">
                 <field name="sub_date" required="0"/>
             </xpath>
+            <xpath expr="//field[@name='function']" position="before">
+                <field name="email_cc" attrs="{'invisible': [('type', '=', 'opportunity')]}" />
+            </xpath>
             <xpath expr="//field[@name='partner_address_phone']" position="before">
-                <field name="email_cc" />
+                <field name="email_cc" attrs="{'invisible': [('type', '=', 'lead')]}" />
             </xpath>
             <xpath expr="//field[@name='company_id']" position="replace">
             </xpath>
