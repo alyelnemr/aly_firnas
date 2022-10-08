@@ -33,6 +33,8 @@ class SaleOrderCRMInherit(models.Model):
                 result['partnership_model'] = lead.partnership_model.id
             if 'sub_type' in fields and lead.sub_type:
                 result['sub_type'] = lead.sub_type.id
+            if 'actual_sub_date' in fields and lead.actual_sub_date:
+                result['actual_sub_date'] = lead.actual_sub_date
             if 'sub_date' in fields and lead.sub_date:
                 result['sub_date'] = lead.sub_date
             if 'start_date' in fields and lead.start_date:
@@ -85,6 +87,7 @@ class SaleOrderCRMInherit(models.Model):
                                        column2='type_custom_ids_crm_type_id', string="Secondary Project Types")
     country = fields.Many2many('res.country', string='Country')
     start_date = fields.Date(string="Request Date")
+    actual_sub_date = fields.Date(string="Actual Submission Date")
     sub_date = fields.Datetime(string="Submission Deadline")
     sub_type = fields.Many2one('project.submission', string="Submission Type")
     # source = fields.Many2one('project.source', string="Source", store=True)
