@@ -54,6 +54,13 @@
                 <field name="product_dates_required" invisible="1"/>
                 <field name="calibration_date"
                        groups="stock.group_production_lot"
+                       readonly="1" invisible="not context.get('show_lots_m2o')"
+                       context="{'default_calibration_date': calibration_date}"
+                       attrs="{'readonly': ['|', '&amp;', ('package_level_id', '!=', False), ('parent.picking_type_entire_packs', '=', True)], 'required': [('product_tracking', '=', 'serial'), ('product_dates_required', '=', True)]}"
+                />
+                <field name="calibration_date"
+                       groups="stock.group_production_lot"
+                       invisible="not context.get('show_lots_text')"
                        context="{'default_calibration_date': calibration_date}"
                        attrs="{'readonly': ['|', '&amp;', ('package_level_id', '!=', False), ('parent.picking_type_entire_packs', '=', True)], 'required': [('product_tracking', '=', 'serial'), ('product_dates_required', '=', True)]}"
                 />
