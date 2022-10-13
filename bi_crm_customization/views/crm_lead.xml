@@ -45,14 +45,16 @@
             <xpath expr="//group/group/field[@name='partner_id']" position="attributes">
                 <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}
                 </attribute>
+                <attribute name="required">1</attribute>
             </xpath>
             <xpath expr="//group/group[2]/field[@name='partner_id']" position="attributes">
                 <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}
                 </attribute>
+                <attribute name="required">1</attribute>
             </xpath>
 <!--            <xpath expr="//field[@name='email_cc']" position="replace"></xpath>-->
             <xpath expr="//field[@name='team_id']" position="after">
-                <field name="sub_date" required="0"/>
+                <field name="sub_date" />
             </xpath>
             <xpath expr="//field[@name='function']" position="before">
                 <field name="email_cc" attrs="{'invisible': [('type', '=', 'opportunity')]}" />
@@ -84,7 +86,7 @@
                             <field name="proposals_engineer_id"/>
                             <field name="rfp_ref_number"/>
                             <field name="project_num" required="0" readonly="1"/>
-                            <field name="type_custom" required="0"/>
+                            <field name="type_custom" />
                             <field name="type_custom_ids" widget="many2many_tags"/>
                             <field name="internal_opportunity_name"/>
                             <field name="project_name"/>

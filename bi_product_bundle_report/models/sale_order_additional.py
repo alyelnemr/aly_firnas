@@ -25,6 +25,7 @@ class SaleOrderAdditional(models.Model):
     section = fields.Many2one('sale.order.line.section', string="Section", required=True)
     price_note = fields.Char("Price Note")
     is_button_clicked = fields.Boolean(default=False)
+    internal_notes = fields.Char(string='Internal Notes')
 
     @api.depends('line_id', 'order_id.order_line', 'product_id')
     def _compute_is_present(self):

@@ -10,13 +10,15 @@ from datetime import timedelta
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
+    internal_notes = fields.Char(string='Internal Notes')
+
     @api.onchange('product_id')
     def get_analytic_tags(self):
         for line in self:
             line.analytic_tag_ids = line.order_id.analytic_tag_ids.ids
 
     def _prepare_invoice_line(self):
-        res = super(InheritSaleLines, self)._prepare_invoice_line()
+        res = super(SaleOrderLine, self)._prepare_invoice_line()
         res['analytic_account_id'] = self.order_id.analytic_account_id.id
         res['analytic_tag_ids'] = self.order_id.analytic_tag_ids.ids
         return res

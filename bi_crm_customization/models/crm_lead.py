@@ -26,7 +26,7 @@ class CRMLeadInherit(models.Model):
         res['context']['default_proposals_engineer_id'] = self.proposals_engineer_id.id
         return res
 
-    partner_id = fields.Many2one('res.partner', string='Customer', tracking=10, index=True, required=False,
+    partner_id = fields.Many2one('res.partner', string='Customer', tracking=10, index=True, required=True,
                                  domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
                                  help="Linked partner (optional). Usually created when converting the lead. You can find a partner by its Name, TIN, Email or Internal Reference.")
     type_custom = fields.Many2one('crm.type', string="Project Type", required=True)
@@ -36,7 +36,7 @@ class CRMLeadInherit(models.Model):
     country = fields.Many2many(comodel_name='res.country', string='Countries')
     client_name = fields.Many2one('res.partner', string="End Client", help="deprecated, not used, you can use end_client field")
     start_date = fields.Date(string="Request Date")
-    sub_date = fields.Datetime(string="Submission Deadline")
+    sub_date = fields.Datetime(string="Submission Deadline", required=True)
     actual_sub_date = fields.Date(string="Actual Submission Date")
     sub_type = fields.Many2one('project.submission', string="Submission Type")
     # source = fields.Char(string="Source")
