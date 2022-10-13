@@ -57,3 +57,28 @@ class SaleOrderOption(models.Model):
             'section': self.section.id,
             'company_id': self.order_id.company_id.id,
         }
+
+    @api.onchange('product_id', 'uom_id', 'quantity')
+    def _onchange_product_id(self):
+        if not self.product_id:
+            return
+        product = self.product_id.with_context(
+            lang=self.order_id.partner_id.lang,
+            partner=self.order_id.partner_id,
+            quantity=self.quantity,
+            date=self.order_id.date_order,
+            pricelist=self.order_id.pricelist_id.id,
+            uom=self.uom_id.id,
+            fiscal_position=self.env.context.get('fiscal_position')
+        )
+        self.name = product.get_product_multiline_description_sale()
+        self.uom_id = self.uom_id or product.uom_id
+        domain = {'uom_id': [('category_id', '=', self.product_id.uom_id.category_id.id)]}
+        # To compute the dicount a so line is created in cache
+        values = self._get_values_to_add_to_order()
+        new_sol = self.env['sale.order.line'].new(values)
+        new_sol._onchange_discount()
+        self.discount = new_sol.discount
+        if not self.price_unit or self.price_unit == 0:
+            self.price_unit = new_sol._get_display_price(product)
+        return {'domain': domain}

@@ -72,4 +72,28 @@ class SaleOrderLine(models.Model):
         ]
         return vals
 
-    
+    @api.onchange('product_uom', 'product_uom_qty')
+    def product_uom_change(self):
+        if not self.product_uom or not self.product_id:
+            self.price_unit = 0.0
+            return
+        if self.order_id.pricelist_id and self.order_id.partner_id:
+            product = self.product_id.with_context(
+                lang=self.order_id.partner_id.lang,
+                partner=self.order_id.partner_id,
+                quantity=self.product_uom_qty,
+                date=self.order_id.date_order,
+                pricelist=self.order_id.pricelist_id.id,
+                uom=self.product_uom.id,
+                fiscal_position=self.env.context.get('fiscal_position')
+            )
+            if not self.price_unit or self.price_unit == 0:
+                self.price_unit = product._get_tax_included_unit_price(
+                    self.company_id or self.order_id.company_id,
+                    self.order_id.currency_id,
+                    self.order_id.date_order,
+                    'sale',
+                    fiscal_position=self.order_id.fiscal_position_id,
+                    product_price_unit=self._get_display_price(product),
+                    product_currency=self.order_id.currency_id
+                )

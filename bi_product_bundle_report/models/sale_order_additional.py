@@ -51,13 +51,15 @@ class SaleOrderAdditional(models.Model):
         if not self.product_id:
             return
         product = self.product_id.with_context(lang=self.order_id.partner_id.lang)
-        self.price_unit = product.list_price
+        if not self.price_unit or self.price_unit == 0:
+            self.price_unit = product.list_price
         self.name = product.get_product_multiline_description_sale()
         self.uom_id = self.uom_id or product.uom_id
         pricelist = self.order_id.pricelist_id
         if pricelist and product:
             partner_id = self.order_id.partner_id.id
-            self.price_unit = pricelist.with_context(uom=self.uom_id.id).get_product_price(product, self.quantity, partner_id)
+            if not self.price_unit or self.price_unit == 0:
+                self.price_unit = pricelist.with_context(uom=self.uom_id.id).get_product_price(product, self.quantity, partner_id)
         domain = {'uom_id': [('category_id', '=', self.product_id.uom_id.category_id.id)]}
         return {'domain': domain}
 

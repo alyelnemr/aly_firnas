@@ -43,6 +43,7 @@ class HRExpense(models.Model):
             expense.untaxed_amount = unit_amount * expense.quantity
             taxes = expense.tax_ids.compute_all(unit_amount, expense.currency_id, expense.quantity, expense.product_id,
                                                 expense.employee_id.user_id.partner_id)
+            expense.sub_total = taxes.get('total_excluded')
             expense.total_amount = taxes.get('total_included')
 
     @api.onchange('project_id', 'company_id', 'analytic_account_id')
@@ -184,6 +185,7 @@ class HRExpense(models.Model):
                                         states={'post': [('readonly', True)], 'done': [('readonly', True)]},
                                         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     discount = fields.Float(string="Discount (%)", digits="Discount")
+    sub_total = fields.Monetary("Sub Total", compute='_compute_amount', store=True, currency_field='currency_id')
     is_same_currency = fields.Boolean("Is Same Currency as Company Currency", compute='_change_currency')
     product_type = fields.Selection(related='product_id.type')
     picking_type_id = fields.Many2one('stock.picking.type', 'Deliver To', required=True, check_company=True,
