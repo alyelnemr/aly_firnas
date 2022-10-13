@@ -104,16 +104,16 @@ class HRExpense(models.Model):
             return self.env['account.journal'].search([('type', 'in', ['cash', 'bank']), ('company_id', '=', default_company_id)],
                                                       limit=1)
 
-    # @api.depends('date', 'total_amount', 'company_currency_id')
-    # def _compute_total_amount_company(self):
-    #     for expense in self:
-    #         amount = 0
-    #         if expense.company_currency_id:
-    #             date_expense = expense.date
-    #             amount = expense.currency_id._convert(
-    #                 expense.total_amount, expense.company_currency_id,
-    #                 expense.company_id, date_expense or fields.Date.today())
-    #         expense.total_amount_company = amount if expense.total_amount_company == 0 else expense.total_amount_company
+    @api.depends('date', 'total_amount', 'company_currency_id')
+    def _compute_total_amount_company(self):
+        for expense in self:
+            amount = 0
+            if expense.company_currency_id:
+                date_expense = expense.date
+                amount = expense.currency_id._convert(
+                    expense.total_amount, expense.company_currency_id,
+                    expense.company_id, date_expense or fields.Date.today())
+            expense.total_amount_company = amount if expense.total_amount_company == 0 else expense.total_amount_company
 
     @api.onchange('currency_id', 'company_id')
     def _change_currency(self):
