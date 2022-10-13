@@ -206,6 +206,9 @@
                 <xpath expr="//field[@name='sale_order_option_ids']/tree//field[@name='discount']" position="after">
                     <field name="price_note"/>
                 </xpath>
+                <xpath expr="//field[@name='sale_order_option_ids']/tree//field[last()]" position="after">
+                    <field name="internal_notes" optional="show"/>
+                </xpath>
                 <xpath expr="//field[@name='payment_term_id']" position="after">
                     <field name="show_component_price"/>
                 </xpath>

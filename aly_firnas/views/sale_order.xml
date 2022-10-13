@@ -42,13 +42,6 @@
                     <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
 
                 </xpath>
-                <xpath expr="//field[@name='sale_order_option_ids']/tree//field[@name='price_note']" position="after">
-                    <field name="internal_notes" optional="show"/>
-                </xpath>
-                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[last()]"
-                       position="after">
-                    <field name="internal_notes" optional="show"/>
-                </xpath>
             </field>
         </record>
     </data>
