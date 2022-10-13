@@ -39,7 +39,7 @@ class HRExpense(models.Model):
     def _compute_amount(self):
         for expense in self:
             # expense.untaxed_amount = expense.unit_amount * expense.quantity
-            unit_amount = self._get_discounted_price_unit()
+            unit_amount = expense._get_discounted_price_unit()
             expense.untaxed_amount = unit_amount * expense.quantity
             taxes = expense.tax_ids.compute_all(unit_amount, expense.currency_id, expense.quantity, expense.product_id,
                                                 expense.employee_id.user_id.partner_id)
