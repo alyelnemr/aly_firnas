@@ -137,9 +137,11 @@ class HRExpense(models.Model):
     def _default_account_id(self):
         return self.env['ir.property'].get('property_account_expense_categ_id', 'product.category')
 
-    @api.depends('sheet_id', 'sheet_id.account_move_id', 'sheet_id.state')
+    @api.depends('sheet_id', 'sheet_id.account_move_id', 'sheet_id.state', 'state')
     def _compute_state(self):
         for expense in self:
+            if not expense.sheet_id and expense.state == 'cancel':
+                expense.state = 'cancel'
             if not expense.sheet_id or expense.sheet_id.state == 'draft':
                 expense.state = "draft"
             elif expense.sheet_id.state == "cancel":
@@ -150,18 +152,6 @@ class HRExpense(models.Model):
                 expense.state = "reported"
             else:
                 expense.state = "done"
-
-    def action_reset_to_draft(self):
-        self.write({'state': 'draft'})
-        self.expense_picking_id.write({'state': 'draft'})
-        return True
-
-    def action_cancel(self):
-        self.write({'state': 'cancel'})
-        if self.expense_picking_id:
-            self.expense_picking_ids = [(4, self.expense_picking_id.id)]
-            self.expense_picking_id.state = 'cancel'
-        return True
 
     state = fields.Selection([
         ('draft', 'To Submit'),
@@ -182,7 +172,7 @@ class HRExpense(models.Model):
     is_same_currency = fields.Boolean("Is Same Currency as Company Currency", compute='_change_currency')
     product_type = fields.Selection(related='product_id.type')
     picking_type_id = fields.Many2one('stock.picking.type', 'Deliver To', required=True, check_company=True,
-                                      default=_default_picking_receive, domain=[('code', '=', 'incoming')])
+                                      default=_default_picking_receive, domain="[('code', '=', 'incoming'), ('company_id', '=', company_id)]")
     picking_type_code = fields.Selection(related='picking_type_id.code')
     location_id = fields.Many2one('stock.location', "Source Location", compute=onchange_picking_type, store=False, check_company=True, readonly=False, required=True)
     location_dest_id = fields.Many2one('stock.location', "Destination Location", compute=onchange_picking_type, store=False, check_company=True, readonly=False, required=True)
@@ -217,6 +207,7 @@ class HRExpense(models.Model):
                                       domain="[('type', 'in', ['cash', 'bank']), ('company_id', '=', company_id)]",
                                       default=_default_bank_journal_id,
                                       help="The payment method used when the expense is paid by the company.")
+    sheet_ids = fields.Many2many('hr.expense.sheet', string="Expense Reports", copy=False)
 
     def action_sheet_move_create(self):
         if any(sheet.state != 'approve' for sheet in self):
@@ -488,6 +479,28 @@ class HRExpense(models.Model):
         if self.sheet_id.journal_id.default_credit_account_id:
             result = self.sheet_id.journal_id.default_credit_account_id.id
         return result
+
+    def action_reset_to_draft(self):
+        self.write({'state': 'draft'})
+        return True
+
+    def action_cancel(self):
+        for expense in self:
+            if expense.sheet_id and expense.sheet_id.state != 'draft':
+                raise UserError(_("You can only cancel expenses when Expense Report is Draft."))
+            if expense.expense_picking_id and expense.expense_picking_id.state != 'draft':
+                raise UserError(_("You can only cancel expenses when Receive Order is Draft."))
+            else:
+                expense.write({'state': 'cancel'})
+                if expense.sheet_id:
+                    expense_sheet = self.env['hr.expense.sheet'].browse(expense.sheet_id.id)
+                    expense.sheet_id = False
+                    if len(expense_sheet.expense_line_ids) <= 1:
+                        expense_sheet.unlink()
+                if expense.expense_picking_id:
+                    expense.expense_picking_ids = [(4, expense.expense_picking_id.id)]
+                    expense.expense_picking_id.state = 'cancel'
+        return True
 
     def create_picking(self):
         moves = self.env['stock.move']

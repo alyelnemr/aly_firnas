@@ -9,7 +9,8 @@
                 <xpath expr="//button[@name='action_view_sheet']" position="after">
                     <button name="action_reset_to_draft" string="Reset to Draft" type="object"
                             attrs="{'invisible': [('state', 'not in', ['submit', 'cancel'])]}"/>
-                    <button name="action_cancel" string="Cancel" type="object" />
+                    <button name="action_cancel" string="Cancel"
+                            attrs="{'invisible': [('state', 'in', ['cancel'])]}" type="object" />
                 </xpath>
                 <xpath expr="//div[@name='button_box']" position="inside">
                     <button type="object"

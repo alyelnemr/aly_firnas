@@ -54,7 +54,6 @@ class HrExpenseSheet(models.Model):
     def reset_expense_sheets(self):
         if not self.can_reset:
             raise UserError(_("Only HR Officers or the concerned employee can reset to draft."))
-        self.mapped('expense_line_ids').write({'is_refused': False})
         move = self.env['account.move'].browse(self.account_move_id.id)
         if move:
             move.write({'state': 'cancel'})
@@ -62,6 +61,7 @@ class HrExpenseSheet(models.Model):
             self.write({'state': 'approve', 'account_move_id': False})
         else:
             self.write({'state': 'draft', 'account_move_id': False})
+        self.mapped('expense_line_ids').write({'is_refused': False})
         self.activity_update()
         return True
 
