@@ -26,16 +26,17 @@
                     <field name="analytic_account_id"  />
                     <field name="analytic_tag_ids" widget="many2many_tags" />
                 </xpath>
+                <xpath expr="//field[@name='bank_journal_id']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='accounting_date']" position="replace">
+                </xpath>
                 <xpath expr="//group[@name='employee_details']" position="after">
                     <group>
                         <field name="company_id" groups="base.group_multi_company"/>
-                        <field name="journal_id" options="{'no_open': True, 'no_create': True}"
-                               attrs="{'invisible': [('payment_mode', '!=', 'own_account')]}"
-                               context="{'default_company_id': company_id}"/>
                         <field name="bank_journal_id" groups="account.group_account_user"
                                options="{'no_open': True, 'no_create': True}"
-                               attrs="{'invisible': [('payment_mode', '!=', 'company_account')],
-                               'required': True}"
+                               attrs="{'invisible': ['|', ('state', 'not in', ['approve', 'post', 'done']), ('payment_mode', '!=', 'company_account')],
+                               'required': [('state', 'in', ['approve', 'post', 'done'])]}"
                                context="{'default_company_id': company_id}"/>
                         <field name="accounting_date" groups="account.group_account_user"
                                attrs="{'invisible': [('state', 'not in', ['approve', 'post', 'done'])]}"/>
@@ -79,34 +80,33 @@
                     <field name="unit_amount" optional="show"/>
                     <field name="discount" optional="show"/>
                 </xpath>
+                <xpath expr="//field[@name='expense_line_ids']/tree/field[@name='tax_ids']" position="after">
+                    <field name="sub_total" optional="show"/>
+                </xpath>
                 <xpath expr="//field[@name='expense_line_ids']/tree/field[@name='tax_ids']" position="attributes">
                     <attribute name="optional">show</attribute>
                 </xpath>
-                <xpath expr="//field[@name='expense_line_ids']/tree/field[@name='company_id']" position="attributes">
-                    <attribute name="optional">show</attribute>
+                <xpath expr="//field[@name='expense_line_ids']/tree/field[@name='company_id']" position="replace">
                 </xpath>
-                <xpath expr="//field[@name='expense_line_ids']/tree/field[@name='total_amount_company']" position="attributes">
-                    <attribute name="optional">show</attribute>
+                <xpath expr="//field[@name='expense_line_ids']/tree/field[@name='total_amount_company']" position="replace">
                 </xpath>
-                <xpath expr="//field[@name='expense_line_ids']/tree/field[@name='total_amount']" position="attributes">
-                    <attribute name="optional">show</attribute>
-                </xpath>
-                <xpath expr="//field[@name='expense_line_ids']/tree/field[@name='total_amount']" position="attributes">
-                    <attribute name="optional">show</attribute>
+                <xpath expr="//field[@name='expense_line_ids']/tree/field[@name='total_amount']" position="replace">
+                    <field name="total_amount_company" optional="show" groups="base.group_multi_currency"/>
+                    <field name="total_amount" optional="show"/>
+                    <field name="company_id" readonly="1" optional="show"/>
+                    <field name="attachment_number" string="Attach." optional="show"/>
+                    <button name="action_get_attachment_view" string="View Attachments" optional="show" type="object"
+                            icon="fa-paperclip"/>
+                    <field name="sale_order_id" attrs="{'invisible': [('can_be_reinvoiced', '=', False)]}"
+                           options="{'no_create_edit': True, 'no_create': True, 'no_open': True}"
+                           optional="show"
+                           context="{'sale_show_partner_name': True, 'sale_expense_all_order': True}"/>
                 </xpath>
                 <xpath expr="//field[@name='expense_line_ids']/tree/field[@name='attachment_number']" position="replace">
                 </xpath>
                 <xpath expr="//field[@name='expense_line_ids']/tree/button[@name='action_get_attachment_view']" position="replace">
                 </xpath>
                 <xpath expr="//field[@name='expense_line_ids']/tree/field[@name='sale_order_id']" position="replace">
-                </xpath>
-                <xpath expr="//field[@name='expense_line_ids']/tree/field[@name='total_amount_company']" position="after">
-                    <field name="attachment_number" string="Attach." optional="show"/>
-                    <button name="action_get_attachment_view" string="View Attachments" optional="show" type="object" icon="fa-paperclip"/>
-                    <field name="sale_order_id" attrs="{'invisible': [('can_be_reinvoiced', '=', False)]}"
-                           options="{'no_create_edit': True, 'no_create': True, 'no_open': True}"
-                           optional="show"
-                           context="{'sale_show_partner_name': True, 'sale_expense_all_order': True}"/>
                 </xpath>
             </field>
         </record>

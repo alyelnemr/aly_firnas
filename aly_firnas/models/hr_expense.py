@@ -95,14 +95,7 @@ class HRExpense(models.Model):
 
     @api.model
     def _default_bank_journal_id(self):
-        journal_id = int(self.env['ir.config_parameter'].sudo().get_param('aly_expense_bank_journal_id')) if self.env[
-            'ir.config_parameter'].sudo().get_param('aly_expense_bank_journal_id') else 0
-        if journal_id and journal_id > 0:
-            return self.env['account.journal'].search([('id', '=', journal_id)], limit=1)
-        else:
-            default_company_id = self.default_get(['company_id'])['company_id']
-            return self.env['account.journal'].search([('type', 'in', ['cash', 'bank']), ('company_id', '=', default_company_id)],
-                                                      limit=1)
+        return False
 
     @api.depends('date', 'total_amount', 'company_currency_id')
     def _compute_total_amount_company(self):
@@ -313,7 +306,7 @@ class HRExpense(models.Model):
                 'product_id': expense.product_id.id,
                 'product_uom_id': expense.product_uom_id.id,
                 'analytic_account_id': expense.analytic_account_id.id,
-                'analytic_tag_ids': [(6, 0, expense.analytic_account_id.analytic_tag_ids.ids)],
+                'analytic_tag_ids': [(6, 0, expense.analytic_tag_ids.ids)],
                 'expense_id': expense.id,
                 'partner_id': expense.partner_id.id,
                 'tax_ids': [(6, 0, expense.tax_ids.ids)],
