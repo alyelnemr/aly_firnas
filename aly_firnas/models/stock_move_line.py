@@ -183,9 +183,9 @@ class StockMoveLine(models.Model):
         if self.product_id.tracking == 'serial':
             if not self.qty_done:
                 self.qty_done = 1
-            if not self.lot_description:
+            if not self.lot_description and self.move_id.description_picking:
                 self.lot_description = self.move_id.description_picking.replace("<p>", "").replace("</p>", "")
-            if self.lot_description:
+            if self.lot_description and self.lot_description:
                 self.lot_description = self.lot_description.replace("<p>", "").replace("</p>", "")
 
             message = None
