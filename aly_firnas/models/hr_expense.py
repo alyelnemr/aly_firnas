@@ -548,12 +548,11 @@ class HRExpense(models.Model):
 
     def action_view_picking_delivery(self):
         action = self.env.ref('stock.action_picking_tree_all').read()[0]
-        pickings = self.env['stock.picking'].browse(self.expense_picking_id.id)
-        if len(pickings) > 1:
-            action['domain'] = [('id', 'in', pickings.ids)]
-        elif pickings:
+        if len(self.expense_picking_ids.ids) > 1:
+            action['domain'] = [('id', 'in', self.expense_picking_ids.ids)]
+        else:
             action['views'] = [(self.env.ref('stock.view_picking_form').id, 'form')]
-            action['res_id'] = pickings[0].id
+            action['res_id'] = self.expense_picking_id.id
         return action
 
     def _create_sheet_from_expenses(self):
