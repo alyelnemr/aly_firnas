@@ -369,11 +369,11 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
         this._changeVendor();
     },
     _onChangeProject: function (ev) {
-    alert(this.$('select[name="project_id"]').length);
-    alert(this.$('select[name="vendor_contact_id"]').length);
-        if (!this.$('select[name="project_id"]').length && !this.$('select[name="vendor_contact_id"]').length) {
+        if (this.$('select[name="project_id"]').length <= 0 && this.$('select[name="vendor_contact_id"]').length <= 0) {
+        alert('return');
             return;
         }
+        alert('change');
         this._changeProject();
     },
     _onChangeProduct: function (ev) {
