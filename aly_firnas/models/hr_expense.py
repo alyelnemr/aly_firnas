@@ -115,6 +115,8 @@ class HRExpense(models.Model):
 
     @api.depends('picking_type_id', 'partner_id', 'product_id', 'company_id')
     def onchange_picking_type(self):
+        self.location_id = False
+        self.location_dest_id = False
         if self.picking_type_id:
             if self.picking_type_id.default_location_src_id:
                 location_id = self.picking_type_id.default_location_src_id.id
@@ -172,7 +174,7 @@ class HRExpense(models.Model):
     is_same_currency = fields.Boolean("Is Same Currency as Company Currency", compute='_change_currency')
     product_type = fields.Selection(related='product_id.type')
     picking_type_id = fields.Many2one('stock.picking.type', 'Deliver To', required=True, check_company=True,
-                                      default=_default_picking_receive, domain="[('code', '=', 'incoming'), ('company_id', '=', company_id)]")
+                                      domain="[('code', '=', 'incoming'), ('company_id', '=', company_id)]")
     picking_type_code = fields.Selection(related='picking_type_id.code')
     location_id = fields.Many2one('stock.location', "Source Location", compute=onchange_picking_type, store=False, check_company=True, readonly=False, required=True)
     location_dest_id = fields.Many2one('stock.location', "Destination Location", compute=onchange_picking_type, store=False, check_company=True, readonly=False, required=True)
@@ -274,7 +276,8 @@ class HRExpense(models.Model):
             different_currency = expense.currency_id and expense.currency_id != company_currency
 
             move_line_values = []
-            taxes = expense.tax_ids.with_context(round=True).compute_all(expense.unit_amount, expense.currency_id,
+            unit_amount = self._get_discounted_price_unit()
+            taxes = expense.tax_ids.with_context(round=True).compute_all(unit_amount, expense.currency_id,
                                                                          expense.quantity, expense.product_id)
             total_amount = 0.0
             total_amount_currency = 0.0
@@ -486,9 +489,9 @@ class HRExpense(models.Model):
 
     def action_cancel(self):
         for expense in self:
-            if expense.sheet_id and expense.sheet_id.state != 'draft':
+            if expense.sheet_id and expense.sheet_id.state not in ('draft', 'cancel'):
                 raise UserError(_("You can only cancel expenses when Expense Report is Draft."))
-            if expense.expense_picking_id and expense.expense_picking_id.state != 'draft':
+            if expense.expense_picking_id and expense.expense_picking_id.state not in ('draft', 'cancel'):
                 raise UserError(_("You can only cancel expenses when Receive Order is Draft."))
             else:
                 expense.write({'state': 'cancel'})
@@ -520,7 +523,8 @@ class HRExpense(models.Model):
                     picking = self.env['stock.picking'].create(pick)
                     line.expense_picking_id = picking.id
                     line.expense_picking_ids = [(4, line.expense_picking_id.id)]
-                    price_unit = line.unit_amount
+                    unit_amount = self._get_discounted_price_unit()
+                    price_unit = unit_amount
                     template = {
                         'name': line.name or '',
                         'product_id': line.product_id.id,

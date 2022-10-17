@@ -91,7 +91,7 @@
                     <field name="reference" attrs="{'readonly': [('is_ref_editable', '=', False)]}"/>
                     <field name="date" attrs="{'invisible': False}" modifiers="{'invisible':False,'readonly':[['state','not
                         in',['draft']]],'required':true}"/>
-                    <field name="project_id"/>
+                    <field name="project_id" attrs="{'readonly': [('sheet_id', '!=', False)]}"/>
                     <field name="company_id" groups="base.group_multi_company" force_save="1" readonly="1" />
                     <field name="analytic_account_id" domain="['|', ('company_id', '=', company_id), ('company_id', '=', False)]"
                            groups="analytic.group_analytic_accounting" force_save="1" readonly="1"/>
