@@ -369,7 +369,7 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
         this._changeVendor();
     },
     _onChangeProject: function (ev) {
-        if (!this.$('select[name="project_id"]').length) {
+        if (!this.$('select[name="project_id"]').length && !this.$('select[name="vendor_contact_id"]').length) {
             return;
         }
         this._changeProject();
