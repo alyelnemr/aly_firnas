@@ -889,7 +889,7 @@ class CustomerPortal(CustomerPortal):
         )
 
     @http.route(['/expense/project_change'], type='json', auth="public", website=True)
-    def project_change(self, project_id_str, product_id_str, **kw):
+    def project_change(self, project_id_str, product_id_str=None, **kw):
         analytic_account_data = []
         company_id = []
         employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
