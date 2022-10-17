@@ -498,7 +498,7 @@ class HRExpense(models.Model):
                 if expense.sheet_id:
                     expense_sheet = self.env['hr.expense.sheet'].browse(expense.sheet_id.id)
                     expense.sheet_id = False
-                    if len(expense_sheet.expense_line_ids) <= 1:
+                    if len(expense_sheet.expense_line_ids) <= 0:
                         expense_sheet.unlink()
                 if expense.expense_picking_id:
                     expense.expense_picking_ids = [(4, expense.expense_picking_id.id)]
