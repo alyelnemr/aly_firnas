@@ -21,6 +21,12 @@ class StockPicking(models.Model):
             else:
                 record.required_analytic_account_and_tags = False
 
+    def action_get_account_moves(self):
+        self.ensure_one()
+        action_data = self.env.ref('account.action_move_journal_line').read()[0]
+        action_data['domain'] = [('id', 'in', self.move_ids_without_package.account_move_ids.ids)]
+        return action_data
+
     @api.model
     def create(self, vals):
         if vals.get('origin'):

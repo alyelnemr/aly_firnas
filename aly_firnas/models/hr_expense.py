@@ -190,8 +190,8 @@ class HRExpense(models.Model):
     account_id = fields.Many2one('account.account', string='Account', default=_default_account_id,
                                  domain="[('internal_type', '=', 'other'), ('company_id', '=', company_id)]",
                                  help="An expense account is expected", readonly=True)
-    expense_picking_id = fields.Many2one('stock.picking', string="Picking ID")
-    expense_picking_ids = fields.Many2many('stock.picking', string="All Picking IDs")
+    expense_picking_id = fields.Many2one('stock.picking', string="Picking ID", copy=False)
+    expense_picking_ids = fields.Many2many('stock.picking', string="All Picking IDs", copy=False)
     picking_count = fields.Integer(string="Count", compute='_compute_picking_count', store=False)
     payment_mode = fields.Selection([
         ("own_account", "Employee (to reimburse)"),

@@ -276,9 +276,11 @@ class CustomerPortal(CustomerPortal):
     def portal_expense_request_form(self, **kw):
         if not request.env.user.has_group('bi_expense_portal.group_employee_expense_portal') and not request.env.user.has_group('bi_expense_portal.group_employee_expense_manager_portal'):
             return request.render("bi_expense_portal.not_allowed_expense_request")
+        picking_type_obj = request.env['stock.picking.type']
         values = {}
         currencies = request.env['res.currency'].sudo().search([])
         projects = request.env['project.project'].sudo().search([])
+        dest_address_id = request.env['res.partner'].sudo().search([])
         vendors = request.env['res.partner'].sudo().search([])
         vendor_id = vendors[0].id
         company = projects[0].company_id.id
@@ -291,6 +293,10 @@ class CustomerPortal(CustomerPortal):
         employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
         analytic_tags = employees[0].analytic_tag_ids + analytic_accounts[0].analytic_tag_ids
 
+        picking_type_id = picking_type_obj.sudo().search(
+            [('code', '=', 'incoming'), ('company_id', '=', request.env.user.company_id.id)]
+        )
+
         default_managers = request.env['res.users'].sudo()
         for emp in employees:
             if emp.parent_id and emp.parent_id.user_id:
@@ -301,6 +307,7 @@ class CustomerPortal(CustomerPortal):
         values.update({
             'products': products,
             'vendors': vendors,
+            'dest_address_id': dest_address_id,
             'projects': projects,
             'vendor_contact_id': vendor_contact_id,
             'currencies': currencies,
@@ -310,6 +317,7 @@ class CustomerPortal(CustomerPortal):
             'default_company': request.env.user.company_id,
             'employees': employees,
             'managers': managers,
+            'picking_type_id': picking_type_id,
             'default_managers': default_managers,
             'accounts': accounts,
             'default_account': request.env['ir.property'].sudo().get('property_account_expense_categ_id', 'product.category'),
@@ -484,44 +492,51 @@ class CustomerPortal(CustomerPortal):
             vals.update({
                 'product_id': product_id,
             })
-        if request.params.get('project_id', False):
-            project_id = int(request.params.get('project_id'))
-            vals.update({
-                'project_id': project_id,
-            })
-        if request.params.get('company_id', False):
-            company_id = int(request.params.get('company_id'))
-            vals.update({
-                'company_id': company_id,
-            })
+
         if request.params.get('currency_id', False):
             currency_id = int(request.params.get('currency_id'))
             vals.update({
                 'currency_id': currency_id,
             })
-        if request.params.get('employee_id', False):
-            employee_id = int(request.params.get('employee_id'))
+        if request.params.get('picking_type_id', False):
+            picking_type_id = int(request.params.get('picking_type_id'))
             vals.update({
-                'employee_id': employee_id,
-            })
-        if request.params.get('analytic_account_id', False):
-            analytic_account_id = int(request.params.get('analytic_account_id'))
-            vals.update({
-                'analytic_account_id': analytic_account_id,
+                'picking_type_id': picking_type_id,
             })
 
-        list_all = request.httprequest.form.getlist('analytic_tag_id')
+        if request.params.get('project_id', False):
+            project_id = int(request.params.get('project_id'))
+            vals.update({
+                'project_id': project_id,
+            })
+        employee_id = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
+        vals.update({
+            'employee_id': employee_id.id,
+        })
+        projects = request.env['project.project'].sudo().browse(project_id)
+        if projects:
+            company_id = projects.company_id
+            vals.update({
+                'company_id': company_id.id,
+            })
+            analytic_account_id = projects.analytic_account_id
+            res_product_data = request.env['product.product'].sudo().search(
+                [('id', '=', product_id)])
+            product_accounts = res_product_data.product_tmpl_id.with_context(force_company=company_id.id)._get_product_accounts()[
+                'expense']
+            for account_id in product_accounts:
+                vals.update({
+                    'account_id': account_id.id,
+                })
 
-        if list_all:
+        if analytic_account_id:
+            analytic_tags = employee_id[0].analytic_tag_ids + analytic_account_id.analytic_tag_ids
             vals.update({
-                'analytic_tag_ids': [(6, 0, list_all)],
+                'analytic_account_id': analytic_account_id.id,
             })
-        elif request.params.get('analytic_tag_id', False):
-            analytic_tag_id = int()
             vals.update({
-                'analytic_tag_ids': [(6, 0, [analytic_tag_id])],
+                'analytic_tag_ids': [(6, 0, analytic_tags.ids)],
             })
-        vals.pop('analytic_tag_id', None)
 
         if request.params.get('tax_ids', False):
             tax_ids = int(request.params.get('tax_ids'))
@@ -874,52 +889,89 @@ class CustomerPortal(CustomerPortal):
         )
 
     @http.route(['/expense/project_change'], type='json', auth="public", website=True)
-    def project_change(self, project_id_str, **kw):
+    def project_change(self, project_id_str, product_id_str, **kw):
         analytic_account_data = []
         company_id = []
         employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
         analytic_tags_data = []
         for item_tag in employees[0].analytic_tag_ids:
             analytic_tags_data.append((item_tag.id, item_tag.name))
-        if project_id_str:
+        if project_id_str and product_id_str:
+            product_data = []
             project_id = int(project_id_str)
-            res_project_data = request.env['project.project'].sudo().search(
-                [('id', '=', project_id)])
+            product_id = int(product_id_str)
+            res_project_data = request.env['project.project'].sudo().search([('id', '=', project_id)], limit=1)
             for item in res_project_data:
-                company_id = item.company_id.id
+                company_id = item.company_id
             for item in res_project_data:
                 analytic_account_data.append((item.analytic_account_id.id, item.analytic_account_id.name))
                 for item_tag in item.analytic_account_id.analytic_tag_ids:
                     analytic_tags_data.append((item_tag.id, item_tag.name))
+            res_product_data = request.env['product.product'].sudo().search(
+                [('id', '=', product_id)])
+            product_accounts = res_product_data.product_tmpl_id.with_context(force_company=company_id.id)._get_product_accounts()[
+                'expense']
+            for item in product_accounts:
+                product_data.append((item.id, item.name))
+                show_picking_type_id = res_product_data.type in ('product', 'consu')
         return dict(
-            company_data=company_id,
+            company_data=company_id.id,
             analytic_account_data=analytic_account_data,
             analytic_tags_data=analytic_tags_data,
+            default_account=product_data,
+            show_picking_type_id=show_picking_type_id,
         )
 
     @http.route(['/expense/product_change'], type='json', auth="public", website=True)
-    def product_change(self, product_id_str, **kw):
+    def product_change(self, product_id_str, company_id_str=None, **kw):
         product_data = []
-        if product_id_str:
+        if product_id_str and company_id_str:
+            company_id = request.env['res.company'].sudo().browse(int(company_id_str))
             product_id = int(product_id_str)
             res_product_data = request.env['product.product'].sudo().search(
                 [('id', '=', product_id)])
-            for item in res_product_data.product_tmpl_id._get_product_accounts()['expense']:
+            product_accounts = res_product_data.product_tmpl_id.with_context(force_company=company_id.id)._get_product_accounts()['expense']
+            for item in product_accounts:
                 product_data.append((item.id, item.name))
+                show_picking_type_id = res_product_data.type in ('product', 'consu')
         return dict(
             default_account=product_data,
+            show_picking_type_id=show_picking_type_id,
         )
 
     @http.route(['/expense/compute_all'], type='json', auth="public", website=True)
-    def compute_all(self, unit_amount_str=None, quantity_str=None, tax_id_str=None, **kw):
-        vendor_contacts = []
+    def compute_all(self, unit_amount_str=None, quantity_str=None, discount_str=None, tax_id_str=None, **kw):
+        sub_total = 0
         total_amount = 0
-        if unit_amount_str and quantity_str and tax_id_str:
+        if unit_amount_str and quantity_str and tax_id_str and discount_str:
             unit_amount = float(unit_amount_str)
+            discount = float(discount_str)
+            unit_amount = unit_amount - (unit_amount * discount / 100)
             quantity = float(quantity_str)
+            sub_total = (unit_amount * quantity)
             tax_id = int(tax_id_str)
             tax_obj = request.env['account.tax'].sudo().search([('id', '=', tax_id)])
-            total_amount = round( (unit_amount * quantity) + (unit_amount * quantity * (tax_obj.amount / 100)), 2)
+            total_amount = round( sub_total + (unit_amount * quantity * (tax_obj.amount / 100)), 2)
         return dict(
+            sub_total=sub_total,
             total_amount=total_amount,
+        )
+
+    @http.route(['/expense/currency_change'], type='json', auth="public", website=True)
+    def compute_currency_change(self, currency_id_str=None, company_id_str=None, discount_str=None, tax_id_str=None, **kw):
+        if company_id_str and currency_id_str:
+            company_id = request.env['res.company'].sudo().browse(int(company_id_str))
+            currency_id = request.env['res.currency'].sudo().browse(int(currency_id_str))
+        return dict(
+            is_readonly=company_id.currency_id == currency_id,
+        )
+
+    @http.route(['/expense/picking_type_change'], type='json', auth="public", website=True)
+    def picking_type_change(self, picking_type_id_str=None, **kw):
+        show_location = False
+        if picking_type_id_str:
+            picking_type_id = request.env['stock.picking.type'].sudo().browse(int(picking_type_id_str))
+            show_location = picking_type_id.default_location_dest_id.usage == 'customer'
+        return dict(
+            show_location_dest_id=show_location,
         )
