@@ -39,7 +39,10 @@ class StockMoveLine(models.Model):
         for rec in self:
             if rec.lot_id:
                 rec.calibration_date = rec.lot_id.calibration_date
-                rec.lot_description = rec.lot_id.note.replace("<p>", "").replace("</p>", "")
+                if rec.lot_id.note:
+                    rec.lot_description = rec.lot_id.note.replace("<p>", "").replace("</p>", "")
+                else:
+                    rec.lot_description = rec.lot_id.note
                 rec.lot_ref = rec.lot_id.ref
             else:
                 rec.calibration_date = False
