@@ -892,12 +892,13 @@ class CustomerPortal(CustomerPortal):
     def project_change(self, project_id_str, product_id_str=None, **kw):
         analytic_account_data = []
         company_id = False
+        product_data = False
+        show_picking_type_id = False
         employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
         analytic_tags_data = []
         for item_tag in employees[0].analytic_tag_ids:
             analytic_tags_data.append((item_tag.id, item_tag.name))
         if project_id_str and product_id_str:
-            product_data = []
             project_id = int(project_id_str)
             product_id = int(product_id_str)
             res_project_data = request.env['project.project'].sudo().search([('id', '=', project_id)], limit=1)
