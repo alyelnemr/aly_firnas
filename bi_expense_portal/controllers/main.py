@@ -891,7 +891,7 @@ class CustomerPortal(CustomerPortal):
     @http.route(['/expense/project_change'], type='json', auth="public", website=True)
     def project_change(self, project_id_str, product_id_str=None, **kw):
         analytic_account_data = []
-        company_id = []
+        company_id = False
         employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
         analytic_tags_data = []
         for item_tag in employees[0].analytic_tag_ids:
@@ -902,20 +902,20 @@ class CustomerPortal(CustomerPortal):
             product_id = int(product_id_str)
             res_project_data = request.env['project.project'].sudo().search([('id', '=', project_id)], limit=1)
             for item in res_project_data:
-                company_id = item.company_id
+                company_id = item.company_id.id
             for item in res_project_data:
                 analytic_account_data.append((item.analytic_account_id.id, item.analytic_account_id.name))
                 for item_tag in item.analytic_account_id.analytic_tag_ids:
                     analytic_tags_data.append((item_tag.id, item_tag.name))
             res_product_data = request.env['product.product'].sudo().search(
                 [('id', '=', product_id)])
-            product_accounts = res_product_data.product_tmpl_id.with_context(force_company=company_id.id)._get_product_accounts()[
+            product_accounts = res_product_data.product_tmpl_id.with_context(force_company=company_id)._get_product_accounts()[
                 'expense']
             for item in product_accounts:
                 product_data.append((item.id, item.name))
                 show_picking_type_id = res_product_data.type in ('product', 'consu')
         return dict(
-            company_data=company_id.id,
+            company_data=company_id,
             analytic_account_data=analytic_account_data,
             analytic_tags_data=analytic_tags_data,
             default_account=product_data,
