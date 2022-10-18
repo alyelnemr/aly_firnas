@@ -9,7 +9,8 @@ class StockPicking(models.Model):
     analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account')
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
     is_origin_so = fields.Boolean(copy=False)
-
+    return_picking_of_picking_id = fields.Many2one(comodel_name='stock.picking', string='Return of',
+                                                   help='This picking a return picking of')
     required_analytic_account_and_tags = fields.Boolean(string='Required Analytic Account And Tags',
                                                         compute='_compute_required_analytic_account_and_tags')
 

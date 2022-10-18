@@ -489,9 +489,9 @@ class HRExpense(models.Model):
 
     def action_cancel(self):
         for expense in self:
-            if expense.sheet_id and expense.sheet_id.state not in ('draft', 'cancel'):
+            if expense.sheet_id and expense.sheet_id.state in ('draft', 'cancel'):
                 raise UserError(_("You can only cancel expenses when Expense Report is Draft."))
-            if expense.expense_picking_id and expense.expense_picking_id.state not in ('draft', 'cancel'):
+            if expense.expense_picking_id and expense.expense_picking_id.state == 'done':
                 raise UserError(_("You can only cancel expenses when Receive Order is Draft."))
             else:
                 expense.write({'state': 'cancel'})
@@ -552,11 +552,28 @@ class HRExpense(models.Model):
 
     def action_view_picking_delivery(self):
         action = self.env.ref('stock.action_picking_tree_all').read()[0]
-        if len(self.expense_picking_ids.ids) > 1:
-            action['domain'] = [('id', 'in', self.expense_picking_ids.ids)]
-        else:
-            action['views'] = [(self.env.ref('stock.view_picking_form').id, 'form')]
-            action['res_id'] = self.expense_picking_id.id
+
+        def recursive_backorders(list_bo):
+            mylist = []
+            for item in list_bo:
+                mylist.append(item.id)
+                if item.backorder_ids:
+                    mylist.extend(recursive_backorders(item.backorder_ids))
+            return mylist
+
+        if self.expense_picking_id.backorder_ids:
+            recursive = recursive_backorders(self.wh_id)
+            all_ids = self.expense_picking_ids.ids
+            all_ids.extend(recursive)
+
+        all_ids = all_ids if all_ids else self.expense_picking_ids.ids
+        domain = [
+            ('return_picking_of_picking_id', 'in', all_ids)
+        ]
+        wh_return_ids = self.env['stock.picking'].search(domain)
+        all_ids.extend(wh_return_ids.ids)
+        action['domain'] = [('id', 'in', all_ids)]
+
         return action
 
     def _create_sheet_from_expenses(self):
