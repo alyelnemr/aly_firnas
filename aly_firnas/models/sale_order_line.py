@@ -10,7 +10,6 @@ from datetime import timedelta
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    internal_notes = fields.Char(string='Internal Notes')
 
     @api.onchange('product_id')
     def get_analytic_tags(self):
