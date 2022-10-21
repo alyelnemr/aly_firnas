@@ -42,6 +42,9 @@
                     <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
 
                 </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='analytic_tag_ids']" position="before">
+                    <field name="analytic_account_id" optional="show"/>
+                </xpath>
             </field>
         </record>
     </data>

@@ -10,16 +10,19 @@ from datetime import timedelta
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
+    analytic_account_id = fields.Many2one('account.analytic.account', 'Analytic Account', required=True)
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True)
 
     @api.onchange('product_id')
     def get_analytic_tags(self):
         for line in self:
-            line.analytic_tag_ids = line.order_id.analytic_tag_ids.ids
+            line.analytic_account_id = line.order_id.analytic_account_id.id if not line.analytic_account_id else line.analytic_account_id
+            line.analytic_tag_ids = line.order_id.analytic_tag_ids.ids if not line.analytic_tag_ids else line.analytic_tag_ids
 
     def _prepare_invoice_line(self):
         res = super(SaleOrderLine, self)._prepare_invoice_line()
-        res['analytic_account_id'] = self.order_id.analytic_account_id.id
-        res['analytic_tag_ids'] = self.order_id.analytic_tag_ids.ids
+        res['analytic_account_id'] = self.analytic_account_id.id
+        res['analytic_tag_ids'] = self.analytic_tag_ids.ids
         return res
 
     def _prepare_procurement_values(self, group_id=False):

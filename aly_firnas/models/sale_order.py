@@ -22,10 +22,11 @@ class SaleOrder(models.Model):
         help="The analytic account related to a sales order.")
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=False, copy=False)
 
-    @api.onchange('analytic_tag_ids')
+    @api.onchange('analytic_account_id', 'analytic_tag_ids')
     def update_analytic_tags(self):
         for line in self.order_line:
-            line.analytic_tag_ids = self.analytic_tag_ids.ids
+            line.analytic_account_id = self.analytic_account_id.id if not line.analytic_account_id else line.analytic_account_id
+            line.analytic_tag_ids = self.analytic_tag_ids.ids if not line.analytic_tag_ids else line.analytic_tag_ids
 
     def action_confirm(self):
         for line in self:
@@ -159,3 +160,9 @@ class SaleOrder(models.Model):
                 line.action_update_factor()
             for line in rec.sale_order_additional_ids:
                 line.action_update_factor()
+
+    def _prepare_invoice(self):
+        invoice_vals = super(SaleOrder, self)._prepare_invoice()
+        invoice_vals['analytic_account_id'] = self.analytic_account_id.id
+        invoice_vals['analytic_tag_ids'] = self.analytic_tag_ids.ids
+        return invoice_vals
