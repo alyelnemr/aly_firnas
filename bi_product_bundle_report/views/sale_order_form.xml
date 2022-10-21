@@ -153,7 +153,7 @@
                                 <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line"
                                        optional="show"/>
                                 <field name="price_note"/>
-                                <field name="internal_notes" optional="show"/>
+<!--                                <field name="internal_notes" optional="show"/>-->
                                 <field name="is_present" invisible="1"/>
                                 <button name="button_add_to_order" class="oe_link" icon="fa-shopping-cart"
                                         title="Add to order lines" type="object"
@@ -207,7 +207,7 @@
                     <field name="price_note"/>
                 </xpath>
                 <xpath expr="//field[@name='sale_order_option_ids']/tree//field[last()]" position="after">
-                    <field name="internal_notes" optional="show"/>
+<!--                    <field name="internal_notes" optional="show"/>-->
                 </xpath>
                 <xpath expr="//field[@name='payment_term_id']" position="after">
                     <field name="show_component_price"/>

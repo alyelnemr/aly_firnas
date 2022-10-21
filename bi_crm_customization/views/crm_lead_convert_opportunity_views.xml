@@ -29,7 +29,7 @@
                     <page name="info" string="Information">
                         <group>
                             <group>
-                                <field name="proposals_engineer_id"/>
+                                <field name="proposals_engineer_id" readonly="1"/>
                                 <field name="rfp_ref_number"/>
                                 <field name="project_num" readonly="1"/>
                                 <field name="type_custom" required="1"/>
@@ -37,7 +37,7 @@
                                 <field name="internal_opportunity_name"/>
                                 <field name="project_name"/>
                                 <field name="country" widget="many2many_tags" required="1"/>
-                                <field name="start_date" required="1"/>
+                                <field name="start_date"/>
                                 <field name="source_id" required="1"/>
                             </group>
                             <group>
@@ -54,7 +54,7 @@
                                 <field name="latest_proposal_submission_date"/>
                                 <field name="result_date"/>
                                 <field name="contract_signature_date"/>
-                                <field name="initial_contact_date"/>
+                                <field name="initial_contact_date" required="1"/>
                                 <field name="proposal_reviewer_ids" widget="many2many_tags"/>
                             </group>
                         </group>

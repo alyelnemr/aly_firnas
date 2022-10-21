@@ -1,5 +1,5 @@
+
 from odoo import api, fields, models,_
-from odoo.exceptions import UserError, ValidationError
 
 
 class SaleOrderOption(models.Model):
@@ -58,7 +58,7 @@ class SaleOrderOption(models.Model):
             'company_id': self.order_id.company_id.id,
         }
 
-    @api.onchange('product_id', 'uom_id', 'quantity')
+    @api.onchange('product_id', 'uom_id')
     def _onchange_product_id(self):
         if not self.product_id:
             return
@@ -79,6 +79,27 @@ class SaleOrderOption(models.Model):
         new_sol = self.env['sale.order.line'].new(values)
         new_sol._onchange_discount()
         self.discount = new_sol.discount
-        if not self.price_unit or self.price_unit == 0:
-            self.price_unit = new_sol._get_display_price(product)
+        self.price_unit = new_sol._get_display_price(product)
         return {'domain': domain}
+
+    def action_update_factor(self):
+        """
+        Compute the amounts of the SO line.
+        """
+        for line in self:
+            price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            custom_rate = self.order_id.custom_rate
+            is_manual = self.order_id.is_manual
+            if is_manual and custom_rate > 0:
+                custom_rate = self.order_id.custom_rate
+                line.price_unit *= custom_rate
+            taxes = line.tax_id.compute_all(line.price_unit, line.order_id.currency_id, line.product_uom_qty,
+                                            product=line.product_id,
+                                            partner=line.order_id.partner_shipping_id)
+            line.update({
+                'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
+                'price_total': taxes['total_included'],
+                'price_subtotal': taxes['total_excluded'],
+            })
+            if self.env.context.get('import_file', False) and not self.env.user.user_has_groups('account.group_account_manager'):
+                line.tax_id.invalidate_cache(['invoice_repartition_line_ids'], [line.tax_id.id])

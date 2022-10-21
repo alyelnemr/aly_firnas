@@ -155,3 +155,7 @@ class SaleOrder(models.Model):
         for rec in self:
             for line in rec.order_line:
                 line.action_update_factor()
+            for line in rec.sale_order_option_ids:
+                line.action_update_factor()
+            for line in rec.sale_order_additional_ids:
+                line.action_update_factor()

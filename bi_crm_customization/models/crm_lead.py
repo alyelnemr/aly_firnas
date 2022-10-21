@@ -35,7 +35,7 @@ class CRMLeadInherit(models.Model):
     project_name = fields.Char(string="Customer's Project Name / Proposal Title", store=True, )
     country = fields.Many2many(comodel_name='res.country', string='Countries')
     client_name = fields.Many2one('res.partner', string="End Client", help="deprecated, not used, you can use end_client field")
-    start_date = fields.Date(string="Request Date")
+    start_date = fields.Date(string="Request Date", required=False)
     sub_date = fields.Datetime(string="Submission Deadline", required=True)
     actual_sub_date = fields.Date(string="Actual Submission Date")
     sub_type = fields.Many2one('project.submission', string="Submission Type")
@@ -119,7 +119,8 @@ class CRMLeadInherit(models.Model):
             project = self.env['project.project'].search([('name', '=', 'Proposals Department')])
             task_id = self.env['project.task'].sudo().create({
                 'name': res.name,
-                'project_id': project.id
+                'project_id': project.id,
+                'user_id': res.proposals_engineer_id.id
             })
             res.task_id = task_id.id
         return res
@@ -140,9 +141,14 @@ class CRMLeadInherit(models.Model):
             project = self.env['project.project'].search([('name', '=', 'Proposals Department')])
             task_id = self.env['project.task'].sudo().create({
                 'name': self.name,
-                'project_id': project.id
+                'project_id': project.id,
+                'user_id': self.proposals_engineer_id.id
             })
             self.task_id = task_id
+        if self.task_id and self.task_id.name != self.name:
+            self.task_id.name = self.name
+        if self.task_id and self.task_id.user_id != self.proposals_engineer_id:
+            self.task_id.user_id = self.proposals_engineer_id
         return res
 
     def action_new_quotation(self):
