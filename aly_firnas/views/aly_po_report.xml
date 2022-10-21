@@ -308,7 +308,7 @@
                     </t>
                 </tbody>
             </table>
-            <br/>
+            <p style="page-break-after:always;"/>
             <table style="width:auto; border: 0px !important; margin-right: 0px; margin-left: auto;">
                 <tr style="width:auto;" class="text-right">
                     <th style="color:rgb(86, 56, 90); "></th>
