@@ -46,10 +46,25 @@
                     <field name="vendor_contact"/>
                 </xpath>
                 <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="before">
-                    <field name="line_rank" string="Sn" readonly="1"/>
+                    <field name="line_rank" string="Sn" readonly="1" optional="show"/>
                 </xpath>
                 <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="after">
-                    <field name="discount"/>
+                    <field name="discount" optional="show"/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+                    <attribute name="optional">show</attribute>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='name']" position="attributes">
+                    <attribute name="optional">show</attribute>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='product_qty']" position="attributes">
+                    <attribute name="optional">show</attribute>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="attributes">
+                    <attribute name="optional">show</attribute>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='price_subtotal']" position="attributes">
+                    <attribute name="optional">show</attribute>
                 </xpath>
                 <xpath expr="//page[@name='purchase_delivery_invoice']/group/group/field[last()]" position="after">
                     <field string="Delivery Section" name="is_print_delivery_section"/>

@@ -32,7 +32,7 @@
                 </xpath>
                 <xpath expr="//group[@name='employee_details']" position="after">
                     <group>
-                        <field name="company_id" groups="base.group_multi_company"/>
+                        <field name="company_id" readonly="1" />
                         <field name="bank_journal_id" groups="account.group_account_user"
                                options="{'no_open': True, 'no_create': True}"
                                attrs="{'invisible': ['|', ('state', 'not in', ['approve', 'post', 'done']), ('payment_mode', '!=', 'company_account')],
@@ -91,7 +91,7 @@
                 <xpath expr="//field[@name='expense_line_ids']/tree/field[@name='total_amount_company']" position="replace">
                 </xpath>
                 <xpath expr="//field[@name='expense_line_ids']/tree/field[@name='total_amount']" position="replace">
-                    <field name="total_amount_company" optional="show" groups="base.group_multi_currency"/>
+                    <field name="total_amount_company" string="Sub Total (Company Currency)" optional="show" groups="base.group_multi_currency"/>
                     <field name="total_amount" optional="show"/>
                     <field name="company_id" readonly="1" optional="show"/>
                     <field name="attachment_number" string="Attach." optional="show"/>

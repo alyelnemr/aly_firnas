@@ -91,7 +91,7 @@
                             <field name="internal_opportunity_name"/>
                             <field name="project_name"/>
                             <field name="country" required="1" widget="many2many_tags"/>
-                            <field name="start_date" required="1"/>
+                            <field name="start_date"/>
                             <field name="source_id" required="1"/>
                         </group>
                         <group>
@@ -105,7 +105,7 @@
                             <field name="latest_proposal_submission_date"/>
                             <field name="result_date"/>
                             <field name="contract_signature_date"/>
-                            <field name="initial_contact_date"/>
+                            <field name="initial_contact_date" required="1"/>
                             <field name="proposal_reviewer_ids" widget="many2many_tags"/>
                         </group>
                     </group>
@@ -126,6 +126,17 @@
         </field>
     </record>
 
+
+    <record id="crm_iap_lead_kanban" model="ir.ui.view">
+        <field name="name">crm.lead.inherited.kanban</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_lead_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="default_group_by">stage_id</attribute>
+            </xpath>
+        </field>
+    </record>
 
     <record id="view_crm_lead_inherit_kanban" model="ir.ui.view">
         <field name="name">crm.lead.inherit</field>

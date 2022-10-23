@@ -52,13 +52,15 @@ class PurchaseOrderLine(models.Model):
     line_rank = fields.Integer('Sn', compute='_get_line_numbers', store=False, default=1)
     discount = fields.Float(string="Discount (%)", digits="Discount")
     is_origin_so = fields.Boolean(default=False, copy=False)
+    account_analytic_id = fields.Many2one('account.analytic.account', 'Analytic Account', required=True)
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True)
 
     @api.onchange('product_id')
     def get_analytic_account_tags(self):
         for line in self:
             # if not line.sale_order_id:
-            line.account_analytic_id = line.order_id.analytic_account_id.id
-            line.analytic_tag_ids = line.order_id.analytic_tag_ids.ids
+            line.account_analytic_id = line.order_id.analytic_account_id.id if not line.account_analytic_id else line.account_analytic_id
+            line.analytic_tag_ids = line.order_id.analytic_tag_ids.ids if not line.analytic_tag_ids else line.analytic_tag_ids
 
     def _prepare_account_move_line(self, move):
         res = super()._prepare_account_move_line(move)
@@ -146,3 +148,8 @@ class PurchaseOrderLine(models.Model):
             template['product_uom'] = product_uom.id
             res.append(template)
         return res
+
+    def _prepare_account_move_line(self, move):
+        vals = super(PurchaseOrderLine, self)._prepare_account_move_line(move)
+        vals["discount"] = self.discount
+        return vals

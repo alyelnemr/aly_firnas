@@ -58,8 +58,7 @@ class SaleOrderAdditional(models.Model):
         pricelist = self.order_id.pricelist_id
         if pricelist and product:
             partner_id = self.order_id.partner_id.id
-            if not self.price_unit or self.price_unit == 0:
-                self.price_unit = pricelist.with_context(uom=self.uom_id.id).get_product_price(product, self.quantity, partner_id)
+            self.price_unit = pricelist.with_context(uom=self.uom_id.id).get_product_price(product, self.quantity, partner_id)
         domain = {'uom_id': [('category_id', '=', self.product_id.uom_id.category_id.id)]}
         return {'domain': domain}
 
@@ -94,3 +93,12 @@ class SaleOrderAdditional(models.Model):
             'company_id': self.order_id.company_id.id,
             'section':self.section.id
         }
+
+    def action_update_factor(self):
+        for line in self:
+            price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            custom_rate = self.order_id.custom_rate
+            is_manual = self.order_id.is_manual
+            if is_manual and custom_rate > 0:
+                custom_rate = self.order_id.custom_rate
+                line.price_unit *= custom_rate

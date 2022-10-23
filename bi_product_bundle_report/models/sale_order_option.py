@@ -1,5 +1,5 @@
+
 from odoo import api, fields, models,_
-from odoo.exceptions import UserError, ValidationError
 
 
 class SaleOrderOption(models.Model):
@@ -58,7 +58,7 @@ class SaleOrderOption(models.Model):
             'company_id': self.order_id.company_id.id,
         }
 
-    @api.onchange('product_id', 'uom_id', 'quantity')
+    @api.onchange('product_id', 'uom_id')
     def _onchange_product_id(self):
         if not self.product_id:
             return
@@ -79,6 +79,14 @@ class SaleOrderOption(models.Model):
         new_sol = self.env['sale.order.line'].new(values)
         new_sol._onchange_discount()
         self.discount = new_sol.discount
-        if not self.price_unit or self.price_unit == 0:
-            self.price_unit = new_sol._get_display_price(product)
+        self.price_unit = new_sol._get_display_price(product)
         return {'domain': domain}
+
+    def action_update_factor(self):
+        for line in self:
+            price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            custom_rate = self.order_id.custom_rate
+            is_manual = self.order_id.is_manual
+            if is_manual and custom_rate > 0:
+                custom_rate = self.order_id.custom_rate
+                line.price_unit *= custom_rate

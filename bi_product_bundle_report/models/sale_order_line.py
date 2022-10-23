@@ -12,6 +12,7 @@ class SaleOrderLine(models.Model):
     item_price = fields.Float(string="Item Price", store=False, compute="get_item_price")
     name = fields.Text(string='Description', required=False)
     product_uom = fields.Many2one('uom.uom', string='Unit of Measure', domain="[('category_id', '=', product_uom_category_id)]")
+    internal_notes = fields.Char(string='Internal Notes')
 
     def _get_values_to_add_to_order(self):
         self.ensure_one()
