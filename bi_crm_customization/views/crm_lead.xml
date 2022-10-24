@@ -133,7 +133,7 @@
         <field name="inherit_id" ref="crm.view_crm_lead_kanban"/>
         <field name="arch" type="xml">
             <xpath expr="//kanban" position="attributes">
-                <attribute name="default_group_by">stage_id</attribute>
+                <attribute name="default_group_by">lead_stage_id</attribute>
             </xpath>
         </field>
     </record>
