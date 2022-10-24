@@ -24,7 +24,7 @@
                                 <field name="internal_opportunity_name"/>
                                 <field name="project_name" required="1"/>
                                 <field name="country" required="1" widget="many2many_tags"/>
-                                <field name="start_date" required="1"/>
+                                <field name="start_date" />
                                 <field name="source_id" required="1"/>
                             </group>
                             <group>

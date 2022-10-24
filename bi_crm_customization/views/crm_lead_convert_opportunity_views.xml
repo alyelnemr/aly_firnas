@@ -29,7 +29,7 @@
                     <page name="info" string="Information">
                         <group>
                             <group>
-                                <field name="proposals_engineer_id" readonly="1"/>
+                                <field name="proposals_engineer_id"/>
                                 <field name="rfp_ref_number"/>
                                 <field name="project_num" readonly="1"/>
                                 <field name="type_custom" required="1"/>
