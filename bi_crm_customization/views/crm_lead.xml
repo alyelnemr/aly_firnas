@@ -83,7 +83,7 @@
                                    attrs="{'invisible':['|', ('is_existing_opportunity', '=', False), ('type', '!=', 'opportunity')], 'required':[('is_existing_opportunity', '=', True)], 'readonly':True}"/>
                             <field name="next_letter_sequence" invisible="1"/>
                             <field name="serial_number" attrs="{'invisible': [('type', '!=', 'opportunity')]}" readonly="1"/>
-                            <field name="proposals_engineer_id"/>
+                            <field name="proposals_engineer_id" attrs="{'required': [('type', '=', 'opportunity')]}"/>
                             <field name="rfp_ref_number"/>
                             <field name="project_num" required="0" readonly="1"/>
                             <field name="type_custom" />
@@ -133,7 +133,7 @@
         <field name="inherit_id" ref="crm.view_crm_lead_kanban"/>
         <field name="arch" type="xml">
             <xpath expr="//kanban" position="attributes">
-                <attribute name="default_group_by">stage_id</attribute>
+                <attribute name="default_group_by">lead_stage_id</attribute>
             </xpath>
         </field>
     </record>

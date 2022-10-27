@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="aly_view_sale_advance_payment_inv" model="ir.ui.view">
+            <field name="name">aly_view_production_lot_tree_inherit</field>
+            <field name="model">sale.advance.payment.inv</field>
+            <field name="inherit_id" ref="sale.view_sale_advance_payment_inv"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="replace">
+                    <form string="Invoice Sales Order">
+                        <p class="oe_grey">
+                            Invoices will be created in draft so that you can review
+                            them before validation.
+                        </p>
+                        <field name="deposit_account_id" options="{'no_create': True}" class="oe_inline"
+                               attrs="{'invisible': ['|', ('advance_payment_method', 'not in', ('fixed', 'percentage')), ('product_id', '!=', False)]}"
+                               groups="account.group_account_manager"/>
+                        <field name="deposit_taxes_id" class="oe_inline" widget="many2many_tags"
+                               domain="[('type_tax_use','=','sale')]"
+                               attrs="{'invisible': ['|', ('advance_payment_method', 'not in', ('fixed', 'percentage')), ('product_id', '!=', False)]}"/>
+                        <group>
+                            <field name="count" invisible="[('count','=',1)]" readonly="True"/>
+                            <field name="advance_payment_method" class="oe_inline" widget="radio"
+                                   attrs="{'invisible': [('count','&gt;',1)]}"/>
+                            <field name="has_down_payments" invisible="1"/>
+                            <label for="deduct_down_payments" string=""
+                                   attrs="{'invisible': [('has_down_payments', '=', False)]}"/>
+                            <div attrs="{'invisible': [('has_down_payments', '=', False)]}">
+                                <field name="deduct_down_payments" nolabel="1"/>
+                                <label for="deduct_down_payments"/>
+                            </div>
+                            <label for="product_id"
+                                   attrs="{'invisible': [('advance_payment_method', 'not in', ('fixed','percentage'))]}"/>
+                            <div attrs="{'invisible': [('advance_payment_method', 'not in', ('fixed','percentage'))]}">
+                                <field name="product_id"
+                                       options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"
+                                       context="{'default_invoice_policy': 'order'}" class="oe_inline"
+                                       attrs="{'invisible': [('advance_payment_method', 'not in', ('fixed','percentage'))]}"/>
+                            </div>
+                            <label for="downpayment_description"
+                                   attrs="{'invisible': [('advance_payment_method', 'not in', ('fixed','percentage'))]}"/>
+                            <div attrs="{'invisible': [('advance_payment_method', 'not in', ('fixed','percentage'))]}">
+                                <field name="downpayment_description" nolabel="1" class="oe_inline"
+                                       attrs="{'invisible': [('advance_payment_method', 'not in', ('fixed','percentage'))]}"/>
+                            </div>
+                            <label for="amount"
+                                   attrs="{'invisible': [('advance_payment_method', 'not in', ('fixed'))]}"/>
+                            <div attrs="{'invisible': [('advance_payment_method', 'not in', ('fixed'))]}">
+                                <field name="currency_id" invisible="1"/>
+                                <field name="fixed_amount"
+                                       attrs="{'required': [('advance_payment_method', '=', 'fixed')], 'invisible': [('advance_payment_method', '!=','fixed')]}"
+                                       class="oe_inline"/>
+                            </div>
+                            <label for="amount" string="Down Payment Percentage"
+                                   attrs="{'invisible': [('advance_payment_method', 'not in', ('percentage'))]}"/>
+                            <div attrs="{'invisible': [('advance_payment_method', 'not in', ('percentage'))]}">
+                                <field name="amount"
+                                       attrs="{'required': [('advance_payment_method', '=', 'percentage')], 'invisible': [('advance_payment_method', '!=', 'percentage')]}"
+                                       class="oe_inline"/>
+                                <span
+                                        attrs="{'invisible': [('advance_payment_method', '!=', 'percentage')]}" class="oe_inline">
+                                    %
+                                </span>
+                            </div>
+
+                        </group>
+                        <footer>
+                            <button name="create_invoices" string="Create and View Invoice" type="object"
+                                    context="{'open_invoices': True}" class="btn-primary"/>
+                            <button name="create_invoices" string="Create Invoice" type="object"/>
+                            <button string="Cancel" class="btn-secondary" special="cancel"/>
+                        </footer>
+                    </form>
+                </xpath>
+            </field>
+        </record>
+        <!--<record id="aly_view_sale_advance_payment_inv" model="ir.ui.view">
+            <field name="name">aly_view_production_lot_tree_inherit</field>
+            <field name="model">sale.advance.payment.inv</field>
+            <field name="inherit_id" ref="sale.view_sale_advance_payment_inv"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='deduct_down_payments']/parent::div" position="replace">
+                    <div attrs="{'invisible': [('has_down_payments', '=', False)]}">
+                        <field name="deduct_down_payments" nolabel="1"/>
+                        <label for="deduct_down_payments"/>
+                    </div>
+                </xpath>
+                <xpath expr="//label[@for='amount']" position="before">
+                    <label for="downpayment_description"
+                           attrs="{'invisible': [('advance_payment_method', 'not in', ('fixed','percentage'))]}"/>
+                </xpath>
+                <xpath expr="//form/group/div[2]" position="replace">
+                    <div attrs="{'invisible': False}">
+                        <field name="currency_id" invisible="1"/>
+                        <field name="fixed_amount"
+                               attrs="{'required': [('advance_payment_method', '=', 'fixed')], 'invisible': [('advance_payment_method', '!=','fixed')]}"
+                               class="oe_inline"/>
+                        <field name="amount" string="Down Payment Percentage"
+                               attrs="{'required': [('advance_payment_method', '=', 'percentage')], 'invisible': [('advance_payment_method', '!=', 'percentage')]}"
+                               class="oe_inline"/>
+                        <span
+                                attrs="{'invisible': [('advance_payment_method', '!=', 'percentage')]}" class="oe_inline">%
+                        </span>
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='product_id']" position="replace">
+                    <field name="product_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"
+                           context="{'default_invoice_policy': 'order'}" class="oe_inline"
+                           attrs="{'invisible': [('advance_payment_method', 'not in', ('fixed','percentage'))]}"/>
+                    <field name="downpayment_description" nolabel="1"
+                           attrs="{'invisible': [('advance_payment_method', 'not in', ('fixed','percentage'))]}"/>
+                </xpath>
+            </field>
+        </record>-->
+    </data>
+</odoo>

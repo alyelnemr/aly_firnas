@@ -109,6 +109,7 @@ class SaleOrderLine(models.Model):
                                     'product_id': ch_line.product_id.id,
                                     'parent_order_line': line.id,
                                     'product_uom_qty': line.product_uom_qty * ch_line.product_qty,
+                                    'analytic_account_id':line.analytic_account_id.id,
                                     'analytic_tag_ids':line.analytic_tag_ids.ids,
                                     'is_offer_product': True
                                 }))
@@ -126,6 +127,7 @@ class SaleOrderLine(models.Model):
                                     'product_id': ch_line.product_id.id,
                                     'parent_order_line': line.id,
                                     'product_uom_qty': line.product_uom_qty * ch_line.product_qty,
+                                    'analytic_account_id': line.analytic_account_id.id,
                                     'analytic_tag_ids':line.analytic_tag_ids.ids,
                                     'is_offer_product': True
                                 }))

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api, _
+from odoo import models, fields, api, _, SUPERUSER_ID
 from odoo.exceptions import ValidationError
 import ast
 
@@ -26,6 +26,31 @@ class CRMLeadInherit(models.Model):
         res['context']['default_proposals_engineer_id'] = self.proposals_engineer_id.id
         return res
 
+    def _default_team_id(self, user_id):
+        domain = [('use_leads', '=', True)] if self._context.get('default_type') == "lead" or self.type == 'lead' else [
+            ('use_opportunities', '=', True)]
+        return self.env['crm.team']._get_default_team_id(user_id=user_id, domain=domain)
+
+    def _default_leadstage_id(self):
+        team = self._default_team_id(user_id=self.env.uid)
+        return self._stage_find(team_id=team.id, domain=[('fold', '=', False)]).id
+
+    @api.model
+    def _read_group_leadstage_ids(self, stages, domain, order):
+        # retrieve team_id from the context and write the domain
+        # - ('id', 'in', stages.ids): add columns that should be present
+        # - OR ('fold', '=', False): add default columns that are not folded
+        # - OR ('team_ids', '=', team_id), ('fold', '=', False) if team_id: add team columns that are not folded
+        team_id = self._context.get('default_team_id')
+        if team_id:
+            search_domain = ['|', ('id', 'in', stages.ids), '|', ('team_id', '=', False), ('team_id', '=', team_id)]
+        else:
+            search_domain = ['|', ('id', 'in', stages.ids), ('team_id', '=', False)]
+
+        # perform search
+        stage_ids = stages._search(search_domain, order=order, access_rights_uid=SUPERUSER_ID)
+        return stages.browse(stage_ids)
+
     partner_id = fields.Many2one('res.partner', string='Customer', tracking=10, index=True, required=True,
                                  domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
                                  help="Linked partner (optional). Usually created when converting the lead. You can find a partner by its Name, TIN, Email or Internal Reference.")
@@ -49,7 +74,7 @@ class CRMLeadInherit(models.Model):
     latest_proposal_submission_date = fields.Date(string="Latest Proposal Submission Date")
     result_date = fields.Date(string="Result Date")
     contract_signature_date = fields.Date(string="Contract/PO Signature Date")
-    initial_contact_date = fields.Date(string="Initial Contact Date")
+    initial_contact_date = fields.Date(string="Initial Contact Date", required=True)
     end_client = fields.Many2many(comodel_name='res.partner', relation='crm2opprtunity_endclient_rel', column1='crm_end_client_id', column2='end_client_partner_id', string="End Client")
     proposals_engineer_id = fields.Many2one('res.users', string='Proposals Engineer')
     rfp_ref_number = fields.Char(string='RfP Ref. Number')
@@ -67,6 +92,7 @@ class CRMLeadInherit(models.Model):
     next_letter_sequence = fields.Char(string="Next Letter Sequence", readonly=True)
     task_id = fields.Many2one('project.task', string="Task in Project Module", required=False, copy=False)
     actual_sub_date = fields.Date(string="Actual Submission Date")
+    lead_stage_id = fields.Many2one('crm.leadstage', string='Lead Stage', tracking=True, copy=False)
 
     @api.depends('project_num', 'country.code', 'internal_opportunity_name')
     def _compute_name(self):

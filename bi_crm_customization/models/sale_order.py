@@ -107,6 +107,6 @@ class SaleOrderCRMInherit(models.Model):
     latest_proposal_submission_date = fields.Date(string="Latest Proposal Submission Date")
     result_date = fields.Date(string="Result Date")
     contract_signature_date = fields.Date(string="Contract/PO Signature Date")
-    initial_contact_date = fields.Date(string="Initial Contact Date")
+    initial_contact_date = fields.Date(string="Initial Contact Date", required=True)
     rfp_ref_number = fields.Char(string='RfP Ref. Number')
     proposals_engineer_id = fields.Many2one('res.users', string='Proposals Engineer')

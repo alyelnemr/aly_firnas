@@ -165,4 +165,5 @@ class SaleOrder(models.Model):
         invoice_vals = super(SaleOrder, self)._prepare_invoice()
         invoice_vals['analytic_account_id'] = self.analytic_account_id.id
         invoice_vals['analytic_tag_ids'] = self.analytic_tag_ids.ids
+        invoice_vals['s_order_id'] = self.id
         return invoice_vals

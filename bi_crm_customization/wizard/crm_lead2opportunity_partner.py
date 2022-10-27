@@ -35,11 +35,11 @@ class Lead2OpportunityPartner(models.TransientModel):
                                              column1='prop_reviewer_oppor_id', column2='prop_reviewer_oppor_partner_id', string="Proposal Reviewers")
     latest_proposal_submission_date = fields.Date(string="Latest Proposal Submission Date")
     contract_signature_date = fields.Date(string="Contract/PO Signature Date")
-    initial_contact_date = fields.Date(string="Initial Contact Date")
+    initial_contact_date = fields.Date(string="Initial Contact Date", required=True)
     result_date = fields.Date(string="Result Date")
     end_client = fields.Many2many(comodel_name='res.partner', relation='crm2opportunity_end_client_rel', column1='crm2opp_end_client_id', column2='endclient_partner_id',
                                   string="End Client")
-    proposals_engineer_id = fields.Many2one('res.users', string='Proposals Engineer')
+    proposals_engineer_id = fields.Many2one('res.users', string='Proposals Engineer', required=True)
     rfp_ref_number = fields.Char(string='RfP Ref. Number')
     source_id = fields.Many2one('utm.source', string='Source', required=True, ondelete='cascade',
                                 help="This is the link source, e.g. Search Engine, another domain, or name of email list")
