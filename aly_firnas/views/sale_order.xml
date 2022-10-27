@@ -6,7 +6,25 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='payment_term_id']/parent::group" name="payment_term_id" position="after">
+                <xpath expr="//group/group[2]" position="inside">
+                    <field name="is_manual"
+                           attrs="{'invisible': [('state','!=','draft')]}"/>
+                    <field name="custom_rate"
+                           attrs="{'invisible': ['|', ('is_manual', '=', False), ('state','!=','draft')], 'required':[('is_manual', '=', True)]}"/>
+                    <button
+                            aria-label="Opened"
+                            type="object"
+                            name="action_update_factor"
+                            class="btn-link"
+                    >
+                        <i
+                                title="Update Factor"
+                                class="fa fa-fw fa-refresh"
+                                attrs="{'invisible': ['|', ('is_manual', '=', False), ('state','!=','draft')]}"
+                        />
+                    </button>
+                </xpath>
+                <!--<xpath expr="//field[@name='payment_term_id']/parent::group" name="payment_term_id" position="after">
                     <group>
                         <div class="o_row" name="div_custom_rate">
                             <label for="custom_rate"/>
@@ -27,7 +45,7 @@
                             </button>
                         </div>
                     </group>
-                </xpath>
+                </xpath>-->
                 <xpath expr="//group/group/field[@name='analytic_account_id']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>

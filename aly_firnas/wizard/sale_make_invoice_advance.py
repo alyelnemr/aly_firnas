@@ -109,6 +109,7 @@ class SaleAdvancePaymentInv(models.TransientModel):
             'invoice_origin': order.name,
             'invoice_user_id': order.user_id.id,
             'narration': order.note,
+            's_order_id': order.id,
             'partner_id': order.partner_invoice_id.id,
             'fiscal_position_id': order.fiscal_position_id.id or order.partner_id.property_account_position_id.id,
             'partner_shipping_id': order.partner_shipping_id.id,

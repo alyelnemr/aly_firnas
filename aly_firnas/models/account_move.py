@@ -90,15 +90,17 @@ class AccountMove(models.Model):
         for line in self:
             line.purchase_order_id = line.p_order_id if line.p_order_id else False
             purchase_lines = self.env['purchase.order.line'].search([('invoice_lines.move_id.id', '=', line.id)])
-            if purchase_lines:
+            if purchase_lines and not line.purchase_order_id:
                 line.purchase_order_id = purchase_lines[0].order_id.id
+                line.p_order_id = line.purchase_order_id.id
 
     def _get_sale_order_id(self):
         for line in self:
             line.sale_order_id = line.s_order_id if line.s_order_id else False
             sale_lines = self.env['sale.order.line'].search([('invoice_lines.move_id.id', '=', line.id)])
-            if sale_lines:
+            if sale_lines and not line.sale_order_id:
                 line.sale_order_id = sale_lines[0].order_id.id
+                line.s_order_id = line.sale_order_id.id
 
     def _get_amount_from_currency(self):
         for move in self:
