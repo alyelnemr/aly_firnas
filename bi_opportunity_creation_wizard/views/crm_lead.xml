@@ -54,7 +54,7 @@
                                     <field name="subcontractor_supplier_ids" widget="many2many_tags"/>
                                     <field name="end_client" widget="many2many_tags"/>
                                     <field name="latest_proposal_submission_date"/>
-                                    <field name="result_date"/>
+                                    <field name="result_date" />
                                     <field name="contract_signature_date"/>
                                     <field name="initial_contact_date"/>
                                     <field name="proposal_reviewer_ids" widget="many2many_tags"/>
