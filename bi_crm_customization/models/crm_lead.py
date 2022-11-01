@@ -95,7 +95,7 @@ class CRMLeadInherit(models.Model):
     lead_stage_id = fields.Many2one('crm.leadstage', string='Lead Stage', tracking=True, copy=False)
     # these fields will be used only to create analytic_account
     is_analytic_account_id_created = fields.Boolean(string='Is Analytic Account created!', default=False)
-    analytic_tag_ids_for_analytic_account = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True, copy=False)
+    analytic_tag_ids_for_analytic_account = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=False, copy=False)
 
     @api.depends('project_num', 'country.code', 'internal_opportunity_name')
     def _compute_name(self):
