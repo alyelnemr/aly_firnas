@@ -5,7 +5,6 @@
     'description': """Adding level of approval on RFQ for RFQ Approver""",
     'author': "BI Solutions Development Team",
     'depends': ['purchase'],
-
     'data': [
     ],
     'installable': True,
