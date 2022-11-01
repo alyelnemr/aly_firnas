@@ -8,7 +8,7 @@
     """,
     'author': "BI Solutions Development Team",
     'category': 'crm',
-    'version': '0.1',
+    'version': '0.2',
     'depends': ['base', 'crm', 'bi_crm_concatenated_name', 'bi_crm_customization'],
     'data': [
         'views/crm_lead.xml',
