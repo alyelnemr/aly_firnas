@@ -4,6 +4,7 @@ from odoo import models, fields, api, _
 class Lead2OpportunityPartner(models.TransientModel):
     _inherit = 'crm.lead2opportunity.partner'
 
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True, copy=False)
     is_existing_opportunity = fields.Boolean(string='Is it an existing opportunity?')
     parent_opportunity_id = fields.Many2one('crm.lead', string='Existing Opportunities')
     serial_number = fields.Char(string='Serial Number')
@@ -194,6 +195,8 @@ class Lead2OpportunityPartner(models.TransientModel):
                 'sub_type': self.sub_type,
                 'type_custom': self.type_custom.id,
                 'type_custom_ids': self.type_custom_ids.ids,
+                'is_analytic_account_id_created': False,
+                'analytic_tag_ids_for_analytic_account': self.analytic_tag_ids.ids,
             })
             if lead.type_custom:
                 if lead.letter_identifier:

@@ -23,6 +23,8 @@
                         <field name="currency_id"/>
                         <field name="forecast"/>
                         <field name="company_id" invisible="0"/>
+                        <field name="analytic_tag_ids" widget="many2many_tags"
+                               options="{'no_create': False, 'no_quick_create': False, 'no_create_edit':False}"/>
                     </group>
                 </group>
                 <notebook>

@@ -16,11 +16,11 @@ class SaleOrder(models.Model):
     custom_rate = fields.Float('Rate (Factor)', digits=(16, 12), tracking=True)
     analytic_account_id = fields.Many2one(
         'account.analytic.account', 'Analytic Account',
-        readonly=True, copy=False, check_company=True, required=False,
+        readonly=True, copy=False, check_company=True, required=True,
         states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
         help="The analytic account related to a sales order.")
-    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=False, copy=False)
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True, copy=False)
 
     @api.onchange('analytic_account_id', 'analytic_tag_ids')
     def update_analytic_tags(self):
