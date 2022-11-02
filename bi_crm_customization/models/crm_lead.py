@@ -59,7 +59,7 @@ class CRMLeadInherit(models.Model):
                                        column2='type_custom_ids_crm_type_id', string="Secondary Project Types", required=False)
     project_name = fields.Char(string="Customer's Project Name / Proposal Title", store=True, )
     country = fields.Many2many(comodel_name='res.country', string='Countries')
-    client_name = fields.Many2one('res.partner', string="End Client", help="deprecated, not used, you can use end_client field")
+    client_name = fields.Many2one('res.partner', string="End Client!", help="deprecated, not used, you can use end_client field")
     start_date = fields.Date(string="Request Date", required=False)
     sub_date = fields.Datetime(string="Submission Deadline", required=True)
     actual_sub_date = fields.Date(string="Actual Submission Date")
