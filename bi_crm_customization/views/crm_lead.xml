@@ -52,15 +52,12 @@
                 </attribute>
                 <attribute name="required">1</attribute>
             </xpath>
-<!--            <xpath expr="//field[@name='email_cc']" position="replace"></xpath>-->
+            <xpath expr="//field[@name='email_cc']" position="replace"></xpath>
             <xpath expr="//field[@name='team_id']" position="after">
                 <field name="sub_date" />
             </xpath>
             <xpath expr="//field[@name='function']" position="before">
                 <field name="email_cc" attrs="{'invisible': [('type', '=', 'opportunity')]}" />
-            </xpath>
-            <xpath expr="//field[@name='partner_address_phone']" position="before">
-                <field name="email_cc" attrs="{'invisible': [('type', '=', 'lead')]}" />
             </xpath>
             <xpath expr="//field[@name='company_id']" position="replace">
             </xpath>
