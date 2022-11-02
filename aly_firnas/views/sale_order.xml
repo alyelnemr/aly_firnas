@@ -52,7 +52,7 @@
 
                 <xpath expr="//field[@name='partner_shipping_id']" position="after">
 
-                    <field name="analytic_account_id" context="{'default_partner_id':partner_invoice_id, 'default_name':name}"
+                    <field name="analytic_account_id" required="1" context="{'default_partner_id':partner_invoice_id, 'default_name':name}"
                            attrs="{'readonly': [('invoice_count','!=',0),('state','=','sale')]}"
                            groups="analytic.group_analytic_accounting" force_save="1"/>
                     <field name="analytic_tag_ids" widget="many2many_tags"

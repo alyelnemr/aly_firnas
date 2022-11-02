@@ -91,9 +91,9 @@
                             <field name="proposals_engineer_id" attrs="{'required': [('type', '=', 'opportunity')]}"/>
                             <field name="rfp_ref_number"/>
                             <field name="project_num" required="0" readonly="1"/>
-                            <field name="type_custom" />
+                            <field name="type_custom" required="1" />
                             <field name="type_custom_ids" widget="many2many_tags"/>
-                            <field name="internal_opportunity_name"/>
+                            <field name="internal_opportunity_name" required="1"/>
                             <field name="project_name"/>
                             <field name="country" required="1" widget="many2many_tags"/>
                             <field name="start_date"/>

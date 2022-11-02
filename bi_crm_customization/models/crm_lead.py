@@ -54,7 +54,7 @@ class CRMLeadInherit(models.Model):
     partner_id = fields.Many2one('res.partner', string='Customer', tracking=10, index=True, required=True,
                                  domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
                                  help="Linked partner (optional). Usually created when converting the lead. You can find a partner by its Name, TIN, Email or Internal Reference.")
-    type_custom = fields.Many2one('crm.type', string="Project Type", required=True)
+    type_custom = fields.Many2one('crm.type', string="Project Type", required=False)
     type_custom_ids = fields.Many2many(comodel_name='crm.type', relation='type_custom_crmlead_rel', column1='type_custom_ids_id',
                                        column2='type_custom_ids_crm_type_id', string="Secondary Project Types", required=False)
     project_name = fields.Char(string="Customer's Project Name / Proposal Title", store=True, )
@@ -74,7 +74,7 @@ class CRMLeadInherit(models.Model):
     latest_proposal_submission_date = fields.Date(string="Latest Proposal Submission Date")
     result_date = fields.Date(string="Result Date")
     contract_signature_date = fields.Date(string="Contract/PO Signature Date")
-    initial_contact_date = fields.Date(string="Initial Contact Date", required=True)
+    initial_contact_date = fields.Date(string="Initial Contact Date", required=False)
     end_client = fields.Many2many(comodel_name='res.partner', relation='crm2opprtunity_endclient_rel', column1='crm_end_client_id', column2='end_client_partner_id', string="End Client")
     proposals_engineer_id = fields.Many2one('res.users', string='Proposals Engineer')
     rfp_ref_number = fields.Char(string='RfP Ref. Number')
@@ -88,7 +88,7 @@ class CRMLeadInherit(models.Model):
     letter_identifier = fields.Char(string='Letter Identifier')
     project_num = fields.Char(string="Project Number", default='/', compute='_compute_project_num', store=True)
     project_id = fields.Many2one('project.project', string="Project", compute='_compute_project_project', store=False)
-    internal_opportunity_name = fields.Char(string="Internal Opportunity Name", required=True)
+    internal_opportunity_name = fields.Char(string="Internal Opportunity Name", required=False)
     next_letter_sequence = fields.Char(string="Next Letter Sequence", readonly=True)
     task_id = fields.Many2one('project.task', string="Task in Project Module", required=False, copy=False)
     actual_sub_date = fields.Date(string="Actual Submission Date")
