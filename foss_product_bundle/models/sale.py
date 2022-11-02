@@ -24,6 +24,7 @@ class ProductTemplate(models.Model):
 
 class ChildProductLine(models.Model):
     _name = "child.product.line"
+    _description = "child.product.line"
 
     product_tmp_id = fields.Many2one('product.template', string='Product Name')
     product_id = fields.Many2one('product.product', string='Product')
