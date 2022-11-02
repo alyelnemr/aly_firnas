@@ -6,6 +6,7 @@ from odoo.exceptions import UserError
 
 class PurchaseQtyReceivedWizard(models.TransientModel):
     _name = 'purchase.qty.received.wizard'
+    _description = 'purchase.qty.received.wizard'
 
     qty_received = fields.Float(string="Received Qty", required=True)
     purchase_line_id = fields.Many2one('purchase.order.line', string="Purchase Order Line", required=True)

@@ -85,8 +85,8 @@ class SaleOrderCRMInherit(models.Model):
 
     serial_num = fields.Char(string="Serial Number")
     project_number = fields.Char(string="Project Number", store=True, readonly=True)
-    type_custom = fields.Many2one('crm.type', string="Project Type", required=True)
-    internal_opportunity_name = fields.Char(string="Internal Opportunity Name", required=True)
+    type_custom = fields.Many2one('crm.type', string="Project Type", required=False)
+    internal_opportunity_name = fields.Char(string="Internal Opportunity Name", required=False)
     type_custom_ids = fields.Many2many('crm.type', relation='type_custom_saleorder_rel', column1='type_custom_ids_id',
                                        column2='type_custom_ids_crm_type_id', string="Secondary Project Types")
     country = fields.Many2many('res.country', string='Country')
@@ -107,6 +107,6 @@ class SaleOrderCRMInherit(models.Model):
     latest_proposal_submission_date = fields.Date(string="Latest Proposal Submission Date")
     result_date = fields.Date(string="Result Date")
     contract_signature_date = fields.Date(string="Contract/PO Signature Date")
-    initial_contact_date = fields.Date(string="Initial Contact Date", required=True)
+    initial_contact_date = fields.Date(string="Initial Contact Date", required=False)
     rfp_ref_number = fields.Char(string='RfP Ref. Number')
     proposals_engineer_id = fields.Many2one('res.users', string='Proposals Engineer')

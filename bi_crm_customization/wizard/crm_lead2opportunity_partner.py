@@ -4,14 +4,15 @@ from odoo import models, fields, api, _
 class Lead2OpportunityPartner(models.TransientModel):
     _inherit = 'crm.lead2opportunity.partner'
 
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True, copy=False)
     is_existing_opportunity = fields.Boolean(string='Is it an existing opportunity?')
     parent_opportunity_id = fields.Many2one('crm.lead', string='Existing Opportunities')
     serial_number = fields.Char(string='Serial Number')
     original_serial_number = fields.Char(string='Original Serial Number')
-    type_custom = fields.Many2one('crm.type', string="Project Type", required=True)
+    type_custom = fields.Many2one('crm.type', string="Project Type", required=False)
     letter_identifier = fields.Char(string='Letter Identifier')
     project_num = fields.Char(string="Project Number", default='/', compute='_compute_project_num', store=True)
-    internal_opportunity_name = fields.Char(string="Internal Opportunity Name", required=True)
+    internal_opportunity_name = fields.Char(string="Internal Opportunity Name", required=False)
     next_letter_sequence = fields.Char(string="Next Letter Sequence", readonly=True)
     currency_id = fields.Many2one('res.currency', string="Currency", store=True)
     forecast = fields.Monetary(string="Forecast", store=True)
@@ -35,7 +36,7 @@ class Lead2OpportunityPartner(models.TransientModel):
                                              column1='prop_reviewer_oppor_id', column2='prop_reviewer_oppor_partner_id', string="Proposal Reviewers")
     latest_proposal_submission_date = fields.Date(string="Latest Proposal Submission Date")
     contract_signature_date = fields.Date(string="Contract/PO Signature Date")
-    initial_contact_date = fields.Date(string="Initial Contact Date", required=True)
+    initial_contact_date = fields.Date(string="Initial Contact Date", required=False)
     result_date = fields.Date(string="Result Date")
     end_client = fields.Many2many(comodel_name='res.partner', relation='crm2opportunity_end_client_rel', column1='crm2opp_end_client_id', column2='endclient_partner_id',
                                   string="End Client")
@@ -194,6 +195,8 @@ class Lead2OpportunityPartner(models.TransientModel):
                 'sub_type': self.sub_type,
                 'type_custom': self.type_custom.id,
                 'type_custom_ids': self.type_custom_ids.ids,
+                'is_analytic_account_id_created': False,
+                'analytic_tag_ids_for_analytic_account': self.analytic_tag_ids.ids,
             })
             if lead.type_custom:
                 if lead.letter_identifier:

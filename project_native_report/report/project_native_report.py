@@ -10,6 +10,7 @@ from dateutil.relativedelta import relativedelta
 
 class ProjectNativeGanttReport(models.AbstractModel):
     _name = 'report.project_native_report.project_native_gantt_report'
+    _description = 'report.project_native_report.project_native_gantt_report'
 
     def first_date_of_month(self, dt):
 

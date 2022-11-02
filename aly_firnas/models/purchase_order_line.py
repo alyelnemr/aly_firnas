@@ -16,6 +16,7 @@ class PurchaseOrderLine(models.Model):
         vals.update({"price_unit": self._get_discounted_price_unit()})
         return vals
 
+    @api.depends('product_id', 'discount', 'product_qty', 'product_uom', 'sequence', 'name', 'price_unit')
     def _get_line_numbers(self):
         if self.ids:
             first_line_rec = self.browse(self.ids[0])
@@ -49,7 +50,7 @@ class PurchaseOrderLine(models.Model):
             self.price_unit = price_unit
         return price
 
-    line_rank = fields.Integer('Sn', compute='_get_line_numbers', store=False, default=1)
+    line_rank = fields.Integer('Sn', compute='_get_line_numbers', store=True, default=1)
     discount = fields.Float(string="Discount (%)", digits="Discount")
     is_origin_so = fields.Boolean(default=False, copy=False)
     account_analytic_id = fields.Many2one('account.analytic.account', 'Analytic Account', required=True)

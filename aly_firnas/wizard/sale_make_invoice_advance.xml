@@ -43,7 +43,7 @@
                                 <field name="downpayment_description" nolabel="1" class="oe_inline"
                                        attrs="{'invisible': [('advance_payment_method', 'not in', ('fixed','percentage'))]}"/>
                             </div>
-                            <label for="amount"
+                            <label for="amount" string="Milestone Amount"
                                    attrs="{'invisible': [('advance_payment_method', 'not in', ('fixed'))]}"/>
                             <div attrs="{'invisible': [('advance_payment_method', 'not in', ('fixed'))]}">
                                 <field name="currency_id" invisible="1"/>
@@ -51,7 +51,7 @@
                                        attrs="{'required': [('advance_payment_method', '=', 'fixed')], 'invisible': [('advance_payment_method', '!=','fixed')]}"
                                        class="oe_inline"/>
                             </div>
-                            <label for="amount" string="Down Payment Percentage"
+                            <label for="amount" string="Milestone Percentage"
                                    attrs="{'invisible': [('advance_payment_method', 'not in', ('percentage'))]}"/>
                             <div attrs="{'invisible': [('advance_payment_method', 'not in', ('percentage'))]}">
                                 <field name="amount"

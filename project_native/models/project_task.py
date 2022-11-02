@@ -117,6 +117,7 @@ class Project(models.Model):
 
 class ProjectTaskPredecessor(models.Model):
     _name = 'project.task.predecessor'
+    _description = 'project.task.predecessor'
 
     @api.model
     def _get_link_type(self):

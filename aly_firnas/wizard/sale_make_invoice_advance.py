@@ -10,7 +10,18 @@ from odoo.exceptions import UserError
 class SaleAdvancePaymentInv(models.TransientModel):
     _inherit = 'sale.advance.payment.inv'
 
-    product_id = fields.Many2one('product.product', string='Down Payment Product', required=True,
+    @api.model
+    def _default_product_id(self):
+        return self.env['product.product'].search([('type', '=', 'service'), ('is_downpayment_service', '=', True)], limit=1)
+
+    advance_payment_method = fields.Selection([
+        ('delivered', 'Regular invoice'),
+        ('percentage', 'Milestone (percentage)'),
+        ('fixed', 'Milestone (fixed amount)')
+    ], string='Create Invoice', default='delivered', required=True,
+        help="A standard invoice is issued with all the order lines ready for invoicing, \
+        according to their invoicing policy (based on ordered or delivered quantity).")
+    product_id = fields.Many2one('product.product', string=' Milestone Product', required=True,
                                  domain=[('type', '=', 'service'), ('is_downpayment_service', '=', True)])
     downpayment_description = fields.Char(string='Description')
 
@@ -77,14 +88,14 @@ class SaleAdvancePaymentInv(models.TransientModel):
 
         invoiceable_line_ids = []
         for line in order.order_line:
-            if line.qty_to_invoice < 0 and final or line.is_downpayment:
+            if line.qty_to_invoice < 0 and final:# or line.is_downpayment:
                 invoiceable_line_ids.append(line)
         for item in invoiceable_line_ids:
             if item.id != so_line.id:
                 invoice_vals['invoice_line_ids'].append((0, 0, {
                     'name': item.name,
                     'price_unit': item.price_unit,
-                    'quantity': 1.0,
+                    'quantity': 1.0 if not final else item.qty_to_invoice,
                     'discount': item.discount,
                     'product_id': item.product_id.id,
                     'product_uom_id': item.product_uom.id,

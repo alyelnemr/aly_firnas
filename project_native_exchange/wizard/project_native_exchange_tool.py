@@ -28,6 +28,7 @@ import xml.etree.ElementTree as ET
 
 class ProjectNativeExchangeTool(models.TransientModel):
     _name = "project.native.exchange.tool"
+    _description = 'project.native.exchange.tool'
 
     def prettify(self, elem):
         """Return a pretty-printed XML string for the Element.

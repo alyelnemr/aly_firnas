@@ -22,6 +22,7 @@ _logger = logging.getLogger(__name__)  # Need for message in console.
 
 class ProjectTaskDetailPlan(models.Model):
     _name = 'project.task.detail.plan'
+    _description = 'project.task.detail.plan'
 
     @api.model
     def _get_type(self):
@@ -68,7 +69,6 @@ class ProjectTaskDetailPlan(models.Model):
         for plan in self:
             if plan.type_level == "cut":
                 plan.color_gantt ="rgba(190,170,23,0.53)"
-
 
 
 class ProjectTask(models.Model):
@@ -118,7 +118,6 @@ class ProjectTask(models.Model):
 
             task_detail_lines.append((0, 0, value), )
         return task_detail_lines
-
 
 
 class Project(models.Model):

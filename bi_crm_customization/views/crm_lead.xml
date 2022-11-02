@@ -68,6 +68,11 @@
                 <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
                 <field name="probability"/>
                 <field name="company_id" groups="base.group_multi_company"/>
+                <field name="is_analytic_account_id_created" invisible="1"/>
+                <field name="analytic_tag_ids_for_analytic_account" widget="many2many_tags"
+                       attrs="{'invisible': ['|',('is_analytic_account_id_created', '=', True), ('type', '!=', 'opportunity')],
+                       'required': [('is_analytic_account_id_created', '=', False), ('type', '!=', 'opportunity')]}"
+                       options="{'no_create': False, 'no_quick_create': False, 'no_create_edit':False}"/>
             </xpath>
             <xpath expr="//notebook" position="inside">
                 <page name="info" string="Information">
@@ -86,9 +91,9 @@
                             <field name="proposals_engineer_id" attrs="{'required': [('type', '=', 'opportunity')]}"/>
                             <field name="rfp_ref_number"/>
                             <field name="project_num" required="0" readonly="1"/>
-                            <field name="type_custom" />
+                            <field name="type_custom" required="1" />
                             <field name="type_custom_ids" widget="many2many_tags"/>
-                            <field name="internal_opportunity_name"/>
+                            <field name="internal_opportunity_name" required="1"/>
                             <field name="project_name"/>
                             <field name="country" required="1" widget="many2many_tags"/>
                             <field name="start_date"/>

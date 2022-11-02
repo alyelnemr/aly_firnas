@@ -21,6 +21,11 @@
                             <field name="currency_id"/>
                             <field name="forecast"/>
                             <field name="company_id" invisible="0"/>
+                            <field name="type" invisible="1"/>
+                            <field name="is_analytic_account_id_created" invisible="1"/>
+                            <field name="analytic_tag_ids_for_analytic_account" widget="many2many_tags"
+                                   attrs="{'invisible': [('is_analytic_account_id_created', '=', True)], 'required': [('is_analytic_account_id_created', '=', False), ('type', '!=', 'opportunity')]}"
+                                   options="{'no_create': False, 'no_quick_create': False, 'no_create_edit':False}"/>
                         </group>
                     </group>
                     <notebook>
@@ -49,7 +54,7 @@
                                     <field name="subcontractor_supplier_ids" widget="many2many_tags"/>
                                     <field name="end_client" widget="many2many_tags"/>
                                     <field name="latest_proposal_submission_date"/>
-                                    <field name="result_date"/>
+                                    <field name="result_date" />
                                     <field name="contract_signature_date"/>
                                     <field name="initial_contact_date"/>
                                     <field name="proposal_reviewer_ids" widget="many2many_tags"/>
@@ -85,5 +90,6 @@
                 </xpath>
             </field>
         </record>
+
     </data>
 </odoo>

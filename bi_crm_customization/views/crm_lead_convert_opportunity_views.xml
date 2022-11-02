@@ -23,6 +23,8 @@
                         <field name="currency_id"/>
                         <field name="forecast"/>
                         <field name="company_id" invisible="0"/>
+                        <field name="analytic_tag_ids" widget="many2many_tags"
+                               options="{'no_create': False, 'no_quick_create': False, 'no_create_edit':False}"/>
                     </group>
                 </group>
                 <notebook>
@@ -34,7 +36,7 @@
                                 <field name="project_num" readonly="1"/>
                                 <field name="type_custom" required="1"/>
                                 <field name="type_custom_ids" widget="many2many_tags"/>
-                                <field name="internal_opportunity_name"/>
+                                <field name="internal_opportunity_name" required="1"/>
                                 <field name="project_name"/>
                                 <field name="country" widget="many2many_tags" required="1"/>
                                 <field name="start_date"/>

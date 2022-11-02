@@ -4,5 +4,6 @@ from odoo import api, fields, models
 
 class ProjectSource(models.Model):
     _name = 'project.source'
+    _description = 'project.source'
 
     name = fields.Char('name')
