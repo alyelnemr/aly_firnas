@@ -50,7 +50,7 @@ class PurchaseOrderLine(models.Model):
             self.price_unit = price_unit
         return price
 
-    line_rank = fields.Integer('Sn', compute='_get_line_numbers', store=True, default=1)
+    line_rank = fields.Integer('Sn', compute='_get_line_numbers', store=False, default=1)
     discount = fields.Float(string="Discount (%)", digits="Discount")
     is_origin_so = fields.Boolean(default=False, copy=False)
     account_analytic_id = fields.Many2one('account.analytic.account', 'Analytic Account', required=True)
