@@ -68,8 +68,7 @@ class SaleOrder(models.Model):
             if line.product_id:
                 discount = 0
                 if self.pricelist_id:
-                    price = self.pricelist_id.with_context(uom=line.product_uom_id.id).get_product_price(line.product_id, 1,
-                                                                                                         False)
+                    price = self.pricelist_id.with_context(uom=line.product_uom_id.id).get_product_price(line.product_id, 1, False)
                     # get price from price list only if no price list get from template line price
                     if not price:
                         price = line.price_unit
