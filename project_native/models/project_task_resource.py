@@ -30,12 +30,10 @@ class ProjectTaskNativeResource(models.Model):
 
 class ProjectTaskResourceLink(models.Model):
     _name = 'project.task.resource.link'
-
+    _description = 'project.task.resource.link'
     _order = 'date_start'
 
-
     name = fields.Char(compute='_compute_name_link', readonly=True, store=False)
-
     resource_id = fields.Many2one('resource.resource', 'Resource', ondelete='restrict')
     task_id = fields.Many2one('project.task', 'Task', ondelete='restrict', readonly=True,)
     load_factor = fields.Float("Load Factor", default=1.0)

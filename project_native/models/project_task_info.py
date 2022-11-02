@@ -5,6 +5,7 @@ _logger = logging.getLogger(__name__)  # Need for message in console.
 
 class ProjectTaskInfo(models.Model):
     _name = 'project.task.info'
+    _description = 'project.task.info'
 
     name = fields.Char("Name")
     task_id = fields.Many2one('project.task', 'Task', ondelete='cascade')

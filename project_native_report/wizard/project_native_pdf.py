@@ -7,6 +7,7 @@ _logger = logging.getLogger(__name__)
 
 class ProjectNativeReport(models.TransientModel):
     _name = "project.native.report"
+    _description = 'project.native.report'
 
     project_id = fields.Many2one('project.project', 'Project', readonly=True)
     name = fields.Char(string='Name', default='PDF Report', readonly=True)

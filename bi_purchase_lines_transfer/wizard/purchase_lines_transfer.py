@@ -5,6 +5,7 @@ from odoo import api, fields, models
 
 class PurchaseLinesTransferWizard(models.TransientModel):
     _name = 'purchase.lines.transfer.wizard'
+    _description = 'purchase.lines.transfer.wizard'
 
     current_purchase_order_id = fields.Many2one('purchase.order', string='Current Purchase Order')
     purchase_order_id = fields.Many2one('purchase.order', string='Purchase Order', required=True,
@@ -50,6 +51,7 @@ class PurchaseLinesTransferWizard(models.TransientModel):
 
 class PurchaseLineWizard(models.TransientModel):
     _name = 'purchase.line.wizard'
+    _description = 'purchase.line.wizard'
 
     related_po_line = fields.Many2one('purchase.order.line', string='Purchase Lines')
     product_id = fields.Many2one('product.product', string='Product')
