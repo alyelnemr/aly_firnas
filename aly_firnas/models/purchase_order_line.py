@@ -16,7 +16,6 @@ class PurchaseOrderLine(models.Model):
         vals.update({"price_unit": self._get_discounted_price_unit()})
         return vals
 
-    @api.depends('product_id', 'discount', 'product_qty', 'product_uom', 'sequence', 'name', 'price_unit')
     def _get_line_numbers(self):
         if self.ids:
             first_line_rec = self.browse(self.ids[0])
