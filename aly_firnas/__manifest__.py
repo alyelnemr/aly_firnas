@@ -12,6 +12,7 @@
         'security/ir.model.access.csv',
         'wizard/wh_email.xml',
         'wizard/sale_make_invoice_advance.xml',
+        'wizard/purchase_advance_payment.xml',
         'views/aly_po_report.xml',
         'views/aly_rfq_report.xml',
         'views/res_users.xml',

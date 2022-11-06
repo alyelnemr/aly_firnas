@@ -49,11 +49,30 @@ class PurchaseOrderLine(models.Model):
             self.price_unit = price_unit
         return price
 
+    # no trigger product_id.invoice_policy to avoid retroactively changing SO
+    @api.depends('qty_invoiced', 'product_qty', 'order_id.state')
+    def _get_to_invoice_qty(self):
+        """
+        Compute the quantity to invoice. If the invoice policy is order, the quantity to invoice is
+        calculated from the ordered quantity. Otherwise, the quantity delivered is used.
+        """
+        for line in self:
+            if line.order_id.state in ['purchase', 'done']:
+                line.qty_to_invoice = line.product_qty - line.qty_invoiced
+            else:
+                line.qty_to_invoice = 0
+
     line_rank = fields.Integer('Sn', compute='_get_line_numbers', store=False, default=1)
     discount = fields.Float(string="Discount (%)", digits="Discount")
     is_origin_so = fields.Boolean(default=False, copy=False)
     account_analytic_id = fields.Many2one('account.analytic.account', 'Analytic Account', required=True)
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True)
+    is_downpayment = fields.Boolean(
+        string="Is a down payment", help="Down payments are made when creating invoices from a sales order."
+                                         " They are not copied when duplicating a sales order.")
+    qty_to_invoice = fields.Float(
+        compute='_get_to_invoice_qty', string='To Invoice Quantity', store=True, readonly=True,
+        digits='Product Unit of Measure')
 
     @api.onchange('product_id')
     def get_analytic_account_tags(self):
