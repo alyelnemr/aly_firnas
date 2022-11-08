@@ -77,7 +77,7 @@ class SaleOrderCRMInherit(models.Model):
                 result['initial_contact_date'] = lead.initial_contact_date
             if 'analytic_account_id' in fields and lead.analytic_account_id:
                 result['analytic_account_id'] = lead.analytic_account_id.id
-            if 'analytic_tag_ids_for_analytic_account' in fields and lead.analytic_tag_ids_for_analytic_account:
+            if 'analytic_tag_ids' in fields and lead.analytic_tag_ids_for_analytic_account:
                 result['analytic_tag_ids'] = lead.analytic_tag_ids_for_analytic_account.ids
         return result
 
