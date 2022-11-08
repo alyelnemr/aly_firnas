@@ -224,6 +224,8 @@ class CRMLeadInherit(models.Model):
             # parent opprtunity letter sequence
             if rec.parent_opportunity_id:
                 rec.letter_identifier = rec.parent_opportunity_id.next_letter_sequence or 'B'
+                next_letter_sequence = chr(ord(rec.letter_identifier) + 1)
+                rec.parent_opportunity_id.sudo().write({'next_letter_sequence': next_letter_sequence})
             else:
                 rec.letter_identifier = False
 
