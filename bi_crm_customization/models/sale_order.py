@@ -75,6 +75,10 @@ class SaleOrderCRMInherit(models.Model):
                 result['contract_signature_date'] = lead.contract_signature_date
             if 'initial_contact_date' in fields and lead.initial_contact_date:
                 result['initial_contact_date'] = lead.initial_contact_date
+            if 'analytic_account_id' in fields and lead.analytic_account_id:
+                result['analytic_account_id'] = lead.analytic_account_id.id
+            if 'analytic_tag_ids_for_analytic_account' in fields and lead.analytic_tag_ids_for_analytic_account:
+                result['analytic_tag_ids'] = lead.analytic_tag_ids_for_analytic_account.ids
         return result
 
     project_name = fields.Char(string="Customer's Project Name / Proposal Title")
