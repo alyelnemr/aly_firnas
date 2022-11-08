@@ -93,7 +93,7 @@ class CRMLeadInherit(models.Model):
     task_id = fields.Many2one('project.task', string="Task in Project Module", required=False, copy=False)
     actual_sub_date = fields.Date(string="Actual Submission Date")
     lead_stage_id = fields.Many2one('crm.leadstage', string='Lead Stage', tracking=True, copy=False)
-    partner_contact = fields.Many2one('res.partner', string='Customer Contacts', required=False,
+    partner_contact = fields.Many2one('res.partner', string='Customer Contact', required=False,
                                      domain="[('parent_id', '=', partner_id)]")
     # these fields will be used only to create analytic_account
     is_analytic_account_id_created = fields.Boolean(string='Is Analytic Account created!', default=False)
