@@ -69,8 +69,6 @@
             <xpath expr="//field[@name='function']" position="before">
                 <field name="email_cc" attrs="{'invisible': [('type', '=', 'opportunity')]}" />
             </xpath>
-            <xpath expr="//field[@name='company_id']" position="replace">
-            </xpath>
             <xpath expr="//field[@name='tag_ids']" position="replace">
                 <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
                 <field name="probability"/>
