@@ -110,3 +110,5 @@ class SaleOrderCRMInherit(models.Model):
     initial_contact_date = fields.Date(string="Initial Contact Date", required=False)
     rfp_ref_number = fields.Char(string='RfP Ref. Number')
     proposals_engineer_id = fields.Many2one('res.users', string='Proposals Engineer')
+    partner_contact = fields.Many2one('res.partner', string='Customer Contacts', required=False,
+                                      domain="[('parent_id', '=', partner_id)]")

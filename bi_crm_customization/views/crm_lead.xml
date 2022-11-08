@@ -37,6 +37,7 @@
                                         'default_website': website,
                                         'show_vat': True
                                     }" required="0"/>
+                <field name="partner_contact"/>
             </xpath>
             <xpath expr="//page[@name='lead']//group//group//field[@name='source_id']" position="replace">
             </xpath>

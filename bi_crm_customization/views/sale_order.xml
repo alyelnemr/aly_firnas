@@ -10,6 +10,7 @@
                 <xpath expr="//group//group[@name='utm_link']//field[@name='source_id']" position="replace">
                 </xpath>
                 <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="partner_contact"/>
                     <field name="serial_num" required="0"/>
                 </xpath>
                 <xpath expr="//notebook" position="inside">
