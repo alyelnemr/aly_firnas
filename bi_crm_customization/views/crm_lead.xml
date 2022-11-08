@@ -14,6 +14,12 @@
                     <span>Project</span>
                 </button>
             </xpath>
+            <xpath expr="//header" position="inside">
+                <field name="lead_stage_id" widget="statusbar"
+                       options="{'clickable': '1', 'fold_field': 'fold'}"
+                       domain="['|', ('team_id', '=', team_id), ('team_id', '=', False)]"
+                       attrs="{'invisible': ['|', ('active', '=', False), ('type', '!=', 'lead')]}"/>
+            </xpath>
             <xpath expr="//field[@name='partner_id']" position="replace">
                 <field name="partner_id" widget="res_partner_many2one"
                        context="{'default_name': contact_name,
