@@ -74,8 +74,11 @@
             <xpath expr="//field[@name='tag_ids']" position="replace">
                 <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
                 <field name="probability"/>
+            </xpath>
+            <xpath expr="/form/sheet/group/group[7]/field[3]" position="replace">
                 <field name="company_id" groups="base.group_multi_company"/>
                 <field name="is_analytic_account_id_created" invisible="1"/>
+                <field name="analytic_account_id"/>
                 <field name="analytic_tag_ids_for_analytic_account" widget="many2many_tags"
                        attrs="{'invisible': ['|',('is_analytic_account_id_created', '=', True), ('type', '!=', 'opportunity')],
                        'required': [('is_analytic_account_id_created', '=', False), ('type', '=', 'opportunity')]}"

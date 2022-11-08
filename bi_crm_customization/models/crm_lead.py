@@ -97,6 +97,7 @@ class CRMLeadInherit(models.Model):
                                      domain="[('parent_id', '=', partner_id)]")
     # these fields will be used only to create analytic_account
     is_analytic_account_id_created = fields.Boolean(string='Is Analytic Account created!', default=False)
+    analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account', required=False)
     analytic_tag_ids_for_analytic_account = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=False, copy=False)
 
     @api.depends('project_num', 'country.code', 'internal_opportunity_name')
@@ -162,6 +163,7 @@ class CRMLeadInherit(models.Model):
                     'company_id': False
                 })
                 if analytic_account:
+                    self.analytic_account_id = analytic_account.id
                     self.is_analytic_account_id_created = True
         return res
 
@@ -193,6 +195,7 @@ class CRMLeadInherit(models.Model):
                 'company_id': False
             })
             if analytic_account:
+                self.analytic_account_id = analytic_account.id
                 self.is_analytic_account_id_created = True
         if self.task_id and self.task_id.name != self.name:
             self.task_id.name = self.name
