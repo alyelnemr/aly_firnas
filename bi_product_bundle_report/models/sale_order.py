@@ -16,6 +16,8 @@ class SaleOrder(models.Model):
     show_component_price = fields.Boolean(string="Show Component Price", default=False)
 
     split_page = fields.Boolean(string='Split Page?')
+    financial_proposal_title = fields.Char('Title', default='Financial Proposal')
+    financial_proposal_number = fields.Char('Number', default='4')
 
     def action_view_opportunity(self):
         '''

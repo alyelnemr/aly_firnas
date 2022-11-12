@@ -150,6 +150,9 @@ class SaleOrder(models.Model):
         self.require_payment = template.require_payment
         if template.note:
             self.note = template.note
+        for line in self.order_line:
+            line.analytic_account_id = self.analytic_account_id.id
+            line.analytic_tag_ids = self.analytic_tag_ids.ids
 
     def action_update_factor(self):
         for rec in self:

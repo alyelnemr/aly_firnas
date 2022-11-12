@@ -245,7 +245,7 @@
                     <div class="text-left" style="display: flex; align-items: center; justify-content: center;">
                         <div>
                             <h4 style="color:rgb(86, 56, 90); font-size: 22px !important; font-weight: bold; font-family: verdana !important;">
-                                4 Financial Proposal
+                                <span t-esc="doc.financial_proposal_number"/> <span t-esc="doc.financial_proposal_title" />
                             </h4>
                         </div>
                     </div>
@@ -257,7 +257,7 @@
                     <div class="text-left" style="display: flex; align-items: center; justify-content: center;">
                         <div>
                             <h5 style="color:rgb(86, 56, 90); font-size: 17px !important; font-weight: bold; font-family: verdana !important;">
-                                4.1 Proposed Prices
+                                <span t-esc="doc.financial_proposal_number"/>.1 Proposed Prices
                             </h5>
                         </div>
                         <table class="table table-sm o_main_table" style="margin: 0 auto;">
@@ -376,29 +376,6 @@
                                               t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                     </td>
                                 </tr>
-<!--                                <t t-foreach="doc.amount_by_group" t-as="amount_by_group">-->
-<!--                                    <tr style="font-family: verdana !important; font-size: 11px !important;">-->
-<!--                                        <t t-if="amount_by_group[3] == 1 and doc.amount_untaxed == amount_by_group[2]">-->
-<!--                                            <td name="td_amount_by_group_label_3" style="font-family: verdana !important;">-->
-<!--                                                <span t-esc="amount_by_group[0]"/>-->
-<!--                                                <span style="font-family: verdana !important;">&amp;nbsp;<span>on</span>&amp;nbsp;-->
-<!--                                                    <t t-esc="amount_by_group[2]" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>-->
-<!--                                                </span>-->
-<!--                                            </td>-->
-<!--                                            <td name="td_amount_by_group_3" style="font-family: verdana !important;" class="text-right o_price_total">-->
-<!--                                                <span t-esc="amount_by_group[1]" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>-->
-<!--                                            </td>-->
-<!--                                        </t>-->
-<!--                                        <t t-else="">-->
-<!--                                            <td name="td_amount_by_group_label" style="font-family: verdana !important;">-->
-<!--                                                <span style="font-family: verdana !important;">Taxes</span>-->
-<!--                                            </td>-->
-<!--                                            <td name="td_amount_by_group" class="text-right o_price_total" style="font-family: verdana !important;">-->
-<!--                                                <span t-esc="docs.amount_tax" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>-->
-<!--                                            </td>-->
-<!--                                        </t>-->
-<!--                                    </tr>-->
-<!--                                </t>-->
                                 <tr style="font-family: verdana !important; font-size: 11px !important;" t-if="env['res.config.settings'].sudo().get_values()['ks_enable_discount'] and doc.ks_amount_discount > 0">
                                     <td name="global_discount_amount_label" style="font-family: verdana !important;">
                                         <strong style="font-family: verdana !important;">Global Discount</strong>
@@ -433,7 +410,7 @@
                             <div class="text-left" style="display: flex; align-items: center; justify-content: center; font-family: verdana !important;">
                                 <div>
                                     <h5 style="color:rgb(86, 56, 90); font-size: 17px !important; font-weight: bold; font-family: verdana !important;">
-                                        4.<t t-esc="header_index"/>
+                                        <span t-esc="doc.financial_proposal_number"/>.<t t-esc="header_index"/>
                                         Additional Services Fees
                                     </h5>
                                 </div>
@@ -512,7 +489,7 @@
                             <div class="text-left" style="display: flex; align-items: center; justify-content: center;">
                                 <div>
                                     <h5 style="color:rgb(86, 56, 90); font-size: 17px !important; font-weight: bold; font-family: verdana !important;">
-                                        4.<t t-esc="header_index" style="font-family: verdana !important;"/>
+                                        <span t-esc="doc.financial_proposal_number"/>.<t t-esc="header_index" style="font-family: verdana !important;"/>
                                         Optional Services Fees
                                     </h5>
                                 </div>
@@ -588,7 +565,7 @@
                     <div class="text-left">
                         <div>
                             <h5 style="color:rgb(86, 56, 90); font-size: 17px !important; font-weight: bold; font-family: verdana !important;">
-                                4.<t t-esc="header_index" style="font-family: verdana !important;"/>
+                                <span t-esc="doc.financial_proposal_number"/>.<t t-esc="header_index" style="font-family: verdana !important;"/>
                                 Payment Schedule
                             </h5>
                         </div>
@@ -610,7 +587,7 @@
                     <div class="text-left">
                         <div>
                             <h5 style="color:rgb(86, 56, 90); font-size: 17px !important; font-weight: bold; font-family: verdana !important;">
-                                4.<t t-esc="header_index" style="font-family: verdana !important;"/>
+                                <span t-esc="doc.financial_proposal_number"/>.<t t-esc="header_index" style="font-family: verdana !important;"/>
                                 Terms and Conditions
                             </h5>
                         </div>
@@ -666,7 +643,8 @@
                                 </div>
                                 <div class="page_number d-inline-block text-right"
                                      style="width: 6% !important; padding-right: 0px; padding-left: 0px; height: 80px !important; vertical-align:top;">
-                                    <div style="font-family: verdana !important; font-size: 14px !important;">4-<span class="page"
+                                    <div style="font-family: verdana !important; font-size: 14px !important;"><span
+                                            t-esc="doc.financial_proposal_number"/>-<span class="page"
                                               style="!important; font-family: verdana !important; font-size: 14px !important; margin-left: -1px;"/>
                                     </div>
                                 </div>
