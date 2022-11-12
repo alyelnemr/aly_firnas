@@ -265,6 +265,10 @@
                                 <tr style="font-family: verdana !important;">
                                     <th class="text-center" style="font-family: verdana !important;color: #c4b7c4; width:500px;font-size: 11px;" colspan="3">
                                         Description</th>
+                                    <t t-if="col_span == 4">
+                                        <th class="text-center"
+                                            style="font-family: verdana !important;color: #c4b7c4; width:70px; font-size: 11px;"></th>
+                                    </t>
                                     <th class="text-center" style="font-family: verdana !important;color: #c4b7c4; width:40px; font-size: 11px;">Qty</th>
                                     <th class="text-right" style="font-family: verdana !important;color: #c4b7c4; width:70px; font-size: 11px;">Unit Price</th>
                                     <t t-if="is_discounted">
@@ -301,6 +305,9 @@
                                                 <t t-esc="sections[section]['name']"
                                                    style="font-family: verdana !important;"/>
                                             </td>
+                                            <td class="text-left" style="font-family: verdana !important;">
+                                                <span style="font-family: verdana !important;"> </span>
+                                            </td>
                                         </t>
                                         <td class="text-right">
                                             <span t-esc="sections[section]['total_price']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
@@ -315,6 +322,11 @@
                                             <td class="text-left" style="padding-left: 0px; font-family: verdana !important;">
                                                 <t t-raw="line['desc']" style="font-family: verdana !important;"/>
                                             </td>
+                                            <t t-if="col_span == 4">
+                                                <td class="text-left" style="font-family: verdana !important;">
+                                                    <span style="font-family: verdana !important;"></span>
+                                                </td>
+                                            </t>
                                             <td class="text-center" style="font-family: verdana !important;">
                                                 <t t-esc="line['qty']" style="font-family: verdana !important;"/>
                                             </td>

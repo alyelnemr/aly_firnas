@@ -18,13 +18,15 @@ class SalesOrderReport(models.AbstractModel):
         is_optional_exists = any(docs.sale_order_option_ids.filtered(lambda o: not o.is_button_clicked))
         amount_untaxed = sum([
             (ol.price_subtotal if not ol.product_id.child_line else ol.price_unit * ol.product_uom_qty) for ol in
-            docs.order_line.filtered(lambda l: l.is_printed is True)
+            docs.order_line.filtered(lambda l: l.is_printed is True or docs.is_sub_product(l))
         ])
         amount_tax = 0
         discount = 0
-        for line in docs.order_line.filtered(lambda l: l.is_printed is True):
+        for line in docs.order_line.filtered(lambda l: l.is_printed is True or docs.is_sub_product(l)):
             if not docs.order_line.filtered(lambda l: l.id == line.parent_order_line.id):
                 discount += line.discount
+                amount_tax += line.price_tax
+            else:
                 amount_tax += line.price_tax
         is_discounted = discount > 0
         is_taxed = amount_tax > 0
