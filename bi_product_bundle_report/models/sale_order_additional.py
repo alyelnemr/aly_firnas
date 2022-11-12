@@ -25,7 +25,7 @@ class SaleOrderAdditional(models.Model):
     section = fields.Many2one('sale.order.line.section', string="Section", required=True)
     price_note = fields.Char("Price Note")
     is_button_clicked = fields.Boolean(default=False)
-    internal_notes = fields.Char(string='Internal Notes')
+    internal_notes = fields.Text(string='Internal Notes')
 
     @api.depends('line_id', 'order_id.order_line', 'product_id')
     def _compute_is_present(self):
@@ -54,7 +54,7 @@ class SaleOrderAdditional(models.Model):
         product = self.product_id.with_context(lang=self.order_id.partner_id.lang)
         if not self.price_unit or self.price_unit == 0:
             self.price_unit = product.list_price
-        self.name = product.get_product_multiline_description_sale()
+        self.name = self.get_sale_order_line_multiline_description_sale(product)
         self.uom_id = self.uom_id or product.uom_id
         pricelist = self.order_id.pricelist_id
         if pricelist and product:
@@ -105,3 +105,29 @@ class SaleOrderAdditional(models.Model):
             if is_manual and custom_rate > 0:
                 custom_rate = self.order_id.custom_rate
                 line.price_unit *= custom_rate
+
+    def get_sale_order_line_multiline_description_sale(self, product):
+        return product.get_product_multiline_description_sale() + self._get_sale_order_line_multiline_description_variants()
+
+    def _get_sale_order_line_multiline_description_variants(self):
+        if not self.product_custom_attribute_value_ids and not self.product_no_variant_attribute_value_ids:
+            return ""
+
+        name = "\n"
+
+        custom_ptavs = self.product_custom_attribute_value_ids.custom_product_template_attribute_value_id
+        no_variant_ptavs = self.product_no_variant_attribute_value_ids._origin
+
+        # display the no_variant attributes, except those that are also
+        # displayed by a custom (avoid duplicate description)
+        for ptav in (no_variant_ptavs - custom_ptavs):
+            name += "\n" + ptav.with_context(lang=self.order_id.partner_id.lang).display_name
+
+        # Sort the values according to _order settings, because it doesn't work for virtual records in onchange
+        custom_values = sorted(self.product_custom_attribute_value_ids,
+                               key=lambda r: (r.custom_product_template_attribute_value_id.id, r.id))
+        # display the is_custom values
+        for pacv in custom_values:
+            name += "\n" + pacv.with_context(lang=self.order_id.partner_id.lang).display_name
+
+        return name

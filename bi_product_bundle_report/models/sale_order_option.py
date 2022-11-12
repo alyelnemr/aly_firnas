@@ -15,7 +15,7 @@ class SaleOrderOption(models.Model):
                                      "already present in the quotation.",
                                 compute="_compute_is_present", search="_search_is_present")
     is_button_clicked = fields.Boolean(default=False)
-    internal_notes = fields.Char(string='Internal Notes')
+    internal_notes = fields.Text(string='Internal Notes')
 
     @api.depends('line_id', 'order_id.order_line', 'product_id')
     def _compute_is_present(self):
