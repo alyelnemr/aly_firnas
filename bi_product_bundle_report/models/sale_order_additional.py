@@ -32,7 +32,7 @@ class SaleOrderAdditional(models.Model):
         # NOTE: this field cannot be stored as the line_id is usually removed
         # through cascade deletion, which means the compute would be false
         for option in self:
-            option.is_button_clicked = option.product_id.id in option.order_id.order_line.product_id.ids
+            # option.is_button_clicked = option.product_id.id in option.order_id.order_line.product_id.ids
             option.is_present = option.is_button_clicked
 
     @api.onchange('product_id')
