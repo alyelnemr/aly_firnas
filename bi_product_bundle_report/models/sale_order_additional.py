@@ -54,7 +54,8 @@ class SaleOrderAdditional(models.Model):
         product = self.product_id.with_context(lang=self.order_id.partner_id.lang)
         if not self.price_unit or self.price_unit == 0:
             self.price_unit = product.list_price
-        self.name = self.get_sale_order_line_multiline_description_sale(product)
+        # self.name = self.get_sale_order_line_multiline_description_sale(product)
+        self.name = product.get_product_multiline_description_sale()
         self.uom_id = self.uom_id or product.uom_id
         pricelist = self.order_id.pricelist_id
         if pricelist and product:
