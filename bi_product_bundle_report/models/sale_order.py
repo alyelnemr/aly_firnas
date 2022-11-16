@@ -4,6 +4,7 @@ from odoo.tools.float_utils import float_is_zero
 import textile
 from odoo.tools.misc import formatLang, get_lang
 from functools import partial
+from odoo.exceptions import UserError
 
 
 class SaleOrder(models.Model):
@@ -19,10 +20,13 @@ class SaleOrder(models.Model):
     financial_proposal_title = fields.Char('Title', default='Financial Proposal')
     financial_proposal_number = fields.Char('Number', default='4')
 
+    @api.returns('self', lambda value: value.id)
+    def copy(self, default=None):
+        if not self._context.get('ignore', False):
+            raise UserError('You cannot duplicate record from this action!')
+        return super(SaleOrder, self).copy(default)
+
     def action_view_opportunity(self):
-        '''
-        This function returns an action that displays the opportunities from partner.
-        '''
         action = self.env.ref('crm.crm_lead_opportunities').read()[0]
         # operator = 'child_of' if self..is_company else '='
         action['domain'] = [('id', '=', self.opportunity_id.id), ('type', '=', 'opportunity')]

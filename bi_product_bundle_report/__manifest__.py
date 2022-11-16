@@ -14,6 +14,7 @@
         'security/ir.model.access.csv',
         'views/sale_order_form.xml',
         'reports/report.xml',
+        'wizards/duplicate_sale_order_wizard.xml',
     ],
     'external_dependencies': {'python': ['textile']},
     'installable': True,
