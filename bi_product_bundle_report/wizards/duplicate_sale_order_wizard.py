@@ -51,6 +51,10 @@ class DuplicateSalesOrderWizard(models.TransientModel):
                 'initial_contact_date': self.wizard_opportunity_id.initial_contact_date
             }
             sale_copy = sale_obj.with_context(ignore=True).copy(default=vals)
+            for line in sale_copy.order_line:
+                if line.bundle_status == 'not_bundle' and line.parent_order_line:
+                    line.unlink()
+                    x = 1
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'sale.order',
