@@ -168,6 +168,11 @@
                 <td class="text-left" style="padding-left: 15px; font-family: verdana !important;">
                     <t t-raw="sub_line_1['desc']" style="font-family: verdana !important;"/>
                 </td>
+                <t t-if="col_span == 4">
+                    <td class="text-left" style="padding-left: 15px; font-family: verdana !important;">
+                        <span style="font-family: verdana !important;"></span>
+                    </td>
+                </t>
                 <td class="text-center" style="font-family: verdana !important;">
                     <t t-esc="sub_line_1['qty']" style="font-family: verdana !important;"/>
                 </td>
