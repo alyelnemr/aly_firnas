@@ -195,8 +195,10 @@ class CRMLeadInherit(models.Model):
                 'company_id': False
             })
             if analytic_account:
-                self.analytic_account_id = analytic_account.id
-                self.is_analytic_account_id_created = True
+                self.write({
+                    'analytic_account_id' : analytic_account.id,
+                    'is_analytic_account_id_created' : True
+                })
         if self.task_id and self.task_id.name != self.name:
             self.task_id.name = self.name
         if self.task_id and self.task_id.user_id != self.proposals_engineer_id:
