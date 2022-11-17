@@ -205,6 +205,11 @@
                 <td class="text-left" style="font-size:10px !important; font-family: verdana !important;">
                     <t t-raw="sub_line['desc']" style="padding-left: 10px; font-family: verdana !important;"/>
                 </td>
+                <t t-if="col_span == 4">
+                    <td class="text-left" style="font-size:10px !important; font-family: verdana !important;">
+                        <span style="font-family: verdana !important;"></span>
+                    </td>
+                </t>
                 <td class="text-center" style="font-family: verdana !important;">
                     <t t-esc="sub_line['qty']" style="font-family: verdana !important;"/>
                 </td>
