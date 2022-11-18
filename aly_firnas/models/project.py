@@ -35,13 +35,18 @@ class ProjectProject(models.Model):
 
     @api.model
     def _create_analytic_account_from_values(self, values):
-        # analytic_account = self.env['account.analytic.account'].create({
-        #     'name': values.get('name', _('Unknown Analytic Account')),
-        #     'company_id': values.get('company_id') or self.env.company.id,
-        #     'partner_id': values.get('partner_id'),
-        #     'active': True,
-        # })
-        return False
+        analytic_account = self.env['account.analytic.account'].search([('name', '=', 'Template')], limit=1)
+        return analytic_account
+    #
+    # @api.model
+    # def _create_analytic_account_from_values(self, values):
+    #     # analytic_account = self.env['account.analytic.account'].create({
+    #     #     'name': values.get('name', _('Unknown Analytic Account')),
+    #     #     'company_id': values.get('company_id') or self.env.company.id,
+    #     #     'partner_id': values.get('partner_id'),
+    #     #     'active': True,
+    #     # })
+    #     return False
 
     def _create_analytic_account(self):
         return
