@@ -22,19 +22,19 @@ class ProjectProject(models.Model):
         action['views'] = [(self.env.ref('crm.crm_lead_view_form').id, 'form')]
         return action
 
-    @api.model
-    def create(self, values):
-        """ Create an analytic account if project allow timesheet and don't provide one
-            Note: create it before calling super() to avoid raising the ValidationError from _check_allow_timesheet
-        """
-        allow_old = values['allow_timesheets']
-        allow_timesheet_timer_old = values['allow_timesheet_timer']
-        values['allow_timesheets'] = False
-        values['allow_timesheet_timer'] = False
-        res = super(ProjectProject, self).create(values)
-        res.allow_timesheets = allow_old
-        res.allow_timesheet_timer = allow_timesheet_timer_old
-        return res
+    # @api.model
+    # def create(self, values):
+    #     """ Create an analytic account if project allow timesheet and don't provide one
+    #         Note: create it before calling super() to avoid raising the ValidationError from _check_allow_timesheet
+    #     """
+    #     allow_old = values['allow_timesheets']
+    #     allow_timesheet_timer_old = values['allow_timesheet_timer']
+    #     values['allow_timesheets'] = False
+    #     values['allow_timesheet_timer'] = False
+    #     res = super(ProjectProject, self).create(values)
+    #     res.allow_timesheets = allow_old
+    #     res.allow_timesheet_timer = allow_timesheet_timer_old
+    #     return res
 
     @api.model
     def _create_analytic_account_from_values(self, values):
