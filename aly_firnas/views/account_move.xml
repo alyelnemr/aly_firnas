@@ -168,10 +168,12 @@
         </record>
 
         <template id="aly_invoice_report_footer_inherit" inherit_id="web.external_layout_standard">
+            <!-- Remove footer-->
             <xpath expr="//div[@name='financial_infos']/../.." position="replace">
                 <span>fofo</span>
             </xpath>
         </template>
+
         <template id="aly_invoice_report_inherit" inherit_id="account.report_invoice_document">
             <xpath expr="//t[@t-set='lines']" position="replace">
                 <t t-set="lines" t-value="o.invoice_line_ids.filtered_domain([('is_printed', '=', True)]).sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)"/>
@@ -187,6 +189,21 @@
                 <span t-esc="is_printed_subtotal"
                       t-options='{"widget": "monetary", "display_currency": o.currency_id}'
                 />
+            </xpath>
+            <xpath expr="//t[@t-set='address']" position="replace">
+                <br/>
+                <br/>
+                <br/>
+                <t t-set="address">
+                    <address t-field="o.partner_id"
+                             t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                    <div t-if="o.partner_id.vat" class="mt16">
+                        <t t-if="o.company_id.country_id.vat_label" t-esc="o.company_id.country_id.vat_label"
+                           id="inv_tax_id_label"/>
+                        <t t-else="">Tax ID</t>:
+                        <span t-field="o.partner_id.vat"/>
+                    </div>
+                </t>
             </xpath>
             <xpath expr="//span[@t-field='o.amount_total']" position="replace">
 <!--                <span class="text-nowrap" t-field="o.amount_total"/>-->
