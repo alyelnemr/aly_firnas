@@ -190,7 +190,7 @@
                       t-options='{"widget": "monetary", "display_currency": o.currency_id}'
                 />
             </xpath>
-            <xpath expr="//address[@t-field='o.partner_id']/.." position="replace">
+            <xpath expr="//t[@t-set='address']" position="replace">
                 <br/>
             </xpath>
             <xpath expr="//div[@id='informations']" position="before">
