@@ -192,8 +192,8 @@
             </xpath>
             <xpath expr="//t[@t-set='address']" position="replace">
                 <br/>
-                <br/>
-                <br/>
+            </xpath>
+            <xpath expr="//div[@id='informations']" position="before">
                 <t t-set="address">
                     <address t-field="o.partner_id"
                              t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
