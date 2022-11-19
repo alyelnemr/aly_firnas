@@ -168,7 +168,7 @@
         </record>
 
         <template id="aly_invoice_report_footer_inherit" inherit_id="web.external_layout_standard">
-            <xpath expr="//div[@name='financial_infos']" position="replace">
+            <xpath expr="//div[@name='financial_infos']/../.." position="replace">
                 <span>fofo</span>
             </xpath>
         </template>
