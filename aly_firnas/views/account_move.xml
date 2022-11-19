@@ -94,6 +94,12 @@
                 <xpath expr="//field[@name='line_ids']/tree/field[@name='account_id']" position="attributes">
                     <attribute name="optional">show</attribute>
                 </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="before">
+                    <field name="is_printed" force_save="1"/>
+                </xpath>
+                <xpath expr="//field[@name='line_ids']/tree/field[@name='product_id']" position="before">
+                    <field name="is_printed" force_save="1"/>
+                </xpath>
                 <xpath expr="//field[@name='line_ids']/tree/field[@name='partner_id']" position="attributes">
                     <attribute name="optional">show</attribute>
                 </xpath>
@@ -160,5 +166,43 @@
                 </xpath>
             </field>
         </record>
+
+        <template id="aly_invoice_report_inherit" inherit_id="account.report_invoice_document">
+            <xpath expr="//t[@t-set='lines']" position="replace">
+                <t t-set="lines" t-value="o.invoice_line_ids.filtered_domain([('is_printed', '=', True)]).sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)"/>
+                <t t-set="is_printed_subtotal" t-value="0"/>
+                <t t-if="not var_taxed_amount">
+                    <t t-set="var_taxed_amount" t-value="0"/>
+                </t>
+            </xpath>
+            <xpath expr="//t[@t-foreach='lines']" position="inside">
+                <t t-set="is_printed_subtotal" t-value="is_printed_subtotal + line.price_subtotal"/>
+            </xpath>
+            <xpath expr="//span[@t-field='o.amount_untaxed']" position="replace">
+                <span t-esc="is_printed_subtotal"
+                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+                />
+            </xpath>
+            <xpath expr="//span[@t-field='o.amount_total']" position="replace">
+<!--                <span class="text-nowrap" t-field="o.amount_total"/>-->
+                <span t-esc="is_printed_subtotal + var_taxed_amount"
+                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+                />
+            </xpath>
+            <xpath expr="//t[@t-foreach='o.amount_by_group']" position="replace">
+                <t t-set="temp_for_global_discount" t-value="0">
+                </t>
+                <t t-if="temp_for_global_discount == 0" >
+                    <tr style="">
+                        <td>
+                            <span>Taxes</span>
+                        </td>
+                        <td class="text-right o_price_total">
+                            <span class="text-nowrap" t-esc="var_taxed_amount"/>
+                        </td>
+                    </tr>
+                </t>
+            </xpath>
+        </template>
     </data>
 </odoo>
