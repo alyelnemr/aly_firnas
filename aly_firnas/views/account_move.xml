@@ -167,6 +167,11 @@
             </field>
         </record>
 
+        <template id="aly_invoice_report_footer_inherit" inherit_id="web.external_layout_standard">
+            <xpath expr="//div[@name='financial_infos']" position="replace">
+                <span>fofo</span>
+            </xpath>
+        </template>
         <template id="aly_invoice_report_inherit" inherit_id="account.report_invoice_document">
             <xpath expr="//t[@t-set='lines']" position="replace">
                 <t t-set="lines" t-value="o.invoice_line_ids.filtered_domain([('is_printed', '=', True)]).sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)"/>
