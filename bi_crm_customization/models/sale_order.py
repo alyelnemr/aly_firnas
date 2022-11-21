@@ -45,6 +45,8 @@ class SaleOrderCRMInherit(models.Model):
                 result['currency_id'] = lead.currency_id.id
             if 'country' in fields and lead.country:
                 result['country'] = lead.country.ids
+            if 'partner_contact' in fields and lead.partner_contact:
+                result['partner_contact'] = lead.partner_contact.id
             if 'partner' in fields and lead.partner:
                 result['partner'] = lead.partner.ids
             if 'project_name' in fields and lead.project_name:

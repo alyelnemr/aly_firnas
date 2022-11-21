@@ -65,7 +65,8 @@ class SaleOrder(models.Model):
                         'tax_id': ol.tax_id,
                         'item_price': ol.item_price,
                         # 'price_unit': ol.price_unit,
-                        'price_unit': round(ol.item_price / (int(ol.product_uom_qty) * (1 - (ol.discount / 100))), 2),
+                        'price_unit': round(ol.item_price / (int(ol.product_uom_qty) * (1 - (ol.discount / 100))), 2) if (
+                                    int(ol.product_uom_qty) * (1 - (ol.discount / 100))) > 0 else 0,
                         'discount': ol.discount,
                         'is_update': ol.is_update,
                         'sub_lines': ol.get_orderline_sublines()

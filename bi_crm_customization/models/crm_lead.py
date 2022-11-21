@@ -21,6 +21,7 @@ class CRMLeadInherit(models.Model):
         res['context']['default_fund'] = self.fund.id
         res['context']['default_partnership_model'] = self.partnership_model.id
         res['context']['default_partner'] = self.partner.ids
+        res['context']['default_partner_contact'] = self.partner_contact.id
         res['context']['default_end_client'] = self.end_client.ids
         res['context']['default_rfp_ref_number'] = self.rfp_ref_number
         res['context']['default_proposals_engineer_id'] = self.proposals_engineer_id.id
@@ -244,7 +245,7 @@ class CRMLeadInherit(models.Model):
             if rec.stage_id.mandatory_result_date and not rec.result_date:
                 err += 'Please Add Result Date!\n'
             if rec.stage_id.mandatory_signature_date and not rec.contract_signature_date:
-                err += 'Please Add Result Date!\n'
+                err += 'Please Add Contract/PO Signature Date!\n'
             if err:
                 raise ValidationError(err)
 

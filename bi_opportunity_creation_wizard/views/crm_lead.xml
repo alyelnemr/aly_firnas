@@ -38,7 +38,7 @@
                                     <field name="project_num"/>
                                     <field name="type_custom" required="1"/>
                                     <field name="type_custom_ids" widget="many2many_tags"/>
-                                    <field name="internal_opportunity_name"/>
+                                    <field name="internal_opportunity_name" required="1"/>
                                     <field name="project_name"/>
                                     <field name="country" widget="many2many_tags" required="1"/>
                                     <field name="start_date" required="0"/>
