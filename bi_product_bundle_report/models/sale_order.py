@@ -77,9 +77,11 @@ class SaleOrder(models.Model):
                 # and l.bundle_status in ('bundle','bundel_of_bundle')
         return data
 
-    def is_sub_product(self,line):
+    def is_sub_product(self,line, check_is_printed=False):
+        if check_is_printed:
+            return self.order_line.filtered(lambda l: l.id == line.parent_order_line.id and l.is_printed)
         return self.order_line.filtered(lambda l: l.id == line.parent_order_line.id)
-    
+
     def is_updated_bundle(self,line):
         return line.get_orderline_sublines()
 

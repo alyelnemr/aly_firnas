@@ -22,7 +22,7 @@ class SalesOrderReport(models.AbstractModel):
         ])
         amount_tax = 0
         discount = 0
-        for line in docs.order_line.filtered(lambda l: l.is_printed is True or docs.is_sub_product(l)):
+        for line in docs.order_line.filtered(lambda l: l.is_printed is True or docs.is_sub_product(l, True)):
             if not docs.order_line.filtered(lambda l: l.id == line.parent_order_line.id):
                 discount += line.discount
                 amount_tax += line.price_tax
