@@ -57,6 +57,8 @@ class DuplicateSalesOrderWizard(models.TransientModel):
             }
             sale_copy = sale_obj.with_context(ignore=True).copy(default=vals)
             for line in sale_copy.order_line:
+                line.analytic_account_id = sale_copy.analytic_account_id.id
+                line.analytic_tag_ids = sale_copy.analytic_tag_ids.ids
                 if line.bundle_status == 'not_bundle' and line.parent_order_line:
                     line.unlink()
                     x = 1
