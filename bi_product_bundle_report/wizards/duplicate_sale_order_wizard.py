@@ -18,8 +18,8 @@ class DuplicateSalesOrderWizard(models.TransientModel):
             vals = {
                 'opportunity_id': self.wizard_opportunity_id.id,
                 'partner_id': self.wizard_opportunity_id.partner_id.id,
-                'partner_invoice_id': self.wizard_opportunity_id.partner_invoice_id.id,
-                'partner_shipping_id': self.wizard_opportunity_id.partner_shipping_id.id,
+                'partner_invoice_id': self.wizard_opportunity_id.partner_id.id,
+                'partner_shipping_id': self.wizard_opportunity_id.partner_id.id,
                 'partner_contact': self.wizard_opportunity_id.partner_contact.id,
                 'analytic_account_id': self.wizard_opportunity_id.analytic_account_id.id,
                 'analytic_tag_ids': self.wizard_opportunity_id.analytic_tag_ids_for_analytic_account.ids,
