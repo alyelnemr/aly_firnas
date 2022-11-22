@@ -14,6 +14,7 @@ class DuplicateSalesOrderWizard(models.TransientModel):
         sale_order_obj = self.env['sale.order']
         for active_id in active_ids:
             sale_obj = sale_order_obj.browse(active_id)
+            warehouse_id = self.env['stock.warehouse'].search([('company_id', '=', self.wizard_opportunity_id.company_id.id)], limit=1)
             vals = {
                 'opportunity_id': self.wizard_opportunity_id.id,
                 'partner_id': self.wizard_opportunity_id.partner_id.id,
@@ -21,6 +22,7 @@ class DuplicateSalesOrderWizard(models.TransientModel):
                 'analytic_account_id': self.wizard_opportunity_id.analytic_account_id.id,
                 'analytic_tag_ids': self.wizard_opportunity_id.analytic_tag_ids_for_analytic_account.ids,
                 'company_id': self.wizard_opportunity_id.company_id.id,
+                'warehouse_id': warehouse_id.id,
                 'date_order': datetime.datetime.now(),
                 'payment_term_id': False,
                 'project_name': self.wizard_opportunity_id.project_name,
