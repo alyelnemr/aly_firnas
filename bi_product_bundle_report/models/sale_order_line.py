@@ -14,6 +14,17 @@ class SaleOrderLine(models.Model):
     product_uom = fields.Many2one('uom.uom', string='Unit of Measure', domain="[('category_id', '=', product_uom_category_id)]")
     internal_notes = fields.Text(string='Internal Notes')
 
+    def unlink(self):
+        items = self.order_id.sale_order_additional_ids.filtered(lambda l: l.product_id.id == self.product_id.id and l.is_button_clicked)
+        for item in items:
+            item.is_button_clicked = False
+            break
+        items = self.order_id.sale_order_option_ids.filtered(lambda l: l.product_id.id == self.product_id.id and l.is_button_clicked)
+        for item in items:
+            item.is_button_clicked = False
+            break
+        return super(SaleOrderLine, self).unlink()
+
     def _get_values_to_add_to_order(self):
         self.ensure_one()
         return {
