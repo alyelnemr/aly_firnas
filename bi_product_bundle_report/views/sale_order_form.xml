@@ -39,6 +39,7 @@
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree//field[last()]" position="after">
                     <field name="internal_notes" optional="show"/>
+                    <field name="parent_order_line" optional="show"/>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_uom_qty']" position="attributes">
                     <attribute name="optional">show</attribute>
