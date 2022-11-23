@@ -26,11 +26,6 @@ class PurchaseOrderLine(models.Model):
                     line.line_rank = x
                     x += 1
 
-    def _prepare_account_move_line(self, move):
-        vals = super(PurchaseOrderLine, self)._prepare_account_move_line(move)
-        vals["discount"] = self.discount
-        return vals
-
     def _get_discounted_price_unit(self):
         self.ensure_one()
         if self.discount:
@@ -83,9 +78,12 @@ class PurchaseOrderLine(models.Model):
 
     def _prepare_account_move_line(self, move):
         res = super()._prepare_account_move_line(move)
-        res.update({'analytic_account_id': self.order_id.analytic_account_id})
-        res.update({'analytic_tag_ids': self.order_id.analytic_tag_ids})
-        res.update({'is_origin_so': self.order_id.is_origin_so})
+        res.update({
+            'analytic_account_id': self.order_id.analytic_account_id,
+            'analytic_tag_ids': self.order_id.analytic_tag_ids,
+            'discount': self.discount,
+            'is_origin_so': self.order_id.is_origin_so
+        })
         return res
 
     @api.onchange('product_qty', 'product_uom')
@@ -168,7 +166,52 @@ class PurchaseOrderLine(models.Model):
             res.append(template)
         return res
 
-    def _prepare_account_move_line(self, move):
-        vals = super(PurchaseOrderLine, self)._prepare_account_move_line(move)
-        vals["discount"] = self.discount
-        return vals
+    def _prepare_invoice_line(self):
+        """
+        Prepare the dict of values to create the new invoice line for a sales order line.
+
+        :param qty: float quantity to invoice
+        """
+        self.ensure_one()
+        res = {
+            'display_type': self.display_type,
+            'sequence': self.sequence,
+            'name': self.name,
+            'product_id': self.product_id.id,
+            'product_uom_id': self.product_uom.id,
+            'quantity': self.qty_to_invoice,
+            'discount': self.discount,
+            'price_unit': self.price_unit,
+            'tax_ids': [(6, 0, self.tax_id.ids)],
+            'analytic_account_id': self.order_id.analytic_account_id.id,
+            'analytic_tag_ids': [(6, 0, self.analytic_tag_ids.ids)],
+            'purchase_line_ids': [(4, self.id)],
+        }
+        if self.display_type:
+            res['account_id'] = False
+        return res
+
+    def _prepare_account_move_line(self):
+        self.ensure_one()
+        if self.product_id.purchase_method == 'purchase':
+            qty = self.product_qty - self.qty_invoiced
+        else:
+            qty = self.qty_received - self.qty_invoiced
+        if float_compare(qty, 0.0, precision_rounding=self.product_uom.rounding) <= 0:
+            qty = 0.0
+
+        return {
+            'name': '%s: %s' % (self.order_id.name, self.name),
+            'currency_id': self.currency_id.id,
+            'purchase_line_id': self.id,
+            'date_maturity': fields.Datetime.now(),
+            'product_uom_id': self.product_uom.id,
+            'product_id': self.product_id.id,
+            'price_unit': self.price_unit,
+            'quantity': qty, #self.product_uom_qty,
+            'partner_id': self.partner_id.id,
+            'analytic_account_id': self.account_analytic_id.id,
+            'analytic_tag_ids': [(6, 0, self.analytic_tag_ids.ids)],
+            'tax_ids': [(6, 0, self.taxes_id.ids)],
+            'display_type': self.display_type,
+        }

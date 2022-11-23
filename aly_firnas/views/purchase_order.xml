@@ -9,7 +9,7 @@
                 <xpath expr="//button[@name='action_view_invoice'][1]" position="replace">
                     <button name="%(aly_firnas.aly_action_view_purchase_advance_payment_inv)d" string="Create Bill" type="action"
                             class="oe_highlight"
-                            context="{'create_bill':True}"
+                            context="{'down_payment':True}"
                             attrs="{'invisible': ['|', ('state', 'not in', ('purchase', 'done')), ('invoice_status', 'in', ('no', 'invoiced'))]}"/>
                 </xpath>
                 <xpath expr="//button[@name='button_cancel']" position="attributes">

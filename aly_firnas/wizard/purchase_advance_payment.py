@@ -90,7 +90,7 @@ class PurchaseAdvancePaymentInv(models.TransientModel):
         sale_orders = self.env['purchase.order'].browse(self._context.get('active_ids', []))
 
         if self.advance_payment_method == 'delivered':
-            sale_orders.with_context(create_bill=True).action_view_invoice()
+            sale_orders.with_context(create_bill=True).action_create_invoice(final=self.deduct_down_payments)
         else:
             # Create deposit product if necessary
             if not self.product_id:
@@ -122,7 +122,7 @@ class PurchaseAdvancePaymentInv(models.TransientModel):
                 invoice = self._create_invoice(order, so_line, amount, self.deduct_down_payments)
                 order.invoice_ids = [(4, invoice.id)]
         if self._context.get('open_invoices', False):
-            return sale_orders.with_context(create_bill=False).action_view_invoice()
+            return sale_orders.with_context(create_bill=False).action_return_view_invoice()
         return {'type': 'ir.actions.act_window_close'}
 
     def _prepare_deposit_product(self):

@@ -1,6 +1,7 @@
 from odoo import api, fields, models, _
 from datetime import datetime
 from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.tools import float_is_zero, float_compare
 
 READONLY_STATES = {
     'to approve': [('readonly', True)],
@@ -139,3 +140,168 @@ class PurchaseOrder(models.Model):
             else:
                 raise ValidationError('You Are Not Allowed To Confirm!')
         return True
+
+    def action_view_invoice(self):
+        '''
+        This function returns an action that display existing vendor bills of given purchase order ids.
+        When only one found, show the vendor bill immediately.
+        '''
+        action = self.env.ref('aly_firnas.aly_action_view_purchase_advance_payment_inv')
+        result = action.read()[0]
+        create_bill = self.env.context.get('create_bill', False)
+        res = self.env.ref('aly_firnas.aly_view_purchase_advance_payment_inv', False)
+        form_view = [(res and res.id or False, 'form')]
+        result['views'] = form_view
+        return result
+
+    def _get_invoiceable_lines(self, final=False):
+        """Return the invoiceable lines for order `self`."""
+        invoiceable_line_ids = []
+        pending_section = None
+        precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
+
+        for line in self.order_line:
+            if line.qty_to_invoice > 0 or (line.qty_to_invoice <= 0 and final) or line.display_type == 'line_note':
+                if pending_section:
+                    invoiceable_line_ids.append(pending_section.id)
+                    pending_section = None
+                invoiceable_line_ids.append(line.id)
+
+        return self.env['purchase.order.line'].browse(invoiceable_line_ids)
+
+    def _prepare_invoice(self):
+        invoice_vals = {
+            'ref': self.partner_ref or '',
+            'type': 'in_invoice',
+            'narration': self.name,
+            'invoice_origin': self.name,
+            'currency_id': self.currency_id.id,
+            'date': fields.Datetime.now(),
+            'invoice_date_due': fields.Datetime.now(),
+            'invoice_user_id': self.user_id.id,
+            'p_order_id': self.id,
+            'purchase_id': self.id,
+            'partner_id': self.partner_id.id,
+            'fiscal_position_id': self.fiscal_position_id.id or self.partner_id.property_account_position_id.id,
+            'analytic_account_id': self.analytic_account_id.id,
+            'analytic_tag_ids': self.analytic_tag_ids.ids,
+            'invoice_line_ids': [],
+            'company_id': self.company_id.id,
+        }
+        return invoice_vals
+
+    def _get_invoice_line_sequence(self, new=0, old=0):
+        return new or old
+
+    def action_create_invoice(self, grouped=False, final=False):
+        """
+        Create the invoice associated to the SO.
+        :param grouped: if True, invoices are grouped by SO id. If False, invoices are grouped by
+                        (partner_invoice_id, currency)
+        :param final: if True, refunds will be generated if necessary
+        :returns: list of created invoices
+        """
+        # 1) Create invoices.
+        invoice_vals_list = []
+        for order in self:
+
+            invoice_vals = order._prepare_invoice()
+            invoiceable_lines = order._get_invoiceable_lines(final)
+
+            if not invoiceable_lines and not invoice_vals['invoice_line_ids']:
+                raise UserError(
+                    _('There is no invoiceable line. If a product has a Delivered quantities invoicing policy, please make sure that a quantity has been delivered.'))
+
+            # there is a chance the invoice_vals['invoice_line_ids'] already contains data when
+            # another module extends the method `_prepare_invoice()`. Therefore, instead of
+            # replacing the invoice_vals['invoice_line_ids'], we append invoiceable lines into it
+            invoice_vals['invoice_line_ids'] += [
+                (0, 0, line._prepare_account_move_line())
+                for line in invoiceable_lines
+            ]
+
+            invoice_vals_list.append(invoice_vals)
+
+        if not invoice_vals_list:
+            raise UserError(_(
+                'There is no invoiceable line. If a product has a Delivered quantities invoicing policy, please make sure that a quantity has been delivered.'))
+
+        # 3) Create invoices.
+
+        # As part of the invoice creation, we make sure the sequence of multiple SO do not interfere
+        # in a single invoice. Example:
+        # SO 1:
+        # - Section A (sequence: 10)
+        # - Product A (sequence: 11)
+        # SO 2:
+        # - Section B (sequence: 10)
+        # - Product B (sequence: 11)
+        #
+        # If SO 1 & 2 are grouped in the same invoice, the result will be:
+        # - Section A (sequence: 10)
+        # - Section B (sequence: 10)
+        # - Product A (sequence: 11)
+        # - Product B (sequence: 11)
+        #
+        # Resequencing should be safe, however we resequence only if there are less invoices than
+        # orders, meaning a grouping might have been done. This could also mean that only a part
+        # of the selected SO are invoiceable, but resequencing in this case shouldn't be an issue.
+        if len(invoice_vals_list) < len(self):
+            SaleOrderLine = self.env['purchase.order.line']
+            for invoice in invoice_vals_list:
+                sequence = 1
+                for line in invoice['invoice_line_ids']:
+                    line[2]['sequence'] = SaleOrderLine._get_invoice_line_sequence(new=sequence, old=line[2]['sequence'])
+                    sequence += 1
+
+        # Manage the creation of invoices in sudo because a salesperson must be able to generate an invoice from a
+        # sale order without "billing" access rights. However, he should not be able to create an invoice from scratch.
+        moves = self.env['account.move'].sudo().with_context(default_type='in_invoice').create(invoice_vals_list)
+
+        # 4) Some moves might actually be refunds: convert them if the total amount is negative
+        # We do this after the moves have been created since we need taxes, etc. to know if the total
+        # is actually negative or not
+        if final:
+            moves.sudo().filtered(lambda m: m.amount_total < 0).action_switch_invoice_into_refund_credit_note()
+        for move in moves:
+            move.message_post_with_view('mail.message_origin_link',
+                                        values={'self': move, 'origin': move.line_ids.mapped('sale_line_ids.order_id')},
+                                        subtype_id=self.env.ref('mail.mt_note').id
+                                        )
+        return moves
+
+    def action_return_view_invoice(self):
+        '''
+        This function returns an action that display existing vendor bills of given purchase order ids.
+        When only one found, show the vendor bill immediately.
+        '''
+        action = self.env.ref('account.action_move_in_invoice_type')
+        result = action.read()[0]
+        create_bill = self.env.context.get('create_bill', False)
+        # override the context to get rid of the default filtering
+        result['context'] = {
+            'default_type': 'in_invoice',
+            'default_company_id': self.company_id.id,
+            'default_purchase_id': self.id,
+            'default_partner_id': self.partner_id.id,
+        }
+        # Invoice_ids may be filtered depending on the user. To ensure we get all
+        # invoices related to the purchase order, we read them in sudo to fill the
+        # cache.
+        self.sudo()._read(['invoice_ids'])
+        # choose the view_mode accordingly
+        if len(self.invoice_ids) > 1 and not create_bill:
+            result['domain'] = "[('id', 'in', " + str(self.invoice_ids.ids) + ")]"
+        else:
+            res = self.env.ref('account.view_move_form', False)
+            form_view = [(res and res.id or False, 'form')]
+            if 'views' in result:
+                result['views'] = form_view + [(state, view) for state, view in action['views'] if view != 'form']
+            else:
+                result['views'] = form_view
+            # Do not set an invoice_id if we want to create a new bill.
+            if not create_bill:
+                result['res_id'] = self.invoice_ids.id or False
+        result['context']['default_invoice_origin'] = self.name
+        result['context']['default_ref'] = self.partner_ref
+        return result
