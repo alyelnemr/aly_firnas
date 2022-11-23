@@ -4,4 +4,4 @@ access_sale_order_template_additional_manager,sale.order.template.additional2,mo
 access_analytic_tag_type,access.analytic.tag.type,model_account_analytic_tag_type,base.group_user,1,1,1,1
 access_account_move_engineers,account.move.engineers,model_account_move,,1,1,1,0
 access_account_move_line_engineers,account.move.line.engineers,account.model_account_move_line,,1,1,1,0
-access_account_res_currency,account.res.currency,account.model_res_currency,,1,1,1,0
+access_account_res_currency,account.res.currency,model_res_currency,,1,1,1,0
