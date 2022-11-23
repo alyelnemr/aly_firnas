@@ -197,7 +197,7 @@ class PurchaseOrderLine(models.Model):
             qty = self.product_qty - self.qty_invoiced
         else:
             qty = self.qty_received - self.qty_invoiced
-        if float_compare(qty, 0.0, precision_rounding=self.product_uom.rounding) <= 0:
+        if qty <= 0:
             qty = 0.0
 
         return {
