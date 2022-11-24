@@ -30,3 +30,4 @@ from . import product_template
 from . import stock_picking
 from . import stock_return_picking
 from . import stock_rule
+from . import res_partner

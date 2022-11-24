@@ -16,6 +16,7 @@
         'views/aly_po_report.xml',
         'views/aly_rfq_report.xml',
         'views/res_users.xml',
+        'views/res_partner.xml',
         'views/product.xml',
         'views/projects.xml',
         'views/hr_expense.xml',

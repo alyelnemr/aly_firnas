@@ -117,7 +117,7 @@ class PurchaseAdvancePaymentInv(models.TransientModel):
                 for line in order.order_line:
                     analytic_tag_ids = [(4, analytic_tag.id, None) for analytic_tag in line.analytic_tag_ids]
 
-                so_line_values = self._prepare_purchase_line(order, analytic_tag_ids, tax_ids, amount)
+                so_line_values = self._prepare_purchase_line(order, analytic_tag_ids, tax_ids, amount, name)
                 so_line = sale_line_obj.create(so_line_values)
                 invoice = self._create_invoice(order, so_line, amount, self.deduct_down_payments)
                 order.invoice_ids = [(4, invoice.id)]
@@ -202,10 +202,10 @@ class PurchaseAdvancePaymentInv(models.TransientModel):
 
         return invoice_vals
 
-    def _prepare_purchase_line(self, order, analytic_tag_ids, tax_ids, amount):
+    def _prepare_purchase_line(self, order, analytic_tag_ids, tax_ids, amount, name):
         context = {'lang': order.partner_id.lang}
         so_values = {
-            'name': self.downpayment_description or _('Down Payment: %s') % (time.strftime('%m %Y'),),
+            'name': name or _('Down Payment: %s') % (time.strftime('%m %Y'),),
             'price_unit': amount,
             'product_qty': 0.0,
             'order_id': order.id,
