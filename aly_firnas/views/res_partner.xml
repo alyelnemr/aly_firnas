@@ -6,8 +6,10 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//header" position="inside">
-                    <field name="state" widget="statusbar" statusbar_visible="draft,approved"/>
+                <xpath expr="//sheet" position="inside">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,approved"/>
+                    </header>
                 </xpath>
             </field>
         </record>
