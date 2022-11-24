@@ -7,7 +7,7 @@
             <field name="priority">70</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='vat']" position="inside">
+                <xpath expr="//field[@name='vat']" position="after">
                     <header>
                         <field name="state" context="{'default_state': 'draft'}" groups="aly_firnas.group_update_partner_state" />
                     </header>
