@@ -267,9 +267,8 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
                 product_id_str: $("#product_id").val(),
             },
         }).then(function (data) {
-
             if (data.show_picking_type_id == true){
-                this.$('select[name="picking_type_id"]').change();
+                $('select[name="picking_type_id"]').change();
                 $("#div_show_picking_type_id").css(
                     {
                         display: "block",

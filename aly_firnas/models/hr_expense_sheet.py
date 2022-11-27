@@ -106,11 +106,13 @@ class HrExpenseSheet(models.Model):
             vals)
         sheet.activity_update()
         for rec in sheet.expense_line_ids:
+            if (rec.product_type in ['product', 'consu']) and (not rec.expense_picking_id or rec.expense_picking_id.state != 'done'):
+                raise UserError(_("You cannot create report until you receive products!"))
             if not rec.analytic_account_id and len(rec.expense_line_ids):
                 rec.analytic_account_id = rec.expense_line_ids[0].analytic_account_id
             if not rec.analytic_tag_ids and len(rec.expense_line_ids):
                 rec.analytic_tag_ids = rec.expense_line_ids[0].analytic_tag_ids
-            rec.create_picking()
+            # rec.create_picking()
         return sheet
 
     def write(self, vals):

@@ -32,6 +32,8 @@ class SalesOrderReport(models.AbstractModel):
                 amount_tax += line.price_tax
         is_discounted = discount > 0
         is_taxed = amount_tax > 0
+        is_taxed_optional = any(docs.sale_order_option_ids.filtered(lambda o: o.tax_id and not o.is_button_clicked))
+        is_taxed_additional = any(docs.sale_order_additional_ids.filtered(lambda o: o.tax_id and not o.is_button_clicked))
         amount_total = (amount_untaxed + amount_tax)
         col_span = 4
         if is_taxed or is_discounted:
@@ -46,6 +48,8 @@ class SalesOrderReport(models.AbstractModel):
             'col_span': col_span,
             'is_discounted': is_discounted,
             'is_taxed': is_taxed,
+            'is_taxed_optional': is_taxed_optional,
+            'is_taxed_additional': is_taxed_additional,
             'amount_untaxed': amount_untaxed,
             'amount_tax': amount_tax,
             'amount_total': amount_total,

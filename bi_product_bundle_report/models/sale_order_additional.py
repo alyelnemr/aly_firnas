@@ -1,10 +1,9 @@
 from odoo import api, fields, models,_
-from odoo.exceptions import UserError, ValidationError
 
 
 class SaleOrderAdditional(models.Model):
     _name = "sale.order.additional"
-    _description = "Sale Alternative"
+    _description = "Sale Additional"
     _order = 'sequence, id'
 
     is_present = fields.Boolean(string="Present on Quotation",
@@ -25,6 +24,7 @@ class SaleOrderAdditional(models.Model):
     section = fields.Many2one('sale.order.line.section', string="Section", required=True)
     price_note = fields.Char("Price Note")
     is_button_clicked = fields.Boolean(default=False)
+    tax_id = fields.Many2many('account.tax', string='Taxes', context={'active_test': False})
     internal_notes = fields.Text(string='Internal Notes')
 
     @api.depends('line_id', 'order_id.order_line', 'product_id')
@@ -95,6 +95,7 @@ class SaleOrderAdditional(models.Model):
             'analytic_account_id': self.order_id.analytic_account_id.id,
             'analytic_tag_ids': self.order_id.analytic_tag_ids.ids,
             'discount': self.discount,
+            'tax_id': self.tax_id.id,
             'company_id': self.order_id.company_id.id,
             'section':self.section.id
         }

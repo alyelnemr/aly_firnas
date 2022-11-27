@@ -13,6 +13,7 @@ class SaleOrderLine(models.Model):
     name = fields.Text(string='Description', required=False)
     product_uom = fields.Many2one('uom.uom', string='Unit of Measure', domain="[('category_id', '=', product_uom_category_id)]")
     internal_notes = fields.Text(string='Internal Notes')
+    tax_id = fields.Many2many('account.tax', string='Taxes', context={'active_test': False})
 
     def unlink(self):
         for order_line in self:
@@ -38,6 +39,7 @@ class SaleOrderLine(models.Model):
             'product_uom_qty': self.quantity,
             'product_uom': self.uom_id.id,
             'discount': self.discount,
+            'tax_id': self.tax_id.id,
             'section': self.section.id,
             'company_id': self.order_id.company_id.id,
         }

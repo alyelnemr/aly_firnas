@@ -223,6 +223,30 @@ class HRExpense(models.Model):
                                            currency_field='company_currency_id',
                                            states={'approved': [('readonly', False)], 'done': [('readonly', True)]})
 
+    def action_view_picking(self):
+        """ This function returns an action that display existing picking orders of given purchase order ids. When only one found, show the picking immediately.
+        """
+        action = self.env.ref('stock.action_picking_tree_all')
+        result = action.read()[0]
+        pick_ids = self.mapped('expense_picking_ids') or self.mapped('expense_picking_id')
+        # choose the view_mode accordingly
+        if not pick_ids:
+            self.create_picking()
+        pick_ids = self.mapped('expense_picking_ids') or self.mapped('expense_picking_id')
+        if not pick_ids or len(pick_ids) > 1:
+            result['domain'] = "[('id','in',%s)]" % (pick_ids.ids)
+        elif len(pick_ids) == 1:
+            res = self.env.ref('stock.view_picking_form', False)
+            form_view = [(res and res.id or False, 'form')]
+            if 'views' in result:
+                result['views'] = form_view + [(state, view) for state, view in result['views'] if view != 'form']
+            else:
+                result['views'] = form_view
+            result['res_id'] = pick_ids.id
+        elif not pick_ids:
+            return False
+        return result
+
     def action_sheet_move_create(self):
         if any(sheet.state != 'approve' for sheet in self):
             raise UserError(_("You can only generate accounting entry for approved expense(s)."))
@@ -589,6 +613,8 @@ class HRExpense(models.Model):
         return action
 
     def _create_sheet_from_expenses(self):
+        if (self.product_type in ['product', 'consu']) and (not self.expense_picking_id or self.expense_picking_id.state != 'done'):
+            raise UserError(_("You cannot create report until you receive products!"))
         if any(expense.state != 'draft' or expense.sheet_id for expense in self):
             raise UserError(_("You cannot report twice the same line!"))
         if len(self.mapped('employee_id')) != 1:
