@@ -34,11 +34,17 @@ class ChildProductLine(models.Model):
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    is_offer_product = fields.Boolean(string='Seq', readonly=True)
-    parent_order_line = fields.Many2one('sale.order.line', string="Parent Line")
+    is_offer_product = fields.Boolean(string='Seq', readonly=True, copy=True)
+    parent_order_line = fields.Many2one('sale.order.line', string="Parent Line", copy=True)
     bundle_status = fields.Char(
-        'Bundle_status', compute='line_bundle_status')
-    is_update = fields.Boolean(string="Show Update button", store=False, compute="_compute_is_update")
+        'Bundle_status', compute='line_bundle_status', copy=True)
+    is_update = fields.Boolean(string="Show Update button", store=False, compute="_compute_is_update", copy=True)
+
+    @api.returns('self', lambda value: value.id)
+    def copy(self, default=None):
+        if self.parent_order_line:
+            return
+        return super(SaleOrderLine, self).copy(default)
 
     @api.depends('bundle_status', 'order_id.order_line', 'product_id')
     def _compute_is_update(self):

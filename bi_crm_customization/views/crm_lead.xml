@@ -14,6 +14,12 @@
                     <span>Project</span>
                 </button>
             </xpath>
+            <xpath expr="//header" position="inside">
+                <field name="lead_stage_id" widget="statusbar"
+                       options="{'clickable': '1', 'fold_field': 'fold'}"
+                       domain="['|', ('team_id', '=', team_id), ('team_id', '=', False)]"
+                       attrs="{'invisible': ['|', ('active', '=', False), ('type', '!=', 'lead')]}"/>
+            </xpath>
             <xpath expr="//field[@name='partner_id']" position="replace">
                 <field name="partner_id" widget="res_partner_many2one"
                        context="{'default_name': contact_name,
@@ -31,6 +37,10 @@
                                         'default_website': website,
                                         'show_vat': True
                                     }" required="0"/>
+                <field name="partner_contact"/>
+            </xpath>
+            <xpath expr="//field[@name='email_state']" position="before">
+                <field name="partner_contact"/>
             </xpath>
             <xpath expr="//page[@name='lead']//group//group//field[@name='source_id']" position="replace">
             </xpath>
@@ -59,16 +69,15 @@
             <xpath expr="//field[@name='function']" position="before">
                 <field name="email_cc" attrs="{'invisible': [('type', '=', 'opportunity')]}" />
             </xpath>
-            <xpath expr="//field[@name='company_id']" position="replace">
-            </xpath>
             <xpath expr="//field[@name='tag_ids']" position="replace">
                 <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
                 <field name="probability"/>
+            </xpath>
+            <xpath expr="//sheet/group/group[7]/field[3]" position="replace">
                 <field name="company_id" groups="base.group_multi_company"/>
                 <field name="is_analytic_account_id_created" invisible="1"/>
+                <field name="analytic_account_id"/>
                 <field name="analytic_tag_ids_for_analytic_account" widget="many2many_tags"
-                       attrs="{'invisible': ['|',('is_analytic_account_id_created', '=', True), ('type', '!=', 'opportunity')],
-                       'required': [('is_analytic_account_id_created', '=', False), ('type', '=', 'opportunity')]}"
                        options="{'no_create': False, 'no_quick_create': False, 'no_create_edit':False}"/>
             </xpath>
             <xpath expr="//notebook" position="inside">

@@ -1,0 +1,50 @@
+<odoo>
+    <data>
+        <record id="aly_duplicate_sale_order_wizard_view" model="ir.ui.view">
+        <field name="name">duplicate.sale.order.wizard.view</field>
+        <field name="model">duplicate.sale.order.wizard</field>
+        <field name="arch" type="xml">
+        <form string="Duplicate Sales Order">
+            <sheet>
+                <group string="Opportunity Data">
+                    <group>
+                        <field name="wizard_opportunity_id"/>
+                    </group>
+                    <group>
+                    </group>
+                </group>
+            </sheet>
+            <footer>
+                <button name="duplicate_sale_order" string="Duplicate Sale Order"
+                        type="object" class="oe_highlight"/>
+                or
+                <button string="Cancel" type="object"
+                        special="cancel" class="oe_highlight"/>
+            </footer>
+        </form>
+        </field>
+        </record>
+
+        <record id="aly_action_duplicate_sale_order_wizard" model="ir.actions.act_window">
+            <field name="name">Duplicate Sales Order</field>
+            <field name="res_model">duplicate.sale.order.wizard</field>
+            <field name="binding_view_types">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="aly_action_duplicate_sale_order_wizard_server" model="ir.actions.server">
+            <field name="name">Duplicate Sales Order</field>
+            <field name="model_id" ref="bi_product_bundle_report.model_duplicate_sale_order_wizard"/>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="binding_view_types">form</field>
+            <field name="state">code</field>
+            <field name="code">
+action_values = env.ref('bi_product_bundle_report.aly_action_duplicate_sale_order_wizard').sudo().read()[0]
+action_values.update({'context': env.context})
+action = action_values
+            </field>
+        </record>
+
+    </data>
+</odoo>

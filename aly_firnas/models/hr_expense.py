@@ -31,9 +31,13 @@ class HRExpense(models.Model):
 
     def _get_discounted_price_unit(self):
         self.ensure_one()
+        price = 0
+        amount = self.unit_amount if self.is_same_currency else self.total_amount_company
         if self.discount:
-            return self.unit_amount * (1 - self.discount / 100)
-        return self.unit_amount
+            price = amount * (1 - self.discount / 100)
+        else:
+            price = amount
+        return price
 
     @api.depends('quantity', 'discount', 'unit_amount', 'tax_ids', 'currency_id')
     def _compute_amount(self):
@@ -65,7 +69,6 @@ class HRExpense(models.Model):
     @api.model
     def _default_employee_id(self):
         return self.env['hr.employee'].search([('user_id', '=', self.env.user.id)])
-
 
     @api.model
     def _default_company_id(self):
@@ -169,22 +172,28 @@ class HRExpense(models.Model):
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True,
                                         states={'post': [('readonly', True)], 'done': [('readonly', True)]},
                                         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
-    discount = fields.Float(string="Discount (%)", digits="Discount")
+    discount = fields.Float(string="Discount (%)", digits="Discount",
+                            states={'approved': [('readonly', True)], 'done': [('readonly', True)]})
+    tax_ids = fields.Many2many('account.tax', 'expense_tax', 'expense_id', 'tax_id',
+                               domain="[('company_id', '=', company_id), ('type_tax_use', '=', 'purchase')]", string='Taxes',
+                               states={'approved': [('readonly', True)], 'done': [('readonly', True)]})
     sub_total = fields.Monetary("Sub Total", compute='_compute_amount', store=True, currency_field='currency_id')
     is_same_currency = fields.Boolean("Is Same Currency as Company Currency", compute='_change_currency')
     product_type = fields.Selection(related='product_id.type')
-    picking_type_id = fields.Many2one('stock.picking.type', 'Deliver To', required=True, check_company=True,
-                                      domain="[('code', '=', 'incoming'), ('company_id', '=', company_id)]")
+    picking_type_id = fields.Many2one('stock.picking.type', 'Deliver To', required=False, check_company=True,
+                                      domain="[('code', '=', 'incoming'), ('company_id', '=', company_id)]",
+                                      states={'approved': [('readonly', True)], 'done': [('readonly', True)]})
     picking_type_code = fields.Selection(related='picking_type_id.code')
-    location_id = fields.Many2one('stock.location', "Source Location", compute=onchange_picking_type, store=False, check_company=True, readonly=False, required=True)
-    location_dest_id = fields.Many2one('stock.location', "Destination Location", compute=onchange_picking_type, store=False, check_company=True, readonly=False, required=True)
+    location_id = fields.Many2one('stock.location', "Source Location", compute=onchange_picking_type, store=False, check_company=True, readonly=False, required=False)
+    location_dest_id = fields.Many2one('stock.location', "Destination Location", compute=onchange_picking_type, store=False, check_company=True, readonly=False, required=False)
     dest_address_id = fields.Many2one('res.partner', string='Dropship Address')
     default_location_dest_id_usage = fields.Selection(related='picking_type_id.default_location_dest_id.usage',
                                                       string='Destination Location Type', readonly=True)
     employee_id = fields.Many2one('hr.employee', string="Employee", required=True,
                                   readonly=True, default=_default_employee_id, check_company=False)
     partner_id = fields.Many2one('res.partner', string='Vendor', required=True, change_default=True,
-                                 tracking=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+                                 tracking=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
+                                 states={'approved': [('readonly', False)], 'done': [('readonly', True)]})
     vendor_contact_id = fields.Many2one('res.partner', string='Vendor Contacts', required=False,
                                      domain="[('parent_id', '=', partner_id)]")
     project_id = fields.Many2one('project.project', 'Project', required=True, readonly=False)
@@ -210,6 +219,33 @@ class HRExpense(models.Model):
                                       default=_default_bank_journal_id,
                                       help="The payment method used when the expense is paid by the company.")
     sheet_ids = fields.Many2many('hr.expense.sheet', string="Expense Reports", copy=False)
+    total_amount_company = fields.Monetary("Total (Company Currency)", compute='_compute_total_amount_company', store=True,
+                                           currency_field='company_currency_id',
+                                           states={'approved': [('readonly', False)], 'done': [('readonly', True)]})
+
+    def action_view_picking(self):
+        """ This function returns an action that display existing picking orders of given purchase order ids. When only one found, show the picking immediately.
+        """
+        action = self.env.ref('stock.action_picking_tree_all')
+        result = action.read()[0]
+        pick_ids = self.mapped('expense_picking_ids') or self.mapped('expense_picking_id')
+        # choose the view_mode accordingly
+        if not pick_ids:
+            self.create_picking()
+        pick_ids = self.mapped('expense_picking_ids') or self.mapped('expense_picking_id')
+        if not pick_ids or len(pick_ids) > 1:
+            result['domain'] = "[('id','in',%s)]" % (pick_ids.ids)
+        elif len(pick_ids) == 1:
+            res = self.env.ref('stock.view_picking_form', False)
+            form_view = [(res and res.id or False, 'form')]
+            if 'views' in result:
+                result['views'] = form_view + [(state, view) for state, view in result['views'] if view != 'form']
+            else:
+                result['views'] = form_view
+            result['res_id'] = pick_ids.id
+        elif not pick_ids:
+            return False
+        return result
 
     def action_sheet_move_create(self):
         if any(sheet.state != 'approve' for sheet in self):
@@ -489,10 +525,10 @@ class HRExpense(models.Model):
 
     def action_cancel(self):
         for expense in self:
-            if expense.sheet_id and expense.sheet_id.state in ('draft', 'cancel'):
+            if expense.sheet_id and expense.sheet_id.state not in ('draft', 'cancel'):
                 raise UserError(_("You can only cancel expenses when Expense Report is Draft."))
             if expense.expense_picking_id and expense.expense_picking_id.state == 'done':
-                raise UserError(_("You can only cancel expenses when Receive Order is Draft."))
+                raise UserError(_("You cannot cancel expenses when Receive Order is Done."))
             else:
                 expense.write({'state': 'cancel'})
                 if expense.sheet_id:
@@ -552,6 +588,7 @@ class HRExpense(models.Model):
 
     def action_view_picking_delivery(self):
         action = self.env.ref('stock.action_picking_tree_all').read()[0]
+        all_ids = self.expense_picking_ids.ids
 
         def recursive_backorders(list_bo):
             mylist = []
@@ -566,7 +603,6 @@ class HRExpense(models.Model):
             all_ids = self.expense_picking_ids.ids
             all_ids.extend(recursive)
 
-        all_ids = all_ids if all_ids else self.expense_picking_ids.ids
         domain = [
             ('return_picking_of_picking_id', 'in', all_ids)
         ]
@@ -577,6 +613,8 @@ class HRExpense(models.Model):
         return action
 
     def _create_sheet_from_expenses(self):
+        if (self.product_type in ['product', 'consu']) and (not self.expense_picking_id or self.expense_picking_id.state != 'done'):
+            raise UserError(_("You cannot create report until you receive products!"))
         if any(expense.state != 'draft' or expense.sheet_id for expense in self):
             raise UserError(_("You cannot report twice the same line!"))
         if len(self.mapped('employee_id')) != 1:

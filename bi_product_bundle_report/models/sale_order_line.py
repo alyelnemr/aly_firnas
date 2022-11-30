@@ -12,7 +12,22 @@ class SaleOrderLine(models.Model):
     item_price = fields.Float(string="Item Price", store=False, compute="get_item_price")
     name = fields.Text(string='Description', required=False)
     product_uom = fields.Many2one('uom.uom', string='Unit of Measure', domain="[('category_id', '=', product_uom_category_id)]")
-    internal_notes = fields.Char(string='Internal Notes')
+    internal_notes = fields.Text(string='Internal Notes')
+    tax_id = fields.Many2many('account.tax', string='Taxes', context={'active_test': False})
+
+    def unlink(self):
+        for order_line in self:
+            items = order_line.order_id.sale_order_additional_ids.filtered(
+                lambda l: l.product_id.id == order_line.product_id.id and l.is_button_clicked)
+            for item in items:
+                item.is_button_clicked = False
+                break
+            items = order_line.order_id.sale_order_option_ids.filtered(
+                lambda l: l.product_id.id == order_line.product_id.id and l.is_button_clicked)
+            for item in items:
+                item.is_button_clicked = False
+                break
+        return super(SaleOrderLine, self).unlink()
 
     def _get_values_to_add_to_order(self):
         self.ensure_one()
@@ -24,6 +39,7 @@ class SaleOrderLine(models.Model):
             'product_uom_qty': self.quantity,
             'product_uom': self.uom_id.id,
             'discount': self.discount,
+            'tax_id': self.tax_id.id,
             'section': self.section.id,
             'company_id': self.order_id.company_id.id,
         }

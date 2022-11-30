@@ -21,6 +21,7 @@ class CRMLeadInherit(models.Model):
         res['context']['default_fund'] = self.fund.id
         res['context']['default_partnership_model'] = self.partnership_model.id
         res['context']['default_partner'] = self.partner.ids
+        res['context']['default_partner_contact'] = self.partner_contact.id
         res['context']['default_end_client'] = self.end_client.ids
         res['context']['default_rfp_ref_number'] = self.rfp_ref_number
         res['context']['default_proposals_engineer_id'] = self.proposals_engineer_id.id
@@ -93,8 +94,11 @@ class CRMLeadInherit(models.Model):
     task_id = fields.Many2one('project.task', string="Task in Project Module", required=False, copy=False)
     actual_sub_date = fields.Date(string="Actual Submission Date")
     lead_stage_id = fields.Many2one('crm.leadstage', string='Lead Stage', tracking=True, copy=False)
+    partner_contact = fields.Many2one('res.partner', string='Customer Contact', required=False,
+                                     domain="[('parent_id', '=', partner_id)]")
     # these fields will be used only to create analytic_account
     is_analytic_account_id_created = fields.Boolean(string='Is Analytic Account created!', default=False)
+    analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account', required=False)
     analytic_tag_ids_for_analytic_account = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=False, copy=False)
 
     @api.depends('project_num', 'country.code', 'internal_opportunity_name')
@@ -160,6 +164,7 @@ class CRMLeadInherit(models.Model):
                     'company_id': False
                 })
                 if analytic_account:
+                    self.analytic_account_id = analytic_account.id
                     self.is_analytic_account_id_created = True
         return res
 
@@ -191,7 +196,10 @@ class CRMLeadInherit(models.Model):
                 'company_id': False
             })
             if analytic_account:
-                self.is_analytic_account_id_created = True
+                self.write({
+                    'analytic_account_id' : analytic_account.id,
+                    'is_analytic_account_id_created' : True
+                })
         if self.task_id and self.task_id.name != self.name:
             self.task_id.name = self.name
         if self.task_id and self.task_id.user_id != self.proposals_engineer_id:
@@ -219,6 +227,8 @@ class CRMLeadInherit(models.Model):
             # parent opprtunity letter sequence
             if rec.parent_opportunity_id:
                 rec.letter_identifier = rec.parent_opportunity_id.next_letter_sequence or 'B'
+                next_letter_sequence = chr(ord(rec.letter_identifier) + 1)
+                rec.parent_opportunity_id.sudo().write({'next_letter_sequence': next_letter_sequence})
             else:
                 rec.letter_identifier = False
 
@@ -235,7 +245,7 @@ class CRMLeadInherit(models.Model):
             if rec.stage_id.mandatory_result_date and not rec.result_date:
                 err += 'Please Add Result Date!\n'
             if rec.stage_id.mandatory_signature_date and not rec.contract_signature_date:
-                err += 'Please Add Result Date!\n'
+                err += 'Please Add Contract/PO Signature Date!\n'
             if err:
                 raise ValidationError(err)
 

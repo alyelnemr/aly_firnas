@@ -15,7 +15,8 @@ class SaleOrderOption(models.Model):
                                      "already present in the quotation.",
                                 compute="_compute_is_present", search="_search_is_present")
     is_button_clicked = fields.Boolean(default=False)
-    internal_notes = fields.Char(string='Internal Notes')
+    tax_id = fields.Many2many('account.tax', string='Taxes', context={'active_test': False})
+    internal_notes = fields.Text(string='Internal Notes')
 
     @api.depends('line_id', 'order_id.order_line', 'product_id')
     def _compute_is_present(self):
@@ -51,6 +52,7 @@ class SaleOrderOption(models.Model):
             'order_id': self.order_id.id,
             'price_unit': self.price_unit,
             'name': self.name,
+            'internal_notes': self.internal_notes,
             'product_id': self.product_id.id,
             'product_uom_qty': self.quantity,
             'product_uom': self.uom_id.id,

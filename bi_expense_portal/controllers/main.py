@@ -2,6 +2,8 @@
 
 import json
 import base64
+import uuid
+
 from odoo.addons.web.controllers.main import Binary
 from odoo.tools import image_process
 from odoo import http, _, fields
@@ -10,6 +12,7 @@ from datetime import datetime, timedelta
 from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager, get_records_pager
 from odoo.tools import float_compare, DEFAULT_SERVER_DATE_FORMAT
 from collections import OrderedDict
+
 
 class CustomerPortal(CustomerPortal):
 
@@ -375,6 +378,7 @@ class CustomerPortal(CustomerPortal):
         currencies = request.env['res.currency'].sudo().search([])
         projects = request.env['project.project'].sudo().search([])
         vendors = request.env['res.partner'].sudo().search([])
+        dest_address_id = request.env['res.partner'].sudo().search([])
         vendor_id = vendors[0].id
         company = projects[0].company_id.id
         products = request.env['product.product'].sudo().search(
@@ -385,6 +389,10 @@ class CustomerPortal(CustomerPortal):
         analytic_accounts = request.env['account.analytic.account'].sudo().browse([projects[0].analytic_account_id.id])
         employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
         analytic_tags = employees[0].analytic_tag_ids + analytic_accounts[0].analytic_tag_ids
+        picking_type_obj = request.env['stock.picking.type'].sudo()
+        picking_type_id = picking_type_obj.search(
+            [('code', '=', 'incoming'), ('company_id', '=', request.env.user.company_id.id)]
+        )
 
         default_managers = request.env['res.users'].sudo()
         for emp in employees:
@@ -401,6 +409,8 @@ class CustomerPortal(CustomerPortal):
             'vendor_contact_id': vendor_contact_id,
             'currencies': currencies,
             'tax_ids': tax_ids,
+            'dest_address_id': dest_address_id,
+            'picking_type_id': picking_type_id,
             'companies': request.env.user.company_ids - request.env.user.company_id,
             'default_currency': request.env.company.currency_id,
             'default_company': request.env.user.company_id,
@@ -537,6 +547,7 @@ class CustomerPortal(CustomerPortal):
             vals.update({
                 'analytic_tag_ids': [(6, 0, analytic_tags.ids)],
             })
+            vals.pop('analytic_tag_id', None)
 
         if request.params.get('tax_ids', False):
             tax_ids = int(request.params.get('tax_ids'))
@@ -547,7 +558,19 @@ class CustomerPortal(CustomerPortal):
         if 'manager_id' in vals.keys():
             vals.pop('manager_id', None)
 
-        if 'attachment' in vals.keys():
+        if 'attachment' in vals.keys() and vals['attachment'].filename:
+            file = vals['attachment']
+            IrAttachment = request.env['ir.attachment']
+            IrAttachment = IrAttachment.sudo().with_context(binary_field_real_user=request.env.user)
+            access_token = IrAttachment._generate_access_token()
+            file_name = vals['attachment'].filename or vals['name'] + '_' + str(uuid.uuid4())
+            attachment = IrAttachment.create({
+                'name': file_name,
+                'datas': base64.b64encode(file.read()),
+                'res_model': 'mail.compose.message',
+                'res_id': 0,
+                'access_token': access_token,
+            })
             vals.pop('attachment', None)
 
         date = request.params.get('date')
@@ -568,8 +591,14 @@ class CustomerPortal(CustomerPortal):
             if hdn_expense_id:
                 expense = request.env['hr.expense'].sudo().search([('id', '=', int(hdn_expense_id))])
                 expense.write(vals)
+                if attachment:
+                    expense.message_post(attachment_ids=[attachment.id])
+                expense.create_picking()
             else:
                 created_request = request.env['hr.expense'].sudo().create(vals)
+                if attachment:
+                    created_request.message_post(attachment_ids=[attachment.id])
+                created_request.create_picking()
 
         except Exception as e:
             if created_request:
@@ -702,7 +731,7 @@ class CustomerPortal(CustomerPortal):
             if default_managers:
                 managers -= default_managers
             values.update({
-                'description': vals['description'],
+                'description': vals['name'],
                 'companies': request.env.user.company_ids - request.env.user.company_id,
                 'default_currency': request.env.company.currency_id,
                 'default_company': request.env.user.company_id,
@@ -963,9 +992,13 @@ class CustomerPortal(CustomerPortal):
         if company_id_str and currency_id_str:
             company_id = request.env['res.company'].sudo().browse(int(company_id_str))
             currency_id = request.env['res.currency'].sudo().browse(int(currency_id_str))
-        return dict(
-            is_readonly=company_id.currency_id == currency_id,
-        )
+            return dict(
+                is_readonly=company_id.currency_id == currency_id,
+            )
+        else:
+            return dict(
+                is_readonly=True,
+            )
 
     @http.route(['/expense/picking_type_change'], type='json', auth="public", website=True)
     def picking_type_change(self, picking_type_id_str=None, **kw):

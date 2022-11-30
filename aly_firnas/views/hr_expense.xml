@@ -6,6 +6,11 @@
             <field name="model">hr.expense</field>
             <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//widget[@name='attach_document']" position="after">
+                    <button name="action_view_picking" string="Receive Products" class="oe_highlight" type="object"
+                            attrs="{'invisible': [('product_type','not in', ('product', 'consu'))]}"
+                    />
+                </xpath>
                 <xpath expr="//button[@name='action_view_sheet']" position="after">
                     <button name="action_reset_to_draft" string="Reset to Draft" type="object"
                             attrs="{'invisible': [('state', 'not in', ['submit', 'cancel'])]}"/>
@@ -44,7 +49,7 @@
                     <field name="account_id" force_save="1" options="{'no_create': True}" readonly="1"
                            domain="[('internal_type', '=', 'other'), ('company_id', '=', company_id)]"
                            context="{'default_company_id': company_id}"/>
-                    <field name="picking_type_id" attrs="{'invisible': [('product_type', 'not in', ('product', 'consu'))]}"
+                    <field name="picking_type_id" attrs="{'invisible': [('product_type', 'not in', ('product', 'consu'))], 'required': [('product_type', 'in', ('product', 'consu'))]}"
                            options="{'no_create': True}"/>
                     <field name="dest_address_id" groups="stock.group_stock_multi_locations"
                            attrs="{'invisible': [('default_location_dest_id_usage', '!=', 'customer')], 'required': [('default_location_dest_id_usage', '=', 'customer')]}"/>

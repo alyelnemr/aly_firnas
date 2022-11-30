@@ -4,6 +4,7 @@ from odoo.tools.float_utils import float_is_zero
 import textile
 from odoo.tools.misc import formatLang, get_lang
 from functools import partial
+from odoo.exceptions import UserError
 
 
 class SaleOrder(models.Model):
@@ -16,11 +17,16 @@ class SaleOrder(models.Model):
     show_component_price = fields.Boolean(string="Show Component Price", default=False)
 
     split_page = fields.Boolean(string='Split Page?')
+    financial_proposal_title = fields.Char('Title', default='Financial Proposal')
+    financial_proposal_number = fields.Char('Number', default='4')
+
+    @api.returns('self', lambda value: value.id)
+    def copy(self, default=None):
+        if not self._context.get('ignore', False):
+            raise UserError('You cannot duplicate record from this action!')
+        return super(SaleOrder, self).copy(default)
 
     def action_view_opportunity(self):
-        '''
-        This function returns an action that displays the opportunities from partner.
-        '''
         action = self.env.ref('crm.crm_lead_opportunities').read()[0]
         # operator = 'child_of' if self..is_company else '='
         action['domain'] = [('id', '=', self.opportunity_id.id), ('type', '=', 'opportunity')]
@@ -59,8 +65,8 @@ class SaleOrder(models.Model):
                         'tax_id': ol.tax_id,
                         'item_price': ol.item_price,
                         # 'price_unit': ol.price_unit,
-                        'price_unit': round(ol.item_price / (int(ol.product_uom_qty) * (1 - (ol.discount / 100))), 2)
-                        if (int(ol.product_uom_qty) * (1 - (ol.discount / 100))) > 0 else 0,
+                        'price_unit': round(ol.item_price / (int(ol.product_uom_qty) * (1 - (ol.discount / 100))), 2) if (
+                                    int(ol.product_uom_qty) * (1 - (ol.discount / 100))) > 0 else 0,
                         'discount': ol.discount,
                         'is_update': ol.is_update,
                         'sub_lines': ol.get_orderline_sublines()
@@ -71,9 +77,11 @@ class SaleOrder(models.Model):
                 # and l.bundle_status in ('bundle','bundel_of_bundle')
         return data
 
-    def is_sub_product(self,line):
+    def is_sub_product(self,line, check_is_printed=False):
+        if check_is_printed:
+            return self.order_line.filtered(lambda l: l.id == line.parent_order_line.id and line.parent_order_line.is_printed)
         return self.order_line.filtered(lambda l: l.id == line.parent_order_line.id)
-    
+
     def is_updated_bundle(self,line):
         return line.get_orderline_sublines()
 
@@ -88,24 +96,27 @@ class SaleOrder(models.Model):
             if line['section'] not in all_sections:
                 all_sections.append(line['section'])
         for section in all_sections:
-            data[str(section.id if section.id else 0)] = {
-                'name': section.name if section.name else '(undefined)',
-                'lines': [
-                    {
-                        'name': ('[%s] ' % ol.product_id.default_code if ol.product_id.default_code else '')
-                                + ol.product_id.name,
-                        'desc': textile.textile(
-                            ol.name) if ol.name else '',
-                        'qty': int(ol.quantity),
-                        'total_price': ol.quantity * ol.price_unit,
-                        'price_note': ol.price_note,
-                        'price_unit': ol.price_unit,
-                        'discount': ol.discount,
-                        'disc': str(ol.discount) + '%'
-                    } for ol in
-                    order_lines.filtered(lambda l: l.section.id == section.id and not l.is_button_clicked)
-                ]
-            }
+            lines_count = order_lines.filtered(lambda l: l.section.id == section.id and not l.is_button_clicked)
+            if lines_count:
+                data[str(section.id if section.id else 0)] = {
+                    'name': section.name if section.name else '(undefined)',
+                    'lines': [
+                        {
+                            'name': ('[%s] ' % ol.product_id.default_code if ol.product_id.default_code else '')
+                                    + ol.product_id.name,
+                            'desc': textile.textile(
+                                ol.name) if ol.name else '',
+                            'qty': int(ol.quantity),
+                            'total_price': ol.quantity * (ol.price_unit - (ol.price_unit * ol.discount / 100)),
+                            'price_note': ol.price_note,
+                            'price_unit': ol.price_unit,
+                            'discount': ol.discount,
+                            'tax_id': ol.tax_id,
+                            'disc': str(ol.discount) + '%'
+                        } for ol in
+                        order_lines.filtered(lambda l: l.section.id == section.id and not l.is_button_clicked)
+                    ]
+                }
         return data
 
     def get_additional_lines(self):
@@ -119,24 +130,27 @@ class SaleOrder(models.Model):
             if line['section'] not in all_sections:
                 all_sections.append(line['section'])
         for section in all_sections:
-            data[str(section.id if section.id else 0)] = {
-                'name': section.name if section.name else '(undefined)',
-                'lines': [
-                    {
-                        'name': ('[%s] ' % ol.product_id.default_code if ol.product_id.default_code else '')
-                                + ol.product_id.name,
-                        'desc': textile.textile(
-                            ol.name) if ol.name else '',
-                        'qty': int(ol.quantity),
-                        'total_price': ol.quantity * ol.price_unit,
-                        'price_note': ol.price_note,
-                        'price_unit': ol.price_unit,
-                        'discount': ol.discount,
-                        'disc': str(ol.discount) + '%'
-                    } for ol in
-                    order_lines.filtered(lambda l: l.section.id == section.id and not l.is_button_clicked)
-                ]
-            }
+            lines_count = order_lines.filtered(lambda l: l.section.id == section.id and not l.is_button_clicked)
+            if lines_count:
+                data[str(section.id if section.id else 0)] = {
+                    'name': section.name if section.name else '(undefined)',
+                    'lines': [
+                        {
+                            'name': ('[%s] ' % ol.product_id.default_code if ol.product_id.default_code else '')
+                                    + ol.product_id.name,
+                            'desc': textile.textile(
+                                ol.name) if ol.name else '',
+                            'qty': int(ol.quantity),
+                            'total_price': ol.quantity * (ol.price_unit - (ol.price_unit * ol.discount / 100)),
+                            'price_note': ol.price_note,
+                            'price_unit': ol.price_unit,
+                            'discount': ol.discount,
+                            'tax_id': ol.tax_id,
+                            'disc': str(ol.discount) + '%'
+                        } for ol in
+                        order_lines.filtered(lambda l: l.section.id == section.id and not l.is_button_clicked)
+                    ]
+                }
         return data
 
     def _compute_amount_undiscounted(self):

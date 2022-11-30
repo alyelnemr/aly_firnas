@@ -45,6 +45,8 @@ class SaleOrderCRMInherit(models.Model):
                 result['currency_id'] = lead.currency_id.id
             if 'country' in fields and lead.country:
                 result['country'] = lead.country.ids
+            if 'partner_contact' in fields and lead.partner_contact:
+                result['partner_contact'] = lead.partner_contact.id
             if 'partner' in fields and lead.partner:
                 result['partner'] = lead.partner.ids
             if 'project_name' in fields and lead.project_name:
@@ -75,6 +77,10 @@ class SaleOrderCRMInherit(models.Model):
                 result['contract_signature_date'] = lead.contract_signature_date
             if 'initial_contact_date' in fields and lead.initial_contact_date:
                 result['initial_contact_date'] = lead.initial_contact_date
+            if 'analytic_account_id' in fields and lead.analytic_account_id:
+                result['analytic_account_id'] = lead.analytic_account_id.id
+            if 'analytic_tag_ids' in fields and lead.analytic_tag_ids_for_analytic_account:
+                result['analytic_tag_ids'] = lead.analytic_tag_ids_for_analytic_account.ids
         return result
 
     project_name = fields.Char(string="Customer's Project Name / Proposal Title")
@@ -110,3 +116,5 @@ class SaleOrderCRMInherit(models.Model):
     initial_contact_date = fields.Date(string="Initial Contact Date", required=False)
     rfp_ref_number = fields.Char(string='RfP Ref. Number')
     proposals_engineer_id = fields.Many2one('res.users', string='Proposals Engineer')
+    partner_contact = fields.Many2one('res.partner', string='Customer Contact', required=False,
+                                      domain="[('parent_id', '=', partner_id)]")

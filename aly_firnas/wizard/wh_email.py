@@ -31,4 +31,6 @@ class WHSelectOperationType(models.TransientModel):
             if not partner_email:
                 raise ValidationError(_("Sorry, This user has no email defined."))
             template = self.env.ref('aly_issue_request.aly_wh_mail_template')
+            print(template)
             self.env['mail.template'].browse(template.id).send_mail(self.id, force_send=True)
+            rec.message_post(body='Mail Sent to ')
