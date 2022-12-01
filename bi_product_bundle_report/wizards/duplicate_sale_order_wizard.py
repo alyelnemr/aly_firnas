@@ -61,6 +61,14 @@ class DuplicateSalesOrderWizard(models.TransientModel):
                 line.analytic_tag_ids = sale_copy.analytic_tag_ids.ids
                 if line.bundle_status == 'not_bundle' and line.parent_order_line:
                     line.unlink()
+                for option in sale_copy.sale_order_option_ids.filtered(lambda l: l.is_button_clicked):
+                    if line.product_id.id == option.product_id.id:
+                        line.unlink()
+                        break
+                for additional in sale_copy.sale_order_additional_ids.filtered(lambda l: l.is_button_clicked):
+                    if line.product_id.id == additional.product_id.id:
+                        line.unlink()
+                        break
             for line in sale_copy.sale_order_option_ids.filtered(lambda l: l.is_button_clicked):
                 line.is_button_clicked = False
             for line in sale_copy.sale_order_additional_ids.filtered(lambda l: l.is_button_clicked):

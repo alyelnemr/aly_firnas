@@ -22,10 +22,26 @@ class SaleOrderAdditional(models.Model):
     sequence = fields.Integer('Sequence', help="Gives the sequence order when displaying a list of optional products.")
     is_printed = fields.Boolean(string="Print?", default=True)
     section = fields.Many2one('sale.order.line.section', string="Section", required=True)
-    price_note = fields.Char("Price Note")
+    price_note = fields.Text("Price Note")
     is_button_clicked = fields.Boolean(default=False)
     tax_id = fields.Many2many('account.tax', string='Taxes', context={'active_test': False})
     internal_notes = fields.Text(string='Internal Notes')
+    price_tax = fields.Float(compute='_compute_amount', string='Total Tax', readonly=True, store=True)
+    price_total = fields.Float(compute='_compute_amount', string='Total', readonly=True, store=True)
+
+    @api.depends('quantity', 'discount', 'price_unit', 'tax_id')
+    def _compute_amount(self):
+        """
+        Compute the amounts of the SO line.
+        """
+        for line in self:
+            price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            taxes = line.tax_id.compute_all(price, line.order_id.currency_id, line.quantity, product=line.product_id,
+                                            partner=line.order_id.partner_shipping_id)
+            line.update({
+                'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
+                'price_total': taxes['total_excluded'],
+            })
 
     @api.depends('line_id', 'order_id.order_line', 'product_id')
     def _compute_is_present(self):
@@ -35,19 +51,7 @@ class SaleOrderAdditional(models.Model):
             # option.is_button_clicked = option.product_id.id in option.order_id.order_line.product_id.ids
             option.is_present = option.is_button_clicked
 
-    @api.onchange('product_id')
-    def onchange_product_id(self):
-        for record in self:
-            if record.product_id:
-                record.name = record.product_id.description_sale
-                if record.product_id.uom_id:
-                    record.uom_id = record.product_id.uom_id.id
-                else:
-                    record.uom_id = False
-            else:
-                record.name = ''
-
-    @api.onchange('product_id', 'uom_id')
+    @api.onchange('product_id', 'uom_id', 'quantity')
     def _onchange_product_id(self):
         if not self.product_id:
             return
@@ -78,7 +82,6 @@ class SaleOrderAdditional(models.Model):
 
         values = self._get_values_to_add_to_order()
         order_line = self.env['sale.order.line'].create(values)
-        order_line._compute_tax_id()
 
         self.write({'line_id': order_line.id})
 
@@ -95,7 +98,7 @@ class SaleOrderAdditional(models.Model):
             'analytic_account_id': self.order_id.analytic_account_id.id,
             'analytic_tag_ids': self.order_id.analytic_tag_ids.ids,
             'discount': self.discount,
-            'tax_id': self.tax_id.id,
+            'tax_id': [(6, 0, self.tax_id.ids)],
             'company_id': self.order_id.company_id.id,
             'section':self.section.id
         }
