@@ -10,10 +10,7 @@
                 <data>
                     <field name="categ_id" position="after">
                         <span name="update_cost_price" invisible="0">
-                            <button string="Update Cost" type="action"
-                                    name="%(action_view_change_standard_price)d"
-                                    attrs="{'invisible':['|', ('cost_method', '=', 'fifo'), ('product_variant_count', '>', 1)]}"
-                                    class="oe_link pt-0 oe_inline"/>
+
                         </span>
                     </field>
                 </data>
