@@ -18,7 +18,7 @@ class SalesOrderReport(models.AbstractModel):
         is_optional_exists = any(docs.sale_order_option_ids.filtered(lambda o: not o.is_button_clicked))
         amount_untaxed = sum([
             (ol.price_subtotal if not ol.product_id.child_line else round(
-                ol.item_price / (int(ol.product_uom_qty) * (1 - (ol.discount / 100))), 2)) for ol in
+                ol.price_unit / (int(ol.product_uom_qty) * (1 - (ol.discount / 100))), 2)) for ol in
             docs.order_line.filtered(lambda l: l.is_printed and (not l.parent_order_line or l.parent_order_line.is_printed))
         ])
 
