@@ -10,6 +10,12 @@ class ResPartnerInherit(models.Model):
         ('draft', 'Draft'),
         ('approved', 'Approved')], default='draft', string='Status', copy=False)
 
+    @api.model
+    def default_get(self, fields):
+        vals = super(ResPartnerInherit, self).default_get(fields)
+        vals['state'] = 'draft'
+        return vals
+
     def write(self, vals):
         if 'state' in vals:
             has_my_group = self.env.user.has_group('aly_firnas.group_update_partner_state')

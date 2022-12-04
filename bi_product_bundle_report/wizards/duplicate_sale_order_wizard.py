@@ -15,6 +15,13 @@ class DuplicateSalesOrderWizard(models.TransientModel):
         for active_id in active_ids:
             sale_obj = sale_order_obj.browse(active_id)
             warehouse_id = self.env['stock.warehouse'].search([('company_id', '=', self.wizard_opportunity_id.company_id.id)], limit=1)
+
+            lines_option = sale_obj.sale_order_option_ids.mapped('line_id')
+            lines_additional = sale_obj.sale_order_additional_ids.mapped('line_id')
+            order_lines = sale_obj.order_line.filtered(lambda l: not l.is_downpayment and l not in lines_option and l not in lines_additional)
+            order_lines = order_lines.filtered(lambda line: not line.parent_order_line)
+            order_line_to_copy = [(0, 0, line.copy_data()[0]) for line in order_lines]
+
             vals = {
                 'opportunity_id': self.wizard_opportunity_id.id,
                 'partner_id': self.wizard_opportunity_id.partner_id.id,
@@ -53,26 +60,15 @@ class DuplicateSalesOrderWizard(models.TransientModel):
                 'latest_proposal_submission_date': self.wizard_opportunity_id.latest_proposal_submission_date,
                 'result_date': self.wizard_opportunity_id.result_date,
                 'contract_signature_date': self.wizard_opportunity_id.contract_signature_date,
-                'initial_contact_date': self.wizard_opportunity_id.initial_contact_date
+                'initial_contact_date': self.wizard_opportunity_id.initial_contact_date,
+                'order_line': order_line_to_copy
             }
             sale_copy = sale_obj.with_context(ignore=True).copy(default=vals)
             for line in sale_copy.order_line:
                 line.analytic_account_id = sale_copy.analytic_account_id.id
                 line.analytic_tag_ids = sale_copy.analytic_tag_ids.ids
-                if line.bundle_status == 'not_bundle' and line.parent_order_line:
-                    line.unlink()
-                for option in sale_copy.sale_order_option_ids.filtered(lambda l: l.is_button_clicked):
-                    if line.product_id.id == option.product_id.id:
-                        line.unlink()
-                        break
-                for additional in sale_copy.sale_order_additional_ids.filtered(lambda l: l.is_button_clicked):
-                    if line.product_id.id == additional.product_id.id:
-                        line.unlink()
-                        break
-            for line in sale_copy.sale_order_option_ids.filtered(lambda l: l.is_button_clicked):
-                line.is_button_clicked = False
-            for line in sale_copy.sale_order_additional_ids.filtered(lambda l: l.is_button_clicked):
-                line.is_button_clicked = False
+            sale_copy.sale_order_option_ids.filtered(lambda l: l.is_button_clicked).write({'is_button_clicked': False})
+            sale_copy.sale_order_additional_ids.filtered(lambda l: l.is_button_clicked).write({'is_button_clicked': False})
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'sale.order',

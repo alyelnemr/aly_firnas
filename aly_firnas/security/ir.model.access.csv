@@ -5,3 +5,4 @@ access_analytic_tag_type,access.analytic.tag.type,model_account_analytic_tag_typ
 access_account_move_engineers,account.move.engineers,model_account_move,,1,1,1,0
 access_account_move_line_engineers,account.move.line.engineers,account.model_account_move_line,,1,1,1,0
 access_account_res_currency,account.res.currency,model_res_currency,,1,1,1,0
+access_all_users_purchase_order,all.users.purchase.order,model_purchase_order,,1,0,0,0

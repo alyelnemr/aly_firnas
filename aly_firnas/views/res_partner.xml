@@ -4,11 +4,13 @@
         <record id="view_res_partner_new_fields_form_inherit" model="ir.ui.view">
             <field name="name">view.res.partner.form.inherit</field>
             <field name="model">res.partner</field>
-            <field name="priority">70</field>
+            <field name="priority">100</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='vat']" position="after">
-                    <field name="state" context="{'default_state': 'draft'}" groups="aly_firnas.group_update_partner_state" />
+                <xpath expr="//form[1]/div[1]" position="before">
+                    <header>
+                        <field name="state" widget="statusbar" groups="aly_firnas.group_update_partner_state" required="1"/>
+                    </header>
                 </xpath>
             </field>
         </record>

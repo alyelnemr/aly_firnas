@@ -115,6 +115,7 @@ class InheritBankStatement(models.Model):
             if suspense_moves_mode:
                 self.button_cancel_reconciliation()
             move = self.env['account.move'].with_context(default_journal_id=move_vals['journal_id']).create(move_vals)
+            move.note = self.note if not move.note else move.note
             if self.analytic_account_id and not move.analytic_account_id:
                 move.analytic_account_id = self.analytic_account_id.id
             elif len(counterpart_aml_dicts) > 0 and counterpart_aml_dicts[0]['move_line'].analytic_account_id:

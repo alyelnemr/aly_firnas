@@ -345,7 +345,7 @@
                                             <t t-if="is_discounted">
                                                 <td class="text-center" style="font-family: verdana !important;">
                                                     <t t-if="line['discount'] > 0">
-                                                        <span t-esc="line['discount']" style="font-family: verdana !important;"/>
+                                                        <span t-esc="str(round(line['discount'])) + '%'" style="font-family: verdana !important;"/>
                                                     </t>
                                                 </td>
                                             </t>
@@ -436,7 +436,7 @@
                                 </div>
                                 <t t-set="has_additional_discount" t-value="any(doc.sale_order_additional_ids.filtered(lambda o: o.discount > 0.0 and not o.is_button_clicked))"/>
                                 <t t-set="has_additional_price_note"
-                                   t-value="any(doc.sale_order_additional_ids.filtered(lambda o: o.price_note != False))"/>
+                                   t-value="any(doc.sale_order_additional_ids.filtered(lambda o: o.price_note != False and o.price_note != '' and not o.is_button_clicked))"/>
                                 <table class="table table-sm o_main_table" style="margin: 0 auto; font-family: verdana !important;">
                                     <thead>
                                         <tr style="font-family: verdana !important;">
@@ -539,7 +539,7 @@
                                     </h5>
                                 </div>
                                 <t t-set="has_option_discount" t-value="any(doc.sale_order_option_ids.filtered(lambda o: o.discount > 0.0 and not o.is_button_clicked))"/>
-                                <t t-set="has_option_price_note" t-value="any(doc.sale_order_option_ids.filtered(lambda o: o.price_note != False))"/>
+                                <t t-set="has_option_price_note" t-value="any(doc.sale_order_option_ids.filtered(lambda o: o.price_note != False and o.price_note != '' and not o.is_button_clicked))"/>
                                 <table class="table table-sm o_main_table" style="width: 100% !important; font-family: verdana !important;">
                                     <thead>
                                         <tr style="font-family: verdana !important;">

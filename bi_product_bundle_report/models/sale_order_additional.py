@@ -74,16 +74,10 @@ class SaleOrderAdditional(models.Model):
     def add_additional_to_order(self):
         self.ensure_one()
 
-        sale_order = self.order_id
-        self.write({'is_button_clicked': True})
-
-        # if sale_order.state not in ['draft', 'sent']:
-        #     raise UserError(_('You cannot add additional to a confirmed order.'))
-
         values = self._get_values_to_add_to_order()
         order_line = self.env['sale.order.line'].create(values)
 
-        self.write({'line_id': order_line.id})
+        self.write({'line_id': order_line.id, 'is_button_clicked': True})
 
     def _get_values_to_add_to_order(self):
         self.ensure_one()

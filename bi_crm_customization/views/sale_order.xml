@@ -60,6 +60,9 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_sales_order_filter"/>
             <field name="arch" type="xml">
+                <xpath expr="//search/field[@name='name']" position="before">
+                    <field name="opportunity_id" string="Opportunity"/>
+                </xpath>
                 <xpath expr="//search/field[@name='partner_id']" position="after">
                     <field name="project_name" string="Project Name"/>
                     <field name="project_number" string="Project Number"/>

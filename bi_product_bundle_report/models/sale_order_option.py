@@ -49,15 +49,10 @@ class SaleOrderOption(models.Model):
         self.ensure_one()
 
         sale_order = self.order_id
-        self.write({'is_button_clicked': True})
-
-        # if sale_order.state not in ['draft', 'sent', 'post']:
-        #     raise UserError(_('You cannot add options to a confirmed order.'))
-
         values = self._get_values_to_add_to_order()
         order_line = self.env['sale.order.line'].create(values)
 
-        self.write({'line_id': order_line.id})
+        self.write({'line_id': order_line.id, 'is_button_clicked': True})
         if sale_order:
             sale_order.add_option_to_order_with_taxcloud()
 
