@@ -10,7 +10,7 @@
             <field name="name">Allow Update state of Partners</field>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         </record>
-        <record id="purchase.purchase_user_account_move_line_rule" model="ir.rule">
+        <record id="purchase_user_account_move_line_rule" model="ir.rule">
             <field name="name">Purchase User Account Move Line</field>
             <field name="model_id" ref="account.model_account_move_line"/>
             <field name="domain_force">[('move_id.type', 'in', ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice',
@@ -18,10 +18,10 @@
             </field>
             <field name="groups" eval="[(4, ref('purchase.group_purchase_user'))]"/>
         </record>
-        <record id="purchase.purchase_user_account_move_rule" model="ir.rule">
+        <record id="purchase_user_account_move_rule" model="ir.rule">
             <field name="name">Purchase User Account Move</field>
             <field name="model_id" ref="account.model_account_move"/>
-            <field name="domain_force">[('move_id.type', 'in', ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice',
+            <field name="domain_force">[('type', 'in', ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice',
                 'in_refund', 'in_receipt'))]
             </field>
             <field name="groups" eval="[(4, ref('purchase.group_purchase_user'))]"/>
