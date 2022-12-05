@@ -9,6 +9,12 @@
                 <button name="action_get_account_moves" icon="fa-usd" class="oe_stat_button" string="Accounting Entries"
                         type="object" />
             </xpath>
+            <xpath expr="//field[@name='picking_type_id']" position="attributes">
+                <attribute name="attrs">{'readonly': False}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='location_dest_id']" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </xpath>
             <xpath expr="//field[@name='origin']" position="after">
                 <field name="is_origin_so" invisible="1"/>
                 <field name="required_analytic_account_and_tags" invisible="1"/>
