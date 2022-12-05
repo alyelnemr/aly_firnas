@@ -8,5 +8,13 @@
             <field name="name">Allow Update state of Partners</field>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         </record>
+        <record id="purchase.purchase_user_account_move_line_rule" model="ir.rule">
+            <field name="domain_force">[('move_id.type', 'in', ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice', 'in_refund', 'in_receipt'))]</field>
+        </record>
+        <record id="purchase.purchase_user_account_move_rule" model="ir.rule">
+            <field name="domain_force">[('move_id.type', 'in', ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice',
+                'in_refund', 'in_receipt'))]
+            </field>
+        </record>
     </data>
 </odoo>
