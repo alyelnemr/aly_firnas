@@ -24,9 +24,9 @@ class WHPortal(http.Controller):
                     x.strftime("%d-%b-%Y %I:%M %p"),
                     request.env.user.name)
                 wh_sudo.message_post(body=body)
-                return request.render("aly_issue_request.thankyou_page")
+                return request.render("aly_firnas.thankyou_page")
             else:
-                return request.render("aly_issue_request.not_authorized_page")
+                return request.render("aly_firnas.not_authorized_page")
 
     @http.route(['/my/wh_confirmation_reject/<int:wh_id>'], type='http', auth="user", website=True)
     def portal_wh_reject(self, wh_id, report_type=None, access_token=None, message=False, download=False, **kw):
@@ -41,6 +41,6 @@ class WHPortal(http.Controller):
                     x.strftime("%d-%b-%Y %I:%M %p"),
                     request.env.user.name)
                 wh_sudo.message_post(body=body)
-                return request.render("aly_issue_request.thankyou_page_reject")
+                return request.render("aly_firnas.thankyou_page_reject")
             else:
-                return request.render("aly_issue_request.not_authorized_page")
+                return request.render("aly_firnas.not_authorized_page")

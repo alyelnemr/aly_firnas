@@ -57,7 +57,7 @@
 
         <record id="aly_wh_mail_template" model="mail.template">
             <field name="name">WH Transaction: Send by email</field>
-            <field name="model_id" ref="aly_issue_request.model_stock_picking"/>
+            <field name="model_id" ref="aly_firnas.model_stock_picking"/>
             <field name="email_from">{{ (user.email_formatted or user.email) }}</field>
             <field name="email_to">{{ object.partner_id.email }}</field>
             <field name="subject">{{ object.name }} Confirmation</field>

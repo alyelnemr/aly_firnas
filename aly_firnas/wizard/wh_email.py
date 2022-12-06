@@ -30,7 +30,7 @@ class WHSelectOperationType(models.TransientModel):
             partner_email = self.partner_id.email
             if not partner_email:
                 raise ValidationError(_("Sorry, This user has no email defined."))
-            template = self.env.ref('aly_issue_request.aly_wh_mail_template')
+            template = self.env.ref('aly_firnas.aly_wh_mail_template')
             # template.email_from = self.env.user
             # template.email_to = partner_email
             email_values = {
