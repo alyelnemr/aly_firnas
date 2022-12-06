@@ -196,14 +196,21 @@
             <xpath expr="/t/t/t[2]" position="replace">
                 <div>
                     <br/>
+                    <div class="text-left" style="margin-right:150px;float: right;">
+                        <address t-field="o.partner_id"
+                                 t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
+                    </div>
+                    <br/>
+                    <br/>
+                    <br/>
                 </div>
             </xpath>
-            <xpath expr="//div[@class='page']/h2" position="before">
-                <div class="text-left" style="margin-left:350px">
-                    <address t-field="o.partner_id"
-                          t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
-                </div>
-            </xpath>
+<!--            <xpath expr="//div[@class='page']/h2" position="before">-->
+<!--                <div class="text-left" style="margin-left:350px">-->
+<!--                    <address t-field="o.partner_id"-->
+<!--                          t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>-->
+<!--                </div>-->
+<!--            </xpath>-->
             <xpath expr="//span[@t-field='o.amount_total']" position="replace">
 <!--                <span class="text-nowrap" t-field="o.amount_total"/>-->
                 <span t-esc="is_printed_subtotal + var_taxed_amount"
