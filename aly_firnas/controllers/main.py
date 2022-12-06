@@ -17,12 +17,16 @@ class WHPortal(http.Controller):
         if wh_id:
             wh_sudo = request.env['stock.picking'].sudo().browse(wh_id)
 
-            employee = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)], limit=1)
+            # employee = request.env['res.users'].sudo().search([('id', '=', request.env.user.id)], limit=1)
             x = datetime.now()
-            if wh_sudo and employee:
-                body = "WH has been <strong>Approved</strong> on <strong>{}</strong> by {}".format(x.strftime("%d-%b-%Y %I:%M %p"), employee.name)
+            if wh_sudo and wh_sudo.user_to_approve_url == request.env.user.partner_id.id:
+                body = "WH has been <strong>Approved</strong> on <strong>{}</strong> by {}".format(
+                    x.strftime("%d-%b-%Y %I:%M %p"),
+                    request.env.user.name)
                 wh_sudo.message_post(body=body)
-        return request.render("aly_issue_request.thankyou_page")
+                return request.render("aly_issue_request.thankyou_page")
+            else:
+                return request.render("aly_issue_request.not_authorized_page")
 
     @http.route(['/my/wh_confirmation_reject/<int:wh_id>'], type='http', auth="user", website=True)
     def portal_wh_reject(self, wh_id, report_type=None, access_token=None, message=False, download=False, **kw):
@@ -30,9 +34,13 @@ class WHPortal(http.Controller):
         if wh_id:
             wh_sudo = request.env['stock.picking'].sudo().browse(wh_id)
 
-            employee = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)], limit=1)
+            # employee = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)], limit=1)
             x = datetime.now()
-            if wh_sudo and employee:
-                body = "WH has been <strong>Rejected</strong> on <strong>{}</strong> by {}".format(x.strftime("%d-%b-%Y %I:%M %p"), employee.name)
+            if wh_sudo and wh_sudo.user_to_approve_url == request.env.user.partner_id.id:
+                body = "WH has been <strong>Rejected</strong> on <strong>{}</strong> by {}".format(
+                    x.strftime("%d-%b-%Y %I:%M %p"),
+                    request.env.user.name)
                 wh_sudo.message_post(body=body)
-        return request.render("aly_issue_request.thankyou_page_reject")
+                return request.render("aly_issue_request.thankyou_page_reject")
+            else:
+                return request.render("aly_issue_request.not_authorized_page")

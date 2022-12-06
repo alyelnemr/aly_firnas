@@ -1,5 +1,23 @@
 <odoo>
     <data>
+        <template id="not_authorized_page">
+            <t t-call="portal.portal_layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h1 class="text-center">Authorization!</h1>
+                                    <p class="text-center">
+                                        You are <b>NOT authorized</b> to interact with this WH Transaction.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
         <template id="thankyou_page">
             <t t-call="portal.portal_layout">
                 <div id="wrap">
@@ -9,7 +27,7 @@
                                 <div class="col-lg-12">
                                     <h1 class="text-center">Done!</h1>
                                     <p class="text-center">
-                                        Your <b>Approved</b> your WH Transaction.
+                                        You <b>Approved</b> your WH Transaction.
                                     </p>
                                 </div>
                             </div>
@@ -27,7 +45,7 @@
                                 <div class="col-lg-12">
                                     <h1 class="text-center">Done!</h1>
                                     <p class="text-center">
-                                        Your <b>Rejected</b> your WH Transaction.
+                                        You <b>Rejected</b> your WH Transaction.
                                     </p>
                                 </div>
                             </div>
@@ -39,48 +57,47 @@
 
         <record id="aly_wh_mail_template" model="mail.template">
             <field name="name">WH Transaction: Send by email</field>
-            <field name="model_id" ref="aly_firnas.model_wh_email_wizard"/>
-            <field name="email_from">${(object.partner_id.email_formatted or user.email_formatted) |safe}</field>
-            <field name="partner_to">${object.partner_id.id}</field>
-            <field name="subject">${ object.wh_id.name } Confirmation </field>
+            <field name="model_id" ref="aly_issue_request.model_stock_picking"/>
+            <field name="email_from">{{ (user.email_formatted or user.email) }}</field>
+            <field name="email_to">{{ object.partner_id.email }}</field>
+            <field name="subject">{{ object.name }} Confirmation</field>
             <field name="body_html" type="html">
                 <div style="margin: 0px; padding: 0px;">
                     <p style="margin: 0px; padding: 0px; font-size: 13px;">
                         Dear
-                        % if object.partner_id.parent_id:
-                        ${object.partner_id.name} (${object.partner_id.parent_id.name}),
-                        % else:
-                        ${object.partner_id.name},
-                        % endif
+                        <t t-if="object.partner_id.parent_id">
+                            <t t-out="object.partner_id.name or ''"></t>
+                            (<t t-out="object.partner_id.parent_id.name or ''"></t>),
+                        </t>
+                        <t t-else="">
+                            <t t-out="object.partner_id.name or ''"></t>,
+                        </t>
                         <br/>
                         <br/>
                         Here is your WH Transaction
-                        % if object.wh_id:
-                        <strong>${object.wh_id.name}</strong>
-                        %endif
+                        <t t-if="object.name">
+                            <strong t-out="object.name or ''"></strong>
+                        </t>
                         for your confirmation,
-
-                        % if object.current_url:
                         <br/>
                         <br/>
-                        <br/>
-                        <table class="table table-sm text-center" style="width:40%;border: 1px double black;">
-                            <tr>
-                                <td style="background-color:#83eb34 !important;color:#FFF !important;width:50%;">
-                                    <a href="${ object.approve_url }">Approve</a>
-                                </td>
-                                <td style="background-color:#cadbbd !important;color:#FFF !important;width:50%;">
-                                    <a href="${ object.reject_url }">Reject</a>
-                                </td>
-                            </tr>
-                        </table>
-                        %endif
-
+                        <t t-if="object.approve_url or object.reject_url">
+                            <br/>
+                            <table class="table table-sm text-center" style="width:40%;border: 1px double black;">
+                                <tr>
+                                    <td style="background-color:#83eb34 !important;color:#FFF !important;width:50%;">
+                                        <a t-att-href="object.approve_url">Approve</a>
+                                    </td>
+                                    <td style="background-color:#cadbbd !important;color:#FFF !important;width:50%;">
+                                        <a t-att-href="object.reject_url">Reject</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </t>
                     </p>
                 </div>
             </field>
-            <field name="lang">${object.partner_id.lang}</field>
-            <field name="user_signature" eval="False"/>
+            <field name="lang">{{ object.partner_id.lang }}</field>
             <field name="auto_delete" eval="True"/>
         </record>
 
@@ -92,12 +109,12 @@
                     <group>
                         <group>
                             <field name="partner_id" options="{'no_create_edit': True, 'no_create': True}"/>
-<!--                            <field name="current_url"/>-->
+                            <!--                            <field name="current_url"/>-->
                         </group>
                     </group>
                     <footer>
-                        <button name="action_send_mail" type="object" string="Send WH Confirmation Mail" class="btn-primary" />
-                        <button special="cancel" string="Cancel" class="btn-secondary" />
+                        <button name="action_send_mail" type="object" string="Send WH Confirmation Mail" class="btn-primary"/>
+                        <button special="cancel" string="Cancel" class="btn-secondary"/>
                     </footer>
                 </form>
             </field>
