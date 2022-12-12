@@ -160,6 +160,7 @@ class PurchaseAdvancePaymentInv(models.TransientModel):
                     'tax_ids': [(6, 0, item.taxes_id.ids)],
                     'analytic_tag_ids': [(6, 0, item.analytic_tag_ids.ids)],
                     'analytic_account_id': item.account_analytic_id.id or False,
+                    'company_id': item.company_id.id or False,
                 }))
 
         if order.fiscal_position_id:
