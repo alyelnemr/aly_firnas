@@ -160,7 +160,6 @@ class PurchaseAdvancePaymentInv(models.TransientModel):
                     'tax_ids': [(6, 0, item.taxes_id.ids)],
                     'analytic_tag_ids': [(6, 0, item.analytic_tag_ids.ids)],
                     'analytic_account_id': item.account_analytic_id.id or False,
-                    'company_id': item.company_id.id or False,
                 }))
 
         if order.fiscal_position_id:
@@ -185,6 +184,7 @@ class PurchaseAdvancePaymentInv(models.TransientModel):
             'partner_id': order.partner_id.id,
             'fiscal_position_id': order.fiscal_position_id.id or order.partner_id.property_account_position_id.id,
             'currency_id': order.currency_id.id,
+            'company_id': order.company_id.id,
             'analytic_account_id': order.analytic_account_id.id,
             'analytic_tag_ids': order.analytic_tag_ids.ids,
             'invoice_line_ids': [(0, 0, {
