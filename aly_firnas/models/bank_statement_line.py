@@ -121,7 +121,7 @@ class InheritBankStatement(models.Model):
             elif len(counterpart_aml_dicts) > 0 and counterpart_aml_dicts[0]['move_line'].analytic_account_id:
                 if counterpart_aml_dicts[0]['move_line'].analytic_account_id and not move.analytic_account_id:
                     move.analytic_account_id = counterpart_aml_dicts[0]['move_line'].analytic_account_id.id
-            elif len(new_aml_dicts) > 0 and new_aml_dicts[0]['analytic_account_id']:
+            elif len(new_aml_dicts) > 0 and new_aml_dicts[0].get('analytic_account_id'):
                 if new_aml_dicts[0]['analytic_account_id'] and not move.analytic_account_id:
                     move.analytic_account_id = new_aml_dicts[0]['analytic_account_id']
             if self.analytic_tag_ids and not move.analytic_tag_ids:
