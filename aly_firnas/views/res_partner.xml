@@ -33,7 +33,7 @@
             <field name="name">Contacts</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">res.partner</field>
-            <field name="context">{'default_is_company': True, 'group_by': 'state'}</field>
+            <field name="context">{'default_is_company': True, 'search_default_group_approval_state': 1}</field>
         </record>
     </data>
 </odoo>
