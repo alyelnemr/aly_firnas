@@ -80,7 +80,7 @@
                 <field name="analytic_tag_ids_for_analytic_account" widget="many2many_tags"
                        options="{'no_create': False, 'no_quick_create': False, 'no_create_edit':False}"/>
             </xpath>
-            <xpath expr="//notebook" position="inside">
+            <xpath expr="//notebook/page[1]" position="before">
                 <page name="info" string="Information">
                     <group>
                         <group>

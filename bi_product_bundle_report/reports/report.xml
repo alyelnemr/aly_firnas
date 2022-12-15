@@ -500,7 +500,7 @@
                                                               t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                                     </td>
                                                     <td t-if="has_additional_discount" style="font-family: verdana !important;" class="text-center">
-                                                        <t t-if="line['disc'] != '0.0%'">
+                                                        <t t-if="line['discount'] > 0">
                                                             <t t-esc="line['disc']" style="font-family: verdana !important;"/>
                                                         </t>
                                                     </td>
@@ -603,7 +603,7 @@
                                                               t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                                     </td>
                                                     <td t-if="has_option_discount" style="font-family: verdana !important;" class="text-center">
-                                                        <t t-if="line['disc'] != '0.0%'">
+                                                        <t t-if="line['discount'] > 0">
                                                             <t t-esc="line['disc']" style="font-family: verdana !important;"/>
                                                         </t>
                                                     </td>
