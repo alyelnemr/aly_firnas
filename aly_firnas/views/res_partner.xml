@@ -29,5 +29,11 @@
                 </xpath>
             </field>
         </record>
+        <record id="action_contacts" model="ir.actions.act_window">
+            <field name="name">Contacts</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="context">{'default_is_company': True, 'group_by': 'state'}</field>
+        </record>
     </data>
 </odoo>
