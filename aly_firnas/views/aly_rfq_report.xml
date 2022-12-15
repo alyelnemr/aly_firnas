@@ -80,11 +80,6 @@
                         </td>
                     </tr>
                 </t>
-                <tr>
-                    <td>
-                        <br/>
-                    </td>
-                </tr>
             </table>
             <t t-if="o.is_print_delivery_section">
                 <table style="width:100%;border: 0px;margin-left: 10px;">
