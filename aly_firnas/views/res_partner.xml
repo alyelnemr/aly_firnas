@@ -7,19 +7,13 @@
             <field name="priority">100</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//form" position="inside">
-                    <header>
-                        <button name="action_state_approve" attrs="{'invisible': [('state', '=', 'approved')]}"
-                                string="Reset to draft" type="object"
-                                groups="aly_firnas.group_update_partner_state"/>
-                        <button name="action_state_approve" attrs="{'invisible': [('state', '=', 'draft')]}"
-                                string="Approve" type="object" class="oe_highlight"
-                                groups="aly_firnas.group_update_partner_state"/>
-                    </header>
-                </xpath>
                 <xpath expr="//form[1]/div[1]" position="before">
                     <header>
-                        <field name="state" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}" groups="aly_firnas.group_update_partner_state" required="1"/>
+                        <button name="action_state_approve" attrs="{'invisible': [('state', '=', 'draft')]}"
+                                string="Reset to draft" type="object" />
+                        <button name="action_state_approve" attrs="{'invisible': [('state', '=', 'approved')]}"
+                                string="Approve" type="object" class="oe_highlight" />
+                        <field name="state" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}" required="1"/>
                     </header>
                 </xpath>
             </field>

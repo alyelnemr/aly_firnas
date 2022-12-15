@@ -22,3 +22,6 @@ class ResPartnerInherit(models.Model):
             if not has_my_group:
                 raise ValidationError("Sorry you can't edit state for partners!")
         return super(ResPartnerInherit, self).write(vals)
+
+    def action_state_approve(self):
+        self.state = 'draft' if self.state == 'approved' else 'approved'
