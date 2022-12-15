@@ -80,12 +80,50 @@
                         </td>
                     </tr>
                 </t>
-                <tr>
-                    <td>
-                        <br/>
-                    </td>
-                </tr>
             </table>
+            <t t-if="o.is_print_delivery_section">
+                <table style="width:100%;border: 0px;margin-left: 10px;">
+                    <tr>
+                        <td>
+                            <br/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="width:50%;color:rgb(86, 56, 90);font-weight: bold; ">Deliver To</th>
+                        <td style="">
+
+                        </td>
+                        <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">Incoterms</th>
+                        <td style="width:35%;">
+                            <span t-field="o.incoterm_id.name" style="font-weight: normal;" class="text-left"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:50%;" rowspan="2" colspan="2">
+                            <t t-if="o.dest_address_id">
+                                <div t-field="o.dest_address_id" style="font-weight: normal;"
+                                     t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True, "phone_icons": False}'/>
+                            </t>
+                            <t t-else="">
+                                <div t-if="o.picking_type_id and o.picking_type_id.warehouse_id">
+                                    <span t-field="o.picking_type_id.warehouse_id.name"/>
+                                    <div t-field="o.picking_type_id.warehouse_id.partner_id"
+                                         t-options='{"widget": "contact", "fields": ["address", "phone"], "no_marker": True, "phone_icons": True}'/>
+                                </div>
+                            </t>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">Receipt Date</th>
+                        <td style="width:35%;">
+                            <t t-if="o.date_planned">
+                                <span t-esc="receipt_date" style="font-weight: normal;"/>
+                            </t>
+                        </td>
+                    </tr>
+                </table>
+            </t>
+            <br/>
             <table class="table table-sm o_main_table" style=" margin: auto; ">
                 <thead>
                     <tr>
@@ -215,7 +253,10 @@
                         </t>
                     </th>
                     <th style="width:50%;color:rgb(86, 56, 90); ">
-
+                        <t t-if="o.is_print_vendor_signature">
+                            <span t-field="o.partner_id.name" style="font-weight: bold; font-size: 15px !important;"
+                                  class="text-left"/>
+                        </t>
                     </th>
                 </tr>
                 <tr>
@@ -228,7 +269,7 @@
                         <t t-if="o.is_print_firnas_signature">Signature</t>
                     </th>
                     <th style="width:50%;color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">
-
+                        <t t-if="o.is_print_vendor_signature">Signature</t>
                     </th>
                 </tr>
                 <tr>
@@ -241,7 +282,7 @@
                         <t t-if="o.is_print_firnas_signature">Name and Title</t>
                     </th>
                     <th style="width:50%;color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">
-
+                        <t t-if="o.is_print_vendor_signature">Name and Title</t>
                     </th>
                 </tr>
             </table>

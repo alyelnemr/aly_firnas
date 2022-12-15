@@ -175,6 +175,8 @@ class CRMLeadInherit(models.Model):
                 if vals['parent_opportunity_id']:
                     parent_opp = self.env['crm.lead'].browse(vals['parent_opportunity_id'])
                     vals['serial_number'] = parent_opp.serial_number
+                    next_letter_sequence = chr(ord(vals['letter_identifier']) + 1)
+                    parent_opp.sudo().write({'next_letter_sequence': next_letter_sequence})
                 # else:
                 #     vals['serial_number'] = self.original_serial_number
         if 'type' in vals and self.type != vals['type']:
@@ -223,12 +225,9 @@ class CRMLeadInherit(models.Model):
                 rec.country = rec.parent_opportunity_id.country
             else:
                 rec.country = False
-
             # parent opprtunity letter sequence
             if rec.parent_opportunity_id:
                 rec.letter_identifier = rec.parent_opportunity_id.next_letter_sequence or 'B'
-                next_letter_sequence = chr(ord(rec.letter_identifier) + 1)
-                rec.parent_opportunity_id.sudo().write({'next_letter_sequence': next_letter_sequence})
             else:
                 rec.letter_identifier = False
 

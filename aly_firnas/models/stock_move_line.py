@@ -9,17 +9,6 @@ import json
 class StockMoveLine(models.Model):
     _inherit = 'stock.move.line'
 
-    lot_description = fields.Char(string='Lot Description')
-    lot_ref = fields.Char(string='Lot Internal Reference')
-    calibration_date = fields.Date(string="Calibration Date")
-    product_dates_required = fields.Boolean(string="bol", related="product_id.is_required")
-    product_tracking = fields.Selection(string="sel", related="product_id.tracking")
-    lot_id_domain = fields.Char(
-        compute="_compute_lot_domain",
-        readonly=True,
-        store=False,
-    )
-
     @api.depends('location_id', 'product_id')
     def _compute_lot_domain(self):
         for rec in self:
@@ -33,6 +22,21 @@ class StockMoveLine(models.Model):
                     rec.lot_id_domain = json.dumps(
                         [('id', 'in', ids)]
                     )
+                    return rec.lot_id_domain
+
+    lot_description = fields.Char(string='Lot Description')
+    lot_ref = fields.Char(string='Lot Internal Reference')
+    calibration_date = fields.Date(string="Calibration Date")
+    product_dates_required = fields.Boolean(string="bol", related="product_id.is_required")
+    product_tracking = fields.Selection(string="sel", related="product_id.tracking")
+    lot_id_domain = fields.Char(
+        compute="_compute_lot_domain",
+        readonly=True,
+        store=False,
+    )
+    lot_id = fields.Many2one(
+        'stock.production.lot', 'Lot/Serial Number',
+        domain=_compute_lot_domain, check_company=True)
 
     @api.onchange('lot_id')
     def change_calibration_date(self):

@@ -112,7 +112,7 @@ class SaleOrder(models.Model):
                             'price_unit': ol.price_unit,
                             'discount': ol.discount,
                             'tax_id': ol.tax_id,
-                            'disc': str(ol.discount) + '%'
+                            'disc': str(round(ol.discount)) + '%'
                         } for ol in
                         order_lines.filtered(lambda l: l.section.id == section.id and not l.is_button_clicked)
                     ]
@@ -146,7 +146,7 @@ class SaleOrder(models.Model):
                             'price_unit': ol.price_unit,
                             'discount': ol.discount,
                             'tax_id': ol.tax_id,
-                            'disc': str(ol.discount) + '%'
+                            'disc': str(round(ol.discount)) + '%'
                         } for ol in
                         order_lines.filtered(lambda l: l.section.id == section.id and not l.is_button_clicked)
                     ]

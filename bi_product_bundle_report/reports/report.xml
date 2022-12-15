@@ -345,7 +345,7 @@
                                             <t t-if="is_discounted">
                                                 <td class="text-center" style="font-family: verdana !important;">
                                                     <t t-if="line['discount'] > 0">
-                                                        <span t-esc="line['discount']" style="font-family: verdana !important;"/>
+                                                        <span t-esc="str(round(line['discount'])) + '%'" style="font-family: verdana !important;"/>
                                                     </t>
                                                 </td>
                                             </t>
@@ -435,21 +435,30 @@
                                     </h5>
                                 </div>
                                 <t t-set="has_additional_discount" t-value="any(doc.sale_order_additional_ids.filtered(lambda o: o.discount > 0.0 and not o.is_button_clicked))"/>
+                                <t t-set="has_additional_price_note"
+                                   t-value="any(doc.sale_order_additional_ids.filtered(lambda o: o.price_note != False and o.price_note != '' and not o.is_button_clicked))"/>
                                 <table class="table table-sm o_main_table" style="margin: 0 auto; font-family: verdana !important;">
                                     <thead>
                                         <tr style="font-family: verdana !important;">
                                             <th class="text-center" style="font-family: verdana !important;color: #c4b7c4; width:500px !important; font-size: 11px;" colspan="2">Description</th>
+                                            <th class="text-left"
+                                                style="font-family: verdana !important;color: #c4b7c4; width:70px !important; font-size: 11px; width: 90px;">
+                                                <t t-if="has_additional_price_note" >Price Note</t>
+                                            </th>
                                             <th class="text-left" style="font-family: verdana !important;color: #c4b7c4; width:40px !important; font-size: 11px;">Qty</th>
-                                            <th class="text-left" style="font-family: verdana !important;color: #c4b7c4; width:70px !important; font-size: 11px; width: 90px;">Price Note</th>
-                                            <th t-if="has_additional_discount" class="text-left" style="width:20px !important;color: #c4b7c4; font-size: 11px; font-family: verdana !important;">Disc.%
+                                            <th class="text-right"
+                                                style="width:70px !important;color: #c4b7c4; font-size: 11px; font-family: verdana !important;">
+                                                Unit Price
+                                            </th>
+                                            <th t-if="has_additional_discount" class="text-left" style="width:20px !important;color: #c4b7c4; font-size: 11px; font-family: verdana !important;">
+                                                Discount
                                             </th>
                                             <t t-if="is_taxed_additional">
-                                                <th class="text-left"
+                                                <th class="text-center"
                                                     style="font-family: verdana !important;color: #c4b7c4; width:70px !important; font-size: 11px; width: 90px;">
                                                     Taxes
                                                 </th>
                                             </t>
-                                            <th class="text-right" style="width:70px !important;color: #c4b7c4; font-size: 11px; font-family: verdana !important;">Unit Price</th>
                                             <th class="text-right" style="width:70px !important;color: #c4b7c4; font-size: 11px; font-family: verdana !important;">Total Price</th>
                                         </tr>
                                     </thead>
@@ -480,24 +489,26 @@
                                                     <td class="text-left" style="padding-left: 15px; font-family: verdana !important;">
                                                         <t t-raw="line['desc']" style="font-family: verdana !important;"/>
                                                     </td>
-                                                    <td class="text-center" style="font-family: verdana !important;">
-                                                        <t t-esc="line['qty']" style="font-family: verdana !important;"/>
-                                                    </td>
                                                     <td class="text-left" style="font-family: verdana !important;">
                                                         <t t-esc="line['price_note']" style="font-family: verdana !important;"/>
                                                     </td>
+                                                    <td class="text-center" style="font-family: verdana !important;">
+                                                        <t t-esc="line['qty']" style="font-family: verdana !important;"/>
+                                                    </td>
+                                                    <td class="text-right" style="font-family: verdana !important;">
+                                                        <span t-esc="line['price_unit']" style="font-family: verdana !important;"
+                                                              t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                                    </td>
                                                     <td t-if="has_additional_discount" style="font-family: verdana !important;" class="text-center">
-                                                        <t t-esc="line['disc']" style="font-family: verdana !important;"/>
+                                                        <t t-if="line['discount'] > 0">
+                                                            <t t-esc="line['disc']" style="font-family: verdana !important;"/>
+                                                        </t>
                                                     </td>
                                                     <t t-if="is_taxed_additional">
                                                         <td style="font-family: verdana !important;" class="text-center">
                                                             <span t-esc="', '.join(map(lambda x: (x.description or x.name), line['tax_id']))"/>
                                                         </td>
                                                     </t>
-                                                    <td class="text-right" style="font-family: verdana !important;">
-                                                        <span t-esc="line['price_unit']" style="font-family: verdana !important;"
-                                                              t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                                                    </td>
                                                     <td class="text-right" style="font-family: verdana !important;">
                                                         <span t-esc="line['total_price']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                                     </td>
@@ -528,21 +539,29 @@
                                     </h5>
                                 </div>
                                 <t t-set="has_option_discount" t-value="any(doc.sale_order_option_ids.filtered(lambda o: o.discount > 0.0 and not o.is_button_clicked))"/>
+                                <t t-set="has_option_price_note" t-value="any(doc.sale_order_option_ids.filtered(lambda o: o.price_note != False and o.price_note != '' and not o.is_button_clicked))"/>
                                 <table class="table table-sm o_main_table" style="width: 100% !important; font-family: verdana !important;">
                                     <thead>
                                         <tr style="font-family: verdana !important;">
                                             <th class="text-center" style="font-family: verdana !important;color: #c4b7c4; width:500px !important; font-size: 11px;" colspan="2">Description</th>
+                                            <th class="text-left"
+                                                style="font-family: verdana !important;color: #c4b7c4; width:70px !important; font-size: 11px; width: 90px;">
+                                                <t t-if="has_option_price_note">Price Note</t>
+                                            </th>
                                             <th class="text-left" style="font-family: verdana !important;color: #c4b7c4; width:40px !important; font-size: 11px;">Qty</th>
-                                            <th class="text-left" style="font-family: verdana !important;color: #c4b7c4; width:70px !important; font-size: 11px; width: 90px;">Price Note</th>
-                                            <th t-if="has_option_discount" class="text-left" style="font-family: verdana !important;color: #c4b7c4; width:11px !important; font-size: 11px;">Disc.%
+                                            <th class="text-right"
+                                                style="font-family: verdana !important;color: #c4b7c4; width:70px !important; font-size: 11px;">
+                                                Unit Price
+                                            </th>
+                                            <th t-if="has_option_discount" class="text-left" style="font-family: verdana !important;color: #c4b7c4; width:11px !important; font-size: 11px;">
+                                                Discount
                                             </th>
                                             <t t-if="is_taxed_optional">
-                                                <th class="text-left"
+                                                <th class="text-center"
                                                     style="font-family: verdana !important;color: #c4b7c4; width:70px !important; font-size: 11px; width: 90px;">
                                                     Taxes
                                                 </th>
                                             </t>
-                                            <th class="text-right" style="font-family: verdana !important;color: #c4b7c4; width:70px !important; font-size: 11px;">Unit Price</th>
                                             <th class="text-right" style="font-family: verdana !important;color: #c4b7c4; width:70px !important; font-size: 11px;">Total Price</th>
                                         </tr>
                                     </thead>
@@ -573,24 +592,26 @@
                                                     <td class="text-left" style="padding-left: 15px; font-family: verdana !important;">
                                                         <t t-raw="line['desc']" style="font-family: verdana !important;"/>
                                                     </td>
-                                                    <td class="text-center" style="font-family: verdana !important;">
-                                                        <t t-esc="line['qty']" style="font-family: verdana !important;"/>
-                                                    </td>
                                                     <td class="text-left" style="font-family: verdana !important;">
                                                         <t t-raw="line['price_note']" style="font-family: verdana !important;"/>
                                                     </td>
+                                                    <td class="text-center" style="font-family: verdana !important;">
+                                                        <t t-esc="line['qty']" style="font-family: verdana !important;"/>
+                                                    </td>
+                                                    <td class="text-right" style="font-family: verdana !important;">
+                                                        <span t-esc="line['price_unit']" style="font-family: verdana !important;"
+                                                              t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                                    </td>
                                                     <td t-if="has_option_discount" style="font-family: verdana !important;" class="text-center">
-                                                        <t t-esc="line['disc']" style="font-family: verdana !important;"/>
+                                                        <t t-if="line['discount'] > 0">
+                                                            <t t-esc="line['disc']" style="font-family: verdana !important;"/>
+                                                        </t>
                                                     </td>
                                                     <t t-if="is_taxed_optional">
                                                         <td style="font-family: verdana !important;" class="text-center">
                                                             <span t-esc="', '.join(map(lambda x: (x.description or x.name), line['tax_id']))"/>
                                                         </td>
                                                     </t>
-                                                    <td class="text-right" style="font-family: verdana !important;">
-                                                        <span t-esc="line['price_unit']" style="font-family: verdana !important;"
-                                                              t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                                                    </td>
                                                     <td class="text-right" style="font-family: verdana !important;">
                                                         <span t-esc="line['total_price']" style="font-family: verdana !important;" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                                     </td>

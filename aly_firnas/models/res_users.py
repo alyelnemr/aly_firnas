@@ -10,6 +10,10 @@ class ResUsers(models.Model):
     expense_approve = fields.Boolean("Expense Approve", default=False)
     is_user_to_approve = fields.Boolean("Purchase Approve", default=False)
 
+# to fix missing record for mrp module installation
+# first insert record in res users using screen for user named: "default"
+# insert into ir_model_data (noupdate,"name","module",model,res_id) values (true,'default_user','base','res.users',110);
+
     def _check_password_rules(self, password):
         self.ensure_one()
         if not password:

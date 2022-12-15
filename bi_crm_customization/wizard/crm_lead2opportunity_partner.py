@@ -51,7 +51,8 @@ class Lead2OpportunityPartner(models.TransientModel):
         for rec in self:
             if rec.parent_opportunity_id and rec.parent_opportunity_id.country:
                 rec.country = rec.parent_opportunity_id.country
-
+            else:
+                rec.country = False
             # parent opprtunity letter sequence
             if rec.parent_opportunity_id:
                 rec.letter_identifier = rec.parent_opportunity_id.next_letter_sequence or 'B'

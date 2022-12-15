@@ -9,7 +9,7 @@ class AccountMoveLine(models.Model):
                                           required=True)
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True)
     is_origin_so = fields.Boolean(copy=False)
-    is_printed = fields.Boolean(string="Print?", default=False)
+    is_printed = fields.Boolean(string="Print?", default=True)
 
     @api.onchange('product_id')
     def get_analytic_default(self):

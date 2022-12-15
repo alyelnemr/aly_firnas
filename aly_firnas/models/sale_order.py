@@ -100,7 +100,6 @@ class SaleOrder(models.Model):
                 #                                                         fields.Date.context_today(self)))
             order_lines.append((0, 0, data))
         self.order_line = order_lines
-        self.order_line._compute_tax_id()
         option_lines = [(5, 0, 0)]
         for option in template.sale_order_template_option_ids:
             data = self._compute_option_data_for_template_change(option)
