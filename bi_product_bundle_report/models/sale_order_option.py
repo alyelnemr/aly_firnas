@@ -9,7 +9,7 @@ class SaleOrderOption(models.Model):
     uom_id = fields.Many2one('uom.uom', 'Unit of Measure ', required=False, domain="[('category_id', '=', product_uom_category_id)]")
     is_printed = fields.Boolean(string="Print?", default=True)
     section = fields.Many2one('sale.order.line.section', string="Section", required=True)
-    price_note = fields.Char("Price Note")
+    price_note = fields.Text("Price Note")
     is_present = fields.Boolean(string="Present on Quotation",
                                 help="This field will be checked if the option line's product is "
                                      "already present in the quotation.",
@@ -17,6 +17,22 @@ class SaleOrderOption(models.Model):
     is_button_clicked = fields.Boolean(default=False)
     tax_id = fields.Many2many('account.tax', string='Taxes', context={'active_test': False})
     internal_notes = fields.Text(string='Internal Notes')
+    price_tax = fields.Float(compute='_compute_amount', string='Total Tax', readonly=True, store=True)
+    price_total = fields.Float(compute='_compute_amount', string='Total', readonly=True, store=True)
+
+    @api.depends('quantity', 'discount', 'price_unit', 'tax_id')
+    def _compute_amount(self):
+        """
+        Compute the amounts of the SO line.
+        """
+        for line in self:
+            price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            taxes = line.tax_id.compute_all(price, line.order_id.currency_id, line.quantity, product=line.product_id,
+                                            partner=line.order_id.partner_shipping_id)
+            line.update({
+                'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
+                'price_total': taxes['total_excluded'],
+            })
 
     @api.depends('line_id', 'order_id.order_line', 'product_id')
     def _compute_is_present(self):
@@ -33,16 +49,10 @@ class SaleOrderOption(models.Model):
         self.ensure_one()
 
         sale_order = self.order_id
-        self.write({'is_button_clicked': True})
-
-        # if sale_order.state not in ['draft', 'sent', 'post']:
-        #     raise UserError(_('You cannot add options to a confirmed order.'))
-
         values = self._get_values_to_add_to_order()
         order_line = self.env['sale.order.line'].create(values)
-        order_line._compute_tax_id()
 
-        self.write({'line_id': order_line.id})
+        self.write({'line_id': order_line.id, 'is_button_clicked': True})
         if sale_order:
             sale_order.add_option_to_order_with_taxcloud()
 
@@ -59,6 +69,7 @@ class SaleOrderOption(models.Model):
             'analytic_account_id': self.order_id.analytic_account_id.id,
             'analytic_tag_ids': self.order_id.analytic_tag_ids.ids,
             'discount': self.discount,
+            'tax_id': [(6, 0, self.tax_id.ids)],
             'company_id': self.order_id.company_id.id,
             'section': self.section.id
         }

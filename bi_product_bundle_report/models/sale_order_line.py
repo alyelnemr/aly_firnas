@@ -18,12 +18,12 @@ class SaleOrderLine(models.Model):
     def unlink(self):
         for order_line in self:
             items = order_line.order_id.sale_order_additional_ids.filtered(
-                lambda l: l.product_id.id == order_line.product_id.id and l.is_button_clicked)
+                lambda l: l.line_id.id == order_line.id and l.is_button_clicked)
             for item in items:
                 item.is_button_clicked = False
                 break
             items = order_line.order_id.sale_order_option_ids.filtered(
-                lambda l: l.product_id.id == order_line.product_id.id and l.is_button_clicked)
+                lambda l: l.line_id.id == order_line.id and l.is_button_clicked)
             for item in items:
                 item.is_button_clicked = False
                 break

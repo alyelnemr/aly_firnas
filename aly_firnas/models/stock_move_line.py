@@ -9,6 +9,22 @@ import json
 class StockMoveLine(models.Model):
     _inherit = 'stock.move.line'
 
+    @api.onchange('location_id', 'product_id')
+    def _compute_lot_domain(self):
+        for rec in self:
+            rec.lot_id_domain = []
+            rec.lot_id = False
+            if rec.product_id:
+                if rec.move_id.picking_type_id not in ['incoming']:
+                    current_domain = [('product_id', '=', rec.product_id.id), ('company_id', '=', rec.company_id.id),
+                                      ('location_id', '=', rec.location_id.id)]
+                    quant = self.env['stock.quant'].search(current_domain)
+                    ids = quant.lot_id.ids or []
+                    # if ids:
+                    rec.lot_id_domain = json.dumps(
+                        [('id', 'in', ids)]
+                    )
+
     lot_description = fields.Char(string='Lot Description')
     lot_ref = fields.Char(string='Lot Internal Reference')
     calibration_date = fields.Date(string="Calibration Date")
@@ -19,20 +35,9 @@ class StockMoveLine(models.Model):
         readonly=True,
         store=False,
     )
-
-    @api.depends('location_id', 'product_id')
-    def _compute_lot_domain(self):
-        for rec in self:
-            rec.lot_id_domain = []
-            if rec.product_id:
-                if rec.move_id.picking_type_id not in ['incoming']:
-                    current_domain = [('product_id', '=', rec.product_id.id), ('company_id', '=', rec.company_id.id),
-                                      ('location_id', '=', rec.move_id.location_id.id)]
-                    quant = self.env['stock.quant'].search(current_domain)
-                    ids = quant.lot_id.ids or []
-                    rec.lot_id_domain = json.dumps(
-                        [('id', 'in', ids)]
-                    )
+    lot_id = fields.Many2one(
+        'stock.production.lot', 'Lot/Serial Number',
+        domain=_compute_lot_domain, check_company=True)
 
     @api.onchange('lot_id')
     def change_calibration_date(self):

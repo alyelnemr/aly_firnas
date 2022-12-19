@@ -5,15 +5,20 @@ from odoo import fields, models, api, exceptions
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    purchase_order_ids = fields.Many2many('purchase.order', string='Purchase Orders',
-                                          compute='_compute_purchase_order_ids')
-    purchase_order_count = fields.Integer(string='Delivery Orders', compute='_compute_purchase_order_ids')
+    # purchase_order_ids = fields.Many2many('purchase.order', string='Purchase Orders', default=False)
+    # purchase_order_count = fields.Integer(string='Delivery Orders', compute='_compute_purchase_order_ids', default=0)
+    purchase_order_counter = fields.Integer(string='Delivery Orders', compute='_compute_purchase_order_ids', default=0)
 
+    @api.depends('partner_id', 'state')
     def _compute_purchase_order_ids(self):
         for record in self:
-            orders = self.env['purchase.order'].sudo().search([('origin', 'ilike', record.name)])
-            record.purchase_order_ids = orders
-            record.purchase_order_count = len(orders)
+            try:
+                orders = self.env['purchase.order'].sudo().search([('origin', 'ilike', record.name)])
+                # record.purchase_order_ids = orders
+                record.purchase_order_count = len(orders)
+            except exceptions:
+                record.purchase_order_ids = False
+                record.purchase_order_count = 0
 
     def action_view_purchase_order(self):
         action = self.env.ref('purchase.purchase_rfq').read()[0]

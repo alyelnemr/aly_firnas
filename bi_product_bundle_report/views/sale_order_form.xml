@@ -39,7 +39,7 @@
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree//field[last()]" position="after">
                     <field name="internal_notes" optional="show"/>
-                    <field name="parent_order_line" optional="show"/>
+                    <field name="parent_order_line" invisible="1"/>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_uom_qty']" position="attributes">
                     <attribute name="optional">show</attribute>
@@ -208,10 +208,13 @@
                                 <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line"
                                        optional="show"/>
                                 <field name="tax_id" widget="many2many_tags" options="{'no_create': True}"
-                                       domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]"/>
+                                       domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]"
+                                       optional="show"/>
+                                <field name="price_total" widget="monetary" optional="show"/>
                                 <field name="price_note" optional="show"/>
                                 <field name="internal_notes" optional="show"/>
                                 <field name="is_present" invisible="1"/>
+                                <field name="line_id" invisible="1"/>
                                 <button name="button_add_to_order" class="oe_link" icon="fa-shopping-cart"
                                         title="Add to order lines" type="object"
                                         attrs="{'invisible': [('is_present', '=', True)]}"/>
@@ -238,11 +241,14 @@
                         <field name="product_uom_category_id" invisible="1"/>
                         <field name="price_unit" optional="show"/>
                         <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line" optional="show"/>
-                        <field name="price_note" optional="show"/>
                         <field name="tax_id" widget="many2many_tags" options="{'no_create': True}"
-                               domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]"/>
+                               domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]"
+                               optional="show"/>
+                        <field name="price_total" widget="monetary" optional="show"/>
+                        <field name="price_note" optional="show"/>
                         <field name="internal_notes" optional="show"/>
                         <field name="is_present" invisible="1"/>
+                        <field name="line_id" invisible="1"/>
                         <button name="button_add_to_order" class="oe_link" icon="fa-shopping-cart" title="Add to order lines"
                                 type="object" attrs="{'invisible': [('is_present', '=', True)]}"/>
                     </tree>

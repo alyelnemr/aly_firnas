@@ -4,9 +4,19 @@
         <record id="aly_purchase_order_view_form_inherit" model="ir.ui.view">
             <field name="name">aly.purchase.order.form.inherit</field>
             <field name="model">purchase.order</field>
+            <field name="priority">1116</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//button[@name='action_view_invoice'][1]" position="replace">
+                <xpath expr="//div[@name='button_box']/button[@name='action_view_invoice']" position="replace">
+                    <button type="object" name="action_return_view_invoice"
+                            class="oe_stat_button"
+                            icon="fa-pencil-square-o"
+                            attrs="{'invisible':['|', ('invoice_count', '=', 0), ('state', 'in', ('draft','sent','to approve'))]}">
+                        <field name="invoice_count" widget="statinfo" string="Vendor Bills"/>
+                        <field name='invoice_ids' invisible="1"/>
+                    </button>
+                </xpath>
+                <xpath expr="//header/button[@name='action_view_invoice'][1]" position="replace">
                     <button name="%(aly_firnas.aly_action_view_purchase_advance_payment_inv)d" string="Create Bill" type="action"
                             class="oe_highlight"
                             context="{'down_payment':True}"
@@ -42,6 +52,9 @@
 
                 </xpath>
 
+                <xpath expr="//field[@name='date_order']" position="attributes">
+                    <attribute name="attrs">{'invisible': False}</attribute>
+                </xpath>
                 <xpath expr="//field[@name='order_line']/tree/field[@name='account_analytic_id']" position="attributes">
                     <attribute name="attrs">{'readonly':[('is_origin_so','=',True)]}</attribute>
                 </xpath>

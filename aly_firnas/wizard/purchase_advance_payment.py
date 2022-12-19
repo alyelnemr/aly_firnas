@@ -145,7 +145,7 @@ class PurchaseAdvancePaymentInv(models.TransientModel):
 
         invoiceable_line_ids = []
         for line in order.order_line:
-            if line.qty_to_invoice < 0 and final or line.is_downpayment:
+            if line.qty_to_invoice < 0 and final:# or line.is_downpayment:
                 invoiceable_line_ids.append(line)
         for item in invoiceable_line_ids:
             if item.id != so_line.id:
@@ -164,7 +164,7 @@ class PurchaseAdvancePaymentInv(models.TransientModel):
 
         if order.fiscal_position_id:
             invoice_vals['fiscal_position_id'] = order.fiscal_position_id.id
-        invoice = self.env['account.move'].sudo().create(invoice_vals).with_user(self.env.uid)
+        invoice = self.env['account.move'].sudo().with_context(force_company=invoice_vals['company_id']).create(invoice_vals).with_user(self.env.uid)
         invoice.message_post_with_view('mail.message_origin_link',
                                        values={'self': invoice, 'origin': order},
                                        subtype_id=self.env.ref('mail.mt_note').id)
@@ -184,6 +184,7 @@ class PurchaseAdvancePaymentInv(models.TransientModel):
             'partner_id': order.partner_id.id,
             'fiscal_position_id': order.fiscal_position_id.id or order.partner_id.property_account_position_id.id,
             'currency_id': order.currency_id.id,
+            'company_id': order.company_id.id,
             'analytic_account_id': order.analytic_account_id.id,
             'analytic_tag_ids': order.analytic_tag_ids.ids,
             'invoice_line_ids': [(0, 0, {

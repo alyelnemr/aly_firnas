@@ -144,6 +144,9 @@
             <field name="model">account.move.line</field>
             <field name="inherit_id" ref="account.view_move_line_tree"/>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='credit']" position="after">
+                    <field name="balance"/>
+                </xpath>
                 <xpath expr="//field[@name='name']" position="after">
                     <field name="note"/>
                 </xpath>
@@ -170,7 +173,7 @@
         <template id="aly_invoice_report_footer_inherit" inherit_id="web.external_layout_standard">
             <!-- Remove footer-->
             <xpath expr="//div[@name='financial_infos']/../.." position="replace">
-                <span>fofo</span>
+                <span></span>
             </xpath>
         </template>
 
@@ -190,13 +193,24 @@
                       t-options='{"widget": "monetary", "display_currency": o.currency_id}'
                 />
             </xpath>
-<!--            <xpath expr="//t[@t-set='address']" position="replace">-->
-<!--                <br/>-->
-<!--            </xpath>-->
-            <xpath expr="//div[@class='page']/h2" position="before">
-                <address t-field="o.partner_id" class="text-right"
-                      t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+            <xpath expr="/t/t/t[2]" position="replace">
+                <div>
+                    <br/>
+                    <div class="text-left" style="margin-right:150px;float: right;">
+                        <address t-field="o.partner_id"
+                                 t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
+                    </div>
+                    <br/>
+                    <br/>
+                    <br/>
+                </div>
             </xpath>
+<!--            <xpath expr="//div[@class='page']/h2" position="before">-->
+<!--                <div class="text-left" style="margin-left:350px">-->
+<!--                    <address t-field="o.partner_id"-->
+<!--                          t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>-->
+<!--                </div>-->
+<!--            </xpath>-->
             <xpath expr="//span[@t-field='o.amount_total']" position="replace">
 <!--                <span class="text-nowrap" t-field="o.amount_total"/>-->
                 <span t-esc="is_printed_subtotal + var_taxed_amount"

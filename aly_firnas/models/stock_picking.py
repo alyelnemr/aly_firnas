@@ -14,6 +14,12 @@ class StockPicking(models.Model):
                                                    help='This picking a return picking of')
     required_analytic_account_and_tags = fields.Boolean(string='Required Analytic Account And Tags',
                                                         compute='_compute_required_analytic_account_and_tags')
+    location_dest_id = fields.Many2one(
+        'stock.location', "Destination Location",
+        default=lambda self: self.env['stock.picking.type'].browse(
+            self._context.get('default_picking_type_id')).default_location_dest_id,
+        check_company=True, readonly=False, required=True,
+        states={'draft': [('readonly', False)]})
 
     @api.depends('picking_type_id.code')
     def _compute_required_analytic_account_and_tags(self):
