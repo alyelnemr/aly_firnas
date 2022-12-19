@@ -15,7 +15,7 @@ class StockMoveLine(models.Model):
             rec.lot_id_domain = []
             if rec.product_id:
                 if rec.move_id.picking_type_id not in ['incoming']:
-                    current_domain = [('product_id', '=', rec.product_id.id), ('company_id', '=', rec.company_id.id),
+                    current_domain = [('product_id', '=', rec.product_id.id), #('company_id', '=', rec.company_id.id),
                                       ('location_id', '=', rec.move_id.location_id.id)]
                     quant = self.env['stock.quant'].search(current_domain)
                     ids = quant.lot_id.ids or []
