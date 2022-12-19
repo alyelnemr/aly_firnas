@@ -5,6 +5,12 @@
         <delete model="ir.rule" id="purchase.purchase_user_account_move_line_rule"/>
         <delete model="ir.rule" id="purchase.purchase_user_account_move_rule"/>
     </data>
+    <data noupdate="1">
+<!--        remove permission for any Stock Administrator on Accounting Billing  -->
+        <record id="stock.group_stock_manager" model="res.groups">
+            <field name="implied_ids" eval="[(2, ref('account.group_account_invoice'))]"/>
+        </record>
+    </data>
     <data>
         <record id="group_update_partner_state" model="res.groups">
             <field name="name">Allow Update state of Partners</field>
