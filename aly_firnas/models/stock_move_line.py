@@ -9,20 +9,21 @@ import json
 class StockMoveLine(models.Model):
     _inherit = 'stock.move.line'
 
-    @api.depends('location_id', 'product_id')
+    @api.onchange('location_id', 'product_id')
     def _compute_lot_domain(self):
         for rec in self:
             rec.lot_id_domain = []
+            rec.lot_id = False
             if rec.product_id:
                 if rec.move_id.picking_type_id not in ['incoming']:
-                    current_domain = [('product_id', '=', rec.product_id.id), #('company_id', '=', rec.company_id.id),
-                                      ('location_id', '=', rec.move_id.location_id.id)]
+                    current_domain = [('product_id', '=', rec.product_id.id), ('company_id', '=', rec.company_id.id),
+                                      ('location_id', '=', rec.location_id.id)]
                     quant = self.env['stock.quant'].search(current_domain)
                     ids = quant.lot_id.ids or []
+                    # if ids:
                     rec.lot_id_domain = json.dumps(
                         [('id', 'in', ids)]
                     )
-                    return rec.lot_id_domain
 
     lot_description = fields.Char(string='Lot Description')
     lot_ref = fields.Char(string='Lot Internal Reference')

@@ -14,7 +14,7 @@
                 <field name="lot_description" invisible="not context.get('show_lots_text')" widget="char"/>
             </xpath>
             <xpath expr="//field[@name='lot_id']" position="replace">
-                <field name="lot_id_domain" invisible="1"/>
+                <field name="lot_id_domain" invisible="0"/>
                 <field name="lot_id" groups="stock.group_production_lot"
                        attrs="{'readonly': ['&amp;', ('package_level_id', '!=', False), ('parent.picking_type_entire_packs', '=', True)]}"
                        invisible="not context.get('show_lots_m2o')"
