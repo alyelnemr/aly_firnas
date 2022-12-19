@@ -6,6 +6,7 @@ from odoo.tools import OrderedSet
 from odoo.tools.float_utils import float_round, float_compare, float_is_zero
 import json
 
+
 class StockMoveLine(models.Model):
     _inherit = 'stock.move.line'
 
@@ -13,7 +14,6 @@ class StockMoveLine(models.Model):
     def _compute_lot_domain(self):
         for rec in self:
             rec.lot_id_domain = []
-            rec.lot_id = False
             if rec.product_id:
                 if rec.move_id.picking_type_id not in ['incoming']:
                     current_domain = [('product_id', '=', rec.product_id.id), ('company_id', '=', rec.company_id.id),
@@ -35,9 +35,7 @@ class StockMoveLine(models.Model):
         readonly=True,
         store=False,
     )
-    lot_id = fields.Many2one(
-        'stock.production.lot', 'Lot/Serial Number',
-        domain=_compute_lot_domain, check_company=True)
+    lot_id = fields.Many2one('stock.production.lot', 'Lot/Serial Number', domain=_compute_lot_domain, check_company=True)
 
     @api.onchange('lot_id')
     def change_calibration_date(self):
