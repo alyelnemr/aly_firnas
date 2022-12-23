@@ -20,7 +20,7 @@
                             class="oe_highlight" invisible="1"/>
                 </xpath>
                 <xpath expr="//group/group[2]" position="inside">
-                    <field name="split_page"/>
+<!--                    <field name="split_page"/>-->
                     <field name="financial_proposal_title"/>
                     <field name="financial_proposal_number"/>
                 </xpath>
@@ -254,9 +254,9 @@
                     </tree>
                 </xpath>
 
-                <xpath expr="//field[@name='payment_term_id']" position="after">
-                    <field name="show_component_price"/>
-                </xpath>
+<!--                <xpath expr="//field[@name='payment_term_id']" position="after">-->
+<!--                    <field name="show_component_price"/>-->
+<!--                </xpath>-->
             </field>
         </record>
 

@@ -12,25 +12,25 @@ class KSResConfigSettings(models.TransientModel):
                                                    string="Purchase Discount Account")
     ks_accounting_present = fields.Boolean(compute='ks_check_charts_of_accounts')
 
-    # def get_values(self):
-    #     ks_res = super(KSResConfigSettings, self).get_values()
-    #     ks_res.update(
-    #         ks_enable_discount=self.env['ir.config_parameter'].sudo().get_param('ks_enable_discount'),
-    #         ks_sales_discount_account=int(self.env['ir.config_parameter'].sudo().get_param('ks_sales_discount_account')),
-    #         ks_purchase_discount_account=int(self.env['ir.config_parameter'].sudo().get_param('ks_purchase_discount_account')),
-    #
-    #     )
-    #     return ks_res
-
     def get_values(self):
         ks_res = super(KSResConfigSettings, self).get_values()
         ks_res.update(
             ks_enable_discount=self.env['ir.config_parameter'].sudo().get_param('ks_enable_discount'),
-            ks_sales_discount_account=False,
-            ks_purchase_discount_account=False,
+            ks_sales_discount_account=int(self.env['ir.config_parameter'].sudo().get_param('ks_sales_discount_account')),
+            ks_purchase_discount_account=int(self.env['ir.config_parameter'].sudo().get_param('ks_purchase_discount_account')),
 
         )
         return ks_res
+    #
+    # def get_values(self):
+    #     ks_res = super(KSResConfigSettings, self).get_values()
+    #     ks_res.update(
+    #         ks_enable_discount=self.env['ir.config_parameter'].sudo().get_param('ks_enable_discount'),
+    #         ks_sales_discount_account=False,
+    #         ks_purchase_discount_account=False,
+    #
+    #     )
+    #     return ks_res
 
     def set_values(self):
         super(KSResConfigSettings, self).set_values()
