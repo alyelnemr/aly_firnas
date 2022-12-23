@@ -25,6 +25,7 @@ class CRMLeadInherit(models.Model):
         res['context']['default_end_client'] = self.end_client.ids
         res['context']['default_rfp_ref_number'] = self.rfp_ref_number
         res['context']['default_proposals_engineer_id'] = self.proposals_engineer_id.id
+        res['context']['default_proposals_engineer_ids'] = self.proposals_engineer_ids.ids
         return res
 
     def _default_team_id(self, user_id):
@@ -77,7 +78,8 @@ class CRMLeadInherit(models.Model):
     contract_signature_date = fields.Date(string="Contract/PO Signature Date")
     initial_contact_date = fields.Date(string="Initial Contact Date", required=False)
     end_client = fields.Many2many(comodel_name='res.partner', relation='crm2opprtunity_endclient_rel', column1='crm_end_client_id', column2='end_client_partner_id', string="End Client")
-    proposals_engineer_id = fields.Many2one('res.users', string='Proposals Engineer')
+    proposals_engineer_ids = fields.Many2many(comodel_name='res.users', relation='crm2lead_prop_eng_rel', column1='crm_prop_eng_id', column2='prop_eng_user_id', string="Secondary Proposals Engineers")
+    proposals_engineer_id = fields.Many2one('res.users', string='Primary Proposals Engineer')
     rfp_ref_number = fields.Char(string='RfP Ref. Number')
     currency_id = fields.Many2one('res.currency', string="Currency", store=True)
     forecast = fields.Monetary(string="Forecast", store=True)

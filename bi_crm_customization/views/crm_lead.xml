@@ -95,6 +95,7 @@
                             <field name="next_letter_sequence" invisible="1"/>
                             <field name="serial_number" attrs="{'invisible': [('type', '!=', 'opportunity')]}" readonly="1"/>
                             <field name="proposals_engineer_id" attrs="{'required': [('type', '=', 'opportunity')]}"/>
+                            <field name="proposals_engineer_ids" widget="many2many_tags" />
                             <field name="rfp_ref_number"/>
                             <field name="project_num" required="0" readonly="1"/>
                             <field name="type_custom" required="1" />

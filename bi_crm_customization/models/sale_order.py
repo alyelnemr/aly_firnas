@@ -57,6 +57,8 @@ class SaleOrderCRMInherit(models.Model):
                 result['project_number'] = lead.project_num
             if 'proposals_engineer_id' in fields and lead.proposals_engineer_id:
                 result['proposals_engineer_id'] = lead.proposals_engineer_id.id
+            if 'proposals_engineer_ids' in fields and lead.proposals_engineer_ids:
+                result['proposals_engineer_ids'] = lead.proposals_engineer_ids.ids
             if 'type_custom' in fields and lead.type_custom:
                 result['type_custom'] = lead.type_custom.id
             if 'type_custom_ids' in fields and lead.type_custom_ids:
@@ -115,6 +117,8 @@ class SaleOrderCRMInherit(models.Model):
     contract_signature_date = fields.Date(string="Contract/PO Signature Date")
     initial_contact_date = fields.Date(string="Initial Contact Date", required=False)
     rfp_ref_number = fields.Char(string='RfP Ref. Number')
-    proposals_engineer_id = fields.Many2one('res.users', string='Proposals Engineer')
+    proposals_engineer_ids = fields.Many2many(comodel_name='res.users', relation='sale_order_prop_eng_rel',
+                                              column1='crm_prop_eng_id', column2='prop_eng_user_id', string="Secondary Proposals Engineers")
+    proposals_engineer_id = fields.Many2one('res.users', string='Primary Proposals Engineer')
     partner_contact = fields.Many2one('res.partner', string='Customer Contact', required=False,
                                       domain="[('parent_id', '=', partner_id)]")
