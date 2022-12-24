@@ -65,6 +65,7 @@
                        context="{'default_calibration_date': calibration_date}"
                        attrs="{'readonly': ['|', '&amp;', ('package_level_id', '!=', False), ('parent.picking_type_entire_packs', '=', True)], 'required': [('product_tracking', '=', 'serial'), ('product_dates_required', '=', True)]}"
                 />
+<!--                <field name="attachment_document"/>-->
                 <!--                           required="context.get('show_lots_text')"-->
             </field>
             <field name="lot_name" position="attributes">
