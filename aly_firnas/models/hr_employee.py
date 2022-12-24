@@ -23,11 +23,10 @@ class MyEmployee(models.Model):
         return employee
 
     def write(self, vals):
-        if 'analytic_tag_ids' not in vals and not self.analytic_tag_ids:
-            tag_name = vals.get('employee_code') + ' - ' + vals.get('name')
-            analytic_tag_exist = self.env['account.analytic.tag'].search([('name', '=', tag_name)])
-            if not analytic_tag_exist:
-                analytic_tag = self.env['account.analytic.tag'].create({'name': tag_name})
+        tag_name = self.employee_code + ' - ' + self.name
+        analytic_tag_exist = self.env['account.analytic.tag'].search([('name', '=', tag_name)])
+        if not analytic_tag_exist:
+            analytic_tag = self.env['account.analytic.tag'].create({'name': tag_name})
             vals.update({'analytic_tag_ids': analytic_tag.ids})
         res = super(MyEmployee, self).write(vals)
         return res
