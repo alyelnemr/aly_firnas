@@ -22,7 +22,7 @@ class Lead2OpportunityPartner(models.TransientModel):
     type_custom_ids = fields.Many2many(comodel_name='crm.type', relation='type_custom_oppor_crmlead_rel', column1='type_custom_ids_oppor_id', column2='type_custom_ids_oppor_crm_type_id',
                                        string="Secondary Project Types", required=False)
     project_name = fields.Char(string="Customer's Project Name / Proposal Title", store=True, )
-    country = fields.Many2many('res.country', string='Countries')
+    country = fields.Many2many('res.country', string='Countries', store=True, required=True)
     start_date = fields.Date(string="Request Date")
     sub_date = fields.Datetime(string="Submission Deadline")
     actual_sub_date = fields.Date(string="Actual Submission Date")
@@ -51,10 +51,10 @@ class Lead2OpportunityPartner(models.TransientModel):
     @api.onchange('parent_opportunity_id')
     def get_related_country(self):
         for rec in self:
-            if rec.parent_opportunity_id and rec.parent_opportunity_id.country:
+            if rec.parent_opportunity_id and rec.parent_opportunity_id.country and not rec.country:
                 rec.country = rec.parent_opportunity_id.country
             else:
-                rec.country = False
+                rec.country = False if not rec.country else rec.country
             # parent opprtunity letter sequence
             if rec.parent_opportunity_id:
                 rec.letter_identifier = rec.parent_opportunity_id.next_letter_sequence or 'B'
@@ -120,6 +120,8 @@ class Lead2OpportunityPartner(models.TransientModel):
                 result['project_name'] = lead.project_name
             if 'project_num' in fields and lead.project_num:
                 result['project_num'] = lead.project_num
+            if 'proposals_engineer_id' in fields and lead.proposals_engineer_id:
+                result['proposals_engineer_id'] = lead.proposals_engineer_id.id
             if 'proposals_engineer_ids' in fields and lead.proposals_engineer_ids:
                 result['proposals_engineer_ids'] = lead.proposals_engineer_ids.ids
             if 'type_custom' in fields and lead.type_custom:
@@ -190,6 +192,7 @@ class Lead2OpportunityPartner(models.TransientModel):
                 'parent_opportunity_id': self.parent_opportunity_id.id,
                 'partnership_model': self.partnership_model,
                 'project_num': self.project_num,
+                'proposals_engineer_id': self.proposals_engineer_id.id,
                 'proposals_engineer_ids': self.proposals_engineer_ids.ids,
                 'rfp_ref_number': self.rfp_ref_number,
                 'source_id': self.source_id.id,

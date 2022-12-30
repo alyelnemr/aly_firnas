@@ -20,6 +20,16 @@
                        domain="['|', ('team_id', '=', team_id), ('team_id', '=', False)]"
                        attrs="{'invisible': ['|', ('active', '=', False), ('type', '!=', 'lead')]}"/>
             </xpath>
+            <xpath expr="//page[@name='lead']/group/group[2]/label[@for='contact_name']" position="replace">
+            </xpath>
+            <xpath expr="//page[@name='lead']/group/group[2]/div" position="replace">
+            </xpath>
+            <xpath expr="//page[@name='lead']/group/group[2]/field[@name='function']" position="replace">
+            </xpath>
+            <xpath expr="//page[@name='lead']/group/group[2]/field[@name='mobile']" position="replace">
+            </xpath>
+            <xpath expr="//field[@name='partner_address_phone']" position="replace">
+            </xpath>
             <xpath expr="//field[@name='partner_id']" position="replace">
                 <field name="partner_id" widget="res_partner_many2one"
                        context="{'default_name': contact_name,
@@ -37,10 +47,23 @@
                                         'default_website': website,
                                         'show_vat': True
                                     }" required="0"/>
-                <field name="partner_contact"/>
             </xpath>
             <xpath expr="//field[@name='email_state']" position="before">
                 <field name="partner_contact"/>
+                <field name="function"/>
+            </xpath>
+            <xpath expr="//field[@name='email_from']" position="replace">
+                <field name="email_from"
+                       attrs="{'invisible': False}" string="Email" widget="email"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_address_email']" position="replace">
+                <field name="partner_address_email"
+                       attrs="{'invisible': True}" widget="email" string="Email"/>
+            </xpath>
+            <xpath expr="//field[@name='phone']" position="replace">
+                <field name="mobile" widget="phone" options="{'enable_sms': True}"/>
+                <field name="phone"
+                       widget="phone" options="{'enable_sms': True}"/>
             </xpath>
             <xpath expr="//page[@name='lead']//group//group//field[@name='source_id']" position="replace">
             </xpath>
@@ -66,9 +89,9 @@
             <xpath expr="//field[@name='team_id']" position="after">
                 <field name="sub_date" />
             </xpath>
-            <xpath expr="//field[@name='function']" position="before">
-                <field name="email_cc" attrs="{'invisible': [('type', '=', 'opportunity')]}" />
-            </xpath>
+<!--            <xpath expr="//field[@name='function']" position="before">-->
+<!--                <field name="email_cc" attrs="{'invisible': [('type', '=', 'opportunity')]}" />-->
+<!--            </xpath>-->
             <xpath expr="//field[@name='tag_ids']" position="replace">
                 <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
                 <field name="probability"/>
@@ -155,26 +178,8 @@
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
         <field name="arch" type="xml">
-            <templates position="before">
-                <field name="sub_date"/>
-            </templates>
-            <xpath expr="//div[@class='o_kanban_record_bottom']" position="before">
-                <div>
-                    <field name="sub_date"/>
-                </div>
-            </xpath>
-            <xpath expr="//progressbar" position="before">
-                <field name="currency_id"/>
-                <field name="forecast"/>
-            </xpath>
             <xpath expr="//progressbar[@field='activity_state']" position="attributes">
                 <attribute name="sum_field"/>
-            </xpath>
-            <xpath expr="//t/div/div[@class='oe_kanban_content']/div[3]" position="replace">
-                <t t-if="record.forecast">
-                    <field name="forecast" widget="float"/>
-                    <field name="currency_id"/>
-                </t>
             </xpath>
             <xpath expr="//kanban" position="attributes">
                 <attribute name="default_order">sub_date DESC</attribute>
@@ -192,6 +197,10 @@
         <field name="arch" type="xml">
             <xpath expr="//group/filter[@name='source']" position="after">
                 <field name="currency_id" string="Currency" domain="[]" context="{'group_by':'currency_id'}"/>
+                <field name="partner_id" string="Customer" domain="[]" context="{'group_by':'partner_id'}"/>
+            </xpath>
+            <xpath expr="//filter[@name='country']" position="attributes">
+                <attribute name="string">Customer Country</attribute>
             </xpath>
         </field>
     </record>

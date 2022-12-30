@@ -8,8 +8,8 @@
                     <sheet>
                         <group string="Create Project">
                             <group>
-                                <field name="is_create_project"/>
-                                <field name="wizard_project_id" attrs="{'invisible':[('is_create_project','=',False)], 'required':[('is_create_project','=',True)]}"/>
+                                <field name="is_create_project" string="Duplicate?"/>
+                                <field name="wizard_project_id" options="{'no_create': True, 'no_open': True, 'no_quick_create': True, 'no_create_edit':True}" attrs="{'invisible':[('is_create_project','=',False)], 'required':[('is_create_project','=',True)]}"/>
                             </group>
                             <group>
                             </group>

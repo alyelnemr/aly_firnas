@@ -29,6 +29,9 @@
                     <field name="activity_ids"/>
                     <field name="proposals_engineer_id"/>
                     <field name="quotation_count"/>
+                    <field name="sub_date"/>
+                    <field name="currency_id"/>
+                    <field name="forecast"/>
                     <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}'
                                  sum_field="planned_revenue"
                                  help="This bar allows to filter the opportunities based on scheduled activities."/>
@@ -60,33 +63,35 @@
                                     <div>
                                         <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                     </div>
-                                    <div class="text-muted o_kanban_record_subtitle">
-                                        <t t-if="record.planned_revenue.raw_value">
-                                            <field name="planned_revenue" widget="monetary"
-                                                   options="{'currency_field': 'company_currency'}"/>
-                                            <span t-if="record.partner_id.value">,</span>
-                                        </t>
-                                        <span t-if="record.partner_id.value">
-                                            <t t-esc="record.partner_id.value"/>
-                                        </span>
-                                    </div>
-                                    <div class="o_kanban_record_bottom">
-                                        <div class="oe_kanban_bottom_left"/>
-                                        <div class="oe_kanban_bottom_right">
-                                            <field name="quotation_count" />
-                                        </div>
-                                    </div>
-
-                                    <div class="o_kanban_record_bottom">
-                                        <div class="oe_kanban_bottom_left"/>
-                                        <div class="oe_kanban_bottom_right">
-                                            <t t-if="record.proposals_engineer_id">
-                                                <img t-att-src="kanban_image('res.users', 'image_128', record.proposals_engineer_id.raw_value)"
-                                                     t-att-title="record.proposals_engineer_id.value"
-                                                     t-att-alt="record.proposals_engineer_id.value"
-                                                     class="oe_kanban_avatar"/>
-                                            </t>
-                                        </div>
+                                    <div>
+                                        <table style="width: 100%">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <t t-if="record.forecast">
+                                                            <field name="forecast" widget="float"/>
+                                                            <field name="currency_id"/>
+                                                        </t>
+                                                    </td>
+                                                    <td style="text-align: right">
+                                                        <field name="quotation_count"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="text-align: left">
+                                                        <field name="sub_date"/>
+                                                    </td>
+                                                    <td style="text-align: right">
+                                                        <t t-if="record.proposals_engineer_id">
+                                                            <img t-att-src="kanban_image('res.users', 'image_128', record.proposals_engineer_id.raw_value)"
+                                                                 t-att-title="record.proposals_engineer_id.value"
+                                                                 t-att-alt="record.proposals_engineer_id.value"
+                                                                 class="oe_kanban_avatar" style="width: 20px"/>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
 
                                     <div class="o_kanban_record_bottom">

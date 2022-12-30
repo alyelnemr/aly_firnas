@@ -9,7 +9,7 @@ class CreateOrDuplicateProjectWizard(models.TransientModel):
     _name = 'create.duplicate.project.crm.wizard'
 
     is_create_project = fields.Boolean(string="Create or Duplicate")
-    wizard_project_id = fields.Many2one('project.project', string='Project')
+    wizard_project_id = fields.Many2one('project.project', string='Project', domain="[('is_template', '=', True)]")
 
     def create_duplicate_project(self):
         active_ids = self._context.get('active_ids')
@@ -26,7 +26,6 @@ class CreateOrDuplicateProjectWizard(models.TransientModel):
                     vals = {
                         'name': opportunity_obj.name,
                         'stage_id': self.env['project.stage'].search([], limit=1),
-                        'source': self.env['project.source'].search([], limit=1),
                         'project_num': opportunity_obj.project_num,
                         'type': 0,
                         'country': opportunity_obj.country.ids,
