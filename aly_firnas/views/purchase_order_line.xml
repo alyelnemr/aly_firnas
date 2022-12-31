@@ -11,5 +11,16 @@
                 </field>
             </field>
         </record>
+        <record id="aly_purchase_order_view_form_all_inherit" model="ir.ui.view">
+            <field name="name">aly.purchase.order.form.inherit</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase_stock.purchase_order_view_form_inherit"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']/tree//field[@name='qty_received']" position="attributes">
+                    <attribute name="attrs">{'column_invisible': [('parent.state', 'not in', ('purchase', 'done'))]}
+                    </attribute>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
