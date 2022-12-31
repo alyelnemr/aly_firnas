@@ -55,10 +55,6 @@
                     <field name="vendor_contact"/>
                 </xpath>
 
-                <xpath expr="//field[@name='order_line']/tree/field[@name='account_analytic_id']" position="after">
-                    <field name="is_origin_so" invisible="1"/>
-
-                </xpath>
 
                 <xpath expr="//field[@name='date_order']" position="attributes">
                     <attribute name="attrs">{'invisible': False}</attribute>
@@ -84,6 +80,7 @@
                             <field name="invoice_lines" invisible="1"/>
                             <field name="sequence" widget="handle"/>
                             <field name="line_rank" string="Sn" width="12px" readonly="1" optional="show"/>
+                            <field name="is_origin_so" invisible="1"/>
                             <field
                                     name="product_id"
                                     attrs="{
