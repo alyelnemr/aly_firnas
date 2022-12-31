@@ -54,18 +54,19 @@
 
                             <field name="display_type" invisible="1"/>
                             <field name="sequence" widget="handle"/>
-                            <field name="section"/>
-                            <field name="product_id"/>
+                            <field name="section" optional="show"/>
+                            <field name="product_id" optional="show"/>
                             <field name="name" widget="section_and_note_text"/>
-                            <field name="product_uom_qty"/>
-                            <field name="product_uom_category_id" invisible="1"/>
+                            <field name="product_uom_qty" optional="show"/>
+                            <field name="product_uom_category_id" invisible="1" optional="show"/>
                             <field
                                     name="product_uom_id"
                                     groups="uom.group_uom"
                                     attrs="{'required': [('display_type', '=', False)]}"
+                                    optional="show"
                             />
-                            <field name="price_unit"/>
-                            <field name="discount" groups="product.group_discount_per_so_line"/>
+                            <field name="price_unit" optional="show"/>
+                            <field name="discount" groups="product.group_discount_per_so_line" optional="show"/>
                         </tree>
                     </field>
                 </xpath>

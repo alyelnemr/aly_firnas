@@ -33,13 +33,18 @@ class CreateOrDuplicateProjectWizard(models.TransientModel):
                         'partner_id': opportunity_obj.partner_id.id,
                         'start_date': opportunity_obj.start_date,
                         'opportunity_id': opportunity_obj.id,
+                        'subtask_project_id': False,
+                        'analytic_account_id': opportunity_obj.analytic_account_id.id,
                     }
                     project_copy = project_project_obj.create(vals)
                 else:
                     project_copy = project_project_obj.browse(self.wizard_project_id.id).copy(
                         default={
                             'name': opportunity_obj.name,
-                            'opportunity_id': opportunity_obj.id
+                            'opportunity_id': opportunity_obj.id,
+                            'partner_id': opportunity_obj.partner_id.id,
+                            'subtask_project_id': False,
+                            'analytic_account_id': opportunity_obj.analytic_account_id.id,
                         })
 
         return {
