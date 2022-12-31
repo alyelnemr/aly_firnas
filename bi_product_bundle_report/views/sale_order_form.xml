@@ -197,31 +197,31 @@
                                     <create name="add_product_control" string="Add a product"/>
                                 </control>
                                 <field name="sequence" widget="handle"
-                                       attrs="{'readonly': [('parent.state', 'not in', ['draft', 'sent', 'sale'])]}"
+                                       attrs="{'readonly': [('state', 'not in', ['draft', 'sent', 'sale'])]}"
                                 />
                                 <field name="section" optional="show"
-                                       attrs="{'readonly': [('parent.state', 'in', ['sale'])]}"/>
+                                       attrs="{'readonly': [('state', 'in', ['sale'])]}"/>
                                 <field name="product_id" optional="show"
                                        domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
                                        options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"
-                                       attrs="{'readonly': [('parent.state', 'in', ['sale'])]}"
+                                       attrs="{'readonly': [('state', 'in', ['sale'])]}"
                                 />
-                                <field name="name" optional="show" attrs="{'readonly': [('parent.state', 'in', ['sale'])]}"/>
-                                <field name="quantity" optional="show" attrs="{'readonly': [('parent.state', 'in', ['sale'])]}"/>
+                                <field name="name" optional="show" attrs="{'readonly': [('state', 'in', ['sale'])]}"/>
+                                <field name="quantity" optional="show" attrs="{'readonly': [('state', 'in', ['sale'])]}"/>
                                 <field name="uom_id" string="UoM" groups="uom.group_uom" optional="show"
-                                       attrs="{'readonly': [('parent.state', 'in', ['sale'])]}"/>
+                                       attrs="{'readonly': [('state', 'in', ['sale'])]}"/>
                                 <field name="product_uom_category_id" invisible="1"/>
-                                <field name="price_unit" optional="show" attrs="{'readonly': [('parent.state', 'in', ['sale'])]}"/>
+                                <field name="price_unit" optional="show" attrs="{'readonly': [('state', 'in', ['sale'])]}"/>
                                 <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line"
-                                       attrs="{'readonly': [('parent.state', 'in', ['sale'])]}"
+                                       attrs="{'readonly': [('state', 'in', ['sale'])]}"
                                        optional="show"/>
                                 <field name="tax_id" widget="many2many_tags" options="{'no_create': True}"
                                        domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]"
-                                       attrs="{'readonly': [('parent.state', 'in', ['sale'])]}"
+                                       attrs="{'readonly': [('state', 'in', ['sale'])]}"
                                        optional="show"/>
                                 <field name="price_total" widget="monetary" optional="show"
-                                       attrs="{'readonly': [('parent.state', 'in', ['sale'])]}"/>
-                                <field name="price_note" optional="show" attrs="{'readonly': [('parent.state', 'in', ['sale'])]}"/>
+                                       attrs="{'readonly': [('state', 'in', ['sale'])]}"/>
+                                <field name="price_note" optional="show" attrs="{'readonly': [('state', 'in', ['sale'])]}"/>
                                 <field name="internal_notes" optional="show"/>
                                 <field name="is_present" invisible="1"/>
                                 <field name="line_id" invisible="1"/>
@@ -241,7 +241,7 @@
                             <create name="add_product_control" string="Add a product"/>
                         </control>
                         <field name="sequence" widget="handle"
-                               attrs="{'readonly': [('parent.state', 'not in', ['draft', 'sent', 'sale'])]}"
+                               attrs="{'readonly': [('state', 'not in', ['draft', 'sent', 'sale'])]}"
                         />
                         <field name="section" optional="show" attrs="{'readonly': [('state', 'in', ('sale'))]}"/>
                         <field name="product_id" optional="show"
