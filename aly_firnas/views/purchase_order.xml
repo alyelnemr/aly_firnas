@@ -93,7 +93,7 @@
                             <field name="name" widget="section_and_note_text" optional="show"
                                    attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
                             <field name="date_planned" optional="hide"
-                                   attrs="{'required': [('display_type', '=', False)], 'readonly': [('parent.date_planned', '!=', False)]}"/>
+                                   attrs="{'required': [('display_type', '=', False)], 'readonly': ['|',('state', 'not in', ['draft']), ('parent.date_planned', '!=', False)]}"/>
                             <field name="account_analytic_id" optional="hide" context="{'default_partner_id':parent.partner_id}"
                                    groups="analytic.group_analytic_accounting"
                                    attrs="{'readonly':['|',('state', 'not in', ['draft']), ('is_origin_so','=',True)]}"

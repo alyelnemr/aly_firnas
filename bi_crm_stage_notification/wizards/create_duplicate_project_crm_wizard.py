@@ -23,9 +23,10 @@ class CreateOrDuplicateProjectWizard(models.TransientModel):
                 raise UserError('You can only create a project for an opportunity.')
             else:
                 if not self.is_create_project:
+                    stage_id = self.env['project.stage'].search([], limit=1)
                     vals = {
                         'name': opportunity_obj.name,
-                        'stage_id': self.env['project.stage'].search([], limit=1),
+                        'stage_id': stage_id.id,
                         'project_num': opportunity_obj.project_num,
                         'type': 0,
                         'country': opportunity_obj.country.ids,
