@@ -27,6 +27,10 @@ class WHSelectOperationType(models.TransientModel):
             self.wh_url = self.current_url + 'web?#id=' + wh_id + '&model=' + self.env.context.get('active_model')
             self.approve_url = self.current_url + 'my/wh_confirmation_accept/' + wh_id
             self.reject_url = self.current_url + 'my/wh_confirmation_reject/' + wh_id
+            rec.write({
+                'approve_url': self.approve_url,
+                'reject_url': self.reject_url
+            })
             partner_email = self.partner_id.email
             if not partner_email:
                 raise ValidationError(_("Sorry, This user has no email defined."))
@@ -36,7 +40,9 @@ class WHSelectOperationType(models.TransientModel):
             email_values = {
                 'subject': rec.name + ' Confirmation',
                 'email_to': partner_email,
-                'email_from': self.env.user.email
+                'email_from': self.env.user.email,
+                'approve_url': self.approve_url,
+                'reject_url': self.reject_url
             }
             rec.reject_url = self.reject_url
             rec.approve_url = self.approve_url

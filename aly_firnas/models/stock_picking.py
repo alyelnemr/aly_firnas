@@ -21,6 +21,8 @@ class StockPicking(models.Model):
             self._context.get('default_picking_type_id')).default_location_dest_id,
         check_company=True, readonly=False, required=True,
         states={'draft': [('readonly', False)]})
+    reject_url = fields.Char('Reject URL')
+    approve_url = fields.Char('Approve URL')
 
     def write(self, vals):
         # set partner as a follower and unfollow old partner
