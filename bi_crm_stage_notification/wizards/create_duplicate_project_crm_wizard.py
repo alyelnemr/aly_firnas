@@ -47,6 +47,8 @@ class CreateOrDuplicateProjectWizard(models.TransientModel):
                             'subtask_project_id': False,
                             'analytic_account_id': opportunity_obj.analytic_account_id.id,
                         })
+                if project_copy and project_copy.subtask_project_id:
+                    project_copy.subtask_project_id = False
 
         return {
             'type': 'ir.actions.act_window',
