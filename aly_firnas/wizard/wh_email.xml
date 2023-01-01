@@ -64,19 +64,11 @@
             <field name="body_html" type="html">
                 <div style="margin: 0px; padding: 0px;">
                     <p style="margin: 0px; padding: 0px; font-size: 13px;">
-                        Dear
-                        <t t-if="object.partner_id.parent_id">
-                            ${object.partner_id.name or ''},
-                        </t>
-                        <t t-else="">
-                            <t t-out="object.partner_id.name or ''"></t>,
-                        </t>
+                        Dear ${object.partner_id.name or ''},
                         <br/>
                         <br/>
-                        Here is your WH Transaction ${object.name}
-                        <t t-if="object.name">
-                            <strong t-out="object.name or ''"></strong>
-                        </t>
+                        Here is your WH Transaction
+                        <strong>${object.name}</strong>
                         for your confirmation,
                         <br/>
                         <br/>
@@ -86,10 +78,10 @@
                             <table class="table table-sm text-center" style="width:40%;border: 1px double black;">
                                 <tr>
                                     <td style="background-color:#83eb34 !important;color:#FFF !important;width:50%;">
-                                       <a href="${object.approve_url}">Approve1</a>
+                                       <a href="${object.approve_url}">Approve</a>
                                     </td>
                                     <td style="background-color:#cadbbd !important;color:#FFF !important;width:50%;">
-                                        <a href="${object.reject_url}">Reject1</a>
+                                        <a href="${object.reject_url}">Reject</a>
                                     </td>
                                 </tr>
                             </table>
