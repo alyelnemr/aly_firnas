@@ -29,7 +29,8 @@ class WHSelectOperationType(models.TransientModel):
             self.reject_url = self.current_url + 'my/wh_confirmation_reject/' + wh_id
             rec.write({
                 'approve_url': self.approve_url,
-                'reject_url': self.reject_url
+                'reject_url': self.reject_url,
+                'user_to_approve_url': self.partner_id.id
             })
             partner_email = self.partner_id.email
             if not partner_email:
@@ -42,7 +43,6 @@ class WHSelectOperationType(models.TransientModel):
                 'email_to': partner_email,
                 'email_from': self.env.user.email,
             }
-            rec.user_to_approve_url = self.partner_id.id
             template.send_mail(rec.id, force_send=True, email_values=email_values)
             rec.with_context(force_send=True).message_post_with_template(template.id,
                                                                          email_layout_xmlid='mail.mail_notification_light')

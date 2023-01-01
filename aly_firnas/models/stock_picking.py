@@ -23,6 +23,7 @@ class StockPicking(models.Model):
         states={'draft': [('readonly', False)]})
     reject_url = fields.Char('Reject URL')
     approve_url = fields.Char('Approve URL')
+    user_to_approve_url = fields.Integer('User ID to Approve')
 
     def write(self, vals):
         # set partner as a follower and unfollow old partner
