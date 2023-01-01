@@ -2,6 +2,7 @@ from odoo import api, fields, models, _
 from odoo.tools.misc import formatLang, get_lang
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from odoo.tools.float_utils import float_compare, float_round
+from odoo.exceptions import UserError
 
 
 class PurchaseOrderLine(models.Model):
@@ -68,6 +69,23 @@ class PurchaseOrderLine(models.Model):
     qty_to_invoice = fields.Float(
         compute='_get_to_invoice_qty', string='To Invoice Quantity', store=True, readonly=True,
         digits='Product Unit of Measure')
+
+    def _check_line_unlink(self):
+        """
+        Check wether a line can be deleted or not.
+
+        Lines cannot be deleted if the order is confirmed; downpayment
+        lines who have not yet been invoiced bypass that exception.
+        :rtype: recordset sale.order.line
+        :returns: set of lines that cannot be deleted
+        """
+        return self.filtered(lambda line: line.state in ('purchase', 'done') and (line.invoice_lines or not line.is_downpayment))
+
+    def unlink(self):
+        for line in self:
+            if not line._check_line_unlink():
+               return models.Model.unlink(line)
+        return super(PurchaseOrderLine, self).unlink()
 
     @api.onchange('product_id')
     def get_analytic_account_tags(self):
@@ -197,7 +215,7 @@ class PurchaseOrderLine(models.Model):
             qty = self.product_qty - self.qty_invoiced
         else:
             qty = self.qty_received - self.qty_invoiced
-        if qty <= 0:
+        if qty <= 0 and not self.is_downpayment:
             qty = 0.0
 
         return {

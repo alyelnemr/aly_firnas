@@ -60,6 +60,18 @@ class PurchaseOrder(models.Model):
     analytic_account_id = fields.Many2one('account.analytic.account', 'Analytic Account', required=True)
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True)
     is_origin_so = fields.Boolean(default=False, copy=False)
+    bill_p_order_id = fields.One2many('account.move',
+                                      'p_order_id', 'Bill attached to this purchase order', copy=False)
+
+    @api.depends('order_line.invoice_lines.move_id', 'bill_p_order_id')
+    def _compute_invoice(self):
+        for order in self:
+            invoices = order.mapped('order_line.invoice_lines.move_id').ids
+            invoices.extend(order.bill_p_order_id.ids)
+            distinct_invoices = set(invoices)
+            invoices = list(distinct_invoices)
+            order.invoice_ids = invoices
+            order.invoice_count = len(invoices)
 
     @api.onchange('analytic_account_id')
     def update_analytic_account(self):
@@ -161,7 +173,9 @@ class PurchaseOrder(models.Model):
         precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
 
         for line in self.order_line:
-            if line.qty_to_invoice > 0 or (line.qty_to_invoice <= 0 and final) or line.display_type == 'line_note':
+            if line.display_type != 'line_note' and float_is_zero(line.qty_to_invoice, precision_digits=precision):
+                continue
+            if line.qty_to_invoice > 0 or (line.qty_to_invoice < 0 and final) or line.display_type == 'line_note':
                 if pending_section:
                     invoiceable_line_ids.append(pending_section.id)
                     pending_section = None
@@ -179,7 +193,7 @@ class PurchaseOrder(models.Model):
             'date': self.date_order,
             'invoice_date': self.date_order,
             'invoice_date_due': self.date_order,
-            'invoice_payment_term_id': self.partner_id.property_supplier_payment_term_id or self.payment_term_id,
+            'invoice_payment_term_id': self.payment_term_id.id,
             'invoice_user_id': self.user_id.id,
             'p_order_id': self.id,
             'purchase_id': self.id,
