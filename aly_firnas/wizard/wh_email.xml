@@ -90,8 +90,7 @@
                                         <a class="btn btn-info" t-att-href="object.approve_url">Approve</a>
                                     </td>
                                     <td style="background-color:#cadbbd !important;color:#FFF !important;width:50%;">
-                                        <a class="btn btn-info" t-att-href="object.reject_url">Reject</a>
-                                        <a class="btn btn-info" href="# ${object.reject_url}">Rejectoo</a>
+                                        <a class="btn btn-info" t-att-href="${object.reject_url}">Reject</a>
                                     </td>
                                 </tr>
                             </table>
