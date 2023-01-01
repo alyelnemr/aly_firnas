@@ -35,7 +35,7 @@
                 <xpath expr="//field[@name='ref']" position="after">
                     <field name="p_order_id"
                            groups="base.group_no_one"
-                           attrs="{'invisible': [('type', 'not in', ('in_invoice'))]}"/>
+                           attrs="{'readonly': [('p_order_id', '=', 'purchase_id')], 'invisible': [('type', 'not in', ('in_invoice'))]}"/>
                     <field name="s_order_id"
                            groups="base.group_no_one"
                            attrs="{'invisible': [('type', 'not in', ('out_invoice'))]}"/>
