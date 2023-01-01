@@ -41,8 +41,6 @@ class WHSelectOperationType(models.TransientModel):
                 'subject': rec.name + ' Confirmation',
                 'email_to': partner_email,
                 'email_from': self.env.user.email,
-                'approve_url': self.approve_url,
-                'reject_url': self.reject_url
             }
             rec.user_to_approve_url = self.partner_id.id
             template.send_mail(rec.id, force_send=True, email_values=email_values)
