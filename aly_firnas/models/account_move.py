@@ -123,20 +123,18 @@ class AccountMove(models.Model):
         lines = super(AccountMove, self).write(vals)
         for move in self:
             for line in move.line_ids:
-                if ('analytic_account_id' in vals or 'analytic_tag_ids' in vals) and (
-                        not line.analytic_account_id or not line.analytic_tag_ids):
-                    if line.account_id.internal_type in ('payable', 'receivable'):
-                        if self._context.get('from_reconcile', False):
-                            line.analytic_account_id = move.analytic_account_id.id if not line.analytic_account_id else line.analytic_account_id.id
-                            line.analytic_tag_ids = move.analytic_tag_ids.ids if not line.analytic_tag_ids else line.analytic_tag_ids.ids
-                        else:
-                            line.analytic_account_id = move.analytic_account_id.id
-                            line.analytic_tag_ids = move.analytic_tag_ids.ids
+                if line.account_id.internal_type in ('payable', 'receivable'):
+                    if self._context.get('from_reconcile', False):
+                        line.analytic_account_id = move.analytic_account_id.id if not line.analytic_account_id else line.analytic_account_id.id
+                        line.analytic_tag_ids = move.analytic_tag_ids.ids if not line.analytic_tag_ids else line.analytic_tag_ids.ids
                     else:
-                        line.analytic_account_id = move.invoice_line_ids[
-                            0].analytic_account_id.id if not line.analytic_account_id else line.analytic_account_id.id
-                        line.analytic_tag_ids = move.invoice_line_ids[
-                            0].analytic_tag_ids.ids if not line.analytic_tag_ids else line.analytic_tag_ids.ids
+                        line.analytic_account_id = move.analytic_account_id.id
+                        line.analytic_tag_ids = move.analytic_tag_ids.ids
+                else:
+                    line.analytic_account_id = move.invoice_line_ids[
+                        0].analytic_account_id.id if not line.analytic_account_id else line.analytic_account_id.id
+                    line.analytic_tag_ids = move.invoice_line_ids[
+                        0].analytic_tag_ids.ids if not line.analytic_tag_ids else line.analytic_tag_ids.ids
         return lines
 
     @api.depends('line_ids.analytic_account_id', 'line_ids.analytic_tag_ids', 'invoice_line_ids.analytic_account_id',

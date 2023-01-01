@@ -13,7 +13,8 @@
                                 string="Reset to draft" type="object" />
                         <button name="action_state_approve" attrs="{'invisible': [('state', '=', 'approved')]}"
                                 string="Approve" type="object" class="oe_highlight" />
-                        <field name="state" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}" required="1"/>
+<!--                        <field name="state" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}" required="1"/>-->
+                        <field name="state" widget="statusbar" required="1"/>
                     </header>
                 </xpath>
             </field>
