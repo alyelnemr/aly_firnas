@@ -58,9 +58,9 @@
         <record id="aly_wh_mail_template" model="mail.template">
             <field name="name">WH Transaction: Send by email</field>
             <field name="model_id" ref="aly_firnas.model_stock_picking"/>
-            <field name="email_from">{{ (user.email_formatted or user.email) }}</field>
-            <field name="email_to">{{ object.partner_id.email }}</field>
-            <field name="subject">{{ object.name }} Confirmation</field>
+            <field name="email_from">${user.email}</field>
+            <field name="email_to">${object.partner_id.email}</field>
+            <field name="subject">${object.name} Confirmation</field>
             <field name="body_html" type="html">
                 <div style="margin: 0px; padding: 0px;">
                     <p style="margin: 0px; padding: 0px; font-size: 13px;">
@@ -74,7 +74,7 @@
                         </t>
                         <br/>
                         <br/>
-                        Here is your WH Transaction
+                        Here is your WH Transaction ${object.name}
                         <t t-if="object.name">
                             <strong t-out="object.name or ''"></strong>
                         </t>
