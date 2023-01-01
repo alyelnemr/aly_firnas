@@ -44,8 +44,6 @@ class WHSelectOperationType(models.TransientModel):
                 'approve_url': self.approve_url,
                 'reject_url': self.reject_url
             }
-            rec.reject_url = self.reject_url
-            rec.approve_url = self.approve_url
             rec.user_to_approve_url = self.partner_id.id
             template.send_mail(rec.id, force_send=True, email_values=email_values)
             rec.with_context(force_send=True).message_post_with_template(template.id,
