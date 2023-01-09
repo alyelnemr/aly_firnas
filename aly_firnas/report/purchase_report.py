@@ -1,7 +1,9 @@
 # Copyright 2017 Akretion (Alexis de Lattre <alexis.delattre@akretion.com>)
 # Copyright 2017-2019 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+import datetime
 
+import pytz
 from odoo import api, fields, models, _
 
 class PurchaseReport(models.Model):
@@ -37,6 +39,11 @@ class PurchaseReportTemplatePrimary(models.AbstractModel):
     _name = 'report.aly_firnas.aly_rfq_main_template'
     _description = 'description'
 
+    def get_date_by_timezone(self, par_date):
+        user_tz = self.env.user.tz or pytz.utc
+        local = pytz.timezone(user_tz)
+        return pytz.utc.localize(par_date).astimezone(local).date()
+
     @api.model
     def _get_report_values(self, docids, data=None):
         model = 'purchase.order'
@@ -62,6 +69,7 @@ class PurchaseReportTemplatePrimary(models.AbstractModel):
         rep_payment_term = docs.payment_term_id.name if docs.payment_term_id else ''
         rep_partner_ref = docs.partner_ref if docs.partner_ref else ''
         order_date = docs.date_order.date() if docs.date_order else False
+        order_date = self.get_date_by_timezone(docs.date_order)
         receipt_date = docs.date_planned.date() if docs.date_planned else False
         docs.po_scope_schedule = docs.po_scope_schedule.replace('</p><p>', '<br />') if docs.po_scope_schedule else False
         docs.po_payment_schedule = docs.po_payment_schedule.replace('</p><p>', '<br />') if docs.po_payment_schedule else False
@@ -88,6 +96,11 @@ class PurchaseReportTemplatePrimary(models.AbstractModel):
     _name = 'report.aly_firnas.aly_po_main_template'
     _description = 'description'
 
+    def get_date_by_timezone(self, par_date):
+        user_tz = self.env.user.tz or pytz.utc
+        local = pytz.timezone(user_tz)
+        return pytz.utc.localize(par_date).astimezone(local).date()
+
     @api.model
     def _get_report_values(self, docids, data=None):
         model = 'purchase.order'
@@ -113,6 +126,7 @@ class PurchaseReportTemplatePrimary(models.AbstractModel):
         rep_payment_term = docs.payment_term_id.name if docs.payment_term_id else ''
         rep_partner_ref = docs.partner_ref if docs.partner_ref else ''
         order_date = docs.date_order.date() if docs.date_order else False
+        order_date = self.get_date_by_timezone(docs.date_order)
         receipt_date = docs.date_planned.date() if docs.date_planned else False
         docs.po_scope_schedule = docs.po_scope_schedule.replace('</p><p>', '<br />') if docs.po_scope_schedule else False
         docs.po_payment_schedule = docs.po_payment_schedule.replace('</p><p>', '<br />') if docs.po_payment_schedule else False

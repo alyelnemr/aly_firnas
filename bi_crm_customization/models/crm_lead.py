@@ -13,7 +13,6 @@ class CRMLeadInherit(models.Model):
         res['context']['default_type_custom'] = self.type_custom
         res['context']['default_project_name'] = self.project_name
         res['context']['default_country'] = self.country.ids
-        res['context']['default_country'] = self.country.ids
         res['context']['default_start_date'] = self.start_date
         res['context']['default_forecast'] = self.forecast
         res['context']['default_sub_date'] = self.sub_date
@@ -25,6 +24,7 @@ class CRMLeadInherit(models.Model):
         res['context']['default_end_client'] = self.end_client.ids
         res['context']['default_rfp_ref_number'] = self.rfp_ref_number
         res['context']['default_proposals_engineer_id'] = self.proposals_engineer_id.id
+        res['context']['default_proposals_engineer_ids'] = self.proposals_engineer_ids.ids
         return res
 
     def _default_team_id(self, user_id):
@@ -55,6 +55,9 @@ class CRMLeadInherit(models.Model):
     partner_id = fields.Many2one('res.partner', string='Customer', tracking=10, index=True, required=True,
                                  domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
                                  help="Linked partner (optional). Usually created when converting the lead. You can find a partner by its Name, TIN, Email or Internal Reference.")
+    partner_address_name = fields.Char('Partner Contact Name',  default=False, readonly=True)
+    partner_address_email = fields.Char('Partner Contact Email', default=False, readonly=True)
+    partner_address_phone = fields.Char('Partner Contact Phone', default=False, readonly=True)
     type_custom = fields.Many2one('crm.type', string="Project Type", required=False)
     type_custom_ids = fields.Many2many(comodel_name='crm.type', relation='type_custom_crmlead_rel', column1='type_custom_ids_id',
                                        column2='type_custom_ids_crm_type_id', string="Secondary Project Types", required=False)
@@ -62,7 +65,7 @@ class CRMLeadInherit(models.Model):
     country = fields.Many2many(comodel_name='res.country', string='Countries')
     client_name = fields.Many2one('res.partner', string="End Client!", help="deprecated, not used, you can use end_client field")
     start_date = fields.Date(string="Request Date", required=False)
-    sub_date = fields.Datetime(string="Submission Deadline", required=True)
+    sub_date = fields.Datetime(string="Submission Deadline", required=False)
     actual_sub_date = fields.Date(string="Actual Submission Date")
     sub_type = fields.Many2one('project.submission', string="Submission Type")
     # source = fields.Char(string="Source")
@@ -77,7 +80,8 @@ class CRMLeadInherit(models.Model):
     contract_signature_date = fields.Date(string="Contract/PO Signature Date")
     initial_contact_date = fields.Date(string="Initial Contact Date", required=False)
     end_client = fields.Many2many(comodel_name='res.partner', relation='crm2opprtunity_endclient_rel', column1='crm_end_client_id', column2='end_client_partner_id', string="End Client")
-    proposals_engineer_id = fields.Many2one('res.users', string='Proposals Engineer')
+    proposals_engineer_ids = fields.Many2many(comodel_name='res.users', relation='crm2lead_prop_eng_rel', column1='crm_prop_eng_id', column2='prop_eng_user_id', string="Secondary Proposals Engineers")
+    proposals_engineer_id = fields.Many2one('res.users', string='Primary Proposals Engineer')
     rfp_ref_number = fields.Char(string='RfP Ref. Number')
     currency_id = fields.Many2one('res.currency', string="Currency", store=True)
     forecast = fields.Monetary(string="Forecast", store=True)
@@ -100,6 +104,59 @@ class CRMLeadInherit(models.Model):
     is_analytic_account_id_created = fields.Boolean(string='Is Analytic Account created!', default=False)
     analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account', required=False)
     analytic_tag_ids_for_analytic_account = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=False, copy=False)
+
+    @api.onchange('partner_contact')
+    def _onchange_partner_id_partner_contact(self):
+        self.update({
+            'partner_address_email': False,
+            'partner_address_name': False,
+            'partner_address_phone': False,
+        })
+        values = self._onchange_partner_id_values(self.partner_id.id if self.partner_id else False)
+        self.update(values)
+
+    @api.onchange('partner_id')
+    def _onchange_partner_id(self):
+        self.update({
+            'partner_contact': False,
+            'email_from': False,
+            'partner_address_email': False,
+            'partner_address_name': False,
+            'partner_address_phone': False,
+        })
+        values = self._onchange_partner_id_values(self.partner_id.id if self.partner_id else False)
+        self.update(values)
+
+    def _onchange_partner_id_values(self, partner_id):
+        """ returns the new values when partner_id has changed """
+        partner_contact = self.partner_contact.id if self.partner_contact else partner_id
+        if partner_contact:
+            partner = self.env['res.partner'].browse(partner_contact)
+
+            partner_name = partner.parent_id.name
+            if not partner_name and partner.is_company:
+                partner_name = partner.name
+
+            return {
+                'partner_name': partner_name,
+                'partner_address_email': False,
+                'partner_address_name': False,
+                'partner_address_phone': False,
+                'contact_name': partner.name if not partner.is_company else False,
+                'title': partner.title.id,
+                'street': partner.street,
+                'street2': partner.street2,
+                'city': partner.city,
+                'state_id': partner.state_id.id,
+                'country_id': partner.country_id.id,
+                'email_from': partner.email,
+                'phone': partner.phone,
+                'mobile': partner.mobile,
+                'zip': partner.zip,
+                'function': partner.function,
+                'website': partner.website,
+            }
+        return {'partner_address_phone': False}
 
     @api.depends('project_num', 'country.code', 'internal_opportunity_name')
     def _compute_name(self):

@@ -20,13 +20,28 @@ class SaleOrder(models.Model):
         states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
         help="The analytic account related to a sales order.")
-    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True, copy=False)
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True, copy=False
+                                        , states={'sale': [('readonly', True)]})
+    purchase_order_count = fields.Integer("Number of Purchase Order", compute='_compute_purchase_order_count',
+                                          groups='purchase.group_purchase_user')
+    company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company
+                                 , states={'sale': [('readonly', True)]})
 
     @api.onchange('analytic_account_id', 'analytic_tag_ids')
     def update_analytic_tags(self):
         for line in self.order_line:
             line.analytic_account_id = self.analytic_account_id.id if not line.analytic_account_id else line.analytic_account_id
             line.analytic_tag_ids = self.analytic_tag_ids.ids if not line.analytic_tag_ids else line.analytic_tag_ids
+
+    @api.depends('order_line.purchase_line_ids')
+    def _compute_purchase_order_count(self):
+        purchase_line_data = self.env['purchase.order.line'].sudo().read_group(
+            [('sale_order_id', 'in', self.ids)],
+            ['sale_order_id', 'purchase_order_count:count_distinct(order_id)'], ['sale_order_id']
+        )
+        purchase_count_map = {item['sale_order_id'][0]: item['purchase_order_count'] for item in purchase_line_data}
+        for order in self:
+            order.purchase_order_count = purchase_count_map.get(order.id, 0)
 
     def action_confirm(self):
         for line in self:
@@ -47,13 +62,56 @@ class SaleOrder(models.Model):
             'uom_id': option.uom_id.id,
             'section': option.section,
             'price_unit': price,
+            'tax_id': option.tax_ids,
             'discount': option.discount,
         }
 
     def _compute_line_data_for_template_change(self, line):
         vals = super(SaleOrder, self)._compute_line_data_for_template_change(line)
         vals.update(section=line.section)
+        vals.update(tax_id=line.tax_ids)
         return vals
+
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        """
+        Update the following fields when the partner is changed:
+        - Pricelist
+        - Payment terms
+        - Invoice address
+        - Delivery address
+        - Sales Team
+        """
+        if not self.partner_id:
+            self.update({
+                'partner_invoice_id': False,
+                'partner_shipping_id': False,
+                'fiscal_position_id': False,
+            })
+            return
+
+        addr = self.partner_id.address_get(['delivery', 'invoice'])
+        partner_user = self.partner_id.user_id or self.partner_id.commercial_partner_id.user_id
+        values = {
+            # 'pricelist_id': self.partner_id.property_product_pricelist and self.partner_id.property_product_pricelist.id or False,
+            # 'payment_term_id': self.partner_id.property_payment_term_id and self.partner_id.property_payment_term_id.id or False,
+            'partner_invoice_id': addr['invoice'],
+            'partner_shipping_id': addr['delivery'],
+        }
+        user_id = partner_user.id
+        if not self.env.context.get('not_self_saleperson'):
+            user_id = user_id or self.env.context.get('default_user_id', self.env.uid)
+        if user_id and self.user_id.id != user_id:
+            values['user_id'] = user_id
+
+        if self.env['ir.config_parameter'].sudo().get_param('account.use_invoice_terms') and self.env.company.invoice_terms:
+            values['note'] = self.with_context(lang=self.partner_id.lang).env.company.invoice_terms
+        if not self.env.context.get('not_self_saleperson') or not self.team_id:
+            values['team_id'] = self.env['crm.team'].with_context(
+                default_team_id=self.partner_id.team_id.id
+            )._get_default_team_id(domain=['|', ('company_id', '=', self.company_id.id), ('company_id', '=', False)],
+                                   user_id=user_id)
+        self.update(values)
 
     @api.onchange('sale_order_template_id')
     def onchange_sale_order_template_id(self):
@@ -72,17 +130,6 @@ class SaleOrder(models.Model):
                     # get price from price list only if no price list get from template line price
                     if not price:
                         price = line.price_unit
-
-                    # if self.pricelist_id.discount_policy == 'without_discount' and line.price_unit:
-                    #     discount = (line.price_unit - price) / line.price_unit * 100
-                    #     # negative discounts (= surcharge) are included in the display price
-                    #     if discount < 0:
-                    #         discount = 0
-                    #     else:
-                    #         price = line.price_unit
-                    # elif line.price_unit:
-                    #     price = line.price_unit
-
                 else:
                     price = line.price_unit
 

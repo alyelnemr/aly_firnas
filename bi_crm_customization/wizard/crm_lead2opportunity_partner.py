@@ -22,7 +22,7 @@ class Lead2OpportunityPartner(models.TransientModel):
     type_custom_ids = fields.Many2many(comodel_name='crm.type', relation='type_custom_oppor_crmlead_rel', column1='type_custom_ids_oppor_id', column2='type_custom_ids_oppor_crm_type_id',
                                        string="Secondary Project Types", required=False)
     project_name = fields.Char(string="Customer's Project Name / Proposal Title", store=True, )
-    country = fields.Many2many('res.country', string='Countries')
+    country = fields.Many2many('res.country', string='Countries', store=True, required=True)
     start_date = fields.Date(string="Request Date")
     sub_date = fields.Datetime(string="Submission Deadline")
     actual_sub_date = fields.Date(string="Actual Submission Date")
@@ -40,7 +40,9 @@ class Lead2OpportunityPartner(models.TransientModel):
     result_date = fields.Date(string="Result Date")
     end_client = fields.Many2many(comodel_name='res.partner', relation='crm2opportunity_end_client_rel', column1='crm2opp_end_client_id', column2='endclient_partner_id',
                                   string="End Client")
-    proposals_engineer_id = fields.Many2one('res.users', string='Proposals Engineer', required=True)
+    proposals_engineer_ids = fields.Many2many(comodel_name='res.users', relation='crm2opport_prop_eng_rel',
+                                              column1='crm_prop_eng_id', column2='prop_eng_user_id', string="Secondary Proposals Engineers")
+    proposals_engineer_id = fields.Many2one('res.users', string='Primary Proposals Engineer', required=True)
     rfp_ref_number = fields.Char(string='RfP Ref. Number')
     source_id = fields.Many2one('utm.source', string='Source', required=True, ondelete='cascade',
                                 help="This is the link source, e.g. Search Engine, another domain, or name of email list")
@@ -49,10 +51,10 @@ class Lead2OpportunityPartner(models.TransientModel):
     @api.onchange('parent_opportunity_id')
     def get_related_country(self):
         for rec in self:
-            if rec.parent_opportunity_id and rec.parent_opportunity_id.country:
+            if rec.parent_opportunity_id and rec.parent_opportunity_id.country and not rec.country:
                 rec.country = rec.parent_opportunity_id.country
             else:
-                rec.country = False
+                rec.country = False if not rec.country else rec.country
             # parent opprtunity letter sequence
             if rec.parent_opportunity_id:
                 rec.letter_identifier = rec.parent_opportunity_id.next_letter_sequence or 'B'
@@ -120,6 +122,8 @@ class Lead2OpportunityPartner(models.TransientModel):
                 result['project_num'] = lead.project_num
             if 'proposals_engineer_id' in fields and lead.proposals_engineer_id:
                 result['proposals_engineer_id'] = lead.proposals_engineer_id.id
+            if 'proposals_engineer_ids' in fields and lead.proposals_engineer_ids:
+                result['proposals_engineer_ids'] = lead.proposals_engineer_ids.ids
             if 'type_custom' in fields and lead.type_custom:
                 result['type_custom'] = lead.type_custom.id
             if 'type_custom_ids' in fields and lead.type_custom_ids:
@@ -189,6 +193,7 @@ class Lead2OpportunityPartner(models.TransientModel):
                 'partnership_model': self.partnership_model,
                 'project_num': self.project_num,
                 'proposals_engineer_id': self.proposals_engineer_id.id,
+                'proposals_engineer_ids': self.proposals_engineer_ids.ids,
                 'rfp_ref_number': self.rfp_ref_number,
                 'source_id': self.source_id.id,
                 'start_date': self.start_date,
@@ -230,3 +235,5 @@ class Lead2OpportunityMassConvert(models.TransientModel):
     proposal_reviewer_ids = fields.Many2many(comodel_name='res.partner', relation='crmlead_prop_reviewer_oppor_mass_rel',
                                              column1='prop_reviewer_oppor_mass_id', column2='prop_reviewer_oppor_mass_partner_id',
                                              string="Proposal Reviewers")
+    proposals_engineer_ids = fields.Many2many(comodel_name='res.users', relation='crm2opport_mass_prop_eng_rel',
+                                              column1='crm_prop_eng_id', column2='prop_eng_user_id', string="Proposals Engineers")

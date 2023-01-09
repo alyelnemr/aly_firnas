@@ -11,6 +11,12 @@ class AccountMoveLine(models.Model):
     is_origin_so = fields.Boolean(copy=False)
     is_printed = fields.Boolean(string="Print?", default=True)
 
+    purchase_downpayment_line_ids = fields.Many2many(
+        'purchase.order.line',
+        'purchase_order_line_invoice_rel',
+        'invoice_line_id', 'order_line_id',
+        string='Purchase Order Lines', readonly=True, copy=False)
+
     @api.onchange('product_id')
     def get_analytic_default(self):
         for rec in self:

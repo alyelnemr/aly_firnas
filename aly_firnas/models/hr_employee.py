@@ -5,10 +5,32 @@ from odoo import api, fields, models
 from odoo.osv import expression
 
 
-class Employee(models.Model):
+class MyEmployee(models.Model):
     _inherit = "hr.employee"
 
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
+    employee_code = fields.Char('Employee Code', required=False)
+
+    @api.model
+    def create(self, vals):
+        employee = super(MyEmployee, self).create(vals)
+        employee_code = vals.get('employee_code')
+        tag_name = vals.get('employee_code') + ' - ' + vals.get('name') if employee_code else vals.get('name')
+        analytic_tag_exist = self.env['account.analytic.tag'].search([('name', '=', tag_name)])
+        if not analytic_tag_exist:
+            analytic_tag = self.env['account.analytic.tag'].create({'name': tag_name})
+        if not employee.analytic_tag_ids:
+            employee.analytic_tag_ids = analytic_tag.ids
+        return employee
+
+    def write(self, vals):
+        tag_name = self.employee_code + ' - ' + self.name if self.employee_code else self.name
+        analytic_tag_exist = self.env['account.analytic.tag'].search([('name', '=', tag_name)])
+        if not analytic_tag_exist:
+            analytic_tag = self.env['account.analytic.tag'].create({'name': tag_name})
+            vals.update({'analytic_tag_ids': analytic_tag.ids})
+        res = super(MyEmployee, self).write(vals)
+        return res
 
 
 class Employee(models.Model):

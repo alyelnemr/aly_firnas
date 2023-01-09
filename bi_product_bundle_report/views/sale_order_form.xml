@@ -20,7 +20,7 @@
                             class="oe_highlight" invisible="1"/>
                 </xpath>
                 <xpath expr="//group/group[2]" position="inside">
-                    <field name="split_page"/>
+<!--                    <field name="split_page"/>-->
                     <field name="financial_proposal_title"/>
                     <field name="financial_proposal_number"/>
                 </xpath>
@@ -73,7 +73,8 @@
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_unit']"
                        position="after">
-                    <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line" optional="show"/>
+                    <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line" optional="show"
+                    attrs="{'readonly': [('state', 'in', ('sale'))]}"/>
                 </xpath>
             </field>
         </record>
@@ -189,32 +190,42 @@
                                     </t>
                                 </templates>
                             </kanban>
-                            <tree string="Sales Quotation Template Lines" editable="bottom"
+                            <tree string="Sales Additional Lines" editable="bottom"
                                   delete="true"
                                   decoration-success="is_present == True">
                                 <control>
                                     <create name="add_product_control" string="Add a product"/>
                                 </control>
-                                <field name="sequence" widget="handle"/>
-                                <field name="section" optional="show"/>
+                                <field name="sequence" widget="handle"
+                                       attrs="{'readonly': [('state', 'not in', ['draft', 'sent', 'sale'])]}"
+                                />
+                                <field name="section" optional="show"
+                                       attrs="{'readonly': [('state', 'in', ['sale'])]}"/>
                                 <field name="product_id" optional="show"
                                        domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
-                                       options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"/>
-                                <field name="name" optional="show"/>
-                                <field name="quantity" optional="show"/>
-                                <field name="uom_id" string="UoM" groups="uom.group_uom" optional="show"/>
+                                       options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"
+                                       attrs="{'readonly': [('state', 'in', ['sale'])]}"
+                                />
+                                <field name="name" optional="show" attrs="{'readonly': [('state', 'in', ['sale'])]}"/>
+                                <field name="quantity" optional="show" attrs="{'readonly': [('state', 'in', ['sale'])]}"/>
+                                <field name="uom_id" string="UoM" groups="uom.group_uom" optional="show"
+                                       attrs="{'readonly': [('state', 'in', ['sale'])]}"/>
                                 <field name="product_uom_category_id" invisible="1"/>
-                                <field name="price_unit" optional="show"/>
+                                <field name="price_unit" optional="show" attrs="{'readonly': [('state', 'in', ['sale'])]}"/>
                                 <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line"
+                                       attrs="{'readonly': [('state', 'in', ['sale'])]}"
                                        optional="show"/>
                                 <field name="tax_id" widget="many2many_tags" options="{'no_create': True}"
                                        domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]"
+                                       attrs="{'readonly': [('state', 'in', ['sale'])]}"
                                        optional="show"/>
-                                <field name="price_total" widget="monetary" optional="show"/>
-                                <field name="price_note" optional="show"/>
+                                <field name="price_total" widget="monetary" optional="show"
+                                       attrs="{'readonly': [('state', 'in', ['sale'])]}"/>
+                                <field name="price_note" optional="show" attrs="{'readonly': [('state', 'in', ['sale'])]}"/>
                                 <field name="internal_notes" optional="show"/>
                                 <field name="is_present" invisible="1"/>
                                 <field name="line_id" invisible="1"/>
+                                <field name="state" invisible="1"/>
                                 <button name="button_add_to_order" class="oe_link" icon="fa-shopping-cart"
                                         title="Add to order lines" type="object"
                                         attrs="{'invisible': [('is_present', '=', True)]}"/>
@@ -225,38 +236,46 @@
 
                 <xpath expr="//field[@name='sale_order_option_ids']/tree" position="replace">
 
-                    <tree string="Sales Quotation Template Lines" editable="bottom" decoration-success="is_present == True">
+                    <tree string="Sales Optional Lines" editable="bottom" decoration-success="is_present == True">
                         <control>
                             <create name="add_product_control" string="Add a product"/>
                         </control>
-                        <field name="sequence" widget="handle"/>
-                        <field name="section" optional="show"/>
+                        <field name="sequence" widget="handle"
+                               attrs="{'readonly': [('state', 'not in', ['draft', 'sent', 'sale'])]}"
+                        />
+                        <field name="section" optional="show" attrs="{'readonly': [('state', 'in', ('sale'))]}"/>
                         <field name="product_id" optional="show"
                                domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
                                options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"
+                               attrs="{'readonly': [('state', 'in', ('sale'))]}"
                         />
-                        <field name="name" optional="show"/>
-                        <field name="quantity" optional="show"/>
-                        <field name="uom_id" string="UoM" groups="uom.group_uom" optional="show"/>
+                        <field name="name" optional="show" attrs="{'readonly': [('state', 'in', ('sale'))]}"/>
+                        <field name="quantity" optional="show" attrs="{'readonly': [('state', 'in', ('sale'))]}"/>
+                        <field name="uom_id" string="UoM" groups="uom.group_uom" optional="show"
+                               attrs="{'readonly': [('state', 'in', ['sale'])]}"
+                        />
                         <field name="product_uom_category_id" invisible="1"/>
-                        <field name="price_unit" optional="show"/>
-                        <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line" optional="show"/>
+                        <field name="price_unit" optional="show" attrs="{'readonly': [('state', 'in', ('sale'))]}"/>
+                        <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line"
+                               optional="show" attrs="{'readonly': [('state', 'in', ('sale'))]}"
+                        />
                         <field name="tax_id" widget="many2many_tags" options="{'no_create': True}"
                                domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]"
+                               attrs="{'readonly': [('state', 'in', ('sale'))]}"
                                optional="show"/>
-                        <field name="price_total" widget="monetary" optional="show"/>
-                        <field name="price_note" optional="show"/>
+                        <field name="price_total" widget="monetary" optional="show"
+                               attrs="{'readonly': [('state', 'in', ('sale'))]}"
+                        />
+                        <field name="price_note" optional="show" attrs="{'readonly': [('state', 'in', ('sale'))]}"/>
                         <field name="internal_notes" optional="show"/>
                         <field name="is_present" invisible="1"/>
                         <field name="line_id" invisible="1"/>
+                        <field name="state" invisible="1"/>
                         <button name="button_add_to_order" class="oe_link" icon="fa-shopping-cart" title="Add to order lines"
                                 type="object" attrs="{'invisible': [('is_present', '=', True)]}"/>
                     </tree>
                 </xpath>
 
-                <xpath expr="//field[@name='payment_term_id']" position="after">
-                    <field name="show_component_price"/>
-                </xpath>
             </field>
         </record>
 

@@ -22,6 +22,7 @@ class SaleOrderTemplateAdditional(models.Model):
     sale_order_template_id = fields.Many2one('sale.order.template', 'Quotation Template Reference', ondelete='cascade',
                                              index=True, required=True)
 
+    sequence = fields.Integer('Sequence', default=1)
     section = fields.Many2one('sale.order.line.section', string="Section", required=True)
     company_id = fields.Many2one('res.company', related='sale_order_template_id.company_id', store=True, index=True)
     name = fields.Text('Description', required=True, translate=True)
@@ -34,6 +35,7 @@ class SaleOrderTemplateAdditional(models.Model):
                              domain="[('category_id', '=', product_uom_category_id)]")
     product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
     quantity = fields.Float('Quantity', required=True, digits='Product UoS', default=1)
+    tax_ids = fields.Many2many('account.tax', string='Taxes')
 
     @api.onchange('product_id')
     def _onchange_product_id(self):
@@ -63,10 +65,14 @@ class SaleOrderTemplateAdditional(models.Model):
 class SaleOrderTemplateOption(models.Model):
     _inherit = "sale.order.template.option"
 
+    sequence = fields.Integer('Sequence', default=1)
     section = fields.Many2one('sale.order.line.section', string="Section", required=True)
+    tax_ids = fields.Many2many('account.tax', string='Taxes')
 
 
 class SaleOrderTemplateLine(models.Model):
     _inherit = "sale.order.template.line"
 
     section = fields.Many2one('sale.order.line.section', string="Section", required=True)
+    tax_ids = fields.Many2many('account.tax', string='Taxes')
+

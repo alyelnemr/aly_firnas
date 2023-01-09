@@ -13,7 +13,11 @@ class SaleOrder(models.Model):
     sale_order_additional_ids = fields.One2many(
         'sale.order.additional', 'order_id', 'Additional Products Lines',
         copy=True, readonly=True,
-        states={'draft': [('readonly', False)], 'sent': [('readonly', False)]})
+        states={'draft': [('readonly', False)], 'sent': [('readonly', False)], 'sale': [('readonly', False)]})
+    sale_order_option_ids = fields.One2many(
+        'sale.order.option', 'order_id', 'Optional Products Lines',
+        copy=True, readonly=True,
+        states={'draft': [('readonly', False)], 'sent': [('readonly', False)], 'sale': [('readonly', False)]})
     show_component_price = fields.Boolean(string="Show Component Price", default=False)
 
     split_page = fields.Boolean(string='Split Page?')

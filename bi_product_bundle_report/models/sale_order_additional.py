@@ -28,6 +28,13 @@ class SaleOrderAdditional(models.Model):
     internal_notes = fields.Text(string='Internal Notes')
     price_tax = fields.Float(compute='_compute_amount', string='Total Tax', readonly=True, store=True)
     price_total = fields.Float(compute='_compute_amount', string='Total', readonly=True, store=True)
+    state = fields.Selection([
+        ('draft', 'Quotation'),
+        ('sent', 'Quotation Sent'),
+        ('sale', 'Sales Order'),
+        ('done', 'Done'),
+        ('cancel', 'Cancelled'),
+    ], related='order_id.state', string='Order Status', readonly=True, copy=False, store=True, default='draft')
 
     @api.depends('quantity', 'discount', 'price_unit', 'tax_id')
     def _compute_amount(self):

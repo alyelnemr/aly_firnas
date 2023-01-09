@@ -1,3 +1,5 @@
+import base64
+import uuid
 from collections import Counter
 
 from odoo import api, fields, models, tools, _
@@ -36,6 +38,7 @@ class StockMoveLine(models.Model):
         store=False,
     )
     lot_id = fields.Many2one('stock.production.lot', 'Lot/Serial Number', domain=_compute_lot_domain, check_company=True)
+    attachment_document = fields.Binary(string='Attachment', required=False)
 
     @api.onchange('lot_id')
     def change_calibration_date(self):
@@ -127,6 +130,19 @@ class StockMoveLine(models.Model):
 
         # Batching the creation of lots and associated each to the right ML (order is preserve in the create)
         lots = self.env['stock.production.lot'].create(lot_vals_to_create)
+        if ml.attachment_document:
+            IrAttachment = self.env['ir.attachment']
+            IrAttachment = IrAttachment.sudo().with_context(binary_field_real_user=self.env.user)
+            access_token = IrAttachment._generate_access_token()
+            file_name = ml.attachment_document.filename or lots.name + '_' + str(uuid.uuid4())
+            attachment_id = IrAttachment.create({
+                'name': file_name,
+                'datas': base64.b64encode(ml.attachment_document.read()),
+                'res_model': 'mail.compose.message',
+                'res_id': 0,
+                'access_token': access_token,
+            })
+            lots.message_post(attachment_ids=[attachment_id.id])
         for ml, lot in zip(associate_line_lot, lots):
             ml.write({'lot_id': lot.id})
 

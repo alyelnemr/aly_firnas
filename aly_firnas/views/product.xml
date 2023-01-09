@@ -13,6 +13,15 @@
 
                         </span>
                     </field>
+
+                    <xpath expr="//header/button[last()]" position="after">
+                        <button name="action_state_approve" attrs="{'invisible': [('state', '=', 'draft')]}"
+                                string="Reset to draft" type="object"/>
+                        <button name="action_state_approve" attrs="{'invisible': [('state', '=', 'approved')]}"
+                                string="Approve" type="object" class="oe_highlight"/>
+                        <field name="state" widget="statusbar" required="1"/>
+
+                    </xpath>
                 </data>
             </field>
         </record>

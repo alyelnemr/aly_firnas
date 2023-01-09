@@ -65,6 +65,7 @@
                        context="{'default_calibration_date': calibration_date}"
                        attrs="{'readonly': ['|', '&amp;', ('package_level_id', '!=', False), ('parent.picking_type_entire_packs', '=', True)], 'required': [('product_tracking', '=', 'serial'), ('product_dates_required', '=', True)]}"
                 />
+<!--                <field name="attachment_document"/>-->
                 <!--                           required="context.get('show_lots_text')"-->
             </field>
             <field name="lot_name" position="attributes">
@@ -86,6 +87,9 @@
 <!--                />-->
 <!--            </xpath>-->
             <xpath expr="//field[@name='lot_id']" position="replace">
+            </xpath>
+            <xpath expr="//field[@name='lot_name']" position="after">
+                <field name="picking_code" invisible="1"/>
                 <field name="lot_id_domain" invisible="1"/>
                 <field name="lot_id" groups="stock.group_production_lot"
                        attrs="{'column_invisible': [('parent.show_lots_text', '=', True)], 'invisible': [('lots_visible', '=', False)]}"
@@ -93,10 +97,12 @@
                        force_save="1"
                        domain="lot_id_domain"
                 />
-            </xpath>
-            <xpath expr="//field[@name='lot_id']" position="after">
-                <field name="lot_ref" force_save="1"/>
-                <field name="lot_description" force_save="1"/>
+                <field name="lot_ref" force_save="1"
+                       attrs="{'readonly': [('picking_code', '!=', 'incoming')]}"
+                />
+                <field name="lot_description" force_save="1"
+                       attrs="{'readonly': [('picking_code', '!=', 'incoming')]}"
+                />
             </xpath>
         </field>
     </record>

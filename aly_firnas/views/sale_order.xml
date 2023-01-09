@@ -31,7 +31,6 @@
                     <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
                     <field name="analytic_account_id" required="1"
                            context="{'default_partner_id':partner_invoice_id, 'default_name':name}"
-                           attrs="{'readonly': [('invoice_count','!=',0), ('state','=','sale')]}"
                            groups="analytic.group_analytic_accounting" force_save="1"/>
                     <field name="analytic_tag_ids" widget="many2many_tags" required="1"
                            options="{'no_create': False, 'no_quick_create': False, 'no_create_edit':False}"/>
@@ -42,6 +41,24 @@
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='analytic_tag_ids']" position="before">
                     <field name="analytic_account_id" optional="show"/>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='analytic_tag_ids']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'in', ('sale'))]}</attribute>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='name']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'in', ('sale'))]}</attribute>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='analytic_account_id']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'in', ('sale'))]}</attribute>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='price_unit']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'in', ('sale'))]}</attribute>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='tax_id']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'in', ('sale'))]}</attribute>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='product_uom_qty']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'in', ('sale'))]}</attribute>
                 </xpath>
             </field>
         </record>

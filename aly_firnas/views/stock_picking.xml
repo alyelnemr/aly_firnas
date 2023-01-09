@@ -56,4 +56,29 @@
             </xpath>
         </field>
     </record>
+
+
+    <record id="aly_view_quant_search_view" model="ir.ui.view">
+        <field name="name">aly.stock.quant.search</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.quant_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search/group" position="inside">
+                <separator/>
+                <filter string="Inventory" name="inventory_group_by" context="{'group_by': 'warehouse_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="aly_view_inventory_valuation_search" model="ir.ui.view">
+        <field name="name">aly.stock.valuation.layer.search</field>
+        <field name="model">stock.valuation.layer</field>
+        <field name="inherit_id" ref="stock_account.view_inventory_valuation_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search/group" position="inside">
+                <filter string="Inventory" name="group_inventory" domain="[]"
+                        context="{'group_by':'move_warehouse_id'}"/>
+            </xpath>
+        </field>
+    </record>
 </odoo>

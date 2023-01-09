@@ -11,6 +11,7 @@ class ProjectProject(models.Model):
         'crm.lead', string='Opportunity', check_company=True,
         domain="[('type', '=', 'opportunity'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]"
         , copy=False)
+    is_template = fields.Boolean(string='Is Template')
 
     def action_view_opportunity(self):
         action = self.env.ref('crm.crm_lead_opportunities').read()[0]

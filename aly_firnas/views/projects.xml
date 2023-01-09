@@ -38,6 +38,7 @@
                     <field name="user_id" string="Project Engineer" attrs="{'readonly':[('active','=',False)]}"/>
                     <field name="project_manager_id" string="Project Manager" attrs="{'readonly':[('active','=',False)]}"/>
                     <field name="opportunity_id" />
+                    <field name="is_template" />
                 </xpath>
             </field>
         </record>

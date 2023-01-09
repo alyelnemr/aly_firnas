@@ -11,7 +11,9 @@
     'depends': ['base', 'crm'],
     'data': [
         'security/security.xml',
+        'security/ir.model.access.csv',
         'views/crm_stage.xml',
+        'wizards/create_duplicate_project_crm_wizard.xml',
     ],
     'installable': True,
     'auto_install': False,
