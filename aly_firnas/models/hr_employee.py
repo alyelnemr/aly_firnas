@@ -30,7 +30,7 @@ class MyEmployee(models.Model):
         analytic_tag_exist = self.env['account.analytic.tag'].search([('name', '=', tag_name)])
         if not analytic_tag_exist:
             analytic_tag = self.env['account.analytic.tag'].create({'name': tag_name})
-            vals.update({'analytic_tag_ids': analytic_tag.ids})
+            vals.update({'analytic_tag_ids': [(4, analytic_tag.ids)]})
         res = super(MyEmployee, self).write(vals)
         return res
 
