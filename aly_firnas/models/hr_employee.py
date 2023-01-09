@@ -24,7 +24,7 @@ class MyEmployee(models.Model):
         return employee
 
     def write(self, vals):
-        employee_code = vals.get('employee_code')
+        employee_code = vals.get('employee_code') or self.employee_code
         tag_name = vals.get('employee_code') + ' - ' + vals.get('name') if employee_code else vals.get('name')
         analytic_tag_exist = self.env['account.analytic.tag'].search([('name', '=', tag_name)])
         if not analytic_tag_exist:
