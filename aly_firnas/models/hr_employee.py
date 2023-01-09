@@ -15,7 +15,8 @@ class MyEmployee(models.Model):
     def create(self, vals):
         employee = super(MyEmployee, self).create(vals)
         employee_code = vals.get('employee_code') or self.employee_code
-        tag_name = employee_code + ' - ' + vals.get('name') if employee_code else vals.get('name')
+        employee_name = vals.get('name') or self.name
+        tag_name = employee_code + ' - ' + employee_name if employee_code else employee_name
         analytic_tag_exist = self.env['account.analytic.tag'].search([('name', '=', tag_name)])
         if not analytic_tag_exist:
             analytic_tag = self.env['account.analytic.tag'].create({'name': tag_name})
@@ -24,7 +25,8 @@ class MyEmployee(models.Model):
 
     def write(self, vals):
         employee_code = vals.get('employee_code') or self.employee_code
-        tag_name = employee_code + ' - ' + vals.get('name') if employee_code else vals.get('name')
+        employee_name = vals.get('name') or self.name
+        tag_name = employee_code + ' - ' + employee_name if employee_code else employee_name
         analytic_tag_exist = self.env['account.analytic.tag'].search([('name', '=', tag_name)])
         if not analytic_tag_exist:
             analytic_tag = self.env['account.analytic.tag'].create({'name': tag_name})
