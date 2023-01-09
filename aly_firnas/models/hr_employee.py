@@ -14,18 +14,17 @@ class MyEmployee(models.Model):
     @api.model
     def create(self, vals):
         employee = super(MyEmployee, self).create(vals)
-        employee_code = vals.get('employee_code')
-        tag_name = vals.get('employee_code') + ' - ' + vals.get('name') if employee_code else vals.get('name')
+        employee_code = vals.get('employee_code') or self.employee_code
+        tag_name = employee_code + ' - ' + vals.get('name') if employee_code else vals.get('name')
         analytic_tag_exist = self.env['account.analytic.tag'].search([('name', '=', tag_name)])
         if not analytic_tag_exist:
             analytic_tag = self.env['account.analytic.tag'].create({'name': tag_name})
-        if not employee.analytic_tag_ids:
-            employee.analytic_tag_ids = analytic_tag.ids
+            employee.analytic_tag_ids = [(4, analytic_tag.ids)]
         return employee
 
     def write(self, vals):
         employee_code = vals.get('employee_code') or self.employee_code
-        tag_name = vals.get('employee_code') + ' - ' + vals.get('name') if employee_code else vals.get('name')
+        tag_name = employee_code + ' - ' + vals.get('name') if employee_code else vals.get('name')
         analytic_tag_exist = self.env['account.analytic.tag'].search([('name', '=', tag_name)])
         if not analytic_tag_exist:
             analytic_tag = self.env['account.analytic.tag'].create({'name': tag_name})
