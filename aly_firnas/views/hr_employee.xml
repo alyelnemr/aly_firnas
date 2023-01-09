@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <data>
                 <xpath expr="//field[@name='mobile_phone']" position="before">
-                    <field name="employee_code" />
+                    <field name="employee_code" required="1"/>
                 </xpath>
                 <xpath expr="//field[@name='user_id']" position="after">
                     <field name="analytic_tag_ids" widget="many2many_tags" />

@@ -9,7 +9,7 @@ class MyEmployee(models.Model):
     _inherit = "hr.employee"
 
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
-    employee_code = fields.Char('Employee Code', required=True)
+    employee_code = fields.Char('Employee Code', required=False)
 
     @api.model
     def create(self, vals):
@@ -23,7 +23,7 @@ class MyEmployee(models.Model):
         return employee
 
     def write(self, vals):
-        tag_name = self.employee_code + ' - ' + self.name
+        tag_name = self.employee_code + ' - ' + self.name if self.employee_code else self.name
         analytic_tag_exist = self.env['account.analytic.tag'].search([('name', '=', tag_name)])
         if not analytic_tag_exist:
             analytic_tag = self.env['account.analytic.tag'].create({'name': tag_name})
