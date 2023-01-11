@@ -2,6 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import time
+import pytz
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
@@ -170,13 +171,21 @@ class PurchaseAdvancePaymentInv(models.TransientModel):
                                        subtype_id=self.env.ref('mail.mt_note').id)
         return invoice
 
+    def get_date_by_timezone(self, par_date):
+        user_tz = self.env.user.tz or pytz.utc
+        local = pytz.timezone(user_tz)
+        return pytz.utc.localize(par_date).astimezone(local).date()
+
     def _prepare_invoice_values(self, order, name, amount, so_line):
+        invoice_vals = {}
+        order_date = self.get_date_by_timezone(order.date_order)
         invoice_vals = {
             'ref': order.partner_ref,
             'type': 'in_invoice',
             'invoice_origin': order.name,
-            'date': order.date_order,
-            'invoice_date_due': order.date_order,
+            'date': order_date,
+            'invoice_date': order_date,
+            'invoice_date_due': order_date,
             'invoice_user_id': order.user_id.id,
             'invoice_payment_term_id': order.payment_term_id.id,
             'narration': order.name,

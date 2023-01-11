@@ -1,5 +1,6 @@
 from odoo import api, fields, models, _
 from datetime import datetime
+import pytz
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools import float_is_zero, float_compare
 
@@ -183,16 +184,22 @@ class PurchaseOrder(models.Model):
 
         return self.env['purchase.order.line'].browse(invoiceable_line_ids)
 
+    def get_date_by_timezone(self, par_date):
+        user_tz = self.env.user.tz or pytz.utc
+        local = pytz.timezone(user_tz)
+        return pytz.utc.localize(par_date).astimezone(local).date()
+
     def _prepare_invoice(self):
+        order_date = self.get_date_by_timezone(self.date_order)
         invoice_vals = {
             'ref': self.partner_ref or '',
             'type': 'in_invoice',
             'narration': self.name,
             'invoice_origin': self.name,
             'currency_id': self.currency_id.id,
-            'date': self.date_order,
-            'invoice_date': self.date_order,
-            'invoice_date_due': self.date_order,
+            'date': order_date,
+            'invoice_date': order_date,
+            'invoice_date_due': order_date,
             'invoice_payment_term_id': self.payment_term_id.id,
             'invoice_user_id': self.user_id.id,
             'p_order_id': self.id,
@@ -222,6 +229,7 @@ class PurchaseOrder(models.Model):
         for order in self:
 
             invoice_vals = order._prepare_invoice()
+            current_company_id = order.company_id.id
             invoiceable_lines = order._get_invoiceable_lines(final)
 
             if not invoiceable_lines and not invoice_vals['invoice_line_ids']:
@@ -272,7 +280,7 @@ class PurchaseOrder(models.Model):
 
         # Manage the creation of invoices in sudo because a salesperson must be able to generate an invoice from a
         # sale order without "billing" access rights. However, he should not be able to create an invoice from scratch.
-        moves = self.env['account.move'].sudo().with_context(default_type='in_invoice').create(invoice_vals_list)
+        moves = self.env['account.move'].sudo().with_context(force_company=current_company_id).with_context(default_type='in_invoice').create(invoice_vals_list)
 
         # 4) Some moves might actually be refunds: convert them if the total amount is negative
         # We do this after the moves have been created since we need taxes, etc. to know if the total

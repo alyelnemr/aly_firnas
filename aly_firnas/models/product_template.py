@@ -46,6 +46,8 @@ class ProductProduct(models.Model):
             default['description_pickingin'] = False
         if 'description_picking' not in default:
             default['description_picking'] = False
+        if 'description_purchase' not in default:
+            default['description_purchase'] = False
         return super(ProductProduct, self).copy(default=default)
 
     def write(self, vals):

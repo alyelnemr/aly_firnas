@@ -33,7 +33,7 @@ class StockPicking(models.Model):
                     if picking.partner_id:
                         picking.message_unsubscribe(picking.partner_id.ids)
                     picking.message_subscribe([vals.get('partner_id')])
-        res = super(StockPicking, self).write(vals)
+        res = super(models.Model, self).write(vals)
         # Change locations of moves if those of the picking change
         after_vals = {}
         if vals.get('location_id'):
