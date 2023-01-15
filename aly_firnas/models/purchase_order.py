@@ -89,6 +89,26 @@ class PurchaseOrder(models.Model):
             if not rec.purchase_order_approve_user_id:
                 raise UserError(_('Please Set User To Approve'))
             rec.state = 'waiting approval'
+            reg = {
+                'res_id': rec.id,
+                'res_model': 'purchase.order',
+                'partner_id': rec.purchase_order_approve_user_id.partner_id.id,
+            }
+            followers = self.env['mail.followers'].search(
+                [('res_id', '=', rec.id),
+                 ('res_model', '=', 'purchase.order'),
+                 ('partner_id', '=', rec.purchase_order_approve_user_id.partner_id.id)])
+            if not followers:
+                follower_id = self.env['mail.followers'].create(reg)
+
+    @api.returns('mail.message', lambda value: value.id)
+    def message_post(self, **kwargs):
+        if 'subtype' in kwargs and kwargs['subtype'] == 'mail.mt_note':
+            base_url = self.env['ir.config_parameter'].get_param('web.base.url')
+            full_url = base_url + '/web?#id=' + str(self.id) + '&model=purchase.order&view_type=form'
+            full_url = '<a href="' + full_url + '" target="_new">' + self.name + '</a>' + '<br /><br />'
+            kwargs['body'] = full_url + kwargs['body']
+        return super(PurchaseOrder, self.with_context(mail_post_autofollow=True)).message_post(**kwargs)
 
     def _add_supplier_to_product(self):
         # Add the partner in the supplier list of the product if the supplier is not registered for
@@ -292,6 +312,22 @@ class PurchaseOrder(models.Model):
                                         values={'self': move, 'origin': move.line_ids.mapped('sale_line_ids.order_id')},
                                         subtype_id=self.env.ref('mail.mt_note').id
                                         )
+
+            followers = self.env['mail.followers'].search(
+                [('res_id', '=', self.id),
+                 ('res_model', '=', 'purchase.order')])
+            for fol in followers:
+                follower_account_move = self.env['mail.followers'].search(
+                    [('res_id', '=', move.id),
+                     ('res_model', '=', 'account.move'),
+                     ('partner_id', '=', fol.partner_id.id)])
+                if not follower_account_move:
+                    reg = {
+                        'res_id': move.id,
+                        'res_model': 'account.move',
+                        'partner_id': fol.partner_id.id,
+                    }
+                    follower_id = self.env['mail.followers'].create(reg)
         return moves
 
     def action_return_view_invoice(self):

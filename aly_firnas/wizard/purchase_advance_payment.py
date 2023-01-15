@@ -169,6 +169,22 @@ class PurchaseAdvancePaymentInv(models.TransientModel):
         invoice.message_post_with_view('mail.message_origin_link',
                                        values={'self': invoice, 'origin': order},
                                        subtype_id=self.env.ref('mail.mt_note').id)
+        for move in invoice:
+            followers = self.env['mail.followers'].search(
+                [('res_id', '=', order.id),
+                 ('res_model', '=', 'purchase.order')])
+            for fol in followers:
+                follower_account_move = self.env['mail.followers'].search(
+                    [('res_id', '=', move.id),
+                     ('res_model', '=', 'account.move'),
+                     ('partner_id', '=', fol.partner_id.id)])
+                if not follower_account_move:
+                    reg = {
+                        'res_id': move.id,
+                        'res_model': 'account.move',
+                        'partner_id': fol.partner_id.id,
+                    }
+                    follower_id = self.env['mail.followers'].create(reg)
         return invoice
 
     def get_date_by_timezone(self, par_date):
