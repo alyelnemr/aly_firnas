@@ -64,7 +64,7 @@
             <field name="body_html" type="html">
                 <div style="margin: 0px; padding: 0px;">
                     <p style="margin: 0px; padding: 0px; font-size: 13px;">
-                        Dear ${object.partner_id.name or ''},
+                        Dear ${object.partner_id.name or ${object.partner_id.email} or ''},
                         <br/>
                         <br/>
                         Here is your WH Transaction

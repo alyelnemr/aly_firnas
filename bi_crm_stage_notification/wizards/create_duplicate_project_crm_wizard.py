@@ -23,7 +23,7 @@ class CreateOrDuplicateProjectWizard(models.TransientModel):
                 raise UserError('You can only create a project for an opportunity.')
             else:
                 if not self.is_create_project:
-                    stage_id = self.env['project.stage'].search([], limit=1)
+                    stage_id = self.env['project.stage'].search([('name', '=', 'Expected')], limit=1)
                     vals = {
                         'name': opportunity_obj.name,
                         'stage_id': stage_id.id,
@@ -36,16 +36,20 @@ class CreateOrDuplicateProjectWizard(models.TransientModel):
                         'opportunity_id': opportunity_obj.id,
                         'subtask_project_id': False,
                         'analytic_account_id': opportunity_obj.analytic_account_id.id,
+                        'is_template': False,
                     }
                     project_copy = project_project_obj.create(vals)
                 else:
+                    stage_id = self.env['project.stage'].search([('name', '=', 'Expected')], limit=1)
                     project_copy = project_project_obj.browse(self.wizard_project_id.id).copy(
                         default={
                             'name': opportunity_obj.name,
                             'opportunity_id': opportunity_obj.id,
                             'partner_id': opportunity_obj.partner_id.id,
                             'subtask_project_id': False,
+                            'stage_id': stage_id.id,
                             'analytic_account_id': opportunity_obj.analytic_account_id.id,
+                            'is_template': False
                         })
                 if project_copy and project_copy.subtask_project_id:
                     project_copy.subtask_project_id = False

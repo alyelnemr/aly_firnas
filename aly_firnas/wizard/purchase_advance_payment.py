@@ -2,6 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import time
+import pytz
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
@@ -168,15 +169,39 @@ class PurchaseAdvancePaymentInv(models.TransientModel):
         invoice.message_post_with_view('mail.message_origin_link',
                                        values={'self': invoice, 'origin': order},
                                        subtype_id=self.env.ref('mail.mt_note').id)
+        for move in invoice:
+            followers = self.env['mail.followers'].search(
+                [('res_id', '=', order.id),
+                 ('res_model', '=', 'purchase.order')])
+            for fol in followers:
+                follower_account_move = self.env['mail.followers'].search(
+                    [('res_id', '=', move.id),
+                     ('res_model', '=', 'account.move'),
+                     ('partner_id', '=', fol.partner_id.id)])
+                if not follower_account_move:
+                    reg = {
+                        'res_id': move.id,
+                        'res_model': 'account.move',
+                        'partner_id': fol.partner_id.id,
+                    }
+                    follower_id = self.env['mail.followers'].create(reg)
         return invoice
 
+    def get_date_by_timezone(self, par_date):
+        user_tz = self.env.user.tz or pytz.utc
+        local = pytz.timezone(user_tz)
+        return pytz.utc.localize(par_date).astimezone(local).date()
+
     def _prepare_invoice_values(self, order, name, amount, so_line):
+        invoice_vals = {}
+        order_date = self.get_date_by_timezone(order.date_order)
         invoice_vals = {
             'ref': order.partner_ref,
             'type': 'in_invoice',
             'invoice_origin': order.name,
-            'date': order.date_order,
-            'invoice_date_due': order.date_order,
+            'date': order_date,
+            'invoice_date': order_date,
+            'invoice_date_due': order_date,
             'invoice_user_id': order.user_id.id,
             'invoice_payment_term_id': order.payment_term_id.id,
             'narration': order.name,

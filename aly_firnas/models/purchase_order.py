@@ -1,5 +1,6 @@
 from odoo import api, fields, models, _
 from datetime import datetime
+import pytz
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools import float_is_zero, float_compare
 
@@ -88,6 +89,26 @@ class PurchaseOrder(models.Model):
             if not rec.purchase_order_approve_user_id:
                 raise UserError(_('Please Set User To Approve'))
             rec.state = 'waiting approval'
+            reg = {
+                'res_id': rec.id,
+                'res_model': 'purchase.order',
+                'partner_id': rec.purchase_order_approve_user_id.partner_id.id,
+            }
+            followers = self.env['mail.followers'].search(
+                [('res_id', '=', rec.id),
+                 ('res_model', '=', 'purchase.order'),
+                 ('partner_id', '=', rec.purchase_order_approve_user_id.partner_id.id)])
+            if not followers:
+                follower_id = self.env['mail.followers'].create(reg)
+
+    @api.returns('mail.message', lambda value: value.id)
+    def message_post(self, **kwargs):
+        if 'subtype' in kwargs and kwargs['subtype'] == 'mail.mt_note':
+            base_url = self.env['ir.config_parameter'].get_param('web.base.url')
+            full_url = base_url + '/web?#id=' + str(self.id) + '&model=purchase.order&view_type=form'
+            full_url = '<a href="' + full_url + '" target="_new">' + self.name + '</a>' + '<br /><br />'
+            kwargs['body'] = full_url + kwargs['body']
+        return super(PurchaseOrder, self.with_context(mail_post_autofollow=True)).message_post(**kwargs)
 
     def _add_supplier_to_product(self):
         # Add the partner in the supplier list of the product if the supplier is not registered for
@@ -183,16 +204,22 @@ class PurchaseOrder(models.Model):
 
         return self.env['purchase.order.line'].browse(invoiceable_line_ids)
 
+    def get_date_by_timezone(self, par_date):
+        user_tz = self.env.user.tz or pytz.utc
+        local = pytz.timezone(user_tz)
+        return pytz.utc.localize(par_date).astimezone(local).date()
+
     def _prepare_invoice(self):
+        order_date = self.get_date_by_timezone(self.date_order)
         invoice_vals = {
             'ref': self.partner_ref or '',
             'type': 'in_invoice',
             'narration': self.name,
             'invoice_origin': self.name,
             'currency_id': self.currency_id.id,
-            'date': self.date_order,
-            'invoice_date': self.date_order,
-            'invoice_date_due': self.date_order,
+            'date': order_date,
+            'invoice_date': order_date,
+            'invoice_date_due': order_date,
             'invoice_payment_term_id': self.payment_term_id.id,
             'invoice_user_id': self.user_id.id,
             'p_order_id': self.id,
@@ -222,6 +249,7 @@ class PurchaseOrder(models.Model):
         for order in self:
 
             invoice_vals = order._prepare_invoice()
+            current_company_id = order.company_id.id
             invoiceable_lines = order._get_invoiceable_lines(final)
 
             if not invoiceable_lines and not invoice_vals['invoice_line_ids']:
@@ -272,7 +300,7 @@ class PurchaseOrder(models.Model):
 
         # Manage the creation of invoices in sudo because a salesperson must be able to generate an invoice from a
         # sale order without "billing" access rights. However, he should not be able to create an invoice from scratch.
-        moves = self.env['account.move'].sudo().with_context(default_type='in_invoice').create(invoice_vals_list)
+        moves = self.env['account.move'].sudo().with_context(force_company=current_company_id).with_context(default_type='in_invoice').create(invoice_vals_list)
 
         # 4) Some moves might actually be refunds: convert them if the total amount is negative
         # We do this after the moves have been created since we need taxes, etc. to know if the total
@@ -284,6 +312,22 @@ class PurchaseOrder(models.Model):
                                         values={'self': move, 'origin': move.line_ids.mapped('sale_line_ids.order_id')},
                                         subtype_id=self.env.ref('mail.mt_note').id
                                         )
+
+            followers = self.env['mail.followers'].search(
+                [('res_id', '=', self.id),
+                 ('res_model', '=', 'purchase.order')])
+            for fol in followers:
+                follower_account_move = self.env['mail.followers'].search(
+                    [('res_id', '=', move.id),
+                     ('res_model', '=', 'account.move'),
+                     ('partner_id', '=', fol.partner_id.id)])
+                if not follower_account_move:
+                    reg = {
+                        'res_id': move.id,
+                        'res_model': 'account.move',
+                        'partner_id': fol.partner_id.id,
+                    }
+                    follower_id = self.env['mail.followers'].create(reg)
         return moves
 
     def action_return_view_invoice(self):
