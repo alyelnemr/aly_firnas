@@ -33,7 +33,7 @@ class ProductProduct(models.Model):
         if 'default_code' not in default:
             old_code = self.env['product.template'].search([('default_code', '=', self.default_code)])
             new_code = ''
-            if old_code:
+            if old_code and self.default_code:
                 new_code = self.default_code + '_' + str(len(old_code))
             default['default_code'] = new_code
         if 'description_sale' not in default:
