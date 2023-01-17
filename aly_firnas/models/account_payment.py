@@ -52,7 +52,7 @@ class AccountPayment(models.Model):
         for rec in self:
             rec.is_manual = rec.currency_id != rec.company_id.currency_id
 
-    @api.onchange("currency_id", "date_order")
+    @api.onchange("currency_id", 'date_order')
     def _onchange_currency_change_rate(self, currency_changed=True):
         today = self.payment_date or fields.Date.today()
         main_currency = self.env.company.currency_id
