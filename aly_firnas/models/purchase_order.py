@@ -104,7 +104,7 @@ class PurchaseOrder(models.Model):
     @api.returns('mail.message', lambda value: value.id)
     def message_post(self, **kwargs):
         if 'subtype' in kwargs and kwargs['subtype'] == 'mail.mt_note':
-            base_url = self.env['ir.config_parameter'].get_param('web.base.url')
+            base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
             full_url = base_url + '/web?#id=' + str(self.id) + '&model=purchase.order&view_type=form'
             full_url = '<a href="' + full_url + '" target="_new">' + self.name + '</a>' + '<br /><br />'
             kwargs['body'] = full_url + kwargs['body']
