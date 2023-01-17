@@ -180,7 +180,7 @@ class AccountMove(models.Model):
     def _onchange_currency_change_rate(self, currency_changed=True):
         today = self.date or self.invoice_date or fields.Date.today()
         main_currency = self.env.company.currency_id
-        ctx = {"company_id": self.company_id.id, "date": today}
+        ctx = {"company_id": self.company_id, "date": today}
         custom_rate = main_currency.with_context(**ctx)._get_conversion_rate(
             main_currency, self.currency_id, self.company_id, today
         )
