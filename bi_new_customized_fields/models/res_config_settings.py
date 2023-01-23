@@ -6,12 +6,16 @@ class AlyResConfigSaleSettings(models.TransientModel):
 
     aly_so_payment_schedule = fields.Html(string="Payment Schedule")
     aly_so_terms_condition = fields.Html(string="Terms and Condition")
+    aly_inv_payment_schedule = fields.Html(string="Payment Schedule")
+    aly_inv_terms_condition = fields.Html(string="Terms and Condition")
 
     def get_values(self):
         aly_res = super(AlyResConfigSaleSettings, self).get_values()
         aly_res.update(
             aly_so_payment_schedule=self.env['ir.config_parameter'].sudo().get_param('aly_so_payment_schedule'),
             aly_so_terms_condition=self.env['ir.config_parameter'].sudo().get_param('aly_so_terms_condition'),
+            aly_inv_payment_schedule=self.env['ir.config_parameter'].sudo().get_param('aly_inv_payment_schedule'),
+            aly_inv_terms_condition=self.env['ir.config_parameter'].sudo().get_param('aly_inv_terms_condition'),
         )
         return aly_res
 
@@ -19,3 +23,5 @@ class AlyResConfigSaleSettings(models.TransientModel):
         super(AlyResConfigSaleSettings, self).set_values()
         self.env['ir.config_parameter'].set_param('aly_so_payment_schedule', self.aly_so_payment_schedule)
         self.env['ir.config_parameter'].set_param('aly_so_terms_condition', self.aly_so_terms_condition)
+        self.env['ir.config_parameter'].set_param('aly_inv_payment_schedule', self.aly_inv_payment_schedule)
+        self.env['ir.config_parameter'].set_param('aly_inv_terms_condition', self.aly_inv_terms_condition)

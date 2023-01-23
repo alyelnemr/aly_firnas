@@ -214,4 +214,8 @@ class SaleOrder(models.Model):
         invoice_vals['analytic_account_id'] = self.analytic_account_id.id
         invoice_vals['analytic_tag_ids'] = self.analytic_tag_ids.ids
         invoice_vals['s_order_id'] = self.id
+        invoice_vals['partner_invoice_id'] = self.partner_invoice_id.id
+        invoice_vals['partner_contact'] = self.partner_contact.id
+        invoice_vals['standard_payment_schedule'] = self.standard_payment_schedule
+        invoice_vals['terms_and_conditions'] = self.terms_and_conditions
         return invoice_vals
