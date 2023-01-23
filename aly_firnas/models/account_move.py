@@ -1,5 +1,6 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
+from datetime import datetime
 
 
 class AccountMove(models.Model):
@@ -104,6 +105,19 @@ class AccountMove(models.Model):
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",)
     standard_payment_schedule = fields.Html(string="Standard Payment Schedule", default=_set_default_standard_payment)
     terms_and_conditions = fields.Html(string="Terms And Conditions", default=_set_default_terms_conditions)
+    accountant_id = fields.Many2one('hr.employee', string='Accountant', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+
+    def get_report_filename(self, report_type):
+        x = self
+        project_name = self.analytic_account_id.name[0:10]
+        po_name = self.name
+        report_type_string = ' PO' if report_type == 'po' else ' RFQ'
+        report_number = '2700' if report_type == 'po' else '2500'
+        current_time = time = datetime.now()
+        current_time_str = time.strftime("%y%m%d")
+        # file_name = project_name + '- ' + report_number + '-00- ' + po_name + '_' + current_time_str
+        file_name = self.name
+        return file_name
 
     @api.onchange('partner_id')
     def onchange_partner_id(self):

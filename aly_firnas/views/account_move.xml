@@ -18,6 +18,16 @@
             <field name="model">account.move</field>
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//page[last()]" position="after">
+                    <page id="page_terms" string="Terms" groups="account.group_account_user">
+                        <group>
+                            <group>
+                                <field name="standard_payment_schedule" widget="html" required="1"/>
+                                <field name="terms_and_conditions" widget="html" required="1"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
                 <xpath expr="//field[@name='partner_id']" position="attributes">
 
                     <attribute name="attrs">
@@ -27,8 +37,8 @@
                            attrs="{'invisible': [('type', 'not in', ('entry', 'in_invoice', 'out_invoice', 'in_refund', 'in_receipt'))]}"/>
                 </xpath>
                 <xpath expr="//field[@name='partner_id']" position="after">
-                    <field name="partner_contact"/>
-                    <field name="partner_invoice_id"/>
+                    <field name="partner_contact" attrs="{'invisible': [('type', 'not in', ('in_invoice'))]}"/>
+                    <field name="partner_invoice_id" attrs="{'invisible': [('type', 'not in', ('in_invoice'))]}"/>
                     <field name="analytic_account_id" required="1"
                            attrs="{'invisible': [('type', 'not in', ('entry', 'in_invoice', 'out_invoice', 'in_refund', 'in_receipt'))]}"/>
                     <field name="analytic_tag_ids" widget="many2many_tags" required="1"
@@ -86,6 +96,7 @@
                             />
                         </button>
                     </div>
+                    <field name="accountant_id" />
                 </xpath>
                 <xpath expr="//field[@name='date']" position="attributes">
                     <attribute name="attrs">{'invisible': False}</attribute>

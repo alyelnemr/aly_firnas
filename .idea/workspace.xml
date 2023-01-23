@@ -4,13 +4,74 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="[fix] issue of hr employee when no code" />
+    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="[add] invoice format video">
+      <change afterPath="$PROJECT_DIR$/aly_firnas/report/invoice_template.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/aly_firnas/report/po_template.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/aly_firnas/report/rfq_template.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/aly_firnas/views/aly_invoice_report.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/__manifest__.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/__manifest__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/models/account_move.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/account_move.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/report/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/report/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/report/purchase_report.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/report/purchase_report.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/views/account_move.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/account_move.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bi_new_customized_fields/views/account_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/bi_new_customized_fields/views/account_settings.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2Kii9Ojj4NEymuI9V3eDcI6319m" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "D:/Firnas Shuman/Firnas Code/FirnasAddons/aly_firnas/views"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\views" />
+      <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\report" />
+    </key>
+  </component>
   <component name="RunManager">
+    <configuration name="Firnas" type="PythonConfigurationType" factoryName="Python">
+      <module name="server" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="D:\Odoo Installations\Odoo 13.0e\python\python.exe" />
+      <option name="SDK_NAME" value="Python 3.7 (Odoo13)" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../Odoo Installations/Odoo 13.0e/server" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../../Odoo Installations/Odoo 13.0e/server/odoo-bin" />
+      <option name="PARAMETERS" value="-c odoo13.conf" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="tests" factoryName="Autodetect">
       <module name="aly_firnas" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -26,7 +87,49 @@
       <method v="2" />
     </configuration>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="[fix] issue of hr employee when no code" />
+      <created>1674463652085</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1674463652085</updated>
+    </task>
+    <task id="LOCAL-00001" summary="[fix] issue of hr employee when no code">
+      <created>1674463965818</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1674463965818</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="[add] invoice format video" />
+    <MESSAGE value="[add] invoice format" />
+    <option name="LAST_COMMIT_MESSAGE" value="[add] invoice format video" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/aly_firnas/models/purchase_order.py</url>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

@@ -6,7 +6,7 @@
             <field name="priority" eval="50"/>
             <field name="inherit_id" ref="base.res_config_settings_view_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='has_accounting_entries']" position="inside">
+                <xpath expr="//field[@name='has_accounting_entries']" position="after">
                     <h2>Firnas Shuman - Customer Invoice Terms</h2>
                     <group>
                         <group>
