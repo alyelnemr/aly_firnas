@@ -4,18 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="[add] invoice format video">
-      <change afterPath="$PROJECT_DIR$/aly_firnas/report/invoice_template.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/aly_firnas/report/po_template.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/aly_firnas/report/rfq_template.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/aly_firnas/views/aly_invoice_report.xml" afterDir="false" />
+    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/__manifest__.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/__manifest__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/models/account_move.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/account_move.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/report/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/report/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/report/purchase_report.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/report/purchase_report.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/views/account_move.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/account_move.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_new_customized_fields/views/account_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/bi_new_customized_fields/views/account_settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/report/invoice_template.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/report/invoice_template.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/views/aly_invoice_report.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/aly_invoice_report.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,7 +95,14 @@
       <option name="project" value="LOCAL" />
       <updated>1674463965818</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="[add] invoice format video2">
+      <created>1674483716492</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1674483716492</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -120,14 +119,21 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="[add] invoice format video" />
     <MESSAGE value="[add] invoice format" />
-    <option name="LAST_COMMIT_MESSAGE" value="[add] invoice format video" />
+    <MESSAGE value="[add] invoice format video2" />
+    <option name="LAST_COMMIT_MESSAGE" value="[add] invoice format video2" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/aly_firnas/models/purchase_order.py</url>
-          <option name="timeStamp" value="1" />
+          <url>file://$PROJECT_DIR$/aly_firnas/report/invoice_template.py</url>
+          <line>20</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/aly_firnas/report/invoice_template.py</url>
+          <line>42</line>
+          <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

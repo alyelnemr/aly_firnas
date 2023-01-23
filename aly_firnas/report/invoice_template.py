@@ -18,31 +18,31 @@ class PurchaseReportTemplatePrimary(models.AbstractModel):
 
     @api.model
     def _get_report_values(self, docids, data=None):
-        model = 'account.invoice'
+        model = 'account.move'
         active_id = self.env.context.get('active_id')
         docs = self.env[model].sudo().browse(docids)
-        line_section = docs.order_line[0]
-        for indx, line in enumerate(docs.order_line):
+        line_section = docs.invoice_line_ids[0]
+        for indx, line in enumerate(docs.invoice_line_ids):
             if line.display_type == 'line_section':
                 line_section = line.name
                 line.price_subtotal = 0.0
-                for sub_line in docs.order_line[indx + 1:]:
+                for sub_line in docs.invoice_line_ids[indx + 1:]:
                     if sub_line.display_type == 'line_section' and line.name != sub_line.name:
                         break
                     else:
                         line.price_subtotal += sub_line.price_subtotal
 
         discount = 0
-        for line in docs.order_line:
+        for line in docs.invoice_line_ids:
             discount += line.discount
         is_discounted = discount > 0
         is_taxed = docs.amount_tax > 0
         rep_vendor_name = docs.partner_id.name if docs.partner_id else ''
-        rep_payment_term = docs.payment_term_id.name if docs.payment_term_id else ''
-        rep_partner_ref = docs.partner_ref if docs.partner_ref else ''
-        order_date = docs.invoice_date.date() if docs.invoice_date else False
-        invoice_date = self.get_date_by_timezone(docs.invoice_date)
-        payment_days = docs.payment_term_id.line_ids[0].days if docs.payment_term_id.line_ids else 0
+        rep_payment_term = docs.invoice_payment_term_id.name if docs.invoice_payment_term_id else ''
+        rep_partner_ref = docs.ref if docs.ref else ''
+        _invoice_date = docs.invoice_date.date() if docs.invoice_date else docs.date if docs.date else False
+        invoice_date = self.get_date_by_timezone(_invoice_date)
+        payment_days = docs.invoice_payment_term_id.line_ids[0].days if docs.invoice_payment_term_id.line_ids else 0
         due_date = invoice_date + datetime.timedelta(days=payment_days)
         docs.standard_payment_schedule = docs.standard_payment_schedule.replace('</p><p>', '<br />') if docs.standard_payment_schedule else False
         docs.terms_and_conditions = docs.terms_and_conditions.replace('</p><p>', '<br />') if docs.terms_and_conditions else False
