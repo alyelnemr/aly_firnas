@@ -70,7 +70,7 @@
                     <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
                         <t t-if="o.user_id">
                             <t t-if="o.accountant_id">
-                                <t t-if="o.accountant_id.mobile_phone">
+                                <t t-if="o.accountant_id.mobile">
                                     Phone
                                 </t>
                             </t>
@@ -79,8 +79,8 @@
                     <td style="width:35%;">
                         <t t-if="o.user_id">
                             <t t-if="o.accountant_id">
-                                <t t-if="o.accountant_id.mobile_phone">
-                                    <span t-field="o.accountant_id.mobile_phone" style="font-weight: normal;"
+                                <t t-if="o.accountant_id.mobile">
+                                    <span t-field="o.accountant_id.mobile" style="font-weight: normal;"
                                           class="text-left"/>
                                 </t>
                             </t>
@@ -117,7 +117,7 @@
                         <t t-if="o.ref">Reference</t>
                     </th>
                     <td style="width:35%;">
-                        <span t-field="o.partner_ref" style="font-weight: normal;" class="text-left"/>
+                        <span t-field="o.ref" style="font-weight: normal;" class="text-left"/>
                     </td>
                 </tr>
                 <tr>
@@ -142,10 +142,10 @@
                         </t>
                     </td>
                     <th style="width:15%;color:rgb(86, 56, 90);font-weight: bold; ">
-                        <t t-if="o.payment_term_id">Payment Term</t>
+                        <t t-if="o.invoice_payment_term_id">Payment Term</t>
                     </th>
                     <td style="width:35%;">
-                        <span t-field="o.payment_term_id.name" style="font-weight: normal;" class="text-left"/>
+                        <span t-field="o.invoice_payment_term_id.name" style="font-weight: normal;" class="text-left"/>
                     </td>
                 </tr>
                 <tr>
@@ -213,11 +213,11 @@
                                 </td>
                                 <td class="text-right"
                                     style="padding-left: 5px; font-family: Open Sans !important;">
-                                    <span t-field="line.product_qty"/>
+                                    <span t-field="line.quantity"/>
                                 </td>
                                 <td class="text-right"
                                     style="padding-left: 5px; font-family: Open Sans !important;">
-                                    <span t-field="line.product_uom.name"/>
+                                    <span t-field="line.product_uom_id.name"/>
                                 </td>
                                 <td class="text-right"
                                     style="padding-left: 5px; font-family: Open Sans !important;">
@@ -234,7 +234,7 @@
                                 <t t-if="is_taxed">
                                     <td class="text-right"
                                         style="padding-left: 5px; font-family: Open Sans !important;">
-                                        <span t-esc="', '.join(map(lambda x: x.name, line.taxes_id))"/>
+                                        <span t-esc="', '.join(map(lambda x: x.name, line.tax_ids))"/>
                                     </td>
                                 </t>
                                 <td class="text-right"
@@ -369,7 +369,7 @@
                                         <div>
                                             <p style="font-size: 15px !important; font-family: verdana !important;">
                                                 <t t-if="o.standard_payment_schedule">
-                                                    <t t-raw="o.standard_payment_schedule.replace('[$vendor_name$]', rep_vendor_name).replace('[$payment_terms$]', rep_payment_term).replace('[$vendor_reference$]', rep_partner_ref)"
+                                                    <t t-raw="o.standard_payment_schedule"
                                                        style="font-family: verdana !important; font-size: 15px !important;"/>
                                                 </t>
                                             </p>
@@ -386,7 +386,7 @@
                                         </div>
                                         <div>
                                             <p style="font-size: 15px !important; font-family: verdana !important;">
-                                                <t t-raw="o.terms_and_conditions.replace('[$vendor_name$]', rep_vendor_name).replace('[$payment_terms$]', rep_payment_term).replace('[$vendor_reference$]', rep_partner_ref)"
+                                                <t t-raw="o.terms_and_conditions"
                                                    style="font-family: verdana !important; font-size: 15px !important;"/>
                                             </p>
                                         </div>
@@ -399,48 +399,6 @@
                 </table>
             </t>
             <br/>
-            <table style="width:100%;border: 0px;margin-left: 10px;">
-                <tr>
-                    <th style="width:50%;color:rgb(86, 56, 90); ">
-                        <t t-if="o.is_print_firnas_signature">
-                            <span t-field="o.company_id.name" style="font-weight: bold; font-size: 15px !important;"
-                                  class="text-left"/>
-                        </t>
-                    </th>
-                    <th style="width:50%;color:rgb(86, 56, 90); ">
-                        <t t-if="o.is_print_vendor_signature">
-                            <span t-field="o.partner_id.name" style="font-weight: bold; font-size: 15px !important;"
-                                  class="text-left"/>
-                        </t>
-                    </th>
-                </tr>
-                <tr>
-                    <td>
-                        <br/>
-                    </td>
-                </tr>
-                <tr>
-                    <th style="width:50%;color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">
-                        <t t-if="o.is_print_firnas_signature">Signature</t>
-                    </th>
-                    <th style="width:50%;color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">
-                        <t t-if="o.is_print_vendor_signature">Signature</t>
-                    </th>
-                </tr>
-                <tr>
-                    <td>
-                        <br/>
-                    </td>
-                </tr>
-                <tr>
-                    <th style="width:50%;color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">
-                        <t t-if="o.is_print_firnas_signature">Name and Title</t>
-                    </th>
-                    <th style="width:50%;color:rgb(86, 56, 90); font-weight: bold; font-size: 15px !important;">
-                        <t t-if="o.is_print_vendor_signature">Name and Title</t>
-                    </th>
-                </tr>
-            </table>
 
         </div>
     </template>

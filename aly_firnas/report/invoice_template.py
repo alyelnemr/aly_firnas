@@ -40,8 +40,7 @@ class PurchaseReportTemplatePrimary(models.AbstractModel):
         rep_vendor_name = docs.partner_id.name if docs.partner_id else ''
         rep_payment_term = docs.invoice_payment_term_id.name if docs.invoice_payment_term_id else ''
         rep_partner_ref = docs.ref if docs.ref else ''
-        _invoice_date = docs.invoice_date.date() if docs.invoice_date else docs.date if docs.date else False
-        invoice_date = self.get_date_by_timezone(_invoice_date)
+        invoice_date = docs.invoice_date if docs.invoice_date else docs.date if docs.date else False
         payment_days = docs.invoice_payment_term_id.line_ids[0].days if docs.invoice_payment_term_id.line_ids else 0
         due_date = invoice_date + datetime.timedelta(days=payment_days)
         docs.standard_payment_schedule = docs.standard_payment_schedule.replace('</p><p>', '<br />') if docs.standard_payment_schedule else False
