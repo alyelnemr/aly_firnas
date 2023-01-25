@@ -294,6 +294,26 @@
             </field>
         </record>
 
+        <record id="aly_po_mail_template" model="mail.template">
+            <field name="name">Aly PO: Send by email</field>
+            <field name="model_id" ref="purchase.model_purchase_order"/>
+            <field name="email_from">${user.email}</field>
+            <field name="email_to">${object.purchase_order_approve_user_id.email}</field>
+            <field name="subject">${object.name} Approval</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Dear ${object.purchase_order_approve_user_id.name or ${object.purchase_order_approve_user_id.email} or ''},
+                        <br/>
+                        <br/>
+                        Kindly for your approval on
+                        <strong>${object.name}</strong>
+                    </p>
+                </div>
+            </field>
+            <field name="lang">{{ object.purchase_order_approve_user_id.lang }}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
 
     </data>
 </odoo>

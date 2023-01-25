@@ -57,9 +57,10 @@ class ProductProduct(models.Model):
                 raise ValidationError("Sorry you can't edit state for products!")
         if 'default_code' in vals:
             new_code = vals['default_code']
-            old_code = self.env['product.template'].search([('default_code', '=', new_code)])
-            if old_code:
-                raise ValidationError("Internal Reference can only be assigned to one product .")
+            if new_code and new_code != '':
+                old_code = self.env['product.template'].search([('default_code', '=', new_code)])
+                if old_code:
+                    raise ValidationError("Internal Reference can only be assigned to one product .")
         res = super(ProductProduct, self).write(vals)
         return res
 

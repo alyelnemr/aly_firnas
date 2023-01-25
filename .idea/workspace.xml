@@ -6,9 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/models/account_move.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/account_move.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/report/invoice_template.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/report/invoice_template.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/views/aly_invoice_report.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/aly_invoice_report.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/models/product_template.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/product_template.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/models/purchase_order.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/purchase_order.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/models/res_config_settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/res_config_settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/views/purchase_order.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/purchase_order.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/foss_product_bundle/models/sale.py" beforeDir="false" afterPath="$PROJECT_DIR$/foss_product_bundle/models/sale.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,7 +112,14 @@
       <option name="project" value="LOCAL" />
       <updated>1674484860594</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="[add] invoice format video3">
+      <created>1674550277951</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1674550277951</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -128,25 +137,41 @@
     <MESSAGE value="[add] invoice format video" />
     <MESSAGE value="[add] invoice format" />
     <MESSAGE value="[add] invoice format video2" />
-    <option name="LAST_COMMIT_MESSAGE" value="[add] invoice format video2" />
+    <MESSAGE value="[add] invoice format video3" />
+    <option name="LAST_COMMIT_MESSAGE" value="[add] invoice format video3" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/aly_firnas/report/invoice_template.py</url>
-          <line>20</line>
-          <option name="timeStamp" value="2" />
+          <url>file://$PROJECT_DIR$/aly_firnas/models/res_config_settings.py</url>
+          <line>8</line>
+          <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/aly_firnas/report/invoice_template.py</url>
-          <line>42</line>
-          <option name="timeStamp" value="3" />
+          <url>file://$PROJECT_DIR$/foss_product_bundle/models/sale.py</url>
+          <line>57</line>
+          <option name="timeStamp" value="11" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/aly_firnas/report/invoice_template.py</url>
-          <line>50</line>
-          <option name="timeStamp" value="4" />
+          <url>file://$PROJECT_DIR$/foss_product_bundle/models/sale.py</url>
+          <line>157</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/foss_product_bundle/models/sale.py</url>
+          <line>149</line>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/foss_product_bundle/models/sale.py</url>
+          <line>103</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/foss_product_bundle/models/sale.py</url>
+          <line>99</line>
+          <option name="timeStamp" value="27" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
