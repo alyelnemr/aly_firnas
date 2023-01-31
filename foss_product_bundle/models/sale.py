@@ -64,13 +64,10 @@ class SaleOrderLine(models.Model):
             line.unlink()
 
     def get_sub_products(self,line_id,view_ids):
-       
-        line=self.search([('id','=',line_id)])
-        related_lines = line.order_id.order_line.search([('parent_order_line','=', line.id)])
-        related_lines+=line.order_id.order_line.search([('parent_order_line','in', related_lines.ids)])
-        
-        return [view_ids[str(id)]for id in related_lines.ids]
-         
+        line=self.search([('id', '=', line_id)])
+        related_lines = line.order_id.order_line.search([('parent_order_line', '=', line.id)])
+        related_lines += line.order_id.order_line.search([('parent_order_line', 'in', related_lines.ids)])
+        return [view_ids[str(rec_id)] for rec_id in related_lines.ids]
 
     @api.model
     def create(self, vals):
@@ -90,7 +87,6 @@ class SaleOrderLine(models.Model):
         return super(SaleOrderLine, self).create(vals)
 
     def _prepare_invoice_line(self):
-        res = {}
         res = super(SaleOrderLine, self)._prepare_invoice_line()
         if res:
             res.update({'is_offer_product': self.is_offer_product})
@@ -103,10 +99,13 @@ class SaleOrderLine(models.Model):
         for line in self:
             vals_tools = []
             ext_line = [x.product_id.id for x in line.order_id.order_line if x.parent_order_line == line.id]
-            line_seq=0    
+            prev = line.order_id.order_line.filtered(lambda l: l.sequence > line.sequence)
+            for p in prev:
+                p.sequence += len(line.product_id.child_line) + 1
+            line_seq = 0
             if line.product_id.child_line:  
                 for ch_line in line.product_id.child_line:
-                    line_seq+=1
+                    line_seq += 1
                     if line.is_offer_product:
                         if ch_line.product_id.id not in ext_line:
                             if line.product_uom_qty > 0 and ch_line.product_qty > 0:
@@ -120,9 +119,9 @@ class SaleOrderLine(models.Model):
                                     'analytic_tag_ids':line.analytic_tag_ids.ids,
                                     'is_offer_product': True
                                 }))
-                                line_seq+=50 if ch_line.product_id.child_line.ids else 0 
+                                line_seq += 50 if ch_line.product_id.child_line.ids else 0
                             else:
-                                raise UserError(('Product Qty Should be greater than Zero.'))
+                                raise UserError('Product Qty Should be greater than Zero.')
                     else:
                         products_generated = [x.product_id.id for x in line.order_id.order_line.filtered(
                             lambda l: l.parent_order_line and l.parent_order_line.id == line.id)]
@@ -138,9 +137,9 @@ class SaleOrderLine(models.Model):
                                     'analytic_tag_ids':line.analytic_tag_ids.ids,
                                     'is_offer_product': True
                                 }))
-                                line_seq+=50 if ch_line.product_id.child_line.ids else 0 
+                                line_seq += 50 if ch_line.product_id.child_line.ids else 0
                             else:
-                                raise UserError(('Product Qty Should be greater than Zero.'))
+                                raise UserError('Product Qty Should be greater than Zero.')
             line.order_id.order_line = vals_tools
         return True
 

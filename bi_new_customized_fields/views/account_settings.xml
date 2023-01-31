@@ -1,0 +1,35 @@
+<odoo>
+    <data>
+        <record id="aly_res_config_account_settings_view_form" model="ir.ui.view">
+            <field name="name">aly.res.config.account.settings.view.form.inherit</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="50"/>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='has_accounting_entries']" position="after">
+                    <h2>Firnas Shuman - Customer Invoice Terms</h2>
+                    <group>
+                        <group>
+                            <div class="row mt16 o_settings_container">
+                                <b>
+                                    <label for="aly_inv_payment_schedule"/>
+                                </b>
+                                <field name="aly_inv_payment_schedule"/>
+                            </div>
+                        </group>
+                        <group>
+                            <div class="row mt16 o_settings_container">
+                                <b>
+                                    <label for="aly_inv_terms_condition"/>
+                                </b>
+                                <field name="aly_inv_terms_condition"/>
+                            </div>
+                        </group>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

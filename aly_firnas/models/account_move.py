@@ -1,5 +1,6 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
+from datetime import datetime
 
 
 class AccountMove(models.Model):
@@ -52,6 +53,12 @@ class AccountMove(models.Model):
                 sign = -1
             move.amount_in_currency = total / count if count > 0 else 0
 
+    def _set_default_standard_payment(self):
+        return self.env['ir.config_parameter'].sudo().get_param('aly_inv_payment_schedule')
+
+    def _set_default_terms_conditions(self):
+        return self.env['ir.config_parameter'].sudo().get_param('aly_inv_terms_condition')
+
     analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account')
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
 
@@ -89,6 +96,43 @@ class AccountMove(models.Model):
              "This rate will be taken in order to convert amounts between the "
              "current currency and last currency",
     )
+    partner_contact = fields.Many2one('res.partner', string='Customer Contact', required=False,
+                                      domain="[('parent_id', '=', partner_id)]")
+    partner_invoice_id = fields.Many2one(
+        'res.partner', string='Invoice Address',
+        readonly=True, required=True,
+        states={'draft': [('readonly', False)], 'sent': [('readonly', False)], 'sale': [('readonly', False)]},
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",)
+    standard_payment_schedule = fields.Html(string="Standard Payment Schedule", default=_set_default_standard_payment)
+    terms_and_conditions = fields.Html(string="Terms And Conditions", default=_set_default_terms_conditions)
+    accountant_id = fields.Many2one('res.partner', string='Accountant', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+
+    def get_report_filename(self, report_type):
+        x = self
+        project_name = self.analytic_account_id.name[0:10]
+        po_name = self.name
+        report_type_string = ' PO' if report_type == 'po' else ' RFQ'
+        report_number = '2700' if report_type == 'po' else '2500'
+        current_time = time = datetime.now()
+        current_time_str = time.strftime("%y%m%d")
+        # file_name = project_name + '- ' + report_number + '-00- ' + po_name + '_' + current_time_str
+        file_name = self.name
+        return file_name
+
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        if not self.partner_id:
+            self.update({
+                'partner_invoice_id': False,
+            })
+            return
+
+        addr = self.partner_id.address_get(['delivery', 'invoice'])
+        partner_user = self.partner_id.user_id or self.partner_id.commercial_partner_id.user_id
+        values = {
+            'partner_invoice_id': addr['invoice'],
+        }
+        self.update(values)
 
     def unlink(self):
         downpayment_lines = self.mapped('line_ids.purchase_downpayment_line_ids').filtered(

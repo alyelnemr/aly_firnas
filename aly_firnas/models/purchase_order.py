@@ -89,6 +89,18 @@ class PurchaseOrder(models.Model):
             if not rec.purchase_order_approve_user_id:
                 raise UserError(_('Please Set User To Approve'))
             rec.state = 'waiting approval'
+            partner_email = rec.purchase_order_approve_user_id.email
+            if not partner_email:
+                raise ValidationError(_("Sorry, This approval user has no email defined."))
+            template = self.env.ref('aly_firnas.aly_po_mail_template')
+            email_values = {
+                'subject': rec.name + ' Approval',
+                'email_to': partner_email,
+                'email_from': self.env.user.email,
+            }
+            template.send_mail(rec.id, force_send=True, email_values=email_values)
+            rec.with_context(force_send=True).message_post_with_template(template.id,
+                                                                           email_layout_xmlid='mail.mail_notification_light')
             reg = {
                 'res_id': rec.id,
                 'res_model': 'purchase.order',
