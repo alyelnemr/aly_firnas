@@ -100,7 +100,7 @@ class AccountMove(models.Model):
                                       domain="[('parent_id', '=', partner_id)]")
     partner_invoice_id = fields.Many2one(
         'res.partner', string='Invoice Address',
-        readonly=True, required=True,
+        readonly=True, required=False,
         states={'draft': [('readonly', False)], 'sent': [('readonly', False)], 'sale': [('readonly', False)]},
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",)
     standard_payment_schedule = fields.Html(string="Standard Payment Schedule", default=_set_default_standard_payment)

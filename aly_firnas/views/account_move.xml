@@ -22,8 +22,8 @@
                     <page id="page_terms" string="Terms" groups="account.group_account_user">
                         <group>
                             <group>
-                                <field name="standard_payment_schedule" widget="html" required="1"/>
-                                <field name="terms_and_conditions" widget="html" required="1"/>
+                                <field name="standard_payment_schedule" widget="html" attrs="{'required': [('type', 'in', ('out_invoice'))], 'invisible': [('type', 'not in', ('out_invoice'))]}"/>
+                                <field name="terms_and_conditions" widget="html" attrs="{'required': [('type', 'in', ('out_invoice'))], 'invisible': [('type', 'not in', ('out_invoice'))]}"/>
                             </group>
                         </group>
                     </page>
@@ -37,8 +37,10 @@
                            attrs="{'invisible': [('type', 'not in', ('entry', 'in_invoice', 'out_invoice', 'in_refund', 'in_receipt'))]}"/>
                 </xpath>
                 <xpath expr="//field[@name='partner_id']" position="after">
-                    <field name="partner_contact" attrs="{'invisible': [('type', 'not in', ('in_invoice'))]}"/>
-                    <field name="partner_invoice_id" attrs="{'invisible': [('type', 'not in', ('in_invoice'))]}"/>
+                    <field name="partner_contact" attrs="{'invisible': [('type', 'not in', ('out_invoice'))]}"/>
+                    <field name="partner_invoice_id"
+                           context="{'default_is_company': True, 'show_vat': True}"
+                           attrs="{'invisible': [('type', 'not in', ('out_invoice'))]}"/>
                     <field name="analytic_account_id" required="1"
                            attrs="{'invisible': [('type', 'not in', ('entry', 'in_invoice', 'out_invoice', 'in_refund', 'in_receipt'))]}"/>
                     <field name="analytic_tag_ids" widget="many2many_tags" required="1"
