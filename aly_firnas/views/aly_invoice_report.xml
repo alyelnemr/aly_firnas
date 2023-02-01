@@ -352,7 +352,8 @@
                     </td>
                 </tr>
             </table>
-            <t t-if="is_print_page_break">
+            <t t-if="is_print_payment_schedule or is_print_terms_and_conditions">
+                <t t-if="is_print_page_break">
                 <div style="page-break-after: always;"/>
                 <table style="margin-left: 10px;">
                     <tr>
@@ -397,6 +398,7 @@
                         </div>
                     </tr>
                 </table>
+            </t>
             </t>
             <br/>
 

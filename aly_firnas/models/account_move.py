@@ -106,6 +106,8 @@ class AccountMove(models.Model):
     standard_payment_schedule = fields.Html(string="Standard Payment Schedule", default=_set_default_standard_payment)
     terms_and_conditions = fields.Html(string="Terms And Conditions", default=_set_default_terms_conditions)
     accountant_id = fields.Many2one('res.partner', string='Accountant', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+    is_print_payment_schedule = fields.Boolean(string='Print Payment Schedule', default=False, required=False)
+    is_print_terms_and_conditions = fields.Boolean(string='Print Terms And Conditions', default=False, required=False)
 
     def get_report_filename(self, report_type):
         x = self
