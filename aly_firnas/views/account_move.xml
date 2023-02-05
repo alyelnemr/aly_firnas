@@ -22,10 +22,10 @@
                     <page id="page_terms" string="Terms" groups="account.group_account_user">
                         <group>
                             <group>
-                                <field name="is_print_payment_schedule" attrs="{'required': [('type', 'in', ('out_invoice'))], 'invisible': [('type', 'not in', ('out_invoice'))]}"/>
-                                <field name="standard_payment_schedule" widget="html" attrs="{'required': [('type', 'in', ('out_invoice'))], 'invisible': [('type', 'not in', ('out_invoice'))]}"/>
-                                <field name="is_print_terms_and_conditions" attrs="{'required': [('type', 'in', ('out_invoice'))], 'invisible': [('type', 'not in', ('out_invoice'))]}"/>
-                                <field name="terms_and_conditions" widget="html" attrs="{'required': [('type', 'in', ('out_invoice'))], 'invisible': [('type', 'not in', ('out_invoice'))]}"/>
+                                <field name="is_print_payment_schedule" attrs="{'invisible': [('type', 'not in', ('out_invoice'))]}"/>
+                                <field name="standard_payment_schedule" widget="html" attrs="{'invisible': [('type', 'not in', ('out_invoice'))]}"/>
+                                <field name="is_print_terms_and_conditions" attrs="{'invisible': [('type', 'not in', ('out_invoice'))]}"/>
+                                <field name="terms_and_conditions" widget="html" attrs="{'invisible': [('type', 'not in', ('out_invoice'))]}"/>
                             </group>
                         </group>
                     </page>
