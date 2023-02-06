@@ -312,7 +312,7 @@ class HRExpense(models.Model):
             different_currency = expense.currency_id and expense.currency_id != company_currency
 
             move_line_values = []
-            unit_amount = self._get_discounted_price_unit()
+            unit_amount = expense._get_discounted_price_unit()
             taxes = expense.tax_ids.with_context(round=True).compute_all(unit_amount, expense.currency_id,
                                                                          expense.quantity, expense.product_id)
             total_amount = 0.0
