@@ -26,7 +26,7 @@ class HrExpenseSheet(models.Model):
     user_id = fields.Many2one('res.users', 'Manager',
                               domain=[('expense_approve', '=', True)],
                               readonly=True, copy=False, states={'draft': [('readonly', False)]},
-                              tracking=True, required=True)
+                              tracking=True, required=False)
     payment_mode = fields.Selection([
         ("own_account", "Employee (to reimburse)"),
         ("company_account", "Company")
