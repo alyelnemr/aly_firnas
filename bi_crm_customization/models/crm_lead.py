@@ -108,9 +108,10 @@ class CRMLeadInherit(models.Model):
 
     @api.depends('quotation_count', 'sale_order_count')
     def _get_quotation_sales_count(self):
-        quot = str(self.quotation_sales_count) if self.quotation_sales_count else '0'
-        sale_order = str(self.quotation_sales_count) if self.sale_order_count else '0'
-        self.quotation_sales_count = quot + '-' + sale_order
+        for rec in self:
+            quot = str(rec.quotation_sales_count) if rec.quotation_sales_count else '0'
+            sale_order = str(rec.quotation_sales_count) if rec.sale_order_count else '0'
+            rec.quotation_sales_count = quot + '-' + sale_order
 
     @api.onchange('partner_contact')
     def _onchange_partner_id_partner_contact(self):
