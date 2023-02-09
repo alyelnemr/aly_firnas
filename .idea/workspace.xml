@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="[add] comments video of 23-01-2023">
-      <change beforePath="$PROJECT_DIR$/aly_firnas/models/hr_expense.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/hr_expense.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/models/hr_expense_sheet.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/hr_expense_sheet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/views/hr_expense_sheet.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/hr_expense_sheet.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/views/product.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/product.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
