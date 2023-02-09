@@ -104,6 +104,13 @@ class CRMLeadInherit(models.Model):
     is_analytic_account_id_created = fields.Boolean(string='Is Analytic Account created!', default=False)
     analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account', required=False)
     analytic_tag_ids_for_analytic_account = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=False, copy=False)
+    quotation_sales_count = fields.Char(string="Quotation and Sales Count", readonly=True, compute='_get_quotation_sales_count', store=False)
+
+    @api.depends('quotation_count', 'sale_order_count')
+    def _get_quotation_sales_count(self):
+        quot = str(self.quotation_sales_count) if self.quotation_sales_count else '0'
+        sale_order = str(self.quotation_sales_count) if self.sale_order_count else '0'
+        self.quotation_sales_count = quot + '-' + sale_order
 
     @api.onchange('partner_contact')
     def _onchange_partner_id_partner_contact(self):
