@@ -10,7 +10,6 @@
                 <data>
                     <field name="categ_id" position="after">
                         <span name="update_cost_price" invisible="1">
-
                         </span>
                     </field>
 
