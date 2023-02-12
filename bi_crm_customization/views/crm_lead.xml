@@ -20,131 +20,167 @@
                        domain="['|', ('team_id', '=', team_id), ('team_id', '=', False)]"
                        attrs="{'invisible': ['|', ('active', '=', False), ('type', '!=', 'lead')]}"/>
             </xpath>
-            <xpath expr="//page[@name='lead']/group/group[2]/label[@for='contact_name']" position="replace">
-            </xpath>
-            <xpath expr="//page[@name='lead']/group/group[2]/div" position="replace">
-            </xpath>
-            <xpath expr="//page[@name='lead']/group/group[2]/field[@name='function']" position="replace">
-            </xpath>
-            <xpath expr="//page[@name='lead']/group/group[2]/field[@name='mobile']" position="replace">
-            </xpath>
-            <xpath expr="//field[@name='partner_address_phone']" position="replace">
-            </xpath>
-            <xpath expr="//field[@name='partner_id']" position="replace">
-                <field name="partner_id" widget="res_partner_many2one"
-                       context="{'default_name': contact_name,
-                                        'default_street': street,
-                                        'default_city': city,
-                                        'default_state_id': state_id,
-                                        'default_zip': zip,
-                                        'default_country_id': country_id,
-                                        'default_function': function,
-                                        'default_phone': phone,
-                                        'default_mobile': mobile,
-                                        'default_email': email_from,
-                                        'default_user_id': user_id,
-                                        'default_team_id': team_id,
-                                        'default_website': website,
-                                        'show_vat': True
-                                    }" required="0"/>
-            </xpath>
-            <xpath expr="//field[@name='email_state']" position="before">
-                <field name="partner_contact"/>
-                <field name="function"/>
-            </xpath>
-            <xpath expr="//field[@name='email_from']" position="replace">
-                <field name="email_from"
-                       attrs="{'invisible': False}" string="Email" widget="email"/>
-            </xpath>
-            <xpath expr="//field[@name='partner_address_email']" position="replace">
-                <field name="partner_address_email"
-                       attrs="{'invisible': True}" widget="email" string="Email"/>
-            </xpath>
-            <xpath expr="//field[@name='phone']" position="replace">
-                <field name="mobile" widget="phone" options="{'enable_sms': True}"/>
-                <field name="phone"
-                       widget="phone" options="{'enable_sms': True}"/>
-            </xpath>
-            <xpath expr="//page[@name='lead']//group//group//field[@name='source_id']" position="replace">
-            </xpath>
-            <xpath expr="//group/group/field[@name='date_deadline']" position="before">
-                <field name="currency_id"/>
-                <field name="forecast"/>
-            </xpath>
-<!--            <xpath expr="//div/h2/div[1]" position="replace"></xpath>-->
-<!--            <xpath expr="//div/h2/div[@class='col']" position="replace">-->
-<!--            </xpath>-->
 
-            <xpath expr="//group/group/field[@name='partner_id']" position="attributes">
-                <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}
-                </attribute>
-                <attribute name="required">1</attribute>
-            </xpath>
-            <xpath expr="//group/group[2]/field[@name='partner_id']" position="attributes">
-                <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}
-                </attribute>
-                <attribute name="required">1</attribute>
-            </xpath>
-            <xpath expr="//field[@name='email_cc']" position="replace"></xpath>
-            <xpath expr="//field[@name='team_id']" position="after">
-                <field name="sub_date" />
-            </xpath>
-<!--            <xpath expr="//field[@name='function']" position="before">-->
-<!--                <field name="email_cc" attrs="{'invisible': [('type', '=', 'opportunity')]}" />-->
-<!--            </xpath>-->
-            <xpath expr="//field[@name='tag_ids']" position="replace">
-                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
-                <field name="probability"/>
-            </xpath>
-            <xpath expr="//sheet/group/group[7]/field[3]" position="replace">
-                <field name="company_id" groups="base.group_multi_company"/>
-                <field name="is_analytic_account_id_created" invisible="1"/>
-                <field name="analytic_account_id"/>
-                <field name="analytic_tag_ids_for_analytic_account" widget="many2many_tags"
-                       options="{'no_create': False, 'no_quick_create': False, 'no_create_edit':False}"/>
-            </xpath>
-            <xpath expr="//notebook/page[1]" position="before">
-                <page name="info" string="Information">
+            <xpath expr="//sheet" position="replace">
+                <sheet>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_schedule_meeting" type="object"
+                            class="oe_stat_button" icon="fa-calendar"
+                            context="{'partner_id': partner_id, 'search_default_opportunity_id': id}"
+                            attrs="{'invisible': [('type', '=', 'lead')]}">
+                            <div class="o_stat_info">
+                                <field name="meeting_count" class="o_stat_value"/>
+                                <span class="o_stat_text" attrs="{'invisible': [('meeting_count', '&lt;', 2)]}"> Meetings</span>
+                                <span class="o_stat_text" attrs="{'invisible': [('meeting_count', '&gt;', 1)]}"> Meeting</span>
+                            </div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Lost" bg_color="bg-danger" attrs="{'invisible': ['|', ('probability', '&gt;', 0), ('active', '=', True)]}"/>
+                    <widget name="web_ribbon" title="Won" attrs="{'invisible': [('probability', '&lt;', 100)]}" />
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only" string="Lead" attrs="{'invisible': [('type', '=', 'opportunity')]}"/>
+                        <label for="name" class="oe_edit_only" attrs="{'invisible': [('type', '=', 'lead')]}"/>
+                        <h1><field name="name" placeholder="e.g. Product Pricing"/></h1>
+                        <h2 class="o_row row no-gutters d-flex">
+                            <div class="col" attrs="{'invisible': [('type', '=', 'lead')]}">
+                                <label for="planned_revenue" class="oe_edit_only" />
+                                <div class="o_row">
+                                    <field name="company_currency" invisible="1"/>
+                                    <field name="planned_revenue" class="oe_inline" widget='monetary' options="{'currency_field': 'company_currency'}"/>
+                                    <span class="oe_grey p-2"> at </span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <span class="oe_edit_only o_pls_probability">
+                                    <label for="probability"/>
+                                    <button class="btn btn-link" name="action_set_automated_probability" type="object"
+                                            attrs="{'invisible': [('is_automated_probability', '=', True)]}">
+                                        <i class="fa fa-gear" role="img" title="Switch to automatic probability" aria-label="Switch to automatic probability"></i>
+                                    </button>
+                                    <small class="oe_grey" attrs="{'invisible': [('is_automated_probability', '=', True)]}"><field name="automated_probability"/> %% (Estimated by Odoo)</small>
+                                    </span>
+                                <div id="probability" class="o_row d-flex">
+                                    <field name="is_automated_probability" invisible="1"/>
+                                    <field name="probability" widget="float" class="oe_inline"/>
+                                    <span class="oe_grey"> %%</span>
+                                </div>
+                            </div>
+                        </h2>
+                    </div>
                     <group>
                         <group>
-                            <label for="is_existing_opportunity" string="Is it an existing opportunity?"
-                                   attrs="{'invisible': [('type', '!=', 'opportunity')]}"/>
-                            <field name="is_existing_opportunity" nolabel="1"
-                                   attrs="{'invisible': [('type', '!=', 'opportunity')]}"/>
-                            <field name="parent_opportunity_id"
-                                   attrs="{'invisible':['|', ('is_existing_opportunity', '=', False), ('type', '!=', 'opportunity')], 'required':[('is_existing_opportunity', '=', True)]}"/>
-                            <field name="letter_identifier" force_save="1"
-                                   attrs="{'invisible':['|', ('is_existing_opportunity', '=', False), ('type', '!=', 'opportunity')], 'required':[('is_existing_opportunity', '=', True)], 'readonly':True}"/>
-                            <field name="next_letter_sequence" invisible="1"/>
-                            <field name="serial_number" attrs="{'invisible': [('type', '!=', 'opportunity')]}" readonly="1"/>
-                            <field name="proposals_engineer_id" attrs="{'required': [('type', '=', 'opportunity')]}"/>
-                            <field name="proposals_engineer_ids" widget="many2many_tags" />
-                            <field name="rfp_ref_number"/>
-                            <field name="project_num" required="0" readonly="1"/>
-                            <field name="type_custom" required="1" />
-                            <field name="type_custom_ids" widget="many2many_tags"/>
-                            <field name="internal_opportunity_name" required="1"/>
-                            <field name="project_name"/>
-                            <field name="country" required="1" widget="many2many_tags"/>
-                            <field name="start_date"/>
-                            <field name="source_id" required="1"/>
+                            <h3>Customer</h3>
+                            <field name="partner_id"
+                                widget="res_partner_many2one"
+                                string="Customer"
+                                context="{'res_partner_search_mode': type == 'opportunity' and 'customer' or False,
+                                    'default_name': contact_name or partner_name,
+                                    'default_street': street,
+                                    'default_is_company': type == 'opportunity' and contact_name == False,
+                                    'default_company_name': type == 'opportunity' and partner_name,
+                                    'default_street2': street2,
+                                    'default_city': city,
+                                    'default_title': title,
+                                    'default_state_id': state_id,
+                                    'default_zip': zip,
+                                    'default_country_id': country_id,
+                                    'default_function': function,
+                                    'default_phone': phone,
+                                    'default_mobile': mobile,
+                                    'default_email': email_from,
+                                    'default_user_id': user_id,
+                                    'default_team_id': team_id,
+                                    'default_website': website,
+                                    'show_vat': True,
+                                }"
+                                   options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"
+                            />
+                            <field name="is_blacklisted" invisible="1"/>
+                            <field name="partner_is_blacklisted" invisible="1"/>
+                            <field name="email_state" invisible="1"/>
+                            <field name="phone_state" invisible="1"/>
+                            <field name="partner_contact"/>
+                            <field name="function"/>
+                            <field name="email_from"
+                                   attrs="{'invisible': False}" string="Email" widget="email"/>
+                            <field name="partner_address_email"
+                                   attrs="{'invisible': True}" widget="email" string="Email"/>
+                            <field name="mobile" widget="phone" attrs="{'invisible': True}" options="{'enable_sms': True}"/>
+                            <field name="phone"
+                                   widget="phone" options="{'enable_sms': True}"/>
                         </group>
                         <group>
-                            <field name="actual_sub_date"/>
-                            <field name="sub_type"/>
-                            <field name="fund"/>
-                            <field name="partnership_model"/>
-                            <field name="partner" widget="many2many_tags"/>
-                            <field name="subcontractor_supplier_ids" widget="many2many_tags"/>
-                            <field name="end_client" widget="many2many_tags"/>
-                            <field name="latest_proposal_submission_date"/>
-                            <field name="result_date"/>
-                            <field name="contract_signature_date"/>
-                            <field name="initial_contact_date" required="1"/>
+                            <h3>Firnas Shuman</h3>
+                            <field name="date_conversion" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="is_analytic_account_id_created" invisible="1"/>
+                            <field name="analytic_account_id"/>
+                            <field name="analytic_tag_ids_for_analytic_account" widget="many2many_tags"
+                                   options="{'no_create': False, 'no_quick_create': False, 'no_create_edit':False}"/>
                             <field name="proposal_reviewer_ids" widget="many2many_tags"/>
+                            <field name="user_id" domain="[('share', '=', False)]" string="Opportunity Manager"
+                                context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'sales_team.group_sale_salesman_all_leads'], 'team_id': team_id}"/>
                         </group>
                     </group>
-                </page>
+
+                    <notebook>
+                        <page name="info" string="Information">
+                            <group>
+                                <group string="Partnership">
+                                    <field name="partnership_model"/>
+                                    <field name="end_client" widget="many2many_tags"/>
+                                    <field name="fund"/>
+                                    <field name="partner" widget="many2many_tags"/>
+                                    <field name="subcontractor_supplier_ids" widget="many2many_tags"/>
+                                </group>
+                                <group string="Project Naming">
+                                    <field name="project_num" required="0" readonly="1"/>
+                                    <field name="rfp_ref_number"/>
+                                    <label for="is_existing_opportunity" string="Is it an existing opportunity?"
+                                           attrs="{'invisible': [('type', '!=', 'opportunity')]}"/>
+                                    <field name="is_existing_opportunity" nolabel="1"
+                                           attrs="{'invisible': [('type', '!=', 'opportunity')]}"/>
+                                    <field name="parent_opportunity_id"
+                                           attrs="{'invisible':['|', ('is_existing_opportunity', '=', False), ('type', '!=', 'opportunity')], 'required':[('is_existing_opportunity', '=', True)]}"/>
+                                    <field name="letter_identifier" force_save="1"
+                                           attrs="{'invisible':['|', ('is_existing_opportunity', '=', False), ('type', '!=', 'opportunity')], 'required':[('is_existing_opportunity', '=', True)], 'readonly':True}"/>
+                                    <field name="next_letter_sequence" invisible="1"/>
+                                    <field name="serial_number" attrs="{'invisible': [('type', '!=', 'opportunity')]}" readonly="1"/>
+                                    <field name="type_custom" required="1" />
+                                    <field name="type_custom_ids" widget="many2many_tags"/>
+                                    <field name="country" required="1" widget="many2many_tags"/>
+                                    <field name="internal_opportunity_name" required="1"/>
+                                    <field name="project_name"/>
+                                    <field name="document_name"/>
+                                    <field name="file_name"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Dates">
+                                    <field name="initial_contact_date" required="1"/>
+                                    <field name="start_date"/>
+                                    <field name="sub_date" />
+                                    <field name="sub_type"/>
+                                    <field name="actual_sub_date"/>
+                                    <field name="latest_proposal_submission_date"/>
+                                    <field name="result_date"/>
+                                    <field name="contract_signature_date"/>
+                                </group>
+                                <group string="Analysis">
+                                    <field name="source_id" required="1"/>
+                                    <field name="forecast"/>
+                                    <field name="currency_id"/>
+                                    <field name="probability"/>
+                                    <field name="priority" widget="priority"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Internal Notes">
+                            <field name="description" placeholder="Add a description..."/>
+                        </page>
+                    </notebook>
+                </sheet>
             </xpath>
         </field>
     </record>

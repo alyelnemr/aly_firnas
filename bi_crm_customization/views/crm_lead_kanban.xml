@@ -75,7 +75,7 @@
                                                     </td>
                                                     <td style="text-align: right">
                                                         <field name="quotation_count" invisible="1"/>
-                                                        <field name="quotation_count" invisible="1"/>
+                                                        <field name="sale_order_count" invisible="1"/>
                                                         <field name="quotation_sales_count"/>
                                                     </td>
                                                 </tr>

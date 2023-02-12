@@ -104,13 +104,15 @@ class CRMLeadInherit(models.Model):
     is_analytic_account_id_created = fields.Boolean(string='Is Analytic Account created!', default=False)
     analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account', required=False)
     analytic_tag_ids_for_analytic_account = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=False, copy=False)
-    quotation_sales_count = fields.Char(string="Quotation and Sales Count", readonly=True, compute='_get_quotation_sales_count', store=False)
+    document_name = fields.Char(string="Proposal Subject")
+    file_name = fields.Char(string="Document/File  Name (Footer)")
+    quotation_sales_count = fields.Char(string="Quotation and Sales Count", compute='_get_quotation_sales_count', store=False)
 
     @api.depends('quotation_count', 'sale_order_count')
     def _get_quotation_sales_count(self):
         for rec in self:
-            quot = str(rec.quotation_sales_count) if rec.quotation_sales_count else '0'
-            sale_order = str(rec.quotation_sales_count) if rec.sale_order_count else '0'
+            quot = str(rec.quotation_count) if rec.quotation_count else '0'
+            sale_order = str(rec.sale_order_count) if rec.sale_order_count else '0'
             rec.quotation_sales_count = quot + '-' + sale_order
 
     @api.onchange('partner_contact')
