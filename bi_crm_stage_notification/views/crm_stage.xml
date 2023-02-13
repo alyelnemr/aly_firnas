@@ -12,6 +12,9 @@
                 <field name="mandatory_forecast"/>
                 <field name="mandatory_result_date"/>
                 <field name="mandatory_signature_date"/>
+                <field name="mandatory_customer_project_name"/>
+                <field name="mandatory_proposal_subject"/>
+                <field name="mandatory_document_file"/>
                 <field name="allow_create_project"/>
             </xpath>
         </field>
@@ -27,6 +30,9 @@
                 <field name="mandatory_forecast"/>
                 <field name="mandatory_result_date"/>
                 <field name="mandatory_signature_date"/>
+                <field name="mandatory_customer_project_name"/>
+                <field name="mandatory_proposal_subject"/>
+                <field name="mandatory_document_file"/>
                 <field name="allow_create_project"/>
             </xpath>
         </field>

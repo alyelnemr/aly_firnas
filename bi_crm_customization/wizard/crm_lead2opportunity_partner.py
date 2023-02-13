@@ -47,6 +47,8 @@ class Lead2OpportunityPartner(models.TransientModel):
     source_id = fields.Many2one('utm.source', string='Source', required=True, ondelete='cascade',
                                 help="This is the link source, e.g. Search Engine, another domain, or name of email list")
     company_id = fields.Many2one('res.company', string='Company', index=True, default=lambda self: self.env.company.id)
+    proposal_subject = fields.Char(string="Proposal Subject")
+    document_file_name = fields.Char(string="Document/File  Name (Footer)")
 
     @api.onchange('parent_opportunity_id')
     def get_related_country(self):

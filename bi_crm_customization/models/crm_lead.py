@@ -25,6 +25,8 @@ class CRMLeadInherit(models.Model):
         res['context']['default_rfp_ref_number'] = self.rfp_ref_number
         res['context']['default_proposals_engineer_id'] = self.proposals_engineer_id.id
         res['context']['default_proposals_engineer_ids'] = self.proposals_engineer_ids.ids
+        res['context']['default_document_name'] = self.proposal_subject
+        res['context']['default_file_name'] = self.document_file_name
         return res
 
     def _default_team_id(self, user_id):
@@ -63,7 +65,7 @@ class CRMLeadInherit(models.Model):
                                        column2='type_custom_ids_crm_type_id', string="Secondary Project Types", required=False)
     project_name = fields.Char(string="Customer's Project Name / Proposal Title", store=True, )
     country = fields.Many2many(comodel_name='res.country', string='Countries')
-    client_name = fields.Many2one('res.partner', string="End Client!", help="deprecated, not used, you can use end_client field")
+    client_name = fields.Many2one('res.partner', string="End Client!", help="aly elnemr: deprecated, not used, you can use end_client field")
     start_date = fields.Date(string="Request Date", required=False)
     sub_date = fields.Datetime(string="Submission Deadline", required=False)
     actual_sub_date = fields.Date(string="Actual Submission Date")
@@ -104,8 +106,8 @@ class CRMLeadInherit(models.Model):
     is_analytic_account_id_created = fields.Boolean(string='Is Analytic Account created!', default=False)
     analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account', required=False)
     analytic_tag_ids_for_analytic_account = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=False, copy=False)
-    document_name = fields.Char(string="Proposal Subject")
-    file_name = fields.Char(string="Document/File  Name (Footer)")
+    proposal_subject = fields.Char(string="Proposal Subject")
+    document_file_name = fields.Char(string="Document/File  Name (Footer)")
     quotation_sales_count = fields.Char(string="Quotation and Sales Count", compute='_get_quotation_sales_count', store=False)
 
     @api.depends('quotation_count', 'sale_order_count')
@@ -312,6 +314,12 @@ class CRMLeadInherit(models.Model):
                 err += 'Please Add Result Date!\n'
             if rec.stage_id.mandatory_signature_date and not rec.contract_signature_date:
                 err += 'Please Add Contract/PO Signature Date!\n'
+            if rec.stage_id.mandatory_customer_project_name and not rec.mandatory_customer_project_name:
+                err += "Please Add Customer's Project Name\n"
+            if rec.stage_id.mandatory_proposal_subject and not rec.mandatory_proposal_subject:
+                err += 'Please Add Proposal Subject!\n'
+            if rec.stage_id.mandatory_document_file and not rec.mandatory_document_file:
+                err += 'Please Add Document/File Name!\n'
             if err:
                 raise ValidationError(err)
 
