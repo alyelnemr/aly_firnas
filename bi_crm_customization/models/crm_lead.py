@@ -114,7 +114,7 @@ class CRMLeadInherit(models.Model):
     def _get_quotation_sales_count(self):
         for rec in self:
             rec._compute_sale_data()
-            quot = str(rec.quotation_count) if rec.quotation_count else '0'
+            quot = str(rec.quotation_count) if rec.quotation_count else "0"
             sale_order = str(rec.sale_order_count) if rec.sale_order_count else '0'
             rec.quotation_sales_count = quot + '-' + sale_order
 
