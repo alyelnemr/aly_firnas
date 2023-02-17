@@ -20,6 +20,7 @@
         'views/crm_lead_stage.xml',
         'views/crm_lead_convert_opportunity_views.xml',
         'views/sale_order.xml',
+        'views/sale_order_tree.xml',
     ],
     'installable': True,
     'auto_install': False,

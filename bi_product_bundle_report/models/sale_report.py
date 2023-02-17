@@ -36,6 +36,8 @@ class SalesOrderReport(models.AbstractModel):
         is_taxed_optional = any(docs.sale_order_option_ids.filtered(lambda o: o.tax_id and not o.is_button_clicked))
         is_taxed_additional = any(docs.sale_order_additional_ids.filtered(lambda o: o.tax_id and not o.is_button_clicked))
         amount_total = (amount_untaxed + amount_tax)
+        rep_pricelist = docs.pricelist_id.name if docs.pricelist_id else ''
+        rep_payment_term = docs.payment_term_id.name if docs.payment_term_id else ''
         col_span = 4
         if is_taxed or is_discounted:
             col_span = 5
@@ -53,6 +55,8 @@ class SalesOrderReport(models.AbstractModel):
             'is_taxed_additional': is_taxed_additional,
             'amount_untaxed': amount_untaxed,
             'amount_tax': amount_tax,
+            'rep_pricelist': rep_pricelist,
+            'rep_payment_term': rep_payment_term,
             'amount_total': amount_total,
             'is_additional_exists': is_additional_exists,
             'is_optional_exists': is_optional_exists,

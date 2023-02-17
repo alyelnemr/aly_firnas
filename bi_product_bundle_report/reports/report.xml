@@ -630,44 +630,48 @@
                 </t>
 
                 <!-- Payment Schedule 4.4 -->
-                <div class="row" style="width: 83% !important; margin: 0 auto; padding-top: 0px; page-break-inside: avoid; font-family: verdana !important;">
-                    <div class="text-left">
-                        <div>
-                            <h5 style="color:rgb(86, 56, 90); font-size: 17px !important; font-weight: bold; font-family: verdana !important;">
-                                <span t-esc="doc.financial_proposal_number"/>.<t t-esc="header_index" style="font-family: verdana !important;"/>
-                                Payment Schedule
-                            </h5>
-                        </div>
-                        <div>
-                            <p style="font-size: 10px !important; font-family: verdana !important;">
-                                <t t-raw="doc.standard_payment_schedule" style="font-family: verdana !important; font-size: 10px !important;"/>
-                                <br/>
-                                <t t-if="doc.payment_term_id.note" t-raw="doc.payment_term_id.note" style="font-family: verdana !important; font-size: 10px !important;"/>
-                            </p>
+                <t t-if="doc.is_print_payment_schedule">
+                    <div class="row" style="width: 83% !important; margin: 0 auto; padding-top: 0px; page-break-inside: avoid; font-family: verdana !important;">
+                        <div class="text-left">
+                            <div>
+                                <h5 style="color:rgb(86, 56, 90); font-size: 17px !important; font-weight: bold; font-family: verdana !important;">
+                                    <span t-esc="doc.financial_proposal_number"/>.<t t-esc="header_index" style="font-family: verdana !important;"/>
+                                    Payment Schedule
+                                </h5>
+                            </div>
+                            <div>
+                                <p style="font-size: 10px !important; font-family: verdana !important;">
+                                    <t t-raw="doc.standard_payment_schedule.replace('[$pricelist$]', rep_pricelist).replace('[$payment_terms$]', rep_payment_term)" style="font-family: verdana !important; font-size: 10px !important;"/>
+                                    <br/>
+                                    <t t-if="doc.payment_term_id.note" t-raw="doc.payment_term_id.note" style="font-family: verdana !important; font-size: 10px !important;"/>
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <br/>
+                    <br/>
+                </t>
                 <t t-set="header_index" t-value="header_index + 1"/>
 
 
                 <!-- Terms And Conditions 4.5 -->
-                <div class="row" style="width: 83% !important; margin: 0 auto; padding-top: 0px; page-break-inside: avoid; font-family: verdana !important;">
-                    <div class="text-left">
-                        <div>
-                            <h5 style="color:rgb(86, 56, 90); font-size: 17px !important; font-weight: bold; font-family: verdana !important;">
-                                <span t-esc="doc.financial_proposal_number"/>.<t t-esc="header_index" style="font-family: verdana !important;"/>
-                                Terms and Conditions
-                            </h5>
-                        </div>
-                        <div>
-                            <p style="font-size: 10px !important; font-family: verdana !important;">
-                                <t t-raw="doc.terms_and_conditions" style="font-family: verdana !important; font-size: 10px !important;"/>
-                            </p>
+                <t t-if="doc.is_print_terms_and_conditions">
+                    <div class="row" style="width: 83% !important; margin: 0 auto; padding-top: 0px; page-break-inside: avoid; font-family: verdana !important;">
+                        <div class="text-left">
+                            <div>
+                                <h5 style="color:rgb(86, 56, 90); font-size: 17px !important; font-weight: bold; font-family: verdana !important;">
+                                    <span t-esc="doc.financial_proposal_number"/>.<t t-esc="header_index" style="font-family: verdana !important;"/>
+                                    Terms and Conditions
+                                </h5>
+                            </div>
+                            <div>
+                                <p style="font-size: 10px !important; font-family: verdana !important;">
+                                    <t t-raw="doc.terms_and_conditions.replace('[$pricelist$]', rep_pricelist).replace('[$payment_terms$]', rep_payment_term)" style="font-family: verdana !important; font-size: 10px !important;"/>
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <br/>
+                    <br/>
+                </t>
 
 
 

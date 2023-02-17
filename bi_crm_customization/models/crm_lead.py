@@ -10,7 +10,7 @@ class CRMLeadInherit(models.Model):
     def action_new_quotation(self):
         res = super(CRMLeadInherit, self).action_new_quotation()
         res['context']['default_project_number'] = self.project_num
-        res['context']['default_type_custom'] = self.type_custom
+        res['context']['default_type_custom'] = self.type_custom.id
         res['context']['default_project_name'] = self.project_name
         res['context']['default_country'] = self.country.ids
         res['context']['default_start_date'] = self.start_date
@@ -108,7 +108,7 @@ class CRMLeadInherit(models.Model):
     analytic_tag_ids_for_analytic_account = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=False, copy=False)
     proposal_subject = fields.Char(string="Proposal Subject")
     document_file_name = fields.Char(string="Document/File  Name (Footer)")
-    quotation_sales_count = fields.Char(string="Quotation and Sales Count", compute='_get_quotation_sales_count', store=False)
+    quotation_sales_count = fields.Char(string="Quotation and Sales Count", compute='_get_quotation_sales_count', store=True)
 
     @api.depends('quotation_count', 'sale_order_count')
     def _get_quotation_sales_count(self):
@@ -276,11 +276,6 @@ class CRMLeadInherit(models.Model):
             self.task_id.name = self.name
         if self.task_id and self.task_id.user_id != self.proposals_engineer_id:
             self.task_id.user_id = self.proposals_engineer_id
-        return res
-
-    def action_new_quotation(self):
-        res = super(CRMLeadInherit, self).action_new_quotation()
-        res['context']['default_type_custom'] = self.type_custom.name
         return res
 
     @api.onchange('is_existing_opportunity')

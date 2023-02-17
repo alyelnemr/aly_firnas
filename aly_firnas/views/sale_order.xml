@@ -6,24 +6,6 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//group/group[2]" position="inside">
-                    <field name="is_manual"
-                           attrs="{'invisible': [('state','!=','draft')]}"/>
-                    <field name="custom_rate"
-                           attrs="{'invisible': ['|', ('is_manual', '=', False), ('state','!=','draft')], 'required':[('is_manual', '=', True)]}"/>
-                    <button
-                            aria-label="Opened"
-                            type="object"
-                            name="action_update_factor"
-                            class="btn-link"
-                    >
-                        <i
-                                title="Update Factor"
-                                class="fa fa-fw fa-refresh"
-                                attrs="{'invisible': ['|', ('is_manual', '=', False), ('state','!=','draft')]}"
-                        />
-                    </button>
-                </xpath>
                 <xpath expr="//group/group/field[@name='analytic_account_id']" position="replace">
                 </xpath>
 
@@ -34,10 +16,6 @@
                            groups="analytic.group_analytic_accounting" force_save="1"/>
                     <field name="analytic_tag_ids" widget="many2many_tags" required="1"
                            options="{'no_create': False, 'no_quick_create': False, 'no_create_edit':False}"/>
-                    <field name="sale_order_template_id" context="{'company_id': company_id}"
-                           options="{'no_create': True, 'no_open': True}"
-                           groups="sale_management.group_sale_order_template"
-                    />
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='analytic_tag_ids']" position="before">
                     <field name="analytic_account_id" optional="show"/>
@@ -63,14 +41,5 @@
             </field>
         </record>
 
-        <record id="aly_inherit_sale_order_form_quote" model="ir.ui.view">
-            <field name="name">aly.inherit.sale.order.form.quote</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale_management.sale_order_form_quote"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='sale_order_template_id']" position="replace">
-                </xpath>
-            </field>
-        </record>
     </data>
 </odoo>

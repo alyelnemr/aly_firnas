@@ -157,6 +157,7 @@ class SaleAdvancePaymentInv(models.TransientModel):
         so_values = {
             'name': self.downpayment_description or _('Down Payment: %s') % (time.strftime('%m %Y'),),
             'price_unit': amount,
+            'section': 'Payments',
             'product_uom_qty': 0.0,
             'order_id': order.id,
             'discount': 0.0,

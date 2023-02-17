@@ -5,73 +5,91 @@
         <record id="inherited_view_sale_order_new_fields_form" model="ir.ui.view">
             <field name="name">sale.order.form.inherit.form</field>
             <field name="model">sale.order</field>
+            <field name="priority">99</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//group//group[@name='utm_link']//field[@name='source_id']" position="replace">
                 </xpath>
-                <xpath expr="//field[@name='user_id']" position="replace">
-                    <field name="user_id" string="Opportunity Manager"/>
+                <xpath expr="//field[@name='pricelist_id']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='payment_term_id']" position="replace">
+                    <field name="payment_term_id" options="{'no_open':True,'no_create': True}"/>
+                    <field name="pricelist_id" groups="product.group_product_pricelist" options="{'no_open':True,'no_create': True}"/>
+                    <label for="is_manual"></label>
+                    <div class="o_row">
+                        <field name="is_manual" nolabel="1"
+                               attrs="{'invisible': [('state','!=','draft')]}"/>
+                        <field name="custom_rate" nolabel="1"
+                               attrs="{'invisible': ['|', ('is_manual', '=', False), ('state','!=','draft')], 'required':[('is_manual', '=', True)]}"/>
+                        <button name="action_update_factor" type="object" string=" Update "
+                                attrs="{'invisible': ['|', ('is_manual', '=', False), ('state','!=','draft')]}"
+                                class="btn-link mb-1 px-0" icon="fa-refresh"/>
+                    </div>
+                    <field name="warehouse_id" options="{'no_create': True}" force_save="1"/>
+                    <field name="sale_order_template_id" context="{'company_id': company_id}"
+                           options="{'no_create': True, 'no_open': True}" />
+                </xpath>
+                <xpath expr="//field[@name='validity_date']" position="replace">
+                    <field name="date_order" attrs="{'required': [('state', 'in', ['sale', 'done'])], 'invisible': [('state', 'in', ['draft', 'sent'])]}" nolabel="1"/>
+                    <field name="validity_date" attrs="{'invisible': [('state', 'in', ['sale', 'done'])]}"/>
+                </xpath>
+                <xpath expr="//field[@name='client_order_ref']" position="replace">
+                </xpath>
+                <xpath expr="//page[@name='other_information']" position="replace">
+                </xpath>
+                <xpath expr="//page[@name='customer_signature']" position="replace">
                 </xpath>
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="partner_contact"/>
-                    <field name="serial_num" required="0"/>
+                    <field name="client_order_ref"/>
+                    <field name="invoice_status" invisible="1"/>
+                    <field name="company_id" invisible="1"/>
                 </xpath>
                 <xpath expr="//notebook" position="inside">
                     <page name="info" string="Information">
                         <group>
+                            <group string="Print">
+                                <field name="financial_proposal_number" />
+                                <field name="financial_proposal_title"/>
+                                <field name="project_name"/>
+                                <field name="document_name"/>
+                                <field name="file_name"/>
+                            </group>
+                            <group string="Analysis">
+                                <field name="opportunity_id" />
+                                <field name="user_id" string="Opportunity Manager"/>
+                                <field name="source_id" />
+                            </group>
+                        </group>
+                        <group>
                             <group>
-                                <field name="proposals_engineer_id" />
-                                <field name="proposals_engineer_ids" widget="many2many_tags"/>
-                                <field name="rfp_ref_number"/>
-                                <field name="project_number" readonly="1"/>
-                                <field name="type_custom" required="1"/>
-                                <field name="type_custom_ids" widget="many2many_tags" readonly="0"/>
-                                <field name="internal_opportunity_name" required="1"/>
-                                <field name="project_name" required="1"/>
-                                <field name="country" required="1" widget="many2many_tags"/>
-                                <field name="start_date" />
-                                <field name="source_id" required="1"/>
+                                <field name="is_print_payment_schedule" nolabel="1" />
+                                <field name="standard_payment_schedule" />
                             </group>
                             <group>
-                                <field name="sub_date"/>
-                                <field name="actual_sub_date"/>
-                                <field name="sub_type"/>
-                                <field name="fund"/>
-                                <field name="partnership_model"/>
-                                <field name="partner" widget="many2many_tags"/>
-                                <field name="subcontractor_supplier_ids" widget="many2many_tags"/>
-                                <field name="client_name_id" string="Project Owner/End Client" widget="many2many_tags"/>
-                                <field name="latest_proposal_submission_date"/>
-                                <field name="result_date"/>
-                                <field name="contract_signature_date"/>
-                                <field name="initial_contact_date" required="1"/>
-                                <field name="proposal_reviewer_ids" widget="many2many_tags"/>
+                                <field name="is_print_terms_and_conditions" nolabel="1" />
+                                <field name="terms_and_conditions" />
                             </group>
-                            <group>
-                                <field name="document_name" required="1"/>
-                                <field name="file_name" required="1"/>
-                                <field name="standard_payment_schedule" widget="html" required="1"/>
-                                <field name="terms_and_conditions" widget="html" required="1"/>
+                        </group>
+                        <group>
+                            <group string="Delivery">
+                                <field name="warehouse_id" options="{'no_create': True}" required="0" groups="stock.group_stock_multi_warehouses" force_save="1"/>
+                                <field name="picking_policy" required="0"/>
+                                <label for="commitment_date" string="Delivery Date"/>
+                                <div class="o_row">
+                                    <field name="commitment_date"/> <span class="text-muted">Expected: <field name="expected_date" widget="date"/></span>
+                                </div>
+                            </group>
+                            <group name="sale_info" string="Invoicing">
+                                <field name="fiscal_position_id" options="{'no_create': True}"/>
+                                <field name="require_signature"/>
+                                <field name="require_payment"/>
                             </group>
                         </group>
                     </page>
                 </xpath>
             </field>
         </record>
-        #filter
-        <record id="view_sale_order_search_view_inherit" model="ir.ui.view">
-            <field name="name">sale.order.search.view</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
-            <field name="arch" type="xml">
-                <xpath expr="//search/field[@name='name']" position="before">
-                    <field name="opportunity_id" string="Opportunity"/>
-                </xpath>
-                <xpath expr="//search/field[@name='partner_id']" position="after">
-                    <field name="project_name" string="Project Name"/>
-                    <field name="project_number" string="Project Number"/>
-                </xpath>
-            </field>
-        </record>
+
     </data>
 </odoo>

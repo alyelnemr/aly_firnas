@@ -4,7 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="" />
+    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="[add] comments of video 05-Feb">
+      <change afterPath="$PROJECT_DIR$/bi_crm_customization/views/sale_order_tree.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/views/sale_order.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/sale_order.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/wizard/sale_make_invoice_advance.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/wizard/sale_make_invoice_advance.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bi_crm_customization/__manifest__.py" beforeDir="false" afterPath="$PROJECT_DIR$/bi_crm_customization/__manifest__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bi_crm_customization/models/crm_lead.py" beforeDir="false" afterPath="$PROJECT_DIR$/bi_crm_customization/models/crm_lead.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bi_crm_customization/models/sale_order.py" beforeDir="false" afterPath="$PROJECT_DIR$/bi_crm_customization/models/sale_order.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bi_crm_customization/views/sale_order.xml" beforeDir="false" afterPath="$PROJECT_DIR$/bi_crm_customization/views/sale_order.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bi_product_bundle_report/models/sale_order.py" beforeDir="false" afterPath="$PROJECT_DIR$/bi_product_bundle_report/models/sale_order.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bi_product_bundle_report/models/sale_report.py" beforeDir="false" afterPath="$PROJECT_DIR$/bi_product_bundle_report/models/sale_report.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bi_product_bundle_report/reports/report.xml" beforeDir="false" afterPath="$PROJECT_DIR$/bi_product_bundle_report/reports/report.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bi_product_bundle_report/views/sale_order_form.xml" beforeDir="false" afterPath="$PROJECT_DIR$/bi_product_bundle_report/views/sale_order_form.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -29,15 +42,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Odoo Installations/Odoo 13.0e/server/odoo-bin&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "D:/Firnas Shuman/Firnas Code/FirnasAddons/bi_crm_customization/views"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\bi_crm_customization\views" />
       <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\views" />
       <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\report" />
     </key>
@@ -180,7 +194,21 @@
       <option name="project" value="LOCAL" />
       <updated>1676327586680</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="[add] comments of video 05-Feb">
+      <created>1676328257321</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1676328257321</updated>
+    </task>
+    <task id="LOCAL-00015" summary="[add] comments of video 05-Feb">
+      <created>1676328401608</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1676328401608</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -276,6 +304,16 @@
           <url>file://$PROJECT_DIR$/aly_firnas/models/stock_move_line.py</url>
           <line>147</line>
           <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bi_crm_customization/models/sale_order.py</url>
+          <line>137</line>
+          <option name="timeStamp" value="37" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/aly_firnas/models/sale_order_line.py</url>
+          <line>20</line>
+          <option name="timeStamp" value="38" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

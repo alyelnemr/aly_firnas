@@ -21,8 +21,6 @@
                 </xpath>
                 <xpath expr="//group/group[2]" position="inside">
 <!--                    <field name="split_page"/>-->
-                    <field name="financial_proposal_title"/>
-                    <field name="financial_proposal_number"/>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_id']"
                        position="before">
@@ -54,7 +52,7 @@
                     <field name="item_price" string="Total Price" optional="show"/>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="before">
-                    <field name="section" optional="show"/>
+                    <field name="section" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}" optional="show"/>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='customer_lead']" position="replace">
                 </xpath>
@@ -63,10 +61,6 @@
                             name="customer_lead"
                             optional="hide"
                             attrs="{'readonly': [('parent.state', 'not in', ['draft', 'sent'])]}"
-                    />
-                </xpath>
-                <xpath expr="//field[@name='require_payment']" position="after">
-                    <field name="opportunity_id" help="Log in the chatter from which opportunity the order originates"
                     />
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='discount']" position="replace">
@@ -108,16 +102,6 @@
         </record>
 
 
-        <record id="aly_view_order_tree" model="ir.ui.view">
-            <field name="name">aly.sale.order.tree.inherit.website.sale</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_quotation_tree"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='create_date']" position="after">
-                    <field name="opportunity_id"/>
-                </xpath>
-            </field>
-        </record>
         <record id="inherit_view_sale_order_add_section_fields" model="ir.ui.view">
             <field name="name">inherit.view.sale.order.add.section.fields</field>
             <field name="model">sale.order</field>
