@@ -286,7 +286,7 @@
 
                     </td>
                     <td style="">
-                        <span t-field="o.amount_untaxed" class="text-right"/>
+                        <span t-esc="amount_untaxed" class="text-right"/>
                     </td>
                 </tr>
                 <tr style="width:auto;" class="text-right">
@@ -299,7 +299,7 @@
 
                     </td>
                     <td style="">
-                        <span t-field="o.amount_tax" class="text-right"/>
+                        <span t-esc="amount_tax" class="text-right"/>
                     </td>
                 </tr>
                 <tr style="width:auto;" class="text-right">
@@ -323,7 +323,7 @@
 
                     </td>
                     <td style="" class="text-right">
-                        <span t-field="o.amount_total" class="text-right"/>
+                        <span t-esc="amount_untaxed + amount_tax" class="text-right"/>
                     </td>
                 </tr>
             </table>

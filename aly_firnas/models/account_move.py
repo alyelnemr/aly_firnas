@@ -80,7 +80,7 @@ class AccountMove(models.Model):
                                   currency_field='amount_line_currency_field')
     note = fields.Text(string='Notes')
 
-    manual_currency = fields.Boolean()
+    manual_currency = fields.Boolean(string="Manual Rate")
     is_manual = fields.Boolean(compute="_compute_currency")
     custom_rate = fields.Float(
         digits=(16, 10),

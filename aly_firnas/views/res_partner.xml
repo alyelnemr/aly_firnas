@@ -36,5 +36,22 @@
             <field name="res_model">res.partner</field>
             <field name="context">{'default_is_company': True, 'search_default_group_approval_state': 1}</field>
         </record>
+
+
+
+        <record id="aly_view_company_partner_bank_form" model="ir.ui.view">
+            <field name="name">aly.res.partner.bank.form</field>
+            <field name="model">res.partner.bank</field>
+            <field name="inherit_id" ref="base.view_partner_bank_form"/>
+            <field name="mode">primary</field>
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='acc_holder_name']" position="after">
+                    <field name="iban" />
+                    <field name="swift" />
+                </xpath>
+            </field>
+        </record>
+
     </data>
 </odoo>

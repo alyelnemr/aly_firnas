@@ -4,12 +4,23 @@ from odoo import api, fields, models, _
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
+    def _get_line_numbers(self):
+        if self.ids:
+            first_line_rec = self.browse(self.ids[0])
+            x = 1
+            self.line_rank = len(first_line_rec.move_id.order_line)
+            for line in first_line_rec.order_id.order_line:
+                if not line.display_type:
+                    line.line_rank = x
+                    x += 1
+
     note = fields.Text(string='Notes', related='statement_line_id.note')
     analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account', index=True,
                                           required=True)
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True)
     is_origin_so = fields.Boolean(copy=False)
     is_printed = fields.Boolean(string="Print?", default=True)
+    line_rank = fields.Integer('Sn', compute='_get_line_numbers', store=False, default=1)
 
     purchase_downpayment_line_ids = fields.Many2many(
         'purchase.order.line',

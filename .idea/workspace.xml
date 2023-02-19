@@ -5,18 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="[add] comments of video 05-Feb">
-      <change afterPath="$PROJECT_DIR$/bi_crm_customization/views/sale_order_tree.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/aly_firnas/models/res_partner_bank.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/views/sale_order.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/sale_order.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/wizard/sale_make_invoice_advance.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/wizard/sale_make_invoice_advance.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_crm_customization/__manifest__.py" beforeDir="false" afterPath="$PROJECT_DIR$/bi_crm_customization/__manifest__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_crm_customization/models/crm_lead.py" beforeDir="false" afterPath="$PROJECT_DIR$/bi_crm_customization/models/crm_lead.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_crm_customization/models/sale_order.py" beforeDir="false" afterPath="$PROJECT_DIR$/bi_crm_customization/models/sale_order.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_crm_customization/views/sale_order.xml" beforeDir="false" afterPath="$PROJECT_DIR$/bi_crm_customization/views/sale_order.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_product_bundle_report/models/sale_order.py" beforeDir="false" afterPath="$PROJECT_DIR$/bi_product_bundle_report/models/sale_order.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_product_bundle_report/models/sale_report.py" beforeDir="false" afterPath="$PROJECT_DIR$/bi_product_bundle_report/models/sale_report.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_product_bundle_report/reports/report.xml" beforeDir="false" afterPath="$PROJECT_DIR$/bi_product_bundle_report/reports/report.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_product_bundle_report/views/sale_order_form.xml" beforeDir="false" afterPath="$PROJECT_DIR$/bi_product_bundle_report/views/sale_order_form.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/models/account_move.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/account_move.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/models/account_move_line.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/account_move_line.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/models/bank_statement_line.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/bank_statement_line.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/report/invoice_template.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/report/invoice_template.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/report/po_template.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/report/po_template.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/views/account_move.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/account_move.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/views/aly_invoice_report.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/aly_invoice_report.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/views/res_partner.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/res_partner.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,7 +25,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Test" />
+        <entry key="$PROJECT_DIR$" value="test_17-Feb" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -46,11 +45,12 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "D:/Firnas Shuman/Firnas Code/FirnasAddons/bi_crm_customization/views"
+    "last_opened_file_path": "D:/Firnas Shuman/Firnas Code/FirnasAddons/aly_firnas/models"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\models" />
       <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\bi_crm_customization\views" />
       <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\views" />
       <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\report" />

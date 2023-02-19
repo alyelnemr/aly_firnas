@@ -22,21 +22,16 @@ class PurchaseReportTemplatePrimary(models.AbstractModel):
         active_id = self.env.context.get('active_id')
         docs = self.env[model].sudo().browse(docids)
         line_section = docs.invoice_line_ids[0]
-        for indx, line in enumerate(docs.invoice_line_ids):
-            if line.display_type == 'line_section':
-                line_section = line.name
-                line.price_subtotal = 0.0
-                for sub_line in docs.invoice_line_ids[indx + 1:]:
-                    if sub_line.display_type == 'line_section' and line.name != sub_line.name:
-                        break
-                    else:
-                        line.price_subtotal += sub_line.price_subtotal
+        amount_untaxed = sum(ol.price_subtotal for ol in docs.invoice_line_ids.filtered_domain([('is_printed', '=', True)]))
 
+        amount_tax = 0
         discount = 0
-        for line in docs.invoice_line_ids:
+        for line in docs.invoice_line_ids.filtered_domain([('is_printed', '=', True)]):
             discount += line.discount
+            amount_tax += line.price_tax
         is_discounted = discount > 0
-        is_taxed = docs.amount_tax > 0
+        is_taxed = amount_tax > 0
+        amount_total = (amount_untaxed + amount_tax)
         rep_vendor_name = docs.partner_id.name if docs.partner_id else ''
         rep_payment_term = docs.invoice_payment_term_id.name if docs.invoice_payment_term_id else ''
         rep_partner_ref = docs.ref if docs.ref else ''
@@ -46,8 +41,8 @@ class PurchaseReportTemplatePrimary(models.AbstractModel):
         docs.standard_payment_schedule = docs.standard_payment_schedule.replace('</p><p>', '<br />') if docs.standard_payment_schedule else False
         docs.terms_and_conditions = docs.terms_and_conditions.replace('</p><p>', '<br />') if docs.terms_and_conditions else False
         is_print_page_break = docs.standard_payment_schedule or docs.terms_and_conditions
-        is_print_payment_term = True if docs.standard_payment_schedule else False
-        is_print_terms_and_conditions = True if docs.terms_and_conditions else False
+        is_print_payment_term = docs.is_print_payment_schedule
+        is_print_terms_and_conditions = docs.is_print_terms_and_conditions
         col_span = 5
         if is_taxed or is_discounted:
             col_span = 6
@@ -63,6 +58,8 @@ class PurchaseReportTemplatePrimary(models.AbstractModel):
             'is_taxed': is_taxed,
             'invoice_date': invoice_date,
             'due_date': due_date,
+            'amount_untaxed': amount_untaxed,
+            'amount_tax': amount_tax,
             'rep_vendor_name': rep_vendor_name,
             'rep_payment_term': rep_payment_term,
             'rep_partner_ref': rep_partner_ref,
