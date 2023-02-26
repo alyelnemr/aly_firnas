@@ -4,18 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="[add] comments of video 05-Feb">
-      <change afterPath="$PROJECT_DIR$/aly_firnas/models/res_partner_bank.py" afterDir="false" />
+    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/models/account_move.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/account_move.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/models/account_move_line.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/account_move_line.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/models/bank_statement_line.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/bank_statement_line.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/aly_firnas/report/invoice_template.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/report/invoice_template.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/report/po_template.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/report/po_template.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/aly_firnas/views/account_move.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/account_move.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/aly_firnas/views/aly_invoice_report.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/aly_invoice_report.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/views/res_partner.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/res_partner.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,6 +36,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Git.Branch.Popup.ShowAllRemotes": "true",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "last_opened_file_path": "D:/Firnas Shuman/Firnas Code/FirnasAddons/aly_firnas/models"
@@ -208,8 +202,26 @@
       <option name="project" value="LOCAL" />
       <updated>1676328401608</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="[add] comments of video 05-Feb">
+      <created>1676809229967</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1676809229967</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+        <option value="Space.CommitStatus" />
+      </list>
+    </option>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">

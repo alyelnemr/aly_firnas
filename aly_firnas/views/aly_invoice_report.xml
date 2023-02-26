@@ -327,6 +327,7 @@
                     </td>
                 </tr>
             </table>
+            <span t-esc="o.currency_id.with_context(lang='es_AR').amount_to_text(amount_untaxed + amount_tax)"/>
             <table style="width:40%;border: 0px;">
                 <tr>
                     <th style="color:rgb(86, 56, 90); "></th>

@@ -28,7 +28,7 @@ class PurchaseReportTemplatePrimary(models.AbstractModel):
         discount = 0
         for line in docs.invoice_line_ids.filtered_domain([('is_printed', '=', True)]):
             discount += line.discount
-            amount_tax += line.price_tax
+            amount_tax += line.amount_tax
         is_discounted = discount > 0
         is_taxed = amount_tax > 0
         amount_total = (amount_untaxed + amount_tax)
@@ -38,10 +38,10 @@ class PurchaseReportTemplatePrimary(models.AbstractModel):
         invoice_date = docs.invoice_date if docs.invoice_date else docs.date if docs.date else False
         payment_days = docs.invoice_payment_term_id.line_ids[0].days if docs.invoice_payment_term_id.line_ids else 0
         due_date = invoice_date + datetime.timedelta(days=payment_days)
-        docs.standard_payment_schedule = docs.standard_payment_schedule.replace('</p><p>', '<br />') if docs.standard_payment_schedule else False
+        # docs.standard_payment_schedule = docs.standard_payment_schedule.replace('</p><p>', '<br />') if docs.standard_payment_schedule else False
         docs.terms_and_conditions = docs.terms_and_conditions.replace('</p><p>', '<br />') if docs.terms_and_conditions else False
-        is_print_page_break = docs.standard_payment_schedule or docs.terms_and_conditions
-        is_print_payment_term = docs.is_print_payment_schedule
+        is_print_page_break = docs.terms_and_conditions
+        is_print_payment_term = False #docs.is_print_payment_schedule
         is_print_terms_and_conditions = docs.is_print_terms_and_conditions
         col_span = 5
         if is_taxed or is_discounted:
