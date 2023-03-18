@@ -28,9 +28,9 @@ class PurchaseReportTemplatePrimary(models.AbstractModel):
         discount = 0
         for line in docs.invoice_line_ids.filtered_domain([('is_printed', '=', True)]):
             discount += line.discount
-            amount_tax += line.amount_tax
+            amount_tax += line.price_total - line.price_subtotal
         is_discounted = discount > 0
-        is_taxed = amount_tax > 0
+        is_taxed = amount_untaxed > 0
         amount_total = (amount_untaxed + amount_tax)
         rep_vendor_name = docs.partner_id.name if docs.partner_id else ''
         rep_payment_term = docs.invoice_payment_term_id.name if docs.invoice_payment_term_id else ''
