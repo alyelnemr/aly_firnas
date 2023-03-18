@@ -8,8 +8,9 @@ class AccountMoveLine(models.Model):
         if self.ids:
             first_line_rec = self.browse(self.ids[0])
             x = 1
-            self.line_rank = len(first_line_rec.move_id.order_line)
-            for line in first_line_rec.order_id.order_line:
+            line_ids = first_line_rec.move_id.line_ids if first_line_rec.move_id.type == 'entry' else first_line_rec.move_id.invoice_line_ids
+            self.line_rank = len(line_ids)
+            for line in line_ids:
                 if not line.display_type:
                     line.line_rank = x
                     x += 1

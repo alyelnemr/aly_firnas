@@ -6,9 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/report/invoice_template.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/report/invoice_template.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/models/account_move_line.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/account_move_line.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/aly_firnas/views/account_move.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/account_move.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/views/aly_invoice_report.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/aly_invoice_report.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/views/res_partner.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/res_partner.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,7 +18,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="test_17-Feb" />
+        <entry key="$PROJECT_DIR$" value="Test_Env" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -34,18 +34,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Git.Branch.Popup.ShowAllRemotes": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "D:/Firnas Shuman/Firnas Code/FirnasAddons/aly_firnas/models"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Odoo Installations/Odoo 13.0e/server/odoo-bin&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\models" />
-      <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\bi_crm_customization\views" />
       <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\views" />
       <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\report" />
     </key>
@@ -146,104 +143,62 @@
       <option name="project" value="LOCAL" />
       <updated>1675717205367</updated>
     </task>
-    <task id="LOCAL-00008" summary="[add] comments video of 23-01-2023">
-      <created>1675928582965</created>
+    <task id="LOCAL-00008" summary="[fix]">
+      <created>1677451997041</created>
       <option name="number" value="00008" />
       <option name="presentableId" value="LOCAL-00008" />
       <option name="project" value="LOCAL" />
-      <updated>1675928582965</updated>
+      <updated>1677451997041</updated>
     </task>
-    <task id="LOCAL-00009" summary="[add] mrp module">
-      <created>1675931433767</created>
+    <task id="LOCAL-00009" summary="[fix]">
+      <created>1677452137111</created>
       <option name="number" value="00009" />
       <option name="presentableId" value="LOCAL-00009" />
       <option name="project" value="LOCAL" />
-      <updated>1675931433767</updated>
+      <updated>1677452137111</updated>
     </task>
-    <task id="LOCAL-00010" summary="[add] mrp module">
-      <created>1675943247011</created>
+    <task id="LOCAL-00010" summary="[fix]">
+      <created>1677452253238</created>
       <option name="number" value="00010" />
       <option name="presentableId" value="LOCAL-00010" />
       <option name="project" value="LOCAL" />
-      <updated>1675943247011</updated>
+      <updated>1677452253238</updated>
     </task>
-    <task id="LOCAL-00011" summary="[add] comments of video 05-Feb">
-      <created>1675943532315</created>
+    <task id="LOCAL-00011" summary="[fix]">
+      <created>1677452412783</created>
       <option name="number" value="00011" />
       <option name="presentableId" value="LOCAL-00011" />
       <option name="project" value="LOCAL" />
-      <updated>1675943532315</updated>
+      <updated>1677452412783</updated>
     </task>
-    <task id="LOCAL-00012" summary="[add] comments of video 05-Feb">
-      <created>1676231027492</created>
+    <task id="LOCAL-00012" summary="[fix]">
+      <created>1677452956006</created>
       <option name="number" value="00012" />
       <option name="presentableId" value="LOCAL-00012" />
       <option name="project" value="LOCAL" />
-      <updated>1676231027493</updated>
+      <updated>1677452956006</updated>
     </task>
-    <task id="LOCAL-00013" summary="[add] comments of video 05-Feb">
-      <created>1676327586680</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1676327586680</updated>
-    </task>
-    <task id="LOCAL-00014" summary="[add] comments of video 05-Feb">
-      <created>1676328257321</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1676328257321</updated>
-    </task>
-    <task id="LOCAL-00015" summary="[add] comments of video 05-Feb">
-      <created>1676328401608</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1676328401608</updated>
-    </task>
-    <task id="LOCAL-00016" summary="[add] comments of video 05-Feb">
-      <created>1676809229967</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1676809229967</updated>
-    </task>
-    <option name="localTasksCounter" value="17" />
+    <option name="localTasksCounter" value="13" />
     <servers />
-  </component>
-  <component name="Vcs.Log.History.Properties">
-    <option name="COLUMN_ID_ORDER">
-      <list>
-        <option value="Default.Root" />
-        <option value="Default.Author" />
-        <option value="Default.Date" />
-        <option value="Default.Subject" />
-        <option value="Space.CommitStatus" />
-      </list>
-    </option>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
           <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-    <option name="RECENT_FILTERS">
-      <map>
-        <entry key="Branch">
-          <value>
-            <list>
-              <RecentGroup>
-                <option name="FILTER_VALUES">
-                  <option value="aly_firnas/Live" />
-                </option>
-              </RecentGroup>
-            </list>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="Test" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -254,10 +209,10 @@
     <MESSAGE value="[add] invoice format" />
     <MESSAGE value="[add] invoice format video2" />
     <MESSAGE value="[add] invoice format video3" />
+    <MESSAGE value="[add] comments video of 23-01-2023" />
     <MESSAGE value="[fix] issue of hr expense manager required field" />
-    <MESSAGE value="[add] mrp module" />
-    <MESSAGE value="[add] comments of video 05-Feb" />
-    <option name="LAST_COMMIT_MESSAGE" value="[add] comments of video 05-Feb" />
+    <MESSAGE value="[fix]" />
+    <option name="LAST_COMMIT_MESSAGE" value="[fix]" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -293,31 +248,6 @@
           <option name="timeStamp" value="27" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/aly_firnas/models/stock_move_line.py</url>
-          <line>69</line>
-          <option name="timeStamp" value="28" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/aly_firnas/models/stock_move_line.py</url>
-          <line>91</line>
-          <option name="timeStamp" value="29" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/aly_firnas/models/stock_move_line.py</url>
-          <line>132</line>
-          <option name="timeStamp" value="32" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/aly_firnas/models/stock_move_line.py</url>
-          <line>134</line>
-          <option name="timeStamp" value="33" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/aly_firnas/models/stock_move_line.py</url>
-          <line>147</line>
-          <option name="timeStamp" value="34" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bi_crm_customization/models/sale_order.py</url>
           <line>137</line>
           <option name="timeStamp" value="37" />
@@ -326,6 +256,11 @@
           <url>file://$PROJECT_DIR$/aly_firnas/models/sale_order_line.py</url>
           <line>20</line>
           <option name="timeStamp" value="38" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/aly_firnas/models/account_move_line.py</url>
+          <line>8</line>
+          <option name="timeStamp" value="39" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
