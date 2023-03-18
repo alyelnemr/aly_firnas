@@ -47,6 +47,8 @@
                 </xpath>
                 <xpath expr="//field[@name='invoice_partner_bank_id']" position="replace">
                 </xpath>
+                <xpath expr="//field[@name='ref']" position="replace">
+                </xpath>
                 <xpath expr="//field[@name='company_id']" position="replace">
                 </xpath>
                 <xpath expr="//field[@name='partner_id']" position="after">
