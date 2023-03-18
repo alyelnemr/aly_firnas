@@ -428,32 +428,32 @@
                 </tr>
                 <tr>
                     <td style="">
-                        <span t-field="o.invoice_partner_bank_id.acc_holder_name" class="text-right"/>
+                        Account Holder Name: <span t-field="o.invoice_partner_bank_id.acc_holder_name" class="text-right"/>
                     </td>
                 </tr>
                 <tr>
                     <td style="">
-                        <span t-field="o.invoice_partner_bank_id.bank_id.name" class="text-right"/>
+                        Account Name: <span t-field="o.invoice_partner_bank_id.bank_id.name" class="text-right"/>
                     </td>
                 </tr>
                 <tr>
                     <td style="">
-                        <span t-field="o.invoice_partner_bank_id.acc_number" class="text-right"/>
+                        Account Number: <span t-field="o.invoice_partner_bank_id.acc_number" class="text-right"/>
                     </td>
                 </tr>
                 <tr>
                     <td style="">
-                        <span t-field="o.invoice_partner_bank_id.currency_id.name" class="text-right"/>
+                        Account Currency: <span t-field="o.invoice_partner_bank_id.currency_id.name" class="text-right"/>
                     </td>
                 </tr>
                 <tr>
                     <td style="">
-                        <span t-field="o.invoice_partner_bank_id.iban" class="text-right"/>
+                        IBAN: <span t-field="o.invoice_partner_bank_id.iban" class="text-right"/>
                     </td>
                 </tr>
                 <tr>
                     <td style="">
-                        <span t-field="o.invoice_partner_bank_id.swift" class="text-right"/>
+                        Swift: <span t-field="o.invoice_partner_bank_id.swift" class="text-right"/>
                     </td>
                 </tr>
             </table>
