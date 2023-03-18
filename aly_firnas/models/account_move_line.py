@@ -5,15 +5,14 @@ class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
     def _get_line_numbers(self):
-        if self.ids:
-            first_line_rec = self.browse(self.ids[0])
-            x = 1
-            line_ids = first_line_rec.move_id.line_ids if first_line_rec.move_id.type == 'entry' else first_line_rec.move_id.invoice_line_ids
-            self.line_rank = len(line_ids)
-            for line in line_ids:
-                if not line.display_type:
-                    line.line_rank = x
-                    x += 1
+        first_line_rec = self
+        x = 1
+        line_ids = first_line_rec.move_id.line_ids if first_line_rec.move_id.type == 'entry' else first_line_rec.move_id.invoice_line_ids
+        self.line_rank = len(line_ids)
+        for line in line_ids:
+            if not line.display_type:
+                line.line_rank = x
+                x += 1
 
     note = fields.Text(string='Notes', related='statement_line_id.note')
     analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account', index=True,
