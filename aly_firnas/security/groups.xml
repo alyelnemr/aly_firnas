@@ -35,5 +35,11 @@
             </field>
             <field name="groups" eval="[(4, ref('purchase.group_purchase_user'))]"/>
         </record>
+
+        <record id="crm_award_stage_notification_group" model="res.groups">
+            <field name="name">CRM Award Stage Notification</field>
+            <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        </record>
+
     </data>
 </odoo>

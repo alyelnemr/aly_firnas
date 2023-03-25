@@ -8,3 +8,4 @@ access_account_res_currency,account.res.currency,model_res_currency,,1,1,1,0
 access_all_users_purchase_order,all.users.purchase.order,model_purchase_order,,1,0,0,0
 access_purchase_account_move_line,purchase.account.move.line,account.model_account_move_line,purchase.group_purchase_user,1,1,1,0
 access_purchase_account_move,purchase.account.move,account.model_account_move,purchase.group_purchase_user,1,1,1,0
+access_create_duplicate_project_crm_wizard,model.access_create_duplicate_project_crm_wizard,model_create_duplicate_project_crm_wizard,,1,1,1,1
