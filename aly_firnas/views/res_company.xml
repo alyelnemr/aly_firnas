@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+        <record id="res_company_inherit_form_health_center_view" model="ir.ui.view">
+            <field name="name">res.company.inherit.form.health.center.view</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form" />
+            <field name="arch" type="xml">
+                <notebook>
+                    <page string="Expense Accounts">
+                        <group >
+                            <field name="aly_expense_bank_journal_id"/>
+                        </group>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+</odoo>
+

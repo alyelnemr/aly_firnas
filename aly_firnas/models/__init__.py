@@ -31,6 +31,7 @@ from . import stock_picking
 from . import stock_return_picking
 from . import stock_rule
 from . import res_partner
+from . import res_company
 from . import res_partner_bank
 from . import stock_location
 from . import stock_valuation_layer

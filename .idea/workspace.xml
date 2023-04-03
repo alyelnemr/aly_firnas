@@ -4,8 +4,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="">
+    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="[fix]">
+      <change afterPath="$PROJECT_DIR$/aly_firnas/models/res_company.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/aly_firnas/views/res_company.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/__manifest__.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/__manifest__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/models/hr_expense.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/hr_expense.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/models/purchase_order_line.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/purchase_order_line.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/models/res_config_settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/res_config_settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/security/groups.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/security/groups.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/views/purchase_order_line.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/purchase_order_line.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bi_actual_submission_date/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bi_actual_submission_date/__manifest__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bi_actual_submission_date/models/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bi_actual_submission_date/models/inherit_res_company.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bi_actual_submission_date/models/inherit_res_config_settings.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bi_actual_submission_date/security/security.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bi_actual_submission_date/static/description/icon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bi_actual_submission_date/views/inherit_res_config_settings_view.xml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,12 +52,14 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Odoo Installations/Odoo 13.0e/server/odoo-bin&quot;
+    &quot;last_opened_file_path&quot;: &quot;D:/Firnas Shuman/Firnas Code/FirnasAddons/aly_firnas/views&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\views" />
+      <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\models" />
+      <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\wizard" />
       <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\report" />
     </key>
   </component>
@@ -182,7 +201,49 @@
       <option name="project" value="LOCAL" />
       <updated>1679123972059</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="[fix]">
+      <created>1679174088490</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1679174088491</updated>
+    </task>
+    <task id="LOCAL-00015" summary="[fix]">
+      <created>1679177193400</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1679177193400</updated>
+    </task>
+    <task id="LOCAL-00016" summary="[fix]">
+      <created>1679180562729</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1679180562730</updated>
+    </task>
+    <task id="LOCAL-00017" summary="[fix]">
+      <created>1679182283327</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1679182283327</updated>
+    </task>
+    <task id="LOCAL-00018" summary="[fix]">
+      <created>1679182415882</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1679182415882</updated>
+    </task>
+    <task id="LOCAL-00019" summary="[fix]">
+      <created>1679735252851</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1679735252851</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -260,11 +321,6 @@
           <url>file://$PROJECT_DIR$/aly_firnas/models/sale_order_line.py</url>
           <line>20</line>
           <option name="timeStamp" value="38" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/aly_firnas/models/account_move_line.py</url>
-          <line>8</line>
-          <option name="timeStamp" value="39" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -16,6 +16,7 @@
         'wizard/create_duplicate_project_crm_wizard.xml',
         'views/aly_po_report.xml',
         'views/account_invoice_report.xml',
+        'views/res_company.xml',
         'views/aly_invoice_report.xml',
         'views/aly_rfq_report.xml',
         'views/res_users.xml',

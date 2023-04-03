@@ -613,7 +613,9 @@ class HRExpense(models.Model):
         return action
 
     def _create_sheet_from_expenses(self):
-        if (self.product_type in ['product', 'consu']) and (not self.expense_picking_id or self.expense_picking_id.state != 'done'):
+        if any((expense.product_type in ['product', 'consu']) and (not expense.expense_picking_id or expense.expense_picking_id.state != 'done') for expense in self):
+            raise UserError(_("You cannot create report until you receive products!"))
+        if any((expense.product_type in ['product', 'consu']) and (not expense.expense_picking_id or expense.expense_picking_id.state != 'done') for expense in self):
             raise UserError(_("You cannot create report until you receive products!"))
         if any(expense.state != 'draft' or expense.sheet_id for expense in self):
             raise UserError(_("You cannot report twice the same line!"))
@@ -621,7 +623,7 @@ class HRExpense(models.Model):
             raise UserError(_("You cannot report expenses for different employees in the same report."))
         if any(not expense.product_id for expense in self):
             raise UserError(_("You can not create report without product."))
-        if self.company_id and len(self.company_id) > 1:
+        if any(expense.company_id and len(expense.company_id) > 1 for expense in self):
             raise UserError(_("You can not create report from different companies."))
 
         todo = self.filtered(lambda x: x.payment_mode == 'own_account') or self.filtered(
