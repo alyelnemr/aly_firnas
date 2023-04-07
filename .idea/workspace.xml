@@ -4,25 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="[fix]">
-      <change afterPath="$PROJECT_DIR$/aly_firnas/models/res_company.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/aly_firnas/views/res_company.xml" afterDir="false" />
+    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="[add]">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/__manifest__.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/__manifest__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/models/hr_expense.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/hr_expense.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/models/purchase_order_line.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/purchase_order_line.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/models/res_config_settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/res_config_settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/security/groups.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/security/groups.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/views/purchase_order_line.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/purchase_order_line.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_actual_submission_date/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_actual_submission_date/__manifest__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_actual_submission_date/models/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_actual_submission_date/models/inherit_res_company.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_actual_submission_date/models/inherit_res_config_settings.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_actual_submission_date/security/security.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_actual_submission_date/static/description/icon.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_actual_submission_date/views/inherit_res_config_settings_view.xml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -243,7 +226,14 @@
       <option name="project" value="LOCAL" />
       <updated>1679735252851</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="[add]">
+      <created>1680529011609</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1680529011609</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -277,7 +267,8 @@
     <MESSAGE value="[add] comments video of 23-01-2023" />
     <MESSAGE value="[fix] issue of hr expense manager required field" />
     <MESSAGE value="[fix]" />
-    <option name="LAST_COMMIT_MESSAGE" value="[fix]" />
+    <MESSAGE value="[add]" />
+    <option name="LAST_COMMIT_MESSAGE" value="[add]" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
