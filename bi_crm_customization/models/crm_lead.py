@@ -27,6 +27,7 @@ class CRMLeadInherit(models.Model):
         res['context']['default_proposals_engineer_ids'] = self.proposals_engineer_ids.ids
         res['context']['default_document_name'] = self.proposal_subject
         res['context']['default_file_name'] = self.document_file_name
+        res['context']['default_analytic_account_id'] = self.analytic_account_id.id
         return res
 
     def _default_team_id(self, user_id):

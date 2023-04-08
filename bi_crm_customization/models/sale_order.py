@@ -18,6 +18,8 @@ class SaleOrderCRMInherit(models.Model):
             opportunities links with this partner to merge all information together
         """
         result = super(SaleOrderCRMInherit, self).default_get(fields)
+        p_list = self.env['product.pricelist'].search([], limit=1, order='sequence')
+        result['pricelist_id'] = p_list.id
         if self._context.get('active_id') or self.opportunity_id:
 
             lead = self.env['crm.lead'].browse(self._context['active_id'])
@@ -130,10 +132,3 @@ class SaleOrderCRMInherit(models.Model):
                                       domain="[('parent_id', '=', partner_id)]")
     financial_proposal_title = fields.Char('Title', default='Financial Proposal')
     financial_proposal_number = fields.Char('Number', default='4')
-
-    @api.model
-    def default_get(self, fields):
-        vals = super(SaleOrderCRMInherit, self).default_get(fields)
-        p_list = self.env['product.pricelist'].search([], limit=1, order='sequence')
-        vals['pricelist_id'] = p_list.id
-        return vals
