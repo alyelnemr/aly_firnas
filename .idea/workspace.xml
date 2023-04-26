@@ -4,9 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="">
+    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="[add]">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_crm_customization/views/sale_order.xml" beforeDir="false" afterPath="$PROJECT_DIR$/bi_crm_customization/views/sale_order.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/models/hr_expense.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/hr_expense.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/models/hr_expense_sheet.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/hr_expense_sheet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/models/res_company.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/res_company.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/views/hr_expense.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/hr_expense.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/views/hr_expense_sheet.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/hr_expense_sheet.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -255,7 +259,14 @@
       <option name="project" value="LOCAL" />
       <updated>1680921611598</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="[add]">
+      <created>1680922536742</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1680922536742</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -355,6 +366,51 @@
           <url>file://$PROJECT_DIR$/bi_crm_customization/models/sale_order.py</url>
           <line>85</line>
           <option name="timeStamp" value="41" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/../../../Odoo Installations/Odoo 13.0e/server/odoo/addons/sale/models/sale.py</url>
+          <line>462</line>
+          <option name="timeStamp" value="42" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bi_crm_customization/models/crm_lead.py</url>
+          <line>33</line>
+          <option name="timeStamp" value="44" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bi_crm_customization/models/crm_lead.py</url>
+          <line>39</line>
+          <option name="timeStamp" value="47" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bi_crm_customization/models/crm_lead.py</url>
+          <line>35</line>
+          <option name="timeStamp" value="48" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/../../../Odoo Installations/Odoo 13.0e/server/odoo/addons/sale/models/sale.py</url>
+          <line>115</line>
+          <option name="timeStamp" value="49" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/../../../Odoo Installations/Odoo 13.0e/server/odoo/addons/sale/models/sale.py</url>
+          <line>479</line>
+          <option name="timeStamp" value="50" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bi_expenses_limit/models/hr_expense_inherit.py</url>
+          <line>93</line>
+          <option name="timeStamp" value="51" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bi_expense_portal/controllers/main.py</url>
+          <line>756</line>
+          <option name="timeStamp" value="52" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/aly_firnas/models/hr_expense.py</url>
+          <line>231</line>
+          <option name="timeStamp" value="60" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

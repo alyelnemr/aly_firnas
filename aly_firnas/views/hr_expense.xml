@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//widget[@name='attach_document']" position="after">
                     <button name="action_view_picking" string="Receive Products" class="oe_highlight" type="object"
-                            attrs="{'invisible': [('product_type','not in', ('product', 'consu'))]}"
+                            attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('product_type','not in', ('product', 'consu'))]}"
                     />
                 </xpath>
                 <xpath expr="//button[@name='action_view_sheet']" position="after">

@@ -10,5 +10,5 @@ class ResCompany(models.Model):
         return self.env['account.journal'].search([('type', 'in', ['cash', 'bank'])], limit=1)
 
     aly_expense_bank_journal_id = fields.Many2one('account.journal', string='Expenses - Default Bank Journal',
-                                                  domain="[('type', 'in', ['cash', 'bank'])]", check_company=False)
+                                                  domain="[('company_id', '=', id), ('type', 'in', ['cash', 'bank'])]", check_company=True)
     date_sub_groups_ids = fields.Many2many('res.groups', string='Notification Groups')

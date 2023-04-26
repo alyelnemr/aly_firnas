@@ -65,6 +65,11 @@ class HrExpenseSheet(models.Model):
         self.activity_update()
         return True
 
+    def action_cancel(self):
+        self.write({'state': 'cancel'})
+        return True
+
+
     def approve_expense_sheets(self):
         if self.user_id.id != self.env.user.id:
             raise UserError(_("You are not allowed to approve these expenses"))

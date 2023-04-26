@@ -18,7 +18,9 @@
                 </xpath>
                 <xpath expr="//button[@name='reset_expense_sheets']" position="replace">
                     <button name="reset_expense_sheets" string="Reset to Draft" type="object"
-                            attrs="{'invisible': ['|', ('can_reset', '=', False), ('state', 'in', ['draft'])]}"/>
+                            attrs="{'invisible': ['|', ('can_reset', '=', False), ('state', '!=', 'cancel')]}"/>
+                    <button name="action_cancel" string="Cancel"
+                            attrs="{'invisible': [('state', '=', 'cancel')]}" type="object" />
                 </xpath>
                 <xpath expr="//field[@name='company_id']" position="replace">
                 </xpath>
