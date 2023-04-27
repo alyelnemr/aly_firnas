@@ -8,7 +8,7 @@
                 <notebook>
                     <page string="Expense Accounts">
                         <group >
-                            <field name="aly_expense_bank_journal_id"/>
+<!--                            <field name="aly_expense_bank_journal_id"/>-->
                         </group>
                     </page>
                 </notebook>

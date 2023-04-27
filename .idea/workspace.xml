@@ -6,15 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/models/hr_expense.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/hr_expense.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/models/hr_expense_sheet.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/hr_expense_sheet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/views/hr_expense.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/hr_expense.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/views/hr_expense_sheet.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/hr_expense_sheet.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_expense_portal/controllers/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/bi_expense_portal/controllers/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_expense_portal/static/src/js/website_expense.js" beforeDir="false" afterPath="$PROJECT_DIR$/bi_expense_portal/static/src/js/website_expense.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_expense_portal/views/website_portal_templates.xml" beforeDir="false" afterPath="$PROJECT_DIR$/bi_expense_portal/views/website_portal_templates.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_expense_portal/views/website_portal_templates2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/bi_expense_portal/views/website_portal_templates2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_timesheet_portal/controllers/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/bi_timesheet_portal/controllers/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/views/res_company.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/res_company.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -277,7 +269,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682511079706</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="[add]">
+      <created>1682558952222</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1682558952222</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
