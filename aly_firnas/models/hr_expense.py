@@ -344,7 +344,7 @@ class HRExpense(models.Model):
                 'analytic_account_id': expense.analytic_account_id.id,
                 'analytic_tag_ids': [(6, 0, expense.analytic_tag_ids.ids)],
                 'expense_id': expense.id,
-                'partner_id': partner_id.id,
+                'partner_id': partner_id.id if partner_id else False,
                 'tax_ids': [(6, 0, expense.tax_ids.ids)],
                 'tag_ids': [(6, 0, taxes['base_tags'])],
                 'currency_id': expense.currency_id.id if different_currency else False,
@@ -381,7 +381,7 @@ class HRExpense(models.Model):
                     'tag_ids': tax['tag_ids'],
                     'tax_base_amount': base_amount,
                     'expense_id': expense.id,
-                    'partner_id': partner_id.id,
+                    'partner_id': partner_id.id if partner_id else False,
                     'analytic_account_id': expense.analytic_account_id.id,
                     'analytic_tag_ids': [(6, 0, expense.analytic_tag_ids.ids)],
                     'currency_id': expense.currency_id.id if different_currency else False,
@@ -478,10 +478,11 @@ class HRExpense(models.Model):
                 # create payment
                 payment_methods = journal.outbound_payment_method_ids if total_amount < 0 else journal.inbound_payment_method_ids
                 journal_currency = journal.currency_id or journal.company_id.currency_id
+                partner_id = expense.employee_id.address_home_id.commercial_partner_id.id
                 payment = self.env['account.payment'].create({
                     'payment_method_id': payment_methods and payment_methods[0].id or False,
                     'payment_type': 'outbound' if total_amount < 0 else 'inbound',
-                    'partner_id': expense.employee_id.address_home_id.commercial_partner_id.id,
+                    'partner_id': partner_id.id if partner_id else False,
                     'partner_type': 'supplier',
                     'journal_id': journal.id,
                     'payment_date': expense.date,
