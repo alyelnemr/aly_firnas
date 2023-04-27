@@ -15,6 +15,7 @@ from operator import itemgetter
 from collections import OrderedDict
 import math
 
+
 class CustomerPortal(CustomerPortal):
 
     def _prepare_portal_layout_values(self):
@@ -31,7 +32,8 @@ class CustomerPortal(CustomerPortal):
         # else:
         if employee:
             timesheets_count = timesheets_obj.sudo().search_count(
-                ['|', ('employee_id', '=', employee.id), ('employee_id.parent_id', '=', employee.id),('project_id','in',projects.ids)])
+                ['|', ('employee_id', '=', employee.id), ('employee_id.parent_id', '=', employee.id),
+                 ('project_id', 'in', projects.ids)])
         else:
             timesheets_count = 0
         values.update({
@@ -146,7 +148,7 @@ class CustomerPortal(CustomerPortal):
             domain += [('employee_id', '=', False)]
 
         # timesheet for followed projects only
-        domain += [('project_id','in',projects.ids)]
+        domain += [('project_id', 'in', projects.ids)]
         # count for pager
         timesheets_count = timesheets_obj.sudo().search_count(domain)
 
@@ -164,10 +166,10 @@ class CustomerPortal(CustomerPortal):
         if groupby == 'project':
             order = "project_id, %s" % order  # force sort on project first to group by project in view
         tsheets = request.env['account.analytic.line'].sudo().search(domain,
-                                                                                                               order=order,
-                                                                                                               limit=self._items_per_page,
-                                                                                                               offset=(
-                                                                                                                              page - 1) * self._items_per_page)
+                                                                     order=order,
+                                                                     limit=self._items_per_page,
+                                                                     offset=(
+                                                                                    page - 1) * self._items_per_page)
 
         if groupby == 'project':
             grouped_timesheets = [request.env['account.analytic.line'].concat(*g) for k, g in
@@ -177,8 +179,8 @@ class CustomerPortal(CustomerPortal):
 
         # content according to pager and archive selected
         timesheets = timesheets_obj.sudo().search(domain, order=order,
-                                                                                            limit=self._items_per_page,
-                                                                                            offset=pager['offset'])
+                                                  limit=self._items_per_page,
+                                                  offset=pager['offset'])
         values.update({
             'timesheets': timesheets,
             'page_name': 'timesheets',
@@ -339,7 +341,7 @@ class CustomerPortal(CustomerPortal):
         if company:
             project_ids = request.env['project.project'].sudo().search(
                 []).filtered(
-            lambda p: request.env.user.partner_id.id in p.message_follower_ids.mapped('partner_id').ids)
+                lambda p: request.env.user.partner_id.id in p.message_follower_ids.mapped('partner_id').ids)
             for project in project_ids:
                 if project.company_id.id == int(company):
                     projects.append((project.id, project.display_name))

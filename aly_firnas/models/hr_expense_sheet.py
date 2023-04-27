@@ -21,7 +21,7 @@ class HrExpenseSheet(models.Model):
     bank_journal_id = fields.Many2one('account.journal', string='Journal',
                                       states={'done': [('readonly', True)], 'post': [('readonly', True)]}, check_company=True,
                                       default=_default_bank_journal_id,
-                                      domain="[('type', 'in', ['cash', 'bank']), ('is_expense_module', '=', True), ('company_id', '=', company_id)]")
+                                      domain="[('is_expense_module', '=', True), ('company_id', '=', company_id)]")
     is_same_user_approver = fields.Boolean("Is Same User Approver", compute='_check_user')
     user_id = fields.Many2one('res.users', 'Manager',
                               domain=[('expense_approve', '=', True)],

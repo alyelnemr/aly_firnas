@@ -49,7 +49,7 @@
                     <field name="account_id" force_save="1" options="{'no_create': True}" readonly="1"
                            domain="[('internal_type', '=', 'other'), ('company_id', '=', company_id)]"
                            context="{'default_company_id': company_id}"/>
-                    <field name="picking_type_id" attrs="{'invisible': [('product_type', 'not in', ('product', 'consu'))], 'required': [('product_type', 'in', ('product', 'consu'))]}"
+                    <field name="picking_type_id" attrs="{'readonly': [('state', 'not in', ['draft', 'refused', 'cancel'])], 'invisible': [('product_type', 'not in', ('product', 'consu'))], 'required': [('product_type', 'in', ('product', 'consu'))]}"
                            options="{'no_create': True}"/>
                     <field name="dest_address_id" groups="stock.group_stock_multi_locations"
                            attrs="{'invisible': [('default_location_dest_id_usage', '!=', 'customer')], 'required': [('default_location_dest_id_usage', '=', 'customer')]}"/>
@@ -61,7 +61,7 @@
                 </xpath>
                 <xpath expr="//field[@name='analytic_account_id']" position="replace">
                     <field name="tax_ids" widget="many2many_tags"
-                           attrs="{'readonly': [('is_editable', '=', False)]}" context="{'default_company_id': company_id}"/>
+                           attrs="{'readonly': ['|', ('is_editable', '=', False), ('state', 'in', ['post', 'done', 'approved'])]}" context="{'default_company_id': company_id}"/>
                     <field name="sub_total" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                     <field name="total_amount_company" string="Sub Total (Company Currency)" attrs="{'readonly': [('is_same_currency', '=', True)]}"/>
                     <field name="total_amount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
@@ -92,11 +92,11 @@
                 </xpath>
                 <xpath expr="//field[@name='product_id']" position="replace">
                     <field name="partner_id"/>
-                    <field name="vendor_contact_id"/>
-                    <field name="reference" attrs="{'readonly': [('is_ref_editable', '=', False)]}"/>
+                    <field name="vendor_contact_id" attrs="{'readonly': [('state', 'not in', ['draft', 'refused', 'cancel'])]}"/>
+                    <field name="reference" attrs="{'readonly': ['|', ('state', 'not in', ['draft', 'refused', 'cancel']), ('is_ref_editable', '=', False)]}"/>
                     <field name="date" attrs="{'invisible': False}" modifiers="{'invisible':False,'readonly':[['state','not
-                        in',['draft']]],'required':true}"/>
-                    <field name="project_id" attrs="{'readonly': [('sheet_id', '!=', False)]}"/>
+                        in',['draft', 'refused', 'cancel']]],'required':true}"/>
+                    <field name="project_id" attrs="{'readonly': [('state', 'not in', ['draft', 'refused', 'cancel'])]}"/>
                     <field name="company_id" groups="base.group_multi_company" force_save="1" readonly="1" />
                     <field name="analytic_account_id" domain="['|', ('company_id', '=', company_id), ('company_id', '=', False)]"
                            groups="analytic.group_analytic_accounting" force_save="1" readonly="1"/>

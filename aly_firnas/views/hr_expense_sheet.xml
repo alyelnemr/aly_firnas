@@ -67,6 +67,9 @@
                 <xpath expr="//field[@name='expense_line_ids']/tree/field[@name='name']" position="after">
                     <field name="partner_id" optional="show"/>
                 </xpath>
+                <xpath expr="//field[@name='expense_line_ids']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'in', ['post', 'done'])]}</attribute>
+                </xpath>
                 <xpath expr="//field[@name='expense_line_ids']/tree/field[@name='date']" position="attributes">
                     <attribute name="optional">show</attribute>
                 </xpath>

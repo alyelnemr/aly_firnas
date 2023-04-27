@@ -59,7 +59,7 @@
                                     </div>
                                     <div class="col-lg-4 col-md-4">
                                         <label class="col-form-label" for="description">Description</label>
-                                        <input type="text" class="form-control" name="name" required="1" readonly="1"/>
+                                        <input type="text" class="form-control" name="name" required="1" t-att-value="expense_sudo.name" readonly="1"/>
                                     </div>
                                 </div>
                                 <div class="form-group row form-field">
@@ -137,7 +137,7 @@
                                     <div class="col-lg-4 col-md-4">
                                         <label class="col-form-label" for="discount">Discount%</label>
                                         <input type="number" step="1" class="form-control" id="discount"
-                                               name="discount" value="0.0" required="0"/>
+                                               name="discount" value="0.0" required="0" t-att-value="expense_sudo.discount"/>
                                     </div>
                                 </div>
                                 <div class="form-group row form-field">
@@ -224,35 +224,16 @@
                                     </div>
                                 </div>
                                 <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="description">Notes</label>
+                                        <input type="text" class="form-control" id="description" name="description"/>
+                                    </div>
                                     <div t-if="default_account" class="col-lg-4 col-md-4">
                                         <label class="col-form-label" for="account_id">Account</label>
-                                        <select class="form-control" name="account_id" required="1">
+                                        <select class="form-control" id="account_id" name="account_id" required="1">
                                             <t t-foreach="default_account" t-as="acc">
-                                                <option t-att-value="acc.id"
-                                                        t-att-selected="acc.id == expense_sudo.account_id.id">
+                                                <option t-att-value="acc.id">
                                                     <t t-esc="acc.sudo().display_name"/>
-                                                </option>
-                                            </t>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row form-field">
-                                    <div id="div_show_picking_type_id" class="col-lg-4 col-md-4">
-                                        <label class="col-form-label" for="picking_type_id">Deliver To</label>
-                                        <select class="form-control" id="picking_type_id" name="picking_type_id">
-                                            <t t-foreach="picking_type_id" t-as="picking">
-                                                <option t-att-value="picking.id">
-                                                    <t t-esc="picking.sudo().display_name"/>
-                                                </option>
-                                            </t>
-                                        </select>
-                                    </div>
-                                    <div id="div_show_location_dest_id" class="col-lg-4 col-md-4">
-                                        <label class="col-form-label" for="dest_address_id">Dropship Address</label>
-                                        <select id="dest_address_id" class="form-control" name="dest_address_id">
-                                            <t t-foreach="dest_address_id" t-as="v_location">
-                                                <option t-att-value="v_location.id">
-                                                    <t t-esc="v_location.name"/>
                                                 </option>
                                             </t>
                                         </select>
@@ -263,10 +244,29 @@
                                         <label class="col-form-label" for="attachment">Attachment</label>
                                         <input type="file" class="form-control o_website_form_input" name="attachment"/>
                                     </div>
+                                    <div id="div_show_picking_type_id" class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="picking_type_id">Deliver To</label>
+                                        <select class="form-control" id="picking_type_id" name="picking_type_id">
+                                            <t t-foreach="picking_type_id" t-as="picking">
+                                                <option t-att-value="picking.id">
+                                                    <t t-esc="picking.sudo().display_name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
                                     <div class="col-lg-4 col-md-4">
-                                        <label class="col-form-label" for="description">Notes</label>
-                                        <input type="text" class="form-control" name="description"
-                                               t-att-value="expense_sudo.description"/>
+                                    </div>
+                                    <div id="div_show_location_dest_id" class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="dest_address_id">Dropship Address</label>
+                                        <select id="dest_address_id" class="form-control" name="dest_address_id">
+                                            <t t-foreach="dest_address_id" t-as="v_location">
+                                                <option t-att-value="v_location.id">
+                                                    <t t-esc="v_location.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -366,42 +366,52 @@
                                         <strong>Date</strong>
                                     </div>
                                     <div class="col-lg-2">
-                                        <strong>Product</strong>
+                                        <strong>Vendor</strong>
                                     </div>
-                                    <div class="col-lg-2 text-right">
-                                        <strong>Unit Price</strong>
-                                    </div>
-                                    <div class="col-lg-2 text-right">
-                                        <strong>Quantity</strong>
+                                    <div class="col-lg-2">
+                                        <strong>Bill Reference</strong>
                                     </div>
                                     <div class="col-lg-2 text-right">
                                         <strong>Subtotal</strong>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <strong>Project</strong>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <strong>Product</strong>
+                                    </div>
+                                    <div class="col-lg-2 text-right">
+                                        <strong>Description</strong>
                                     </div>
                                 </div>
                                 <t t-set="to_be_added_index" t-value="1"/>
                                 <t t-foreach="expense_sudo.expense_line_ids" t-as="expense_request">
                                     <div class="row">
                                         <div class="col-lg-2 text-center">
-                                            <!--                                            <input type="checkbox" t-att-value="'%s' % (expense_request.id)" t-att-name="'to_be_added_[''%s'']' % (to_be_added_index)" />-->
-                                            <input type="checkbox" checked="checked" t-att-value="'%s' % (expense_request.id)"
-                                                   name="to_be_added_ids"/>
+<!--                                            <input type="checkbox" t-att-value="'%s' % (expense_request.id)" t-att-name="'to_be_added_[''%s'']' % (to_be_added_index)" />-->
+                                            <input type="checkbox" t-att-value="'%s' % (expense_request.id)" name="to_be_added_ids" />
                                         </div>
                                         <div class="col-lg-2 text-left">
                                             <span t-field="expense_request.date" t-options='{"widget": "date"}'/>
+                                        </div>
+                                        <div id='partner_id' class="col-lg-2">
+                                            <span t-esc="expense_request.partner_id.name"/>
+                                        </div>
+                                        <div id='reference' class="col-lg-2">
+                                            <span t-esc="expense_request.reference"/>
+                                        </div>
+                                        <div class="col-lg-2 text-right">
+                                            <span t-field="expense_request.untaxed_amount"
+                                                  t-options='{"widget": "monetary", "display_currency": expense_request.currency_id}'/>
+                                        </div>
+                                        <div id='project_name' class="col-lg-2">
+                                            <span t-esc="expense_request.project_id.name"/>
                                         </div>
                                         <div id='product_name' class="col-lg-2">
                                             <span t-esc="expense_request.product_id.name"/>
                                         </div>
                                         <div class="col-lg-2 text-right">
-                                            <span t-field="expense_request.unit_amount"
-                                                  t-options='{"widget": "monetary", "display_currency": expense_request.currency_id}'/>
-                                        </div>
-                                        <div class="col-lg-2 text-right">
-                                            <span t-esc="expense_request.quantity"/>
-                                        </div>
-                                        <div class="col-lg-2 text-right">
-                                            <span t-field="expense_request.untaxed_amount"
-                                                  t-options='{"widget": "monetary", "display_currency": expense_request.currency_id}'/>
+                                            <span t-esc="expense_request.name"/>
                                         </div>
                                     </div>
                                     <t t-set="to_be_added_index" t-value="to_be_added_index+1"/>
@@ -438,7 +448,7 @@
                                     <div class="col-md-8 col-lg-7">
                                         <button type="submit"
                                                 class="btn btn-primary btn-lg o_website_form_send o_default_snippet_text">
-                                            Save
+                                            Save Report
                                         </button>
                                         <span style="color: red;">
                                             <t t-if="error_fields" t-esc="error_fields"/>

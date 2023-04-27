@@ -65,6 +65,9 @@ class HRExpense(models.Model):
                     expense.analytic_tag_ids += expense.sudo().employee_id.analytic_tag_ids
                 else:
                     expense.analytic_tag_ids = expense.sudo().employee_id.analytic_tag_ids
+            if expense.sheet_id:
+                expense.sheet_id.analytic_account_id = expense.analytic_account_id.id
+                expense.sheet_id.analytic_tag_ids = expense.analytic_tag_ids
 
     @api.model
     def _default_employee_id(self):
@@ -263,8 +266,10 @@ class HRExpense(models.Model):
                                                   precision_rounding=(r.currency_id or self.env.company.currency_id).rounding))
         res = expense_line_ids.action_move_create()
 
-        if not self.accounting_date:
+        if not self.accounting_date and self.account_move_id.date:
             self.accounting_date = self.account_move_id.date
+        else:
+            self.accounting_date = fields.Datetime.now
 
         if self.payment_mode == 'own_account' and expense_line_ids:
             self.write({'state': 'post'})
@@ -339,7 +344,7 @@ class HRExpense(models.Model):
                 'analytic_account_id': expense.analytic_account_id.id,
                 'analytic_tag_ids': [(6, 0, expense.analytic_tag_ids.ids)],
                 'expense_id': expense.id,
-                'partner_id': expense.partner_id.id,
+                'partner_id': partner_id.id,
                 'tax_ids': [(6, 0, expense.tax_ids.ids)],
                 'tag_ids': [(6, 0, taxes['base_tags'])],
                 'currency_id': expense.currency_id.id if different_currency else False,
@@ -376,7 +381,7 @@ class HRExpense(models.Model):
                     'tag_ids': tax['tag_ids'],
                     'tax_base_amount': base_amount,
                     'expense_id': expense.id,
-                    'partner_id': expense.partner_id.id,
+                    'partner_id': partner_id.id,
                     'analytic_account_id': expense.analytic_account_id.id,
                     'analytic_tag_ids': [(6, 0, expense.analytic_tag_ids.ids)],
                     'currency_id': expense.currency_id.id if different_currency else False,

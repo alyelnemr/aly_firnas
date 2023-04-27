@@ -14,6 +14,7 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
     events:{
         'change select[name="company_id"]': '_onChangeCurrency',
         'change select[name="partner_id"]': '_onChangeVendor',
+        'change input[name="name"]': '_onChangeDescription',
         'change select[name="project_id"]': '_onChangeProject',
         'change select[name="product_id"]': '_onChangeProduct',
         'change select[name="currency_id"]': '_onChangeCurrency',
@@ -32,6 +33,7 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
         this._changeCompany = _.debounce(this._changeCompany.bind(this), 500);
         this._changeVendor = _.debounce(this._changeVendor.bind(this), 500);
         this._changeProject = _.debounce(this._changeProject.bind(this), 500);
+        this._changeDescription = _.debounce(this._changeDescription.bind(this), 500);
         this._changeProduct = _.debounce(this._changeProduct.bind(this), 500);
         this._changeCurrency = _.debounce(this._changeCurrency.bind(this), 500);
         this._changePickingType = _.debounce(this._changePickingType.bind(this), 500);
@@ -171,6 +173,9 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
                 selectVendorContacts.data('init', 0);
             }
         });
+    },
+    _changeDescription: function () {
+        $("input[name='name1']").val($("input[name='name']").val());
     },
     _changeProject: function () {
         this._rpc({
@@ -326,6 +331,8 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
         }).then(function (data) {
             if (data.is_readonly)
                 $("#total_amount_company").attr("readonly", "1");
+            else
+                $("#total_amount_company").removeAttr("readonly");
         });
     },
     _changePickingType: function () {
@@ -372,6 +379,12 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
             return;
         }
         this._changeProject();
+    },
+    _onChangeDescription: function (ev) {
+        if (!this.$('input[name="name"]').length) {
+            return;
+        }
+        this._changeDescription();
     },
     _onChangeProduct: function (ev) {
         if (!this.$('select[name="product_id"]').length) {

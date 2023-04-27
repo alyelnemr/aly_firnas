@@ -42,6 +42,7 @@ class CustomerPortal(CustomerPortal):
             },
             'request_states': {
                 'draft': 'To Submit',
+                'received': 'Received',
                 'reported': 'Submitted',
                 'approved': 'Approved',
                 'done': 'Paid',
@@ -49,6 +50,7 @@ class CustomerPortal(CustomerPortal):
             },
             'report_states': {
                 'draft': 'Draft',
+                'received': 'Received',
                 'submit': 'Submitted',
                 'post': 'Posted',
                 'approve': 'Approved',
@@ -84,9 +86,9 @@ class CustomerPortal(CustomerPortal):
             searchbar_filters.update({
                 str(company.id): {'label': company.name, 'domain': domain + [('company_id', '=', company.id)]}
             })
-        # if not filterby:
-        #     filterby = str(request.env.user.company_id.id)
-        # domain = searchbar_filters[filterby]['domain']
+        if not filterby:
+            filterby = 'all'
+        domain = searchbar_filters[filterby]['domain']
         # count for pager
         expenses_count = expenses_obj.sudo().search_count(domain)
 
@@ -283,14 +285,14 @@ class CustomerPortal(CustomerPortal):
         values = {}
         currencies = request.env['res.currency'].sudo().search([])
         projects = request.env['project.project'].sudo().search([])
-        dest_address_id = request.env['res.partner'].sudo().search([])
-        vendors = request.env['res.partner'].sudo().search([])
+        dest_address_id = request.env['res.partner'].sudo().search([], order='name')
+        vendors = request.env['res.partner'].sudo().search([], order='name')
         vendor_id = vendors[0].id
         company = projects[0].company_id.id
         products = request.env['product.product'].sudo().search(
             [('can_be_expensed', '=', True), '|', ('company_id', '=', int(company)), ('company_id', '=', False)])
         tax_ids = request.env['account.tax'].sudo().search([('company_id', '=', projects[0].company_id.id)])
-        vendor_contact_id = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)])
+        vendor_contact_id = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)], order='name')
         accounts = request.env['account.account'].sudo().search([('internal_type', '=', 'other')])
         analytic_accounts = request.env['account.analytic.account'].sudo().browse([projects[0].analytic_account_id.id])
         employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
@@ -300,11 +302,11 @@ class CustomerPortal(CustomerPortal):
             [('code', '=', 'incoming'), ('company_id', '=', request.env.user.company_id.id)]
         )
 
-        default_managers = request.env['res.users'].sudo()
+        default_managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
         for emp in employees:
             if emp.parent_id and emp.parent_id.user_id:
                 default_managers += emp.parent_id.user_id
-        managers = request.env['res.users'].sudo().search([])
+        managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
         if default_managers:
             managers -= default_managers
         values.update({
@@ -345,11 +347,11 @@ class CustomerPortal(CustomerPortal):
              ('company_id', '=', request.env.user.company_id.id),
              ('sheet_id', '=', False)])
 
-        default_managers = request.env['res.users'].sudo()
+        default_managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
         for emp in employees:
             if emp.parent_id and emp.parent_id.user_id:
                 default_managers += emp.parent_id.user_id
-        managers = request.env['res.users'].sudo().search([])
+        managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
         if default_managers:
             managers -= default_managers
         values.update({
@@ -377,14 +379,14 @@ class CustomerPortal(CustomerPortal):
         values = {}
         currencies = request.env['res.currency'].sudo().search([])
         projects = request.env['project.project'].sudo().search([])
-        vendors = request.env['res.partner'].sudo().search([])
-        dest_address_id = request.env['res.partner'].sudo().search([])
+        vendors = request.env['res.partner'].sudo().search([], order='name')
+        dest_address_id = request.env['res.partner'].sudo().search([], order='name')
         vendor_id = vendors[0].id
         company = projects[0].company_id.id
         products = request.env['product.product'].sudo().search(
             [('can_be_expensed', '=', True), '|', ('company_id', '=', int(company)), ('company_id', '=', False)])
         tax_ids = request.env['account.tax'].sudo().search([('company_id', '=', projects[0].company_id.id)])
-        vendor_contact_id = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)])
+        vendor_contact_id = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)], order='name')
         accounts = request.env['account.account'].sudo().search([('internal_type', '=', 'other')])
         analytic_accounts = request.env['account.analytic.account'].sudo().browse([projects[0].analytic_account_id.id])
         employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
@@ -394,11 +396,11 @@ class CustomerPortal(CustomerPortal):
             [('code', '=', 'incoming'), ('company_id', '=', request.env.user.company_id.id)]
         )
 
-        default_managers = request.env['res.users'].sudo()
+        default_managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
         for emp in employees:
             if emp.parent_id and emp.parent_id.user_id:
                 default_managers += emp.parent_id.user_id
-        managers = request.env['res.users'].sudo().search([])
+        managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
         if default_managers:
             managers -= default_managers
         values.update({
@@ -445,11 +447,11 @@ class CustomerPortal(CustomerPortal):
              ('company_id', '=', request.env.user.company_id.id),
             ('sheet_id', '=', False)])
 
-        default_managers = request.env['res.users'].sudo()
+        default_managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
         for emp in employees:
             if emp.parent_id and emp.parent_id.user_id:
                 default_managers += emp.parent_id.user_id
-        managers = request.env['res.users'].sudo().search([])
+        managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
         if default_managers:
             managers -= default_managers
         values.update({
@@ -558,7 +560,10 @@ class CustomerPortal(CustomerPortal):
         if 'manager_id' in vals.keys():
             vals.pop('manager_id', None)
 
-        if 'attachment' in vals.keys() and vals['attachment'].filename:
+        if 'name1' in vals.keys():
+            vals.pop('name1', None)
+
+        if 'attachment' in vals.keys():
             file = vals['attachment']
             IrAttachment = request.env['ir.attachment']
             IrAttachment = IrAttachment.sudo().with_context(binary_field_real_user=request.env.user)
@@ -605,24 +610,24 @@ class CustomerPortal(CustomerPortal):
                 created_request.sudo().unlink()
             values = {}
             currencies = request.env['res.currency'].sudo().search([])
-            vendors = request.env['res.partner'].sudo().search([])
+            vendors = request.env['res.partner'].sudo().search([], order='name')
             projects = request.env['project.project'].sudo().search([])
             vendor_id = vendors[0].id
             company = projects[0].company_id.id
             products = request.env['product.product'].sudo().search(
                 [('can_be_expensed', '=', True), '|', ('company_id', '=', int(company)), ('company_id', '=', False)])
-            vendor_contact_id = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)])
+            vendor_contact_id = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)], order='name')
             tax_ids = request.env['account.tax'].sudo().search([('company_id', '=', company)])
             accounts = request.env['account.account'].sudo().search([('internal_type', '=', 'other')])
             analytic_accounts = request.env['account.analytic.account'].sudo().search([('id', '=', projects[0].analytic_account_id.id)])
             employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
             analytic_tags = employees[0].analytic_tag_ids + analytic_accounts[0].analytic_tag_ids
 
-            default_managers = request.env['res.users'].sudo()
+            default_managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
             for emp in employees:
                 if emp.parent_id and emp.parent_id.user_id:
                     default_managers += emp.parent_id.user_id
-            managers = request.env['res.users'].sudo().search([])
+            managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
             if default_managers:
                 managers -= default_managers
 
@@ -723,11 +728,11 @@ class CustomerPortal(CustomerPortal):
             values = {}
             employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
 
-            default_managers = request.env['res.users'].sudo()
+            default_managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
             for emp in employees:
                 if emp.parent_id and emp.parent_id.user_id:
                     default_managers += emp.parent_id.user_id
-            managers = request.env['res.users'].sudo().search([])
+            managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
             if default_managers:
                 managers -= default_managers
             values.update({
@@ -910,7 +915,7 @@ class CustomerPortal(CustomerPortal):
         if vendor:
             vendor_id = int(vendor)
             res_partner_contacts = request.env['res.partner'].sudo().search(
-                [('parent_id', '=', vendor_id)])
+                [('parent_id', '=', vendor_id)], order='name')
             for item in res_partner_contacts:
                 vendor_contacts.append((item.id, item.name))
         return dict(
