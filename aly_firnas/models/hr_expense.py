@@ -628,7 +628,7 @@ class HRExpense(models.Model):
             if any((expense.product_type in ['product', 'consu']) and (
                     not expense.expense_picking_id or expense.expense_picking_id.state != 'done') for expense in exp):
                 raise UserError(_("You cannot create report until you receive products!"))
-            if any(expense.state != 'draft' or expense.sheet_id for expense in exp):
+            if any(expense.state not in ('draft', 'received') or expense.sheet_id for expense in exp):
                 raise UserError(_("You cannot report twice the same line!"))
             if len(exp.mapped('employee_id')) != 1:
                 raise UserError(_("You cannot report expenses for different employees in the same report."))
