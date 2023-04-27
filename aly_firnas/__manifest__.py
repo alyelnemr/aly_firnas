@@ -42,7 +42,7 @@
         'views/purchase_order_line.xml',
         'views/purchase_order.xml',
         'views/purchase_order_report.xml',
-        # 'views/purchase_settings.xml',
+        'views/purchase_settings.xml',
     ],
     'installable': True,
     'application': True,
