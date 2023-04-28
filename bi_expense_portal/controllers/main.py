@@ -568,7 +568,7 @@ class CustomerPortal(CustomerPortal):
             IrAttachment = request.env['ir.attachment']
             IrAttachment = IrAttachment.sudo().with_context(binary_field_real_user=request.env.user)
             access_token = IrAttachment._generate_access_token()
-            file_name = vals['attachment'].filename or vals['name'] + '_' + str(uuid.uuid4())
+            file_name = vals['attachment'] or vals['name'] + '_' + str(uuid.uuid4())
             attachment = IrAttachment.create({
                 'name': file_name,
                 'datas': base64.b64encode(file.read()),
