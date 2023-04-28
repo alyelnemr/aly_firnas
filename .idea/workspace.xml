@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="[add]">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/models/hr_expense.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/hr_expense.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bi_crm_customization/models/crm_lead.py" beforeDir="false" afterPath="$PROJECT_DIR$/bi_crm_customization/models/crm_lead.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bi_crm_customization/models/sale_order.py" beforeDir="false" afterPath="$PROJECT_DIR$/bi_crm_customization/models/sale_order.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -406,17 +406,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bi_crm_customization/models/crm_lead.py</url>
-          <line>33</line>
+          <line>35</line>
           <option name="timeStamp" value="44" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bi_crm_customization/models/crm_lead.py</url>
-          <line>39</line>
+          <line>41</line>
           <option name="timeStamp" value="47" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bi_crm_customization/models/crm_lead.py</url>
-          <line>35</line>
+          <line>37</line>
           <option name="timeStamp" value="48" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -479,12 +479,27 @@
           <line>250</line>
           <option name="timeStamp" value="85" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bi_crm_customization/models/crm_lead.py</url>
+          <line>30</line>
+          <option name="timeStamp" value="134" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bi_crm_customization/models/sale_order.py</url>
+          <line>139</line>
+          <option name="timeStamp" value="135" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bi_crm_customization/models/sale_order.py</url>
+          <line>142</line>
+          <option name="timeStamp" value="136" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bi_crm_customization/models/sale_order.py</url>
+          <line>141</line>
+          <option name="timeStamp" value="137" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="PythonConfigurationType">
-        <watch expression="params" />
-      </configuration>
-    </watches-manager>
   </component>
 </project>

@@ -87,6 +87,8 @@ class SaleOrderCRMInherit(models.Model):
                 result['analytic_account_id'] = lead.analytic_account_id.id
             if 'analytic_tag_ids' in fields and lead.analytic_tag_ids_for_analytic_account:
                 result['analytic_tag_ids'] = lead.analytic_tag_ids_for_analytic_account.ids
+            team = self.env['crm.team'].search([], limit=1).id
+            result['team_id'] = team
         return result
 
     is_manual = fields.Boolean('Manual Rate', default=False, readonly=False)
@@ -132,3 +134,10 @@ class SaleOrderCRMInherit(models.Model):
                                       domain="[('parent_id', '=', partner_id)]")
     financial_proposal_title = fields.Char('Title', default='Financial Proposal')
     financial_proposal_number = fields.Char('Number', default='4')
+
+    @api.model
+    def create(self, vals):
+        team_id = self.env['crm.team'].search([], limit=1).id
+        vals['team_id'] = team_id
+        result = super(SaleOrderCRMInherit, self).create(vals)
+        return result
