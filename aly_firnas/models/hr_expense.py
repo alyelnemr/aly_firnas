@@ -623,3 +623,9 @@ class HRExpense(models.Model):
         })
         sheet._onchange_employee_id()
         return sheet
+
+    def unlink(self):
+        for expense in self:
+            if expense.state not in ['draft']:
+                raise UserError(_('You can delete a drafted expense.'))
+        return super(HRExpense, self).unlink()

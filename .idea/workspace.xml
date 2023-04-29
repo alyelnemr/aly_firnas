@@ -5,29 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/aly_firnas/controllers/expenses_main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/aly_firnas/controllers/website_portal_templates.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/aly_firnas/controllers/website_portal_templates2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/aly_firnas/models/employee_expense_limit.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/aly_firnas/security/expense_security.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/aly_firnas/static/src/js/website_expense.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/__manifest__.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/__manifest__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/controllers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/controllers/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/controllers/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/controllers/wh_main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/aly_firnas/models/hr_expense.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/hr_expense.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/models/hr_expense_sheet.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/hr_expense_sheet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/security/ir.model.access.csv" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/security/ir.model.access.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/aly_firnas/views/hr_expense.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/hr_expense.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_expense_portal/__manifest__.py" beforeDir="false" afterPath="$PROJECT_DIR$/bi_expense_portal/__manifest__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_expense_portal/controllers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/bi_expense_portal/controllers/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_expense_portal/controllers/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/bi_expense_portal/controllers/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_expense_portal/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/bi_expense_portal/models/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_expense_portal/static/src/js/website_expense.js" beforeDir="false" afterPath="$PROJECT_DIR$/bi_expense_portal/static/src/js/website_expense.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_expense_portal/views/website_portal_templates.xml" beforeDir="false" afterPath="$PROJECT_DIR$/bi_expense_portal/views/website_portal_templates.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_petty_cash_expense_portal/controllers/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/bi_petty_cash_expense_portal/controllers/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bi_petty_cash_expense_portal/views/website_portal_templates.xml" beforeDir="false" afterPath="$PROJECT_DIR$/bi_petty_cash_expense_portal/views/website_portal_templates.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -347,7 +327,21 @@
       <option name="project" value="LOCAL" />
       <updated>1682726680676</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="[fix] issues">
+      <created>1682733143303</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1682733143303</updated>
+    </task>
+    <task id="LOCAL-00035" summary="[fix] issues">
+      <created>1682733156550</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1682733156550</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">

@@ -50,6 +50,7 @@
                     <field name="product_type" invisible="1"/>
                     <field name="default_location_dest_id_usage" invisible="1"/>
                     <field name="account_id" force_save="1" options="{'no_create': True}" readonly="1"
+                           attrs="{'readonly': [('state', '=', 'done')]}"
                            domain="[('internal_type', '=', 'other'), ('company_id', '=', company_id)]"
                            context="{'default_company_id': company_id}"/>
                     <field name="picking_type_id" attrs="{'readonly': [('state', 'not in', ['draft', 'refused', 'cancel'])], 'invisible': [('product_type', 'not in', ('product', 'consu'))], 'required': [('product_type', 'in', ('product', 'consu'))]}"
@@ -64,9 +65,9 @@
                 </xpath>
                 <xpath expr="//field[@name='analytic_account_id']" position="replace">
                     <field name="tax_ids" widget="many2many_tags"
-                           attrs="{'readonly': ['|', ('is_editable', '=', False), ('state', 'in', ['post', 'done', 'approved'])]}" context="{'default_company_id': company_id}"/>
+                           attrs="{'readonly': ['|', ('is_editable', '=', False), ('state', 'in', ['to_submit', 'reported', 'done', 'approved'])]}" context="{'default_company_id': company_id}"/>
                     <field name="sub_total" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                    <field name="total_amount_company" string="Sub Total (Company Currency)" attrs="{'readonly': [('is_same_currency', '=', True)]}"/>
+                    <field name="total_amount_company" string="Sub Total (Company Currency)" attrs="{'readonly': ['|',('state', '=', 'done') ('is_same_currency', '=', True)]}"/>
                     <field name="total_amount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 </xpath>
                 <xpath expr="//field[@name='analytic_tag_ids']" position="replace">
@@ -74,11 +75,13 @@
                 <xpath expr="//field[@name='currency_id']" position="replace">
                     <field name="currency_id" groups="base.group_multi_currency"/>
                     <field name="unit_amount" required="1" widget="monetary"
+                           attrs="{'readonly': [('state', 'in', ['to_submit', 'reported', 'done', 'approved'])]}"
                            options="{'currency_field': 'currency_id', 'field_digits': True}"/>
-                    <field name="discount" />
+                    <field name="discount" attrs="{'readonly': [('state', 'in', ['to_submit', 'reported', 'done', 'approved'])]}"/>
                 </xpath>
                 <xpath expr="//field[@name='reference']" position="replace">
                     <field name="product_id" required="1"
+                           attrs="{'readonly': [('state', 'in', ['to_submit', 'reported', 'done', 'approved'])]}"
                            context="{'default_can_be_expensed': 1, 'tree_view_ref': 'hr_expense.product_product_expense_tree_view'}"
                            widget="many2one_barcode"
                     />
@@ -89,17 +92,18 @@
                 <xpath expr="//field[@name='account_id']" position="replace">
                     <label for="quantity"/>
                     <div class="o_row">
-                        <field name="quantity" class="oe_inline"/>
-                        <field name="product_uom_id" required="1" widget="selection" class="oe_inline" groups="uom.group_uom"/>
+                        <field name="quantity" class="oe_inline" attrs="{'readonly': [('state', 'in', ['to_submit', 'reported', 'done', 'approved'])]}"/>
+                        <field name="product_uom_id" required="1" widget="selection" class="oe_inline" groups="uom.group_uom" attrs="{'readonly': [('state', 'in', ['to_submit', 'reported', 'done', 'approved'])]}"/>
                     </div>
                 </xpath>
                 <xpath expr="//field[@name='product_id']" position="replace">
                     <field name="partner_id"/>
                     <field name="vendor_contact_id" attrs="{'readonly': [('state', 'not in', ['draft', 'refused', 'cancel'])]}"/>
-                    <field name="reference" attrs="{'readonly': ['|', ('state', 'not in', ['draft', 'refused', 'cancel']), ('is_ref_editable', '=', False)]}"/>
-                    <field name="date" attrs="{'invisible': False}" modifiers="{'invisible':False,'readonly':[['state','not
-                        in',['draft', 'refused', 'cancel']]],'required':true}"/>
-                    <field name="project_id" attrs="{'readonly': [('state', 'not in', ['draft', 'refused', 'cancel'])]}"/>
+                    <field name="reference" attrs="{'readonly': ['|', ('state', 'in', ['to_submit', 'reported', 'done', 'approved']), ('is_ref_editable', '=', False)]}"/>
+                    <field name="date" attrs="{'invisible': False}" modifiers="{'invisible':False,
+                    'readonly': [('state', 'in', ['to_submit', 'reported', 'done', 'approved'])],
+                    'required':true}"/>
+                    <field name="project_id" attrs="{'readonly': [('state', 'in', ['to_submit', 'reported', 'done', 'approved'])]}"/>
                     <field name="company_id" groups="base.group_multi_company" force_save="1" readonly="1" />
                     <field name="analytic_account_id" domain="['|', ('company_id', '=', company_id), ('company_id', '=', False)]"
                            groups="analytic.group_analytic_accounting" force_save="1" readonly="1"/>
