@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_sale_order_search_view_inherit" model="ir.ui.view">
+            <field name="name">sale.order.search.view</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search/field[@name='name']" position="before">
+                    <field name="opportunity_id" string="Opportunity"/>
+                </xpath>
+                <xpath expr="//search/field[@name='partner_id']" position="after">
+                    <field name="project_name" string="Project Name"/>
+                    <field name="project_number" string="Project Number"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="aly_view_order_tree" model="ir.ui.view">
+            <field name="name">aly.sale.order.tree.inherit.website.sale</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='create_date']" position="after">
+                </xpath>
+                <xpath expr="//tree" position="replace">
+                    <tree string="Quotation" class="o_sale_order" decoration-bf="message_needaction==True" decoration-muted="state=='cancel'" multi_edit="1">
+                        <field name="message_needaction" invisible="1"/>
+                        <field name="name" string="Quotation Number" readonly="1"/>
+                        <field name="opportunity_id" optional="show"/>
+                        <field name="financial_proposal_title" optional="show"/>
+                        <field name="partner_id" readonly="1" optional="show"/>
+                        <field name="company_id" groups="base.group_multi_company" optional="show" readonly="1"/>
+                        <field name="amount_total" sum="Total Tax Included" widget="monetary" optional="show"/>
+                        <field name="state" optional="show"/>
+                        <field name="invoice_status" optional="show"/>
+                        <field name="commitment_date" optional="show" invisible="1"/>
+                        <field name="expected_date" optional="show" invisible="1"/>
+                        <field name="create_date" string="Create Date" optional="show" invisible="1"/>
+                        <field name="commitment_date" optional="show" invisible="1"/>
+                        <field name="expected_date" optional="show" invisible="1"/>
+                        <field name="user_id" optional="show" invisible="1"/>
+                        <field name="team_id" optional="hide" invisible="1"/>
+                        <field name="amount_untaxed" sum="Total Tax Excluded" widget="monetary" optional="hide" invisible="1"/>
+                        <field name="amount_tax" sum="Tax Total" widget="monetary" optional="hide" invisible="1"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="activity_exception_decoration" widget="activity_exception" optional="show"/>
+                    </tree>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

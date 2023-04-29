@@ -14,9 +14,9 @@ class CustomerPortal(CustomerPortal):
     @http.route(['/petty_cash_expense_request_form'], type='http', auth="user", website=True)
     def portal_petty_cash_expense_request_form(self, default_currency=None, default_employee=None, default_company=None, **kw):
         if not request.env.user.has_group(
-                'bi_expense_portal.group_employee_expense_portal') and not request.env.user.has_group(
-                'bi_expense_portal.group_employee_expense_manager_portal'):
-            return request.render("bi_expense_portal.not_allowed_expense_request")
+                'aly_firnas.group_employee_expense_portal') and not request.env.user.has_group(
+                'aly_firnas.group_employee_expense_manager_portal'):
+            return request.render("aly_firnas.not_allowed_expense_request")
         values = {}
 
         default_products = request.env['product.product'].sudo().search(
@@ -227,7 +227,7 @@ class CustomerPortal(CustomerPortal):
 
             self.submit_expense(created_request)
 
-        return request.render("bi_expense_portal.thankyou_page")
+        return request.render("aly_firnas.thankyou_page")
 
     def action_submit_petty_cash_expenses(self, expense, manager_id):
         try:

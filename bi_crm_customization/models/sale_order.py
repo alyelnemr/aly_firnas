@@ -18,13 +18,13 @@ class SaleOrderCRMInherit(models.Model):
             opportunities links with this partner to merge all information together
         """
         result = super(SaleOrderCRMInherit, self).default_get(fields)
+        p_list = self.env['product.pricelist'].search([], limit=1, order='sequence')
+        result['pricelist_id'] = p_list.id
         if self._context.get('active_id') or self.opportunity_id:
 
             lead = self.env['crm.lead'].browse(self._context['active_id'])
             result['name'] = 'convert'
 
-            if 'project_name' in fields and lead.project_name:
-                result['project_name'] = lead.project_name
             if 'client_name_id' in fields and lead.end_client:
                 result['client_name_id'] = lead.end_client.ids
             if 'fund' in fields and lead.fund:
@@ -51,6 +51,10 @@ class SaleOrderCRMInherit(models.Model):
                 result['partner'] = lead.partner.ids
             if 'project_name' in fields and lead.project_name:
                 result['project_name'] = lead.project_name
+            if 'document_name' in fields and lead.proposal_subject:
+                result['document_name'] = lead.proposal_subject
+            if 'file_name' in fields and lead.document_file_name:
+                result['file_name'] = lead.document_file_name
             if 'forecast' in fields and lead.forecast:
                 result['forecast'] = lead.forecast
             if 'project_number' in fields and lead.project_num:
@@ -83,13 +87,19 @@ class SaleOrderCRMInherit(models.Model):
                 result['analytic_account_id'] = lead.analytic_account_id.id
             if 'analytic_tag_ids' in fields and lead.analytic_tag_ids_for_analytic_account:
                 result['analytic_tag_ids'] = lead.analytic_tag_ids_for_analytic_account.ids
+            team = self.env['crm.team'].search([], limit=1).id
+            result['team_id'] = team
         return result
 
+    is_manual = fields.Boolean('Manual Rate', default=False, readonly=False)
+    custom_rate = fields.Float('Rate (Factor)', digits=(16, 12), tracking=True)
     project_name = fields.Char(string="Customer's Project Name / Proposal Title")
     document_name = fields.Char(string="Proposal Subject")
     file_name = fields.Char(string="Document/File  Name (Footer)")
     standard_payment_schedule = fields.Html(string="Standard Payment Schedule", default=_set_default_standard_payment)
     terms_and_conditions = fields.Html(string="Terms And Conditions", default=_set_default_terms_conditions)
+    is_print_payment_schedule = fields.Boolean('Print Standard Payment Schedule', default=True, readonly=False)
+    is_print_terms_and_conditions = fields.Boolean('Print Terms And Conditions', default=True, readonly=False)
 
     serial_num = fields.Char(string="Serial Number")
     project_number = fields.Char(string="Project Number", store=True, readonly=True)
@@ -122,3 +132,12 @@ class SaleOrderCRMInherit(models.Model):
     proposals_engineer_id = fields.Many2one('res.users', string='Primary Proposals Engineer')
     partner_contact = fields.Many2one('res.partner', string='Customer Contact', required=False,
                                       domain="[('parent_id', '=', partner_id)]")
+    financial_proposal_title = fields.Char('Title', default='Financial Proposal')
+    financial_proposal_number = fields.Char('Number', default='4')
+
+    @api.model
+    def create(self, vals):
+        team_id = self.env['crm.team'].search([], limit=1).id
+        vals['team_id'] = team_id
+        result = super(SaleOrderCRMInherit, self).create(vals)
+        return result

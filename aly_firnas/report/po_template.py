@@ -21,10 +21,8 @@ class PurchaseReportTemplatePrimary(models.AbstractModel):
         model = 'purchase.order'
         active_id = self.env.context.get('active_id')
         docs = self.env[model].sudo().browse(docids)
-        line_section = docs.order_line[0]
         for indx, line in enumerate(docs.order_line):
             if line.display_type == 'line_section':
-                line_section = line.name
                 line.price_subtotal = 0.0
                 for sub_line in docs.order_line[indx + 1:]:
                     if sub_line.display_type == 'line_section' and line.name != sub_line.name:

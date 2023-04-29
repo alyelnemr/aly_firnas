@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <template id="aly_invoice_report_footer_inherit" inherit_id="web.external_layout_standard">
+            <!-- Remove footer-->
+            <xpath expr="//div[@name='financial_infos']/../.." position="replace">
+                <span></span>
+            </xpath>
+        </template>
+
+        <template id="aly_invoice_report_inherit" inherit_id="account.report_invoice_document">
+            <xpath expr="//t[@t-set='lines']" position="replace">
+                <t t-set="lines" t-value="o.invoice_line_ids.filtered_domain([('is_printed', '=', True)]).sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)"/>
+                <t t-set="is_printed_subtotal" t-value="0"/>
+                <t t-if="not var_taxed_amount">
+                    <t t-set="var_taxed_amount" t-value="0"/>
+                </t>
+            </xpath>
+            <xpath expr="//t[@t-foreach='lines']" position="inside">
+                <t t-set="is_printed_subtotal" t-value="is_printed_subtotal + line.price_subtotal"/>
+            </xpath>
+            <xpath expr="//span[@t-field='o.amount_untaxed']" position="replace">
+                <span t-esc="is_printed_subtotal"
+                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+                />
+            </xpath>
+            <xpath expr="/t/t/t[2]" position="replace">
+                <div>
+                    <br/>
+                    <div class="text-left" style="margin-right:150px;float: right;">
+                        <address t-field="o.partner_id"
+                                 t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
+                    </div>
+                    <br/>
+                    <br/>
+                    <br/>
+                </div>
+            </xpath>
+<!--            <xpath expr="//div[@class='page']/h2" position="before">-->
+<!--                <div class="text-left" style="margin-left:350px">-->
+<!--                    <address t-field="o.partner_id"-->
+<!--                          t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>-->
+<!--                </div>-->
+<!--            </xpath>-->
+            <xpath expr="//span[@t-field='o.amount_total']" position="replace">
+<!--                <span class="text-nowrap" t-field="o.amount_total"/>-->
+                <span t-esc="is_printed_subtotal + var_taxed_amount"
+                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+                />
+            </xpath>
+            <xpath expr="//t[@t-foreach='o.amount_by_group']" position="replace">
+                <t t-set="temp_for_global_discount" t-value="0">
+                </t>
+                <t t-if="temp_for_global_discount == 0" >
+                    <tr style="">
+                        <td>
+                            <span>Taxes</span>
+                        </td>
+                        <td class="text-right o_price_total">
+                            <span class="text-nowrap" t-esc="var_taxed_amount"/>
+                        </td>
+                    </tr>
+                </t>
+            </xpath>
+        </template>
+    </data>
+</odoo>

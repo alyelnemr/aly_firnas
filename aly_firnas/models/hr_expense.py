@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools import email_split, float_is_zero
 
 
 class HRExpense(models.Model):
@@ -32,7 +31,7 @@ class HRExpense(models.Model):
     def _get_discounted_price_unit(self):
         self.ensure_one()
         price = 0
-        amount = self.unit_amount if self.is_same_currency else self.total_amount_company
+        amount = self.unit_amount #if self.is_same_currency else self.total_amount_company
         if self.discount:
             price = amount * (1 - self.discount / 100)
         else:
@@ -65,6 +64,9 @@ class HRExpense(models.Model):
                     expense.analytic_tag_ids += expense.sudo().employee_id.analytic_tag_ids
                 else:
                     expense.analytic_tag_ids = expense.sudo().employee_id.analytic_tag_ids
+            if expense.sheet_id:
+                expense.sheet_id.analytic_account_id = expense.analytic_account_id.id
+                expense.sheet_id.analytic_tag_ids = expense.analytic_tag_ids
 
     @api.model
     def _default_employee_id(self):
@@ -159,7 +161,9 @@ class HRExpense(models.Model):
                 expense.state = "done"
 
     state = fields.Selection([
-        ('draft', 'To Submit'),
+        ('draft', 'Draft'),
+        ('received', 'Receiving'),
+        ('to_submit', 'To Submit'),
         ('reported', 'Submitted'),
         ('approved', 'Approved'),
         ('done', 'Paid'),
@@ -191,7 +195,7 @@ class HRExpense(models.Model):
                                                       string='Destination Location Type', readonly=True)
     employee_id = fields.Many2one('hr.employee', string="Employee", required=True,
                                   readonly=True, default=_default_employee_id, check_company=False)
-    partner_id = fields.Many2one('res.partner', string='Vendor', required=True, change_default=True,
+    partner_id = fields.Many2one('res.partner', string='Vendor', required=False, change_default=True,
                                  tracking=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
                                  states={'approved': [('readonly', False)], 'done': [('readonly', True)]})
     vendor_contact_id = fields.Many2one('res.partner', string='Vendor Contacts', required=False,
@@ -230,7 +234,7 @@ class HRExpense(models.Model):
         result = action.read()[0]
         pick_ids = self.mapped('expense_picking_ids') or self.mapped('expense_picking_id')
         # choose the view_mode accordingly
-        if not pick_ids:
+        if not pick_ids or self.expense_picking_id.state == 'cancel':
             self.create_picking()
         pick_ids = self.mapped('expense_picking_ids') or self.mapped('expense_picking_id')
         if not pick_ids or len(pick_ids) > 1:
@@ -246,31 +250,6 @@ class HRExpense(models.Model):
         elif not pick_ids:
             return False
         return result
-
-    def action_sheet_move_create(self):
-        if any(sheet.state != 'approve' for sheet in self):
-            raise UserError(_("You can only generate accounting entry for approved expense(s)."))
-
-        if any(not sheet.journal_id for sheet in self):
-            raise UserError(_("Expenses must have an expense journal specified to generate accounting entries."))
-
-        if any(not sheet.expense_line_ids for sheet in self):
-            raise UserError(_("Expenses must have at least one expense item to generate accounting entries."))
-
-        expense_line_ids = self.mapped('expense_line_ids') \
-            .filtered(lambda r: not float_is_zero(r.total_amount,
-                                                  precision_rounding=(r.currency_id or self.env.company.currency_id).rounding))
-        res = expense_line_ids.action_move_create()
-
-        if not self.accounting_date:
-            self.accounting_date = self.account_move_id.date
-
-        if self.payment_mode == 'own_account' and expense_line_ids:
-            self.write({'state': 'post'})
-        else:
-            self.write({'state': 'done'})
-        self.activity_update()
-        return res
 
     @api.onchange('product_id', 'company_id')
     def _onchange_product_id(self):
@@ -317,7 +296,7 @@ class HRExpense(models.Model):
                                                                          expense.quantity, expense.product_id)
             total_amount = 0.0
             total_amount_currency = 0.0
-            partner_id = expense.employee_id.address_home_id.commercial_partner_id.id
+            partner_id = expense.employee_id.address_home_id.commercial_partner_id
 
             # source move line
             amount = taxes['total_excluded']
@@ -338,7 +317,7 @@ class HRExpense(models.Model):
                 'analytic_account_id': expense.analytic_account_id.id,
                 'analytic_tag_ids': [(6, 0, expense.analytic_tag_ids.ids)],
                 'expense_id': expense.id,
-                'partner_id': expense.partner_id.id,
+                'partner_id': False,
                 'tax_ids': [(6, 0, expense.tax_ids.ids)],
                 'tag_ids': [(6, 0, taxes['base_tags'])],
                 'currency_id': expense.currency_id.id if different_currency else False,
@@ -375,7 +354,7 @@ class HRExpense(models.Model):
                     'tag_ids': tax['tag_ids'],
                     'tax_base_amount': base_amount,
                     'expense_id': expense.id,
-                    'partner_id': expense.partner_id.id,
+                    'partner_id': False,
                     'analytic_account_id': expense.analytic_account_id.id,
                     'analytic_tag_ids': [(6, 0, expense.analytic_tag_ids.ids)],
                     'currency_id': expense.currency_id.id if different_currency else False,
@@ -394,7 +373,7 @@ class HRExpense(models.Model):
                 'amount_currency': total_amount_currency if different_currency else 0.0,
                 'currency_id': expense.currency_id.id if different_currency else False,
                 'expense_id': expense.id,
-                'partner_id': partner_id,
+                'partner_id': partner_id.id if partner_id else False,
                 'analytic_account_id': expense.analytic_account_id.id,
                 'analytic_tag_ids': [(6, 0, expense.analytic_tag_ids.ids)],
             }
@@ -472,10 +451,11 @@ class HRExpense(models.Model):
                 # create payment
                 payment_methods = journal.outbound_payment_method_ids if total_amount < 0 else journal.inbound_payment_method_ids
                 journal_currency = journal.currency_id or journal.company_id.currency_id
+                partner_id = expense.employee_id.address_home_id.commercial_partner_id
                 payment = self.env['account.payment'].create({
                     'payment_method_id': payment_methods and payment_methods[0].id or False,
                     'payment_type': 'outbound' if total_amount < 0 else 'inbound',
-                    'partner_id': expense.employee_id.address_home_id.commercial_partner_id.id,
+                    'partner_id': partner_id.id if partner_id else False,
                     'partner_type': 'supplier',
                     'journal_id': journal.id,
                     'payment_date': expense.date,
@@ -553,7 +533,7 @@ class HRExpense(models.Model):
                         'origin': '(Expenses) of ' + line.name,
                         'location_dest_id': line.location_dest_id.id,
                         'analytic_account_id': line.analytic_account_id.id,
-                        'analytic_tag_ids': line.analytic_account_id.analytic_tag_ids.ids,
+                        'analytic_tag_ids': line.analytic_tag_ids.ids,
                         'location_id': line.location_id.id
                     }
                     picking = self.env['stock.picking'].create(pick)
@@ -585,6 +565,7 @@ class HRExpense(models.Model):
                     done += moves.create(template)
                     move_ids = done._action_confirm()
                     move_ids._action_assign()
+        self.state = 'received'
 
     def action_view_picking_delivery(self):
         action = self.env.ref('stock.action_picking_tree_all').read()[0]
@@ -613,24 +594,38 @@ class HRExpense(models.Model):
         return action
 
     def _create_sheet_from_expenses(self):
-        if (self.product_type in ['product', 'consu']) and (not self.expense_picking_id or self.expense_picking_id.state != 'done'):
-            raise UserError(_("You cannot create report until you receive products!"))
-        if any(expense.state != 'draft' or expense.sheet_id for expense in self):
-            raise UserError(_("You cannot report twice the same line!"))
-        if len(self.mapped('employee_id')) != 1:
-            raise UserError(_("You cannot report expenses for different employees in the same report."))
-        if any(not expense.product_id for expense in self):
-            raise UserError(_("You can not create report without product."))
-        if self.company_id and len(self.company_id) > 1:
-            raise UserError(_("You can not create report from different companies."))
+        for exp in self:
+            if any((expense.product_type in ['product', 'consu']) and (
+                    not expense.expense_picking_id or expense.expense_picking_id.state != 'done') for expense in exp):
+                raise UserError(_("You cannot create report until you receive products!"))
+            if any((expense.product_type in ['product', 'consu']) and (
+                    not expense.expense_picking_id or expense.expense_picking_id.state != 'done') for expense in exp):
+                raise UserError(_("You cannot create report until you receive products!"))
+            if any(expense.state not in ('draft', 'received') or expense.sheet_id for expense in exp):
+                raise UserError(_("You cannot create two reports containing the same line!"))
+            if len(exp.mapped('employee_id')) != 1:
+                raise UserError(_("You cannot report expenses for different employees in the same report."))
+            if any(not expense.product_id for expense in exp):
+                raise UserError(_("You can not create report without product."))
+            if any(expense.company_id and len(expense.company_id) > 1 for expense in exp):
+                raise UserError(_("You can not create report from different companies."))
 
         todo = self.filtered(lambda x: x.payment_mode == 'own_account') or self.filtered(
             lambda x: x.payment_mode == 'company_account')
         sheet = self.env['hr.expense.sheet'].create({
-            'company_id': self.company_id.id,
-            'employee_id': self[0].employee_id.id,
+            'company_id': exp.company_id.id,
+            'employee_id': exp.employee_id.id,
             'name': todo[0].name if len(todo) == 1 else '',
             'expense_line_ids': [(6, 0, todo.ids)]
         })
+        self.write({
+            'state': 'to_submit'
+        })
         sheet._onchange_employee_id()
         return sheet
+
+    def unlink(self):
+        for expense in self:
+            if expense.state not in ['draft']:
+                raise UserError(_('You can delete a drafted expense.'))
+        return super(HRExpense, self).unlink()

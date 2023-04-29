@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="[add] comments video of 23-01-2023">
-      <change beforePath="$PROJECT_DIR$/aly_firnas/models/hr_expense.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/hr_expense.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/models/hr_expense_sheet.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/hr_expense_sheet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/views/hr_expense_sheet.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/views/hr_expense_sheet.xml" afterDir="false" />
-    </list>
+    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -17,7 +13,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Test" />
+        <entry key="$PROJECT_DIR$" value="Test_Env" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -33,17 +29,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Odoo Installations/Odoo 13.0e/server/odoo-bin&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "D:/Firnas Shuman/Firnas Code/FirnasAddons/aly_firnas/security"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\security" />
+      <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\models" />
+      <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\controllers" />
+      <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\static\src" />
       <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\views" />
-      <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\report" />
     </key>
   </component>
   <component name="RunManager">
@@ -142,15 +141,241 @@
       <option name="project" value="LOCAL" />
       <updated>1675717205367</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="[fix]">
+      <created>1677451997041</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1677451997041</updated>
+    </task>
+    <task id="LOCAL-00009" summary="[fix]">
+      <created>1677452137111</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1677452137111</updated>
+    </task>
+    <task id="LOCAL-00010" summary="[fix]">
+      <created>1677452253238</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1677452253238</updated>
+    </task>
+    <task id="LOCAL-00011" summary="[fix]">
+      <created>1677452412783</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1677452412783</updated>
+    </task>
+    <task id="LOCAL-00012" summary="[fix]">
+      <created>1677452956006</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1677452956006</updated>
+    </task>
+    <task id="LOCAL-00013" summary="[fix]">
+      <created>1679123972059</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1679123972059</updated>
+    </task>
+    <task id="LOCAL-00014" summary="[fix]">
+      <created>1679174088490</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1679174088491</updated>
+    </task>
+    <task id="LOCAL-00015" summary="[fix]">
+      <created>1679177193400</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1679177193400</updated>
+    </task>
+    <task id="LOCAL-00016" summary="[fix]">
+      <created>1679180562729</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1679180562730</updated>
+    </task>
+    <task id="LOCAL-00017" summary="[fix]">
+      <created>1679182283327</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1679182283327</updated>
+    </task>
+    <task id="LOCAL-00018" summary="[fix]">
+      <created>1679182415882</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1679182415882</updated>
+    </task>
+    <task id="LOCAL-00019" summary="[fix]">
+      <created>1679735252851</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1679735252851</updated>
+    </task>
+    <task id="LOCAL-00020" summary="[add]">
+      <created>1680529011609</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1680529011609</updated>
+    </task>
+    <task id="LOCAL-00021" summary="[add]">
+      <created>1680909234630</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1680909234630</updated>
+    </task>
+    <task id="LOCAL-00022" summary="[add]">
+      <created>1680909633736</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1680909633736</updated>
+    </task>
+    <task id="LOCAL-00023" summary="[add]">
+      <created>1680921611598</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1680921611598</updated>
+    </task>
+    <task id="LOCAL-00024" summary="[add]">
+      <created>1680922536742</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1680922536742</updated>
+    </task>
+    <task id="LOCAL-00025" summary="[add]">
+      <created>1682511079706</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1682511079706</updated>
+    </task>
+    <task id="LOCAL-00026" summary="[add]">
+      <created>1682558952222</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1682558952222</updated>
+    </task>
+    <task id="LOCAL-00027" summary="[add]">
+      <created>1682604372489</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1682604372489</updated>
+    </task>
+    <task id="LOCAL-00028" summary="[add]">
+      <created>1682604589370</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1682604589370</updated>
+    </task>
+    <task id="LOCAL-00029" summary="[add]">
+      <created>1682604808247</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1682604808247</updated>
+    </task>
+    <task id="LOCAL-00030" summary="[fix] issue while saving sales order">
+      <created>1682726208303</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1682726208303</updated>
+    </task>
+    <task id="LOCAL-00031" summary="[fix] issue while saving sales order">
+      <created>1682726370516</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1682726370516</updated>
+    </task>
+    <task id="LOCAL-00032" summary="[fix] issues">
+      <created>1682726564959</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1682726564959</updated>
+    </task>
+    <task id="LOCAL-00033" summary="[fix] issues">
+      <created>1682726680676</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1682726680676</updated>
+    </task>
+    <task id="LOCAL-00034" summary="[fix] issues">
+      <created>1682733143303</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1682733143303</updated>
+    </task>
+    <task id="LOCAL-00035" summary="[fix] issues">
+      <created>1682733156550</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1682733156550</updated>
+    </task>
+    <task id="LOCAL-00036" summary="[fix] issues">
+      <created>1682734237260</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1682734237260</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+        <option value="Space.CommitStatus" />
+      </list>
+    </option>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="Test" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -163,7 +388,11 @@
     <MESSAGE value="[add] invoice format video3" />
     <MESSAGE value="[add] comments video of 23-01-2023" />
     <MESSAGE value="[fix] issue of hr expense manager required field" />
-    <option name="LAST_COMMIT_MESSAGE" value="[fix] issue of hr expense manager required field" />
+    <MESSAGE value="[fix]" />
+    <MESSAGE value="[add]" />
+    <MESSAGE value="[fix] issue while saving sales order" />
+    <MESSAGE value="[fix] issues" />
+    <option name="LAST_COMMIT_MESSAGE" value="[fix] issues" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -199,29 +428,129 @@
           <option name="timeStamp" value="27" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/aly_firnas/models/stock_move_line.py</url>
-          <line>69</line>
-          <option name="timeStamp" value="28" />
+          <url>file://$PROJECT_DIR$/aly_firnas/models/sale_order_line.py</url>
+          <line>20</line>
+          <option name="timeStamp" value="38" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/aly_firnas/models/stock_move_line.py</url>
-          <line>91</line>
-          <option name="timeStamp" value="29" />
+          <url>file://$PROJECT_DIR$/bi_crm_customization/models/sale_order.py</url>
+          <line>19</line>
+          <option name="timeStamp" value="39" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/aly_firnas/models/stock_move_line.py</url>
-          <line>132</line>
-          <option name="timeStamp" value="32" />
+          <url>file://$PROJECT_DIR$/bi_crm_customization/models/crm_lead.py</url>
+          <line>10</line>
+          <option name="timeStamp" value="40" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/aly_firnas/models/stock_move_line.py</url>
-          <line>134</line>
-          <option name="timeStamp" value="33" />
+          <url>file://$PROJECT_DIR$/bi_crm_customization/models/sale_order.py</url>
+          <line>85</line>
+          <option name="timeStamp" value="41" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/aly_firnas/models/stock_move_line.py</url>
-          <line>147</line>
-          <option name="timeStamp" value="34" />
+          <url>file://$PROJECT_DIR$/../../../Odoo Installations/Odoo 13.0e/server/odoo/addons/sale/models/sale.py</url>
+          <line>462</line>
+          <option name="timeStamp" value="42" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bi_crm_customization/models/crm_lead.py</url>
+          <line>33</line>
+          <option name="timeStamp" value="44" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bi_crm_customization/models/crm_lead.py</url>
+          <line>39</line>
+          <option name="timeStamp" value="47" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bi_crm_customization/models/crm_lead.py</url>
+          <line>35</line>
+          <option name="timeStamp" value="48" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/../../../Odoo Installations/Odoo 13.0e/server/odoo/addons/sale/models/sale.py</url>
+          <line>115</line>
+          <option name="timeStamp" value="49" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/../../../Odoo Installations/Odoo 13.0e/server/odoo/addons/sale/models/sale.py</url>
+          <line>479</line>
+          <option name="timeStamp" value="50" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bi_expenses_limit/models/hr_expense_inherit.py</url>
+          <line>93</line>
+          <option name="timeStamp" value="51" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bi_expense_portal/controllers/main.py</url>
+          <line>763</line>
+          <option name="timeStamp" value="52" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/aly_firnas/models/hr_expense.py</url>
+          <line>234</line>
+          <option name="timeStamp" value="60" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/../../../Odoo Installations/Odoo 13.0e/server/odoo/addons/hr_expense/models/hr_expense.py</url>
+          <line>866</line>
+          <option name="timeStamp" value="67" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bi_expenses_limit/models/hr_expense_sheet_inherit.py</url>
+          <line>71</line>
+          <option name="timeStamp" value="68" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bi_expense_portal/controllers/main.py</url>
+          <line>845</line>
+          <option name="timeStamp" value="69" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/../../../Odoo Installations/Odoo 13.0e/server/odoo/addons/sale/models/sale.py</url>
+          <line>480</line>
+          <option name="timeStamp" value="76" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/../../../Odoo Installations/Odoo 13.0e/server/odoo/addons/sale_stock/models/sale_order.py</url>
+          <line>66</line>
+          <option name="timeStamp" value="77" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/../../../Odoo Installations/Odoo 13.0e/server/odoo/sql_db.py</url>
+          <line>250</line>
+          <option name="timeStamp" value="85" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bi_crm_customization/models/sale_order.py</url>
+          <line>139</line>
+          <option name="timeStamp" value="135" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bi_crm_customization/models/sale_order.py</url>
+          <line>142</line>
+          <option name="timeStamp" value="136" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bi_crm_customization/models/sale_order.py</url>
+          <line>141</line>
+          <option name="timeStamp" value="137" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/aly_firnas/models/hr_expense.py</url>
+          <line>596</line>
+          <option name="timeStamp" value="138" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/aly_firnas/models/hr_expense.py</url>
+          <line>620</line>
+          <option name="timeStamp" value="139" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/../../../Odoo Installations/Odoo 13.0e/server/odoo/addons/hr_expense/models/hr_expense.py</url>
+          <line>823</line>
+          <option name="timeStamp" value="141" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -17,38 +17,61 @@
             <field name="name">view.move.form.currency.rate.inherit</field>
             <field name="model">account.move</field>
             <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="priority">99</field>
             <field name="arch" type="xml">
                 <xpath expr="//page[last()]" position="after">
                     <page id="page_terms" string="Terms" groups="account.group_account_user">
                         <group>
                             <group>
-                                <field name="is_print_payment_schedule" attrs="{'invisible': [('type', 'not in', ('out_invoice'))]}"/>
-                                <field name="standard_payment_schedule" widget="html" attrs="{'invisible': [('type', 'not in', ('out_invoice'))]}"/>
-                                <field name="is_print_terms_and_conditions" attrs="{'invisible': [('type', 'not in', ('out_invoice'))]}"/>
-                                <field name="terms_and_conditions" widget="html" attrs="{'invisible': [('type', 'not in', ('out_invoice'))]}"/>
+                                <field name="is_print_terms_and_conditions" attrs="{'invisible': [('type', 'not in', ('out_invoice', 'in_invoice'))]}"/>
+                                <field name="terms_and_conditions" widget="html" attrs="{'invisible': [('type', 'not in', ('out_invoice', 'in_invoice'))]}"/>
                             </group>
                         </group>
                     </page>
                 </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="attributes">
+                    <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_uom_id']" position="attributes">
+                    <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}</attribute>
+                </xpath>
                 <xpath expr="//field[@name='partner_id']" position="attributes">
-
                     <attribute name="attrs">
                         {'required': [('type', 'in', ('in_invoice', 'out_invoice'))]}
                     </attribute>
                     <field name="analytic_tag_ids" widget="many2many_tags" required="1"
                            attrs="{'invisible': [('type', 'not in', ('entry', 'in_invoice', 'out_invoice', 'in_refund', 'in_receipt'))]}"/>
                 </xpath>
+                <xpath expr="//field[@name='partner_id']" position="replace">
+                    <field name="partner_id" widget="res_partner_many2one" nolabel="1" context="{
+                    'res_partner_search_mode': (context.get('default_type', 'entry') in ('out_invoice', 'out_refund', 'out_receipt') and 'customer') or (context.get('default_type', 'entry') in ('in_invoice', 'in_refund', 'in_receipt') and 'supplier') or False,
+                    'show_address': 0, 'default_is_company': True, 'show_vat': True
+                    }" options="{&quot;always_reload&quot;: True, &quot;no_quick_create&quot;: True}"
+                           attrs="{'invisible': [('type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))]}"/>
+                </xpath>
+                <xpath expr="//field[@name='partner_shipping_id']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='invoice_partner_bank_id']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='ref']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='company_id']" position="replace">
+                </xpath>
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="partner_contact" attrs="{'invisible': [('type', 'not in', ('out_invoice'))]}"/>
+                    <field name="ref"/>
                     <field name="partner_invoice_id"
                            context="{'default_is_company': True, 'show_vat': True}"
                            attrs="{'invisible': [('type', 'not in', ('out_invoice'))]}"/>
+                    <field name="partner_shipping_id"
+                           context="{'default_is_company': True, 'show_vat': True}"
+                           attrs="{'invisible': [('type', 'not in', ('out_invoice'))]}"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
                     <field name="analytic_account_id" required="1"
                            attrs="{'invisible': [('type', 'not in', ('entry', 'in_invoice', 'out_invoice', 'in_refund', 'in_receipt'))]}"/>
                     <field name="analytic_tag_ids" widget="many2many_tags" required="1"
                            attrs="{'invisible': [('type', 'not in', ('entry', 'in_invoice', 'out_invoice', 'in_refund', 'in_receipt'))]}"/>
-                </xpath>
-                <xpath expr="//field[@name='ref']" position="after">
+                    <field name="invoice_partner_bank_id" domain="[('partner_id', '=', bank_partner_id)]" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                     <field name="p_order_id"
                            groups="base.group_no_one"
                            attrs="{'readonly': [('p_order_id', '=', 'purchase_id')], 'invisible': [('type', 'not in', ('in_invoice'))]}"/>
@@ -77,7 +100,7 @@
                             groups="base.group_multi_currency"
                             attrs="{'invisible': [('is_manual', '=', False)]}"
                     />
-                    <div groups="base.group_multi_currency" attrs="{'invisible': [('is_manual', '=', False)]}">
+                    <div groups="base.group_multi_currency" attrs="{'invisible': [('is_manual', '=', False)]}" class="o_row">
                         <field
                                 name="manual_currency"
                                 attrs="{'invisible': [('is_manual', '=', False)], 'readonly': [('state', '!=', 'draft')]}"
@@ -86,19 +109,8 @@
                                 name="custom_rate_conversely"
                                 attrs="{'invisible': [('manual_currency', '=', False)], 'readonly': [('state', '!=', 'draft')]}"
                         />
-                        <button
-                                aria-label="Opened"
-                                type="object"
-                                name="action_refresh_currency"
-                                class="btn-link"
-                                states="draft"
-                        >
-                            <i
-                                    title="Update Currency"
-                                    class="fa fa-fw fa-refresh"
-                                    attrs="{'invisible': [('manual_currency', '=', False)]}"
-                            />
-                        </button>
+                        <button name="action_refresh_currency" states="draft" type="object" string=" Update " class="btn-link mb-1 px-0" icon="fa-refresh"
+                        attrs="{'invisible': [('is_manual', '=', False)]}"/>
                     </div>
                     <field name="accountant_id" />
                 </xpath>
@@ -113,9 +125,11 @@
                 </xpath>
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="before">
                     <field name="is_printed" force_save="1"/>
+                    <field name="line_rank" string="Sn" width="12px" readonly="1" optional="show"/>
                 </xpath>
                 <xpath expr="//field[@name='line_ids']/tree/field[@name='product_id']" position="before">
                     <field name="is_printed" force_save="1"/>
+                    <field name="line_rank" string="Sn" width="12px" readonly="1" optional="show"/>
                 </xpath>
                 <xpath expr="//field[@name='line_ids']/tree/field[@name='partner_id']" position="attributes">
                     <attribute name="optional">show</attribute>
@@ -187,67 +201,5 @@
             </field>
         </record>
 
-        <template id="aly_invoice_report_footer_inherit" inherit_id="web.external_layout_standard">
-            <!-- Remove footer-->
-            <xpath expr="//div[@name='financial_infos']/../.." position="replace">
-                <span></span>
-            </xpath>
-        </template>
-
-        <template id="aly_invoice_report_inherit" inherit_id="account.report_invoice_document">
-            <xpath expr="//t[@t-set='lines']" position="replace">
-                <t t-set="lines" t-value="o.invoice_line_ids.filtered_domain([('is_printed', '=', True)]).sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)"/>
-                <t t-set="is_printed_subtotal" t-value="0"/>
-                <t t-if="not var_taxed_amount">
-                    <t t-set="var_taxed_amount" t-value="0"/>
-                </t>
-            </xpath>
-            <xpath expr="//t[@t-foreach='lines']" position="inside">
-                <t t-set="is_printed_subtotal" t-value="is_printed_subtotal + line.price_subtotal"/>
-            </xpath>
-            <xpath expr="//span[@t-field='o.amount_untaxed']" position="replace">
-                <span t-esc="is_printed_subtotal"
-                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'
-                />
-            </xpath>
-            <xpath expr="/t/t/t[2]" position="replace">
-                <div>
-                    <br/>
-                    <div class="text-left" style="margin-right:150px;float: right;">
-                        <address t-field="o.partner_id"
-                                 t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
-                    </div>
-                    <br/>
-                    <br/>
-                    <br/>
-                </div>
-            </xpath>
-<!--            <xpath expr="//div[@class='page']/h2" position="before">-->
-<!--                <div class="text-left" style="margin-left:350px">-->
-<!--                    <address t-field="o.partner_id"-->
-<!--                          t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>-->
-<!--                </div>-->
-<!--            </xpath>-->
-            <xpath expr="//span[@t-field='o.amount_total']" position="replace">
-<!--                <span class="text-nowrap" t-field="o.amount_total"/>-->
-                <span t-esc="is_printed_subtotal + var_taxed_amount"
-                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'
-                />
-            </xpath>
-            <xpath expr="//t[@t-foreach='o.amount_by_group']" position="replace">
-                <t t-set="temp_for_global_discount" t-value="0">
-                </t>
-                <t t-if="temp_for_global_discount == 0" >
-                    <tr style="">
-                        <td>
-                            <span>Taxes</span>
-                        </td>
-                        <td class="text-right o_price_total">
-                            <span class="text-nowrap" t-esc="var_taxed_amount"/>
-                        </td>
-                    </tr>
-                </t>
-            </xpath>
-        </template>
     </data>
 </odoo>

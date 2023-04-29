@@ -9,8 +9,7 @@
             <field name="arch" type="xml">
                 <data>
                     <field name="categ_id" position="after">
-                        <span name="update_cost_price" invisible="0">
-
+                        <span name="update_cost_price" invisible="1">
                         </span>
                     </field>
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _, SUPERUSER_ID
 from odoo.exceptions import ValidationError
-import ast
+from odoo.exceptions import UserError
 
 
 class CRMLeadInherit(models.Model):
@@ -10,7 +10,7 @@ class CRMLeadInherit(models.Model):
     def action_new_quotation(self):
         res = super(CRMLeadInherit, self).action_new_quotation()
         res['context']['default_project_number'] = self.project_num
-        res['context']['default_type_custom'] = self.type_custom
+        res['context']['default_type_custom'] = self.type_custom.id
         res['context']['default_project_name'] = self.project_name
         res['context']['default_country'] = self.country.ids
         res['context']['default_start_date'] = self.start_date
@@ -25,6 +25,9 @@ class CRMLeadInherit(models.Model):
         res['context']['default_rfp_ref_number'] = self.rfp_ref_number
         res['context']['default_proposals_engineer_id'] = self.proposals_engineer_id.id
         res['context']['default_proposals_engineer_ids'] = self.proposals_engineer_ids.ids
+        res['context']['default_document_name'] = self.proposal_subject
+        res['context']['default_file_name'] = self.document_file_name
+        res['context']['default_analytic_account_id'] = self.analytic_account_id.id
         return res
 
     def _default_team_id(self, user_id):
@@ -63,7 +66,7 @@ class CRMLeadInherit(models.Model):
                                        column2='type_custom_ids_crm_type_id', string="Secondary Project Types", required=False)
     project_name = fields.Char(string="Customer's Project Name / Proposal Title", store=True, )
     country = fields.Many2many(comodel_name='res.country', string='Countries')
-    client_name = fields.Many2one('res.partner', string="End Client!", help="deprecated, not used, you can use end_client field")
+    client_name = fields.Many2one('res.partner', string="End Client!", help="aly elnemr: deprecated, not used, you can use end_client field")
     start_date = fields.Date(string="Request Date", required=False)
     sub_date = fields.Datetime(string="Submission Deadline", required=False)
     actual_sub_date = fields.Date(string="Actual Submission Date")
@@ -104,6 +107,17 @@ class CRMLeadInherit(models.Model):
     is_analytic_account_id_created = fields.Boolean(string='Is Analytic Account created!', default=False)
     analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account', required=False)
     analytic_tag_ids_for_analytic_account = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=False, copy=False)
+    proposal_subject = fields.Char(string="Proposal Subject")
+    document_file_name = fields.Char(string="Document/File  Name (Footer)")
+    quotation_sales_count = fields.Char(string="Quotation and Sales Count", compute='_get_quotation_sales_count', store=True)
+
+    @api.depends('quotation_count', 'sale_order_count')
+    def _get_quotation_sales_count(self):
+        for rec in self:
+            rec._compute_sale_data()
+            quot = str(rec.quotation_count) if rec.quotation_count else "0"
+            sale_order = str(rec.sale_order_count) if rec.sale_order_count else '0'
+            rec.quotation_sales_count = quot + '-' + sale_order
 
     @api.onchange('partner_contact')
     def _onchange_partner_id_partner_contact(self):
@@ -226,6 +240,19 @@ class CRMLeadInherit(models.Model):
         return res
 
     def write(self, vals):
+        if not self._context.get('ignore_write', False):
+            # stage change: send notification to associated groups
+            if 'stage_id' in vals:
+                stage_id = self.env['crm.stage'].browse(vals['stage_id'])
+                if stage_id and stage_id.notify_group_ids:
+                    group_partner_ids = stage_id.notify_group_ids.users.mapped('partner_id')
+                    self.message_post(
+                        body=_(
+                            "Stage Changed From '%s' To '%s'") % (
+                                 self.stage_id.name, stage_id.name),
+                        partner_ids=group_partner_ids.ids)
+                if stage_id and stage_id.allow_create_project and not self.project_id:
+                    raise UserError(_('Please create or duplicate project before changing to this stage.'))
         is_conversion = False
         if 'parent_opportunity_id' in vals:
             if self.type == 'opportunity':
@@ -265,11 +292,6 @@ class CRMLeadInherit(models.Model):
             self.task_id.user_id = self.proposals_engineer_id
         return res
 
-    def action_new_quotation(self):
-        res = super(CRMLeadInherit, self).action_new_quotation()
-        res['context']['default_type_custom'] = self.type_custom.name
-        return res
-
     @api.onchange('is_existing_opportunity')
     def reset_parent_opportunity_id(self):
         if not self.is_existing_opportunity:
@@ -302,6 +324,12 @@ class CRMLeadInherit(models.Model):
                 err += 'Please Add Result Date!\n'
             if rec.stage_id.mandatory_signature_date and not rec.contract_signature_date:
                 err += 'Please Add Contract/PO Signature Date!\n'
+            if rec.stage_id.mandatory_customer_project_name and not rec.mandatory_customer_project_name:
+                err += "Please Add Customer's Project Name\n"
+            if rec.stage_id.mandatory_proposal_subject and not rec.mandatory_proposal_subject:
+                err += 'Please Add Proposal Subject!\n'
+            if rec.stage_id.mandatory_document_file and not rec.mandatory_document_file:
+                err += 'Please Add Document/File Name!\n'
             if err:
                 raise ValidationError(err)
 

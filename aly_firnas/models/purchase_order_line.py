@@ -85,6 +85,8 @@ class PurchaseOrderLine(models.Model):
         for line in self:
             if not line._check_line_unlink():
                return models.Model.unlink(line)
+            if line.is_origin_so:
+                raise UserError(_('Cannot delete a purchase order Line comes from SO.'))
         return super(PurchaseOrderLine, self).unlink()
 
     @api.onchange('product_id')

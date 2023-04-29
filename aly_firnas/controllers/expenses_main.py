@@ -51,13 +51,14 @@ class CustomerPortal(CustomerPortal):
                 'cancel': 'Cancelled',
             },
             'report_states': {
-                'draft': 'Draft',
+                'draft': 'To Submit',
                 'received': 'Received',
                 'submit': 'Submitted',
                 'post': 'Posted',
                 'approve': 'Approved',
                 'done': 'Paid',
-                'cancel': 'Refused',
+                'refused': 'Refused',
+                'cancel': 'Cancelled',
             },
         })
         return values
@@ -210,10 +211,13 @@ class CustomerPortal(CustomerPortal):
             },
             'request_states': {
                 'draft': 'To Submit',
+                'received': 'Received',
+                'to_submit': 'To Submit',
                 'reported': 'Submitted',
                 'approved': 'Approved',
                 'done': 'Paid',
                 'refused': 'Refused',
+                'cancel': 'Cancelled',
             },
         }
         values.update({
@@ -252,12 +256,14 @@ class CustomerPortal(CustomerPortal):
                 'company_account': 'Company',
             },
             'report_states': {
-                'draft': 'Draft',
+                'draft': 'To Submit',
+                'received': 'Received',
                 'submit': 'Submitted',
                 'post': 'Posted',
                 'approve': 'Approved',
                 'done': 'Paid',
-                'cancel': 'Refused',
+                'refused': 'Refused',
+                'cancel': 'Cancelled',
             },
         }
         values.update({
