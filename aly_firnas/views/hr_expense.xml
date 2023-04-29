@@ -6,11 +6,32 @@
             <field name="model">hr.expense</field>
             <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
             <field name="arch" type="xml">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 <xpath expr="//widget[@name='attach_document']" position="after">
                     <button name="action_view_picking" string="Receive Products" class="oe_highlight" type="object"
                             attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('product_type','not in', ('product', 'consu'))]}"
                     />
                 </xpath>
+                <field name="state" position="replace">
+                    <field name="state" widget="statusbar" statusbar_visible="draft,received,to_submit,reported,approved,done,refused"/>
+                </field>
                 <xpath expr="//button[@name='action_view_sheet']" position="after">
                     <button name="action_reset_to_draft" string="Reset to Draft" type="object"
                             attrs="{'invisible': [('state', 'not in', ['submit', 'cancel'])]}"/>
@@ -109,40 +130,44 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="aly_view_hr_expense_sheet_form">
+            <field name="name">aly.hr.expense.sheet.form</field>
+            <field name="model">hr.expense.sheet</field>
+            <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form"/>
+            <field name="arch" type="xml">
+                <field name="state" position="replace">
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submit,approve,post,done"/>
+                </field>
+            </field>
+        </record>
+
         <record id="aly_hr_expense_view_tree" model="ir.ui.view">
             <field name="name">hr_expense_view_tree.inherit</field>
             <field name="model">hr.expense</field>
             <field name="inherit_id" ref="hr_expense.view_expenses_tree"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='date']" position="attributes">
-                    <attribute name="optional">show</attribute>
-                </xpath>
-                <xpath expr="//field[@name='employee_id']" position="attributes">
-                    <attribute name="optional">show</attribute>
-                </xpath>
-                <xpath expr="//field[@name='name']" position="replace">
-                </xpath>
-                <xpath expr="//field[@name='payment_mode']" position="replace">
-                </xpath>
-                <xpath expr="//field[@name='analytic_account_id']" position="replace">
-                </xpath>
-                <xpath expr="//field[@name='company_id']" position="replace">
-                </xpath>
-                <xpath expr="//field[@name='analytic_tag_ids']" position="replace">
-                </xpath>
-                <xpath expr="//field[@name='total_amount']" position="replace">
-                </xpath>
-                <xpath expr="//field[@name='state']" position="replace">
-                </xpath>
-                <xpath expr="//field[@name='employee_id']" position="after">
-                    <field name="name" optional="show"/>
-                    <field name="analytic_account_id" groups="analytic.group_analytic_accounting" optional="show"/>
-                    <field name="analytic_tag_ids" widget="many2many_tags" groups="analytic.group_analytic_tags" optional="show"/>
-                    <field name="company_id" groups="base.group_multi_company" optional="show"/>
-                    <field name="total_amount" sum="Total Amount" widget="monetary" options="{'currency_field': 'currency_id'}"
-                           optional="show"/>
-                    <field name="payment_mode" optional="show"/>
-                    <field name="state" optional="show"/>
+                <xpath expr="//tree" position="replace">
+                    <tree string="Expenses" decoration-bf="message_unread == True" class="o_expense_tree" js_class="hr_expense_tree" decoration-info="state == 'draft'" decoration-muted="state == 'cancel'">
+                        <field name="currency_id" invisible="True"/>
+                        <field name="attachment_number" invisible="True"/>
+                        <field name="date" optional="show"/>
+                        <field name="employee_id" optional="show"/>
+                        <field name="product_id" optional="show"/>
+                        <field name="name" optional="show"/>
+                        <field name="analytic_account_id" groups="analytic.group_analytic_accounting" optional="show"/>
+                        <field name="analytic_tag_ids" widget="many2many_tags" groups="analytic.group_analytic_tags" optional="show"/>
+                        <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                        <field name="partner_id" optional="show"/>
+                        <field name="reference" optional="show"/>
+                        <field name="total_amount" sum="Total Amount" widget="monetary" options="{'currency_field': 'currency_id'}"
+                               optional="show"/>
+                        <field name="payment_mode" optional="show"/>
+                        <field name="state" optional="show"/>
+                        <field name="sheet_id" invisible="not context.get('show_report', False)"/>
+                        <button name="action_get_attachment_view" string="View Attached Documents" type="object" icon="fa-paperclip" attrs="{'invisible': [('attachment_number', '=', 0)]}"/>
+                        <field name="message_unread" invisible="1"/>
+                        <field name="activity_exception_decoration" widget="activity_exception"/>
+                    </tree>
                 </xpath>
             </field>
         </record>

@@ -36,3 +36,4 @@ from . import res_partner_bank
 from . import stock_location
 from . import stock_valuation_layer
 from . import crm_stage
+from . import employee_expense_limit

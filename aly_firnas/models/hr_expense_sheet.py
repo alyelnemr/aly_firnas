@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError
+from odoo.tools import float_is_zero
 
 
 class HrExpenseSheet(models.Model):
@@ -39,6 +40,15 @@ class HrExpenseSheet(models.Model):
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=False,
                                         states={'post': [('readonly', True)], 'done': [('readonly', True)]},
                                         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+    state = fields.Selection([
+        ('draft', 'To submit'),
+        ('submit', 'Submitted'),
+        ('approve', 'Approved'),
+        ('post', 'Posted'),
+        ('done', 'Paid'),
+        ('refused', 'Refused'),
+        ('cancel', 'Cancelled')
+    ], string='Status', index=True, readonly=True, tracking=True, copy=False, default='draft', required=True, help='Expense Report State')
 
     @api.depends("account_move_ids")
     def _compute_account_move_ids(self):
@@ -128,3 +138,30 @@ class HrExpenseSheet(models.Model):
             if not rec.analytic_tag_ids and len(rec.expense_line_ids):
                 rec.analytic_tag_ids = rec.expense_line_ids[0].analytic_tag_ids
         return res
+    def action_sheet_move_create(self):
+        if any(sheet.state != 'approve' for sheet in self):
+            raise UserError(_("You can only generate accounting entry for approved expense(s)."))
+
+        if any(not sheet.journal_id for sheet in self):
+            raise UserError(_("Expenses must have an expense journal specified to generate accounting entries."))
+
+        if any(not sheet.expense_line_ids for sheet in self):
+            raise UserError(_("Expenses must have at least one expense item to generate accounting entries."))
+
+        expense_line_ids = self.mapped('expense_line_ids') \
+            .filtered(lambda r: not float_is_zero(r.total_amount,
+                                                  precision_rounding=(r.currency_id or self.env.company.currency_id).rounding))
+        res = expense_line_ids.action_move_create()
+
+        if not self.accounting_date and self.account_move_id.date:
+            self.accounting_date = self.account_move_id.date
+        else:
+            self.accounting_date = fields.Datetime.now()
+
+        if self.payment_mode == 'own_account' and expense_line_ids:
+            self.write({'state': 'post'})
+        else:
+            self.write({'state': 'done'})
+        self.activity_update()
+        return res
+

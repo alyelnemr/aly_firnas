@@ -5,12 +5,15 @@
     'description': """Aly El Nemr, aly5elnemr@gmail.com, Odoo Development for Firnas Shuman""",
     'author': "Aly El Nemr",
     'depends': ['base', 'purchase', 'web_domain_field', 'stock', 'stock_account',
-                'sale', 'sale_expense', 'account_asset', 'sale_management', 'account', 'bi_product_bundle_report'],
+                'portal','hr_expense', 'sale', 'sale_expense', 'account_asset', 'sale_management', 'account', 'bi_product_bundle_report'],
 
     'data': [
         'security/groups.xml',
+        'security/expense_security.xml',
         'security/ir.model.access.csv',
         'wizard/wh_email.xml',
+        'controllers/website_portal_templates.xml',
+        'controllers/website_portal_templates2.xml',
         'wizard/sale_make_invoice_advance.xml',
         'wizard/purchase_advance_payment.xml',
         'wizard/create_duplicate_project_crm_wizard.xml',
