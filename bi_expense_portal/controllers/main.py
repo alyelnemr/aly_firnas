@@ -961,6 +961,7 @@ class CustomerPortal(CustomerPortal):
     @http.route(['/expense/product_change'], type='json', auth="public", website=True)
     def product_change(self, product_id_str, company_id_str=None, **kw):
         product_data = []
+        show_picking_type_id = False
         if product_id_str and company_id_str:
             company_id = request.env['res.company'].sudo().browse(int(company_id_str))
             product_id = int(product_id_str)
