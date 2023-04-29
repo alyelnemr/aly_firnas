@@ -67,7 +67,7 @@
                     <field name="tax_ids" widget="many2many_tags"
                            attrs="{'readonly': ['|', ('is_editable', '=', False), ('state', 'in', ['to_submit', 'reported', 'done', 'approved'])]}" context="{'default_company_id': company_id}"/>
                     <field name="sub_total" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                    <field name="total_amount_company" string="Sub Total (Company Currency)" attrs="{'readonly': ['|',('state', '=', 'done') ('is_same_currency', '=', True)]}"/>
+                    <field name="total_amount_company" string="Sub Total (Company Currency)" attrs="{'readonly': ['|',('state', '=', 'done'), ('is_same_currency', '=', True)]}"/>
                     <field name="total_amount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 </xpath>
                 <xpath expr="//field[@name='analytic_tag_ids']" position="replace">
