@@ -47,6 +47,7 @@ class CustomerPortal(CustomerPortal):
                 'approved': 'Approved',
                 'done': 'Paid',
                 'refused': 'Refused',
+                'cancel': 'Cancelled',
             },
             'report_states': {
                 'draft': 'Draft',
