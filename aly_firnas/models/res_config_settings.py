@@ -15,6 +15,8 @@ class AlyResConfigSettings(models.TransientModel):
     aly_complex_password = fields.Boolean(string='Activate Complex Password', default=True)
     date_sub_groups_ids = fields.Many2many(related='company_id.date_sub_groups_ids', string='Notification Groups',
                                            readonly=False)
+    aly_expense_bank_journal_id = fields.Many2one('account.journal', string='Default Bank Journal',
+                                                  domain="[('type', 'in', ['cash', 'bank'])]", check_company=False)
 
     def get_values(self):
         aly_res = super(AlyResConfigSettings, self).get_values()
