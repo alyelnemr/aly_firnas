@@ -6,24 +6,6 @@
             <field name="model">hr.expense</field>
             <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
             <field name="arch" type="xml">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 <xpath expr="//widget[@name='attach_document']" position="after">
                     <button name="action_view_picking" string="Receive Products" class="oe_highlight" type="object"
                             attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('product_type','not in', ('product', 'consu'))]}"
