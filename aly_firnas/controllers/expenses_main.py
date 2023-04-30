@@ -1046,14 +1046,17 @@ class CustomerPortal(CustomerPortal):
     def compute_all(self, unit_amount_str=None, quantity_str=None, discount_str=None, tax_id_str=None, **kw):
         sub_total = 0
         total_amount = 0
-        if unit_amount_str and quantity_str and tax_id_str and discount_str:
+        discount_str = 0 if discount_str == '' else discount_str
+        if unit_amount_str and quantity_str:
             unit_amount = float(unit_amount_str)
             discount = float(discount_str)
             unit_amount = unit_amount - (unit_amount * discount / 100)
             quantity = float(quantity_str)
             sub_total = (unit_amount * quantity)
             tax_total = 0
-            taxes_obj = request.env['account.tax'].sudo().search([('type_tax_use', '=', 'purchase'), ('id', 'in', tax_id_str)])
+            taxes_obj = []
+            if len(tax_id_str):
+                taxes_obj = request.env['account.tax'].sudo().search([('type_tax_use', '=', 'purchase'), ('id', 'in', tax_id_str)])
             for tax_obj in taxes_obj:
                 tax = (tax_obj.amount / 100)
                 tax_total += (unit_amount * quantity * tax)

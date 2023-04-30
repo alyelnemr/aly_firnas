@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="" />
+    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/controllers/expense_views_edit.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/controllers/expense_views_edit.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/controllers/expense_views_view.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/controllers/expense_views_view.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/controllers/expenses_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/controllers/expenses_main.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -428,7 +433,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682862138625</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="[add] expense video 28-Apr">
+      <created>1682862556346</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1682862556346</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -640,7 +652,7 @@
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/aly_firnas/controllers/expenses_main.py</url>
           <line>1046</line>
-          <option name="timeStamp" value="149" />
+          <option name="timeStamp" value="150" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
