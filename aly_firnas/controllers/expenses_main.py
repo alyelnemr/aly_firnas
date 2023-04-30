@@ -434,6 +434,67 @@ class CustomerPortal(CustomerPortal):
         })
         return request.render("aly_firnas.expense_request_edit", values)
 
+    @http.route(['/expense_view/<int:expense_id>'], type='http', auth="user", website=True)
+    def portal_expense_view(self, expense_id, **kw):
+        if expense_id:
+            expense_sudo = request.env['hr.expense'].sudo().browse([expense_id])
+        else:
+            return request.redirect('/my/expenses')
+
+        if not request.env.user.has_group('aly_firnas.group_employee_expense_portal') and not request.env.user.has_group('aly_firnas.group_employee_expense_manager_portal'):
+            return request.render("aly_firnas.not_allowed_expense_request")
+        values = {}
+        currencies = request.env['res.currency'].sudo().search([])
+        projects = request.env['project.project'].sudo().search([])
+        vendors = request.env['res.partner'].sudo().search([], order='name')
+        dest_address_id = request.env['res.partner'].sudo().search([], order='name')
+        vendor_id = vendors[0].id
+        company = projects[0].company_id.id
+        products = request.env['product.product'].sudo().search(
+            [('can_be_expensed', '=', True), '|', ('company_id', '=', int(company)), ('company_id', '=', False)])
+        tax_ids = request.env['account.tax'].sudo().search([('company_id', '=', projects[0].company_id.id)])
+        vendor_contact_id = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)], order='name')
+        accounts = request.env['account.account'].sudo().search([('internal_type', '=', 'other')])
+        analytic_accounts = request.env['account.analytic.account'].sudo().browse([projects[0].analytic_account_id.id])
+        employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
+        analytic_tags = employees[0].analytic_tag_ids + analytic_accounts[0].analytic_tag_ids
+        picking_type_obj = request.env['stock.picking.type'].sudo()
+        picking_type_id = picking_type_obj.search(
+            [('code', '=', 'incoming'), ('company_id', '=', request.env.user.company_id.id)]
+        )
+
+        default_managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
+        for emp in employees:
+            if emp.parent_id and emp.parent_id.user_id:
+                default_managers += emp.parent_id.user_id
+        managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
+        if default_managers:
+            managers -= default_managers
+        values.update({
+            'expense_sudo': expense_sudo,
+            'products': products,
+            'vendors': vendors,
+            'projects': projects,
+            'vendor_contact_id': vendor_contact_id,
+            'currencies': currencies,
+            'tax_ids': tax_ids,
+            'dest_address_id': dest_address_id,
+            'picking_type_id': picking_type_id,
+            'companies': request.env.user.company_ids - request.env.user.company_id,
+            'default_currency': request.env.company.currency_id,
+            'default_company': request.env.user.company_id,
+            'employees': employees,
+            'managers': managers,
+            'default_managers': default_managers,
+            'accounts': accounts,
+            'default_account': request.env['ir.property'].sudo().get('property_account_expense_categ_id', 'product.category'),
+            'analytic_account_id': analytic_accounts,
+            'analytic_tag_id': analytic_tags,
+            'today': str(fields.Date.today()),
+            'error_fields': '',
+        })
+        return request.render("aly_firnas.display_expense_request", values)
+
     @http.route(['/expense_report_form/<int:expense_report_id>'], type='http', auth="user", website=True)
     def portal_expense_report_edit(self, expense_report_id, **kw):
         if expense_report_id:
