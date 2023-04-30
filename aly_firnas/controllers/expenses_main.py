@@ -290,7 +290,7 @@ class CustomerPortal(CustomerPortal):
         picking_type_obj = request.env['stock.picking.type']
         values = {}
         currencies = request.env['res.currency'].sudo().search([])
-        projects = request.env['project.project'].sudo().search([])
+        projects = request.env['project.project'].sudo().search([], order='name')
         dest_address_id = request.env['res.partner'].sudo().search([], order='name')
         vendors = request.env['res.partner'].sudo().search([], order='name')
         vendor_id = vendors[0].id
@@ -384,7 +384,7 @@ class CustomerPortal(CustomerPortal):
             return request.render("aly_firnas.not_allowed_expense_request")
         values = {}
         currencies = request.env['res.currency'].sudo().search([])
-        projects = request.env['project.project'].sudo().search([])
+        projects = request.env['project.project'].sudo().search([], order='name')
         vendors = request.env['res.partner'].sudo().search([], order='name')
         dest_address_id = request.env['res.partner'].sudo().search([], order='name')
         vendor_id = vendors[0].id
@@ -445,7 +445,7 @@ class CustomerPortal(CustomerPortal):
             return request.render("aly_firnas.not_allowed_expense_request")
         values = {}
         currencies = request.env['res.currency'].sudo().search([])
-        projects = request.env['project.project'].sudo().search([])
+        projects = request.env['project.project'].sudo().search([], order='name')
         vendors = request.env['res.partner'].sudo().search([], order='name')
         dest_address_id = request.env['res.partner'].sudo().search([], order='name')
         vendor_id = vendors[0].id
@@ -678,7 +678,7 @@ class CustomerPortal(CustomerPortal):
             values = {}
             currencies = request.env['res.currency'].sudo().search([])
             vendors = request.env['res.partner'].sudo().search([], order='name')
-            projects = request.env['project.project'].sudo().search([])
+            projects = request.env['project.project'].sudo().search([], order='name')
             vendor_id = vendors[0].id
             company = projects[0].company_id.id
             products = request.env['product.product'].sudo().search(
@@ -1002,7 +1002,7 @@ class CustomerPortal(CustomerPortal):
         if project_id_str and product_id_str:
             project_id = int(project_id_str)
             product_id = int(product_id_str)
-            res_project_data = request.env['project.project'].sudo().search([('id', '=', project_id)], limit=1)
+            res_project_data = request.env['project.project'].sudo().search([('id', '=', project_id)], limit=1, order='name')
             for item in res_project_data:
                 company_id = item.company_id.id
             for item in res_project_data:
@@ -1052,9 +1052,12 @@ class CustomerPortal(CustomerPortal):
             unit_amount = unit_amount - (unit_amount * discount / 100)
             quantity = float(quantity_str)
             sub_total = (unit_amount * quantity)
-            tax_id = int(tax_id_str)
-            tax_obj = request.env['account.tax'].sudo().search([('id', '=', tax_id)])
-            total_amount = round( sub_total + (unit_amount * quantity * (tax_obj.amount / 100)), 2)
+            tax_total = 0
+            taxes_obj = request.env['account.tax'].sudo().search([('id', 'in', tax_id_str)])
+            for tax_obj in taxes_obj:
+                tax = (tax_obj.amount / 100)
+                tax_total += (unit_amount * quantity * tax)
+            total_amount = round(sub_total + tax_total, 2)
         return dict(
             sub_total=sub_total,
             total_amount=total_amount,

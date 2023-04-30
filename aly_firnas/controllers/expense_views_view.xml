@@ -154,7 +154,7 @@
                                     </div>
                                     <div class="col-lg-4 col-md-4">
                                         <label class="col-form-label" for="taxes">Taxes</label>
-                                        <select class="form-control" id="tax_ids" name="tax_ids" readonly="1">
+                                        <select multiple="multiple" class="form-control" id="tax_ids" name="tax_ids" readonly="1">
                                             <t t-foreach="tax_ids" t-as="tax">
                                                 <t t-if="expense_sudo.tax_ids">
                                                     <option t-att-value="tax.id"
