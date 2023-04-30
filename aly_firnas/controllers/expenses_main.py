@@ -41,8 +41,8 @@ class CustomerPortal(CustomerPortal):
                 'company_account': 'Company',
             },
             'request_states': {
-                'draft': 'To Submit',
-                'received': 'Received',
+                'draft': 'Draft',
+                'received': 'Receiving',
                 'to_submit': 'To Submit',
                 'reported': 'Submitted',
                 'approved': 'Approved',
@@ -52,10 +52,9 @@ class CustomerPortal(CustomerPortal):
             },
             'report_states': {
                 'draft': 'To Submit',
-                'received': 'Received',
                 'submit': 'Submitted',
-                'post': 'Posted',
                 'approve': 'Approved',
+                'post': 'Posted',
                 'done': 'Paid',
                 'refused': 'Refused',
                 'cancel': 'Cancelled',

@@ -4,7 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="" />
+    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/aly_firnas/controllers/expense_sheet_view.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/aly_firnas/controllers/expense_views.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/__manifest__.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/__manifest__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/controllers/expenses_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/controllers/expenses_main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/controllers/website_portal_templates.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/controllers/expense_general_views.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/controllers/website_portal_templates2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/controllers/expense_sheet_edit.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/models/hr_expense.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/hr_expense.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bi_petty_cash_expense_portal/__manifest__.py" beforeDir="false" afterPath="$PROJECT_DIR$/bi_petty_cash_expense_portal/__manifest__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bi_timesheet_portal/__manifest__.py" beforeDir="false" afterPath="$PROJECT_DIR$/bi_timesheet_portal/__manifest__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/odoo_leave_request_portal_employee/__manifest__.py" beforeDir="false" afterPath="$PROJECT_DIR$/odoo_leave_request_portal_employee/__manifest__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/odoo_portal_attendance/__manifest__.py" beforeDir="false" afterPath="$PROJECT_DIR$/odoo_portal_attendance/__manifest__.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,7 +26,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Test_Env" />
+        <entry key="$PROJECT_DIR$" value="Live" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -33,14 +46,14 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "D:/Firnas Shuman/Firnas Code/FirnasAddons/aly_firnas/security"
+    "last_opened_file_path": "D:/Firnas Shuman/Firnas Code/FirnasAddons/aly_firnas/controllers"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\controllers" />
       <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\security" />
       <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\models" />
-      <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\controllers" />
       <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\static\src" />
       <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\views" />
     </key>
@@ -398,11 +411,6 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/aly_firnas/models/res_config_settings.py</url>
-          <line>8</line>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/foss_product_bundle/models/sale.py</url>
           <line>57</line>
           <option name="timeStamp" value="11" />
@@ -539,12 +547,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/aly_firnas/models/hr_expense.py</url>
-          <line>596</line>
+          <line>598</line>
           <option name="timeStamp" value="138" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/aly_firnas/models/hr_expense.py</url>
-          <line>620</line>
+          <line>622</line>
           <option name="timeStamp" value="139" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
