@@ -4,17 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/aly_firnas/controllers/expense_sheet_create.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/aly_firnas/controllers/expense_views_create.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/aly_firnas/controllers/expense_views_edit.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/aly_firnas/controllers/expense_views_view.xml" afterDir="false" />
+    <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="[add] expense video 28-Apr">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/__manifest__.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/__manifest__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/controllers/expense_general_views.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/controllers/expense_general_views.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/controllers/expense_sheet_view.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/controllers/expense_sheet_view.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/controllers/expense_views.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/controllers/expense_views.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/controllers/expenses_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/controllers/expenses_main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/controllers/expense_views_view.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/controllers/expense_views_view.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -362,7 +354,21 @@
       <option name="project" value="LOCAL" />
       <updated>1682846005321</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="[add] expense video 28-Apr">
+      <created>1682847036199</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1682847036199</updated>
+    </task>
+    <task id="LOCAL-00039" summary="[add] expense video 28-Apr">
+      <created>1682847347967</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1682847347967</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">

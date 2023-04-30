@@ -11,8 +11,8 @@
                     <div class="row mt-3">
                         <section id="forms" class="col expense_form">
                             <form action="/expense_request_submit" method="post" enctype="multipart/form-data">
-                                <input type="hidden" name="hdn_expense_id"
-                                       t-att-value="expense_sudo.id"/>
+    <!--                                <input type="hidden" name="hdn_expense_id"-->
+    <!--                                       t-att-value="expense_sudo.id"/>-->
                                 <div class="form-group row form-field">
                                     <div class="col-lg-8 col-md-8">
                                         <label class="col-form-label" for="description">Description</label>
