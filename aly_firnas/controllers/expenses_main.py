@@ -535,6 +535,46 @@ class CustomerPortal(CustomerPortal):
         })
         return request.render("aly_firnas.expense_report_edit", values)
 
+    @http.route(['/expense_report_view/<int:expense_report_id>'], type='http', auth="user", website=True)
+    def portal_expense_report_view(self, expense_report_id, **kw):
+        if expense_report_id:
+            expense_sudo = request.env['hr.expense.sheet'].sudo().browse([expense_report_id])
+        else:
+            return request.redirect('/my/expenses_reports')
+
+        if not request.env.user.has_group('aly_firnas.group_employee_expense_portal') and not request.env.user.has_group('aly_firnas.group_employee_expense_manager_portal'):
+            return request.render("aly_firnas.not_allowed_expense_request")
+        values = {}
+        employee = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)], limit=1)
+        employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
+        expenses_obj = request.env['hr.expense']
+        expenses_to_be_added = expenses_obj.sudo().search(
+            ['|', ('employee_id', '=', employee.id), ('employee_id.parent_id', '=', employee.id),
+             ('state', '=', 'draft'),
+             ('company_id', '=', request.env.user.company_id.id),
+            ('sheet_id', '=', False)])
+
+        default_managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
+        for emp in employees:
+            if emp.parent_id and emp.parent_id.user_id:
+                default_managers += emp.parent_id.user_id
+        managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
+        if default_managers:
+            managers -= default_managers
+        values.update({
+            'expense_sudo': expense_sudo,
+            'expenses_to_be_added': expenses_to_be_added - expense_sudo.expense_line_ids,
+            'companies': request.env.user.company_ids - request.env.user.company_id,
+            'default_currency': request.env.company.currency_id,
+            'default_company': request.env.user.company_id,
+            'employees': employees,
+            'managers': managers,
+            'default_managers': default_managers,
+            'today': str(fields.Date.today()),
+            'error_fields': '',
+        })
+        return request.render("aly_firnas.expense_report_view", values)
+
     @http.route(['/expense_request_delete/<int:expense_id>'], type='http', auth="user", website=True)
     def portal_expense_request_delete(self, expense_id, **kw):
         if expense_id:

@@ -68,6 +68,10 @@
                                             </t>
                                         </select>
                                     </div>
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="company_id">Analytic Account</label>
+                                        <input type="text" class="form-control" name="analytic_account_id" required="1"/>
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-2 text-center">
