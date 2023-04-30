@@ -220,7 +220,7 @@ class CustomerPortal(CustomerPortal):
             },
         }
         values.update({
-            'expense_request': expense_sudo,
+            'expense_sudo': expense_sudo,
             'message': message,
             'token': access_token,
             'return_url': '/my/expenses',
