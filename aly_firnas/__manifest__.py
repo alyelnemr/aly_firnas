@@ -13,6 +13,7 @@
         'security/ir.model.access.csv',
         'wizard/wh_email.xml',
         'controllers/expense_views.xml',
+        'controllers/expense_views_view.xml',
         'controllers/expense_views_edit.xml',
         'controllers/expense_views_create.xml',
         'controllers/expense_general_views.xml',
