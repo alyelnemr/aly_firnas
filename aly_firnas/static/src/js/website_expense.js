@@ -270,7 +270,6 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
         });
     },
     _changeProduct: function () {
-    alert('working....');
         this._rpc({
             route: '/expense/product_change',
             params: {
@@ -278,6 +277,7 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
                 product_id_str: $("#product_id").val(),
             },
         }).then(function (data) {
+    alert(data.show_picking_type_id);
             if (data.show_picking_type_id == true){
                 $('select[name="picking_type_id"]').change();
                 $("#div_show_picking_type_id").css(
