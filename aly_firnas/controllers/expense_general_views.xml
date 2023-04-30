@@ -34,6 +34,26 @@
             </xpath>
         </template>
 
+        <template id="portal_my_expense_request" name="Portal My Expense Request: Request Entries"
+                  inherit_id="portal.portal_my_home" priority="3">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                <t t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('aly_firnas.group_employee_expense_portal') or request.env['res.users'].browse(request.session.uid).user_has_groups('aly_firnas.group_employee_expense_manager_portal')">
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="title">Expense Requests</t>
+                        <t t-set="url" t-value="'/my/expenses'"/>
+                        <t t-set="count" t-value="expenses_count"/>
+                    </t>
+                </t>
+                <t t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('aly_firnas.group_employee_expense_portal') or request.env['res.users'].browse(request.session.uid).user_has_groups('aly_firnas.group_employee_expense_manager_portal')">
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="title">Expense Reports</t>
+                        <t t-set="url" t-value="'/my/expenses_reports'"/>
+                        <t t-set="count" t-value="expenses_reports_count"/>
+                    </t>
+                </t>
+            </xpath>
+        </template>
+
         <template id="not_allowed_expense_request" name="Access Denied">
             <t t-call="portal.portal_layout">
                 <div id="wrap">
