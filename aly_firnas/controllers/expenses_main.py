@@ -297,7 +297,7 @@ class CustomerPortal(CustomerPortal):
         company = projects[0].company_id.id
         products = request.env['product.product'].sudo().search(
             [('can_be_expensed', '=', True), '|', ('company_id', '=', int(company)), ('company_id', '=', False)])
-        tax_ids = request.env['account.tax'].sudo().search([('company_id', '=', projects[0].company_id.id)])
+        tax_ids = request.env['account.tax'].sudo().search([('type_tax_use', '=', 'purchase'), ('company_id', '=', projects[0].company_id.id)])
         vendor_contact_id = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)], order='name')
         accounts = request.env['account.account'].sudo().search([('internal_type', '=', 'other')])
         analytic_accounts = request.env['account.analytic.account'].sudo().browse([projects[0].analytic_account_id.id])
@@ -391,7 +391,7 @@ class CustomerPortal(CustomerPortal):
         company = projects[0].company_id.id
         products = request.env['product.product'].sudo().search(
             [('can_be_expensed', '=', True), '|', ('company_id', '=', int(company)), ('company_id', '=', False)])
-        tax_ids = request.env['account.tax'].sudo().search([('company_id', '=', projects[0].company_id.id)])
+        tax_ids = request.env['account.tax'].sudo().search([('type_tax_use', '=', 'purchase'), ('company_id', '=', projects[0].company_id.id)])
         vendor_contact_id = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)], order='name')
         accounts = request.env['account.account'].sudo().search([('internal_type', '=', 'other')])
         analytic_accounts = request.env['account.analytic.account'].sudo().browse([projects[0].analytic_account_id.id])
@@ -452,7 +452,7 @@ class CustomerPortal(CustomerPortal):
         company = projects[0].company_id.id
         products = request.env['product.product'].sudo().search(
             [('can_be_expensed', '=', True), '|', ('company_id', '=', int(company)), ('company_id', '=', False)])
-        tax_ids = request.env['account.tax'].sudo().search([('company_id', '=', projects[0].company_id.id)])
+        tax_ids = request.env['account.tax'].sudo().search([('type_tax_use', '=', 'purchase'), ('company_id', '=', projects[0].company_id.id)])
         vendor_contact_id = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)], order='name')
         accounts = request.env['account.account'].sudo().search([('internal_type', '=', 'other')])
         analytic_accounts = request.env['account.analytic.account'].sudo().browse([projects[0].analytic_account_id.id])
@@ -684,7 +684,7 @@ class CustomerPortal(CustomerPortal):
             products = request.env['product.product'].sudo().search(
                 [('can_be_expensed', '=', True), '|', ('company_id', '=', int(company)), ('company_id', '=', False)])
             vendor_contact_id = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)], order='name')
-            tax_ids = request.env['account.tax'].sudo().search([('company_id', '=', company)])
+            tax_ids = request.env['account.tax'].sudo().search([('type_tax_use', '=', 'purchase'), ('company_id', '=', company)])
             accounts = request.env['account.account'].sudo().search([('internal_type', '=', 'other')])
             analytic_accounts = request.env['account.analytic.account'].sudo().search([('id', '=', projects[0].analytic_account_id.id)])
             employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
@@ -1053,7 +1053,7 @@ class CustomerPortal(CustomerPortal):
             quantity = float(quantity_str)
             sub_total = (unit_amount * quantity)
             tax_total = 0
-            taxes_obj = request.env['account.tax'].sudo().search([('id', 'in', tax_id_str)])
+            taxes_obj = request.env['account.tax'].sudo().search([('type_tax_use', '=', 'purchase'), ('id', 'in', tax_id_str)])
             for tax_obj in taxes_obj:
                 tax = (tax_obj.amount / 100)
                 tax_total += (unit_amount * quantity * tax)
