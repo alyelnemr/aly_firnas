@@ -1015,7 +1015,7 @@ class CustomerPortal(CustomerPortal):
                 'expense']
             for item in product_accounts:
                 product_data.append((item.id, item.name))
-                show_picking_type_id = res_product_data.type in ('product', 'consu')
+            show_picking_type_id = res_product_data.type in ('product', 'consu')
         return dict(
             company_data=company_id,
             analytic_account_data=analytic_account_data,
@@ -1036,7 +1036,7 @@ class CustomerPortal(CustomerPortal):
             product_accounts = res_product_data.product_tmpl_id.with_context(force_company=company_id.id)._get_product_accounts()['expense']
             for item in product_accounts:
                 product_data.append((item.id, item.name))
-                show_picking_type_id = res_product_data.type in ('product', 'consu')
+            show_picking_type_id = res_product_data.type in ('product', 'consu')
         return dict(
             default_account=product_data,
             show_picking_type_id=show_picking_type_id,

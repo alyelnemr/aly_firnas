@@ -240,6 +240,11 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
                                                 display: "none",
                                                 visibility: "hidden"
                                               });
+                $("#div_show_location_dest_id").css(
+                    {
+                        display: "none",
+                        visibility: "hidden"
+                    });
             }
 
             // populate products and display
@@ -265,6 +270,7 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
         });
     },
     _changeProduct: function () {
+    alert('working....');
         this._rpc({
             route: '/expense/product_change',
             params: {
@@ -284,6 +290,11 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
                                                 display: "none",
                                                 visibility: "hidden"
                                               });
+                $("#div_show_location_dest_id").css(
+                {
+                    display: "none",
+                    visibility: "hidden"
+                });
             }
 
             // populate products and display
