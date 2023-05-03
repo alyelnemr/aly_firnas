@@ -7,10 +7,8 @@
     <list default="true" id="fd0ec176-e888-4277-9990-c29d1a7e5160" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/aly_firnas/controllers/expense_sheet_create.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/controllers/expense_sheet_create.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/controllers/expense_sheet_edit.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/controllers/expense_sheet_edit.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/controllers/expense_sheet_view.xml" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/controllers/expense_sheet_view.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/controllers/expenses_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/controllers/expenses_main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aly_firnas/models/hr_expense_sheet.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/models/hr_expense_sheet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/static/src/js/website_expense.js" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/static/src/js/website_expense.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aly_firnas/wizard/sale_make_invoice_advance.py" beforeDir="false" afterPath="$PROJECT_DIR$/aly_firnas/wizard/sale_make_invoice_advance.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,13 +34,13 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "D:/Firnas Shuman/Firnas Code/FirnasAddons/aly_firnas/controllers"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Firnas Shuman/Firnas Code/FirnasAddons/aly_firnas/controllers&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Firnas Shuman\Firnas Code\FirnasAddons\aly_firnas\controllers" />
@@ -98,13 +96,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1674463652085</updated>
-    </task>
-    <task id="LOCAL-00002" summary="[add] invoice format video2">
-      <created>1674483716492</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1674483716492</updated>
     </task>
     <task id="LOCAL-00003" summary="[add] invoice format video2">
       <created>1674484860594</created>
@@ -442,7 +433,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682863300873</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="[add] expense video 28-Apr">
+      <created>1682866880431</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1682866880431</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -645,6 +643,16 @@
           <url>file://$PROJECT_DIR$/aly_firnas/controllers/expenses_main.py</url>
           <line>1086</line>
           <option name="timeStamp" value="150" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/aly_firnas/controllers/expenses_main.py</url>
+          <line>1110</line>
+          <option name="timeStamp" value="151" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/aly_firnas/controllers/expenses_main.py</url>
+          <line>343</line>
+          <option name="timeStamp" value="152" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

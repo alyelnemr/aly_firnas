@@ -154,10 +154,13 @@ class SaleAdvancePaymentInv(models.TransientModel):
 
     def _prepare_so_line(self, order, analytic_tag_ids, tax_ids, amount):
         context = {'lang': order.partner_id.lang}
+        payment_section = self.env['sale.order.line.section'].search([('name', '=', 'Payments')], limit=1)
+        if not payment_section:
+            payment_section = self.env['sale.order.line.section'].create({'name': 'Payments'})
         so_values = {
             'name': self.downpayment_description or _('Down Payment: %s') % (time.strftime('%m %Y'),),
             'price_unit': amount,
-            'section': 'Payments',
+            'section': payment_section.id,
             'product_uom_qty': 0.0,
             'order_id': order.id,
             'discount': 0.0,
