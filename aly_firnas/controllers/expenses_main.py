@@ -340,17 +340,18 @@ class CustomerPortal(CustomerPortal):
         return request.render("aly_firnas.expense_request_submit", values)
 
     @http.route(['/expense_report_form'], type='http', auth="user", website=True)
-    def portal_expense_report_form(self, **kw):
+    def portal_expense_report_form(self, company=None, **kw):
         if not request.env.user.has_group('aly_firnas.group_employee_expense_portal') and not request.env.user.has_group('aly_firnas.group_employee_expense_manager_portal'):
             return request.render("aly_firnas.not_allowed_expense_request")
         values = {}
         employee = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)], limit=1)
         employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
         expenses_obj = request.env['hr.expense']
+        company_id = request.env.user.company_id if not company else request.env['res.company'].sudo().browse(company)
         expenses_to_be_added = expenses_obj.sudo().search(
             ['|', ('employee_id', '=', employee.id), ('employee_id.parent_id', '=', employee.id),
              ('state', '=', 'draft'),
-             ('company_id', '=', request.env.user.company_id.id),
+             ('company_id', '=', company_id.id),
              ('sheet_id', '=', False)])
 
         default_managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
@@ -1014,6 +1015,12 @@ class CustomerPortal(CustomerPortal):
             analytic_accounts=analytic_accounts,
             analytic_tags=analytic_tags,
             accounts=accounts,
+        )
+
+    @http.route(['/expense_report/get_expenses_by_company'], type='json', auth="public", methods=['POST'], website=True)
+    def get_expenses_by_company(self, company, **kw):
+        return dict(
+            expenses=[]
         )
 
     @http.route(['/expense/vendor_contacts'], type='json', auth="public", website=True)

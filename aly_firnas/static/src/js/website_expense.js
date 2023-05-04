@@ -31,6 +31,7 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
      */
     init: function () {
         this._super.apply(this, arguments);
+        this._changeCompanyForExpenseReport = _.debounce(this._changeCompanyForExpenseReport.bind(this), 500);
         this._changeCompany = _.debounce(this._changeCompany.bind(this), 500);
         this._changeVendor = _.debounce(this._changeVendor.bind(this), 500);
         this._changeProject = _.debounce(this._changeProject.bind(this), 500);
@@ -143,6 +144,16 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
             }
         });
     },
+    _changeCompanyForExpenseReport: function () {
+//        var selectProducts = $("select[name='company_id']");
+//
+//        var vhref = "http://" + window.location.host + window.location.pathname + '?company=' + $("#company_id").val();
+//        alert(window.location.search);
+//        if (window.location.search === null || window.location.search === undefined || window.location.search !== '?company=' + $("#company_id").val())
+//        {
+//            $(location).prop('href', vhref);
+//        }
+    },
     _changeVendor: function () {
         this._rpc({
             route: '/expense/vendor_contacts',
@@ -177,9 +188,9 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
         });
     },
     _changeSelectAll: function () {
-        $("input[name='to_be_added_ids']").each(function(){
-        alert('working.....');
-            this.prop("checked", $("input[name='name']").prop("checked"));
+        $("input[name='to_be_added_ids']").each(function(index){
+            alert('working.....' + $("#ch_name").prop("checked") + index.toString());
+            $(this).prop("checked", $("#ch_name").prop("checked"));
         });
     },
     _changeDescription: function () {
@@ -421,7 +432,7 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
             this._changeCurrency();
         }
         else {
-            this._changeCurrency();
+            this._changeCompanyForExpenseReport();
         }
 
     },

@@ -74,58 +74,58 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-2 text-center">
-                                        <input type="checkbox" id="to_select_all" name="to_select_all" />
+                                    <div class="col-lg-1 text-left">
+                                        <input type="checkbox" id="ch_name" name="to_select_all" />
                                     </div>
-                                    <div class="col-lg-2 text-left">
+                                    <div class="col-lg-1 text-left">
                                         <strong>Date</strong>
                                     </div>
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-2 text-left">
                                         <strong>Vendor</strong>
                                     </div>
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-1 text-left">
                                         <strong>Bill Reference</strong>
                                     </div>
-                                    <div class="col-lg-2 text-right">
+                                    <div class="col-lg-1 text-right">
                                         <strong>Subtotal</strong>
                                     </div>
                                     <div class="col-lg-2">
                                         <strong>Project</strong>
                                     </div>
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-1">
                                         <strong>Product</strong>
                                     </div>
-                                    <div class="col-lg-2 text-right">
+                                    <div class="col-lg-2 text-left">
                                         <strong>Description</strong>
                                     </div>
                                 </div>
                                 <t t-set="to_be_added_index" t-value="1"/>
                                 <t t-foreach="expenses_to_be_added" t-as="expense_request">
                                     <div class="row">
-                                        <div class="col-lg-2 text-center">
+                                        <div class="col-lg-1 text-left">
 <!--                                            <input type="checkbox" t-att-value="'%s' % (expense_request.id)" t-att-name="'to_be_added_[''%s'']' % (to_be_added_index)" />-->
                                             <input type="checkbox" t-att-value="'%s' % (expense_request.id)" name="to_be_added_ids" />
                                         </div>
-                                        <div class="col-lg-2 text-left">
+                                        <div class="col-lg-1 text-left">
                                             <span t-field="expense_request.date" t-options='{"widget": "date"}'/>
                                         </div>
                                         <div id='partner_id' class="col-lg-2">
                                             <span t-esc="expense_request.partner_id.name"/>
                                         </div>
-                                        <div id='reference' class="col-lg-2">
+                                        <div id='reference' class="col-lg-1">
                                             <span t-esc="expense_request.reference"/>
                                         </div>
-                                        <div class="col-lg-2 text-right">
+                                        <div class="col-lg-1 text-right">
                                             <span t-field="expense_request.untaxed_amount"
                                                   t-options='{"widget": "monetary", "display_currency": expense_request.currency_id}'/>
                                         </div>
                                         <div id='project_name' class="col-lg-2">
-                                            <span t-esc="expense_request.project_id.name"/>
+                                            <span t-esc="expense_request.project_id.name[:35]"/>
                                         </div>
-                                        <div id='product_name' class="col-lg-2">
+                                        <div id='product_name' class="col-lg-1">
                                             <span t-esc="expense_request.product_id.name"/>
                                         </div>
-                                        <div class="col-lg-2 text-right">
+                                        <div class="col-lg-2 text-left">
                                             <span t-esc="expense_request.name"/>
                                         </div>
                                     </div>
