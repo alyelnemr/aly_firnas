@@ -16,6 +16,9 @@
                         <span>Journal Entries</span>
                     </button>
                 </xpath>
+                <field name="state" position="replace">
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submit,approve,post,done"/>
+                </field>
                 <xpath expr="//button[@name='reset_expense_sheets']" position="replace">
                     <button name="reset_expense_sheets" string="Reset to Draft" type="object"
                             attrs="{'invisible': ['|', ('can_reset', '=', False), ('state', '!=', 'cancel')]}"/>
