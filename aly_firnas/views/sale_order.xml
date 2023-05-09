@@ -24,15 +24,13 @@
                            options="{'no_create': False, 'no_quick_create': False, 'no_create_edit':False}"/>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='analytic_tag_ids']" position="before">
-                    <field name="analytic_account_id" optional="show"/>
+                    <field name="analytic_account_id" attrs="{'readonly': [('state', 'in', ('sale'))]}" optional="hide"/>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='analytic_tag_ids']" position="attributes">
                     <attribute name="attrs">{'readonly': [('state', 'in', ('sale'))]}</attribute>
+                    <attribute name="optional">hide</attribute>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='name']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('state', 'in', ('sale'))]}</attribute>
-                </xpath>
-                <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='analytic_account_id']" position="attributes">
                     <attribute name="attrs">{'readonly': [('state', 'in', ('sale'))]}</attribute>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='price_unit']" position="attributes">
