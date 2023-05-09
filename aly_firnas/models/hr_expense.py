@@ -565,9 +565,9 @@ class HRExpense(models.Model):
                     done += moves.create(template)
                     move_ids = done._action_confirm()
                     move_ids._action_assign()
-                self.state = 'received'
-            else:
-                self.state = 'draft'
+                    self.state = 'received'
+                else:
+                    self.state = 'draft'
 
     def action_view_picking_delivery(self):
         action = self.env.ref('stock.action_picking_tree_all').read()[0]

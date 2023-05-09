@@ -14,9 +14,6 @@
                     <a t-if="expense_request" t-attf-href="/my/expenses?{{ keep_query() }}">Expense Requests</a>
                     <t t-else="">Expense Requests</t>
                 </li>
-                <li t-if="expense_request" class="breadcrumb-item active">
-                    <t t-esc="expense_request.name"/>
-                </li>
             </xpath>
         </template>
 
@@ -27,9 +24,6 @@
                     t-attf-class="breadcrumb-item #{'active ' if not expense_report else ''}">
                     <a t-if="expense_report" t-attf-href="/my/expenses_reports?{{ keep_query() }}">Expenses Reports</a>
                     <t t-else="">Expense Reports</t>
-                </li>
-                <li t-if="expense_report" class="breadcrumb-item active">
-                    <t t-esc="expense_report.name"/>
                 </li>
             </xpath>
         </template>

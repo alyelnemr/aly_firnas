@@ -8,10 +8,15 @@ from odoo.addons.web.controllers.main import Binary
 from odoo.tools import image_process
 from odoo import http, _, fields
 from odoo.http import request
-from datetime import datetime, timedelta
-from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager, get_records_pager
+from datetime import datetime
+from odoo.osv.expression import OR
+from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager
 from odoo.tools import float_compare, DEFAULT_SERVER_DATE_FORMAT
 from collections import OrderedDict
+from odoo.tools import groupby as groupbyelem
+from operator import itemgetter
+from collections import OrderedDict
+from odoo.exceptions import ValidationError
 
 
 class CustomerPortal(CustomerPortal):
@@ -63,10 +68,12 @@ class CustomerPortal(CustomerPortal):
         return values
 
     @http.route(['/my/expenses', '/my/expenses/page/<int:page>'], type='http', auth="user", website=True)
-    def portal_my_expense_requests(self, page=1, sortby=None, filterby=None, **kw):
+    def portal_my_expense_requests(self, page=1, date=None, sortby=None, filterby=None, search=None,
+                                     search_in='name', groupby='none', **kw):
         if not request.env.user.has_group('aly_firnas.group_employee_expense_portal') and not request.env.user.has_group('aly_firnas.group_employee_expense_manager_portal'):
             return request.render("aly_firnas.not_allowed_expense_request")
 
+        # content according to pager and archive selected
         response = super(CustomerPortal, self)
         values = self._prepare_portal_layout_values()
         expenses_obj = request.env['hr.expense']
@@ -81,16 +88,73 @@ class CustomerPortal(CustomerPortal):
             else:
                 domain = [('employee_id', '=', False)]
 
-        searchbar_filters = {
-            'all': {'label': _('All'), 'domain': domain},
+        sortings = {
+            'date': {'label': _('Date'), 'order': 'date desc'},
+            'name': {'label': _('Description'), 'order': 'name'},
+            'project_id': {'label': _('Project'), 'order': 'project_id'},
+            'product_id': {'label': _('Product'), 'order': 'product_id'},
+            'employee_id': {'label': _('Employee'), 'order': 'employee_id'},
         }
-        for company in request.env.user.company_ids:
-            searchbar_filters.update({
-                str(company.id): {'label': company.name, 'domain': domain + [('company_id', '=', company.id)]}
-            })
+
+        searchbar_filters = {
+            '1all': {'label': _('All'), 'domain': domain},
+            '2draft': {'label': _('Draft'), 'domain': domain + [('state', '=', 'draft')]},
+            '3received': {'label': _('Receiving'), 'domain': domain + [('state', '=', 'received')]},
+            '4to_submit': {'label': _('To Submit'), 'domain': domain + [('state', '=', 'to_submit')]},
+            '5reported': {'label': _('Submitted'), 'domain': domain + [('state', '=', 'reported')]},
+            '6approved': {'label': _('Approved'), 'domain': domain + [('state', '=', 'approved')]},
+            '7done': {'label': _('Paid'), 'domain': domain + [('state', '=', 'done')]},
+            '8refused': {'label': _('Refused'), 'domain': domain + [('state', '=', 'refused')]},
+            '9cancel': {'label': _('Cancelled'), 'domain': domain + [('state', '=', 'cancel')]},
+        }
+
+
+        searchbar_inputs = {
+            'name': {'input': 'name', 'label': _('Search in Description')},
+            'project': {'input': 'project', 'label': _('Search in Projects')},
+            'product': {'input': 'product', 'label': _('Search in Products')},
+            'employee': {'input': 'employee', 'label': _('Search in Employees')},
+            'date': {'input': 'date', 'label': _('Search by Date')},
+        }
+        searchbar_groupby = {
+            'none': {'input': 'none', 'label': _('None')},
+            'project': {'input': 'project', 'label': _('Project')},
+            'employee': {'input': 'employee', 'label': _('Employee')},
+            'product': {'input': 'product', 'label': _('Product')},
+            'company': {'input': 'company', 'label': _('Company')},
+        }
+        # for company in request.env.user.company_ids:
+        #     searchbar_filters.update({
+        #         str(company.id): {'label': company.name, 'domain': domain + [('company_id', '=', company.id)]}
+        #     })
+
+        # default sortby order
+        if not sortby:
+            sortby = 'date'
+        order = sortings[sortby]['order']
+
         if not filterby:
-            filterby = 'all'
+            filterby = '1all'
         domain = searchbar_filters[filterby]['domain']
+
+        if date:
+            domain += [('date', '>', date)]
+
+        # search
+        if search and search_in:
+            search_domain = []
+            if search_in in ('name', 'all'):
+                search_domain = OR([search_domain, [('name', 'ilike', search)]])
+            if search_in in ('project', 'all'):
+                search_domain = OR([search_domain, [('project_id.name', 'ilike', search)]])
+            if search_in in ('product', 'all'):
+                search_domain = OR([search_domain, [('product_id.name', 'ilike', search)]])
+            if search_in in ('employee', 'all'):
+                search_domain = OR([search_domain, [('employee_id.name', 'ilike', search)]])
+            if search_in in ('date', 'all'):
+                search_domain = OR([search_domain, [('date', 'ilike', search)]])
+            domain += search_domain
+
         # count for pager
         expenses_count = expenses_obj.sudo().search_count(domain)
 
@@ -103,27 +167,43 @@ class CustomerPortal(CustomerPortal):
             page=page,
             step=self._items_per_page
         )
-
-        sortings = {
-            'date': {'label': _('Date'), 'order': 'date desc'},
-            'name': {'label': _('Description'), 'order': 'name'},
-            'stage': {'label': _('Stage'), 'order': 'state'},
-        }
-        # default sortby order
-        if not sortby:
-            sortby = 'date'
-        order = sortings[sortby]['order']
-
         # content according to pager and archive selected
+        if groupby == 'project':
+            order = "project_id, %s" % order  # force sort on project first to group by project in view
+
+
         expenses = expenses_obj.sudo().search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
+
+
+        if groupby == 'project':
+            grouped_expenses = [request.env['hr.expense'].concat(*g) for k, g in
+                                  groupbyelem(expenses, itemgetter('project_id'))]
+        elif groupby == 'product':
+            grouped_expenses = [request.env['hr.expense'].concat(*g) for k, g in
+                                groupbyelem(expenses, itemgetter('product_id'))]
+        elif groupby == 'employee':
+            grouped_expenses = [request.env['hr.expense'].concat(*g) for k, g in
+                                groupbyelem(expenses, itemgetter('employee_id'))]
+        elif groupby == 'company':
+            grouped_expenses = [request.env['hr.expense'].concat(*g) for k, g in
+                                groupbyelem(expenses, itemgetter('company_id'))]
+        else:
+            grouped_expenses = [expenses]
+
         values.update({
             'expenses': expenses,
             'page_name': 'expenses',
             'pager': pager,
-            'searchbar_filters': OrderedDict(sorted(searchbar_filters.items())),
-            'filterby': filterby,
             'searchbar_sortings': sortings,
             'sortby': sortby,
+            'date': date,
+            'grouped_expenses': grouped_expenses,
+            'searchbar_groupby': searchbar_groupby,
+            'searchbar_inputs': searchbar_inputs,
+            'search_in': search_in,
+            'groupby': groupby,
+            'searchbar_filters': OrderedDict(sorted(searchbar_filters.items())),
+            'filterby': filterby,
             'default_url': '/my/expenses',
         })
         return request.render("aly_firnas.display_expense_requests", values)
@@ -351,7 +431,7 @@ class CustomerPortal(CustomerPortal):
         expenses_to_be_added = expenses_obj.sudo().search(
             ['|', ('employee_id', '=', employee.id), ('employee_id.parent_id', '=', employee.id),
              ('state', '=', 'draft'),
-             ('company_id', '=', company_id.id),
+             # ('company_id', '=', company_id.id),
              ('sheet_id', '=', False)])
 
         default_managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
@@ -822,6 +902,8 @@ class CustomerPortal(CustomerPortal):
 
         created_request = False
         try:
+            if not list_all:
+                raise ValidationError(_("Please select at least one expense."))
             vals = self._onchange_product_id(vals)
 
             if hdn_expense_id:

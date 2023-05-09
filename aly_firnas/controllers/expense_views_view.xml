@@ -156,10 +156,17 @@
                                         <label class="col-form-label" for="taxes">Taxes</label>
                                         <select multiple="multiple" class="form-control" id="tax_ids" name="tax_ids" readonly="1">
                                             <t t-foreach="tax_ids" t-as="tax">
-                                                <option t-att-value="tax.id"
-                                                        t-att-selected="tax.id == expense_sudo.tax_ids[0].id">
-                                                    <t t-esc="tax.sudo().display_name"/>
-                                                </option>
+                                                <t t-if="expense_sudo.tax_ids">
+                                                    <option t-att-value="tax.id"
+                                                            t-att-selected="tax.id == expense_sudo.tax_ids[0].id">
+                                                        <t t-esc="tax.sudo().display_name"/>
+                                                    </option>
+                                                </t>
+                                                <t t-else="">
+                                                    <option t-att-value="tax.id">
+                                                        <t t-esc="tax.sudo().display_name"/>
+                                                    </option>
+                                                </t>
                                             </t>
                                         </select>
                                     </div>
