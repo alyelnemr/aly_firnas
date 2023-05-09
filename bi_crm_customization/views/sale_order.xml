@@ -63,12 +63,12 @@
                         </group>
                         <group>
                             <group>
-                                <field name="is_print_payment_schedule" nolabel="1" />
-                                <field name="standard_payment_schedule" />
+                                <field name="is_print_payment_schedule" />
+                                <field name="standard_payment_schedule" nolabel="1" />
                             </group>
                             <group>
-                                <field name="is_print_terms_and_conditions" nolabel="1" />
-                                <field name="terms_and_conditions" />
+                                <field name="is_print_terms_and_conditions" />
+                                <field name="terms_and_conditions" nolabel="1" />
                             </group>
                         </group>
                         <group>

@@ -46,7 +46,7 @@
                     <attribute name="optional">show</attribute>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="attributes">
-                    <attribute name="optional">show</attribute>
+                    <attribute name="optional">hide</attribute>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
                     <field name="item_price" string="Total Price" optional="show"/>
@@ -67,7 +67,7 @@
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_unit']"
                        position="after">
-                    <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line" optional="show"
+                    <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line" optional="hide"
                     attrs="{'readonly': [('state', 'in', ('sale'))]}"/>
                 </xpath>
             </field>

@@ -30,6 +30,12 @@
                     <attribute name="attrs">{'readonly': [('state', 'in', ('sale'))]}</attribute>
                     <attribute name="optional">hide</attribute>
                 </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='product_packaging']" position="attributes">
+                    <attribute name="optional">hide</attribute>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='tax_id']" position="attributes">
+                    <attribute name="optional">hide</attribute>
+                </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='name']" position="attributes">
                     <attribute name="attrs">{'readonly': [('state', 'in', ('sale'))]}</attribute>
                 </xpath>
