@@ -98,8 +98,8 @@ class SaleOrderCRMInherit(models.Model):
     file_name = fields.Char(string="Document/File  Name (Footer)")
     standard_payment_schedule = fields.Html(string="Standard Payment Schedule", default=_set_default_standard_payment)
     terms_and_conditions = fields.Html(string="Terms And Conditions", default=_set_default_terms_conditions)
-    is_print_payment_schedule = fields.Boolean('Print Standard Payment Schedule', default=True, readonly=False)
-    is_print_terms_and_conditions = fields.Boolean('Print Terms And Conditions', default=True, readonly=False)
+    is_print_payment_schedule = fields.Boolean('Standard Payment Schedule', default=True, readonly=False)
+    is_print_terms_and_conditions = fields.Boolean('Terms And Conditions', default=True, readonly=False)
 
     serial_num = fields.Char(string="Serial Number")
     project_number = fields.Char(string="Project Number", store=True, readonly=True)
