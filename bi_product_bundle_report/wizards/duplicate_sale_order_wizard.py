@@ -50,6 +50,8 @@ class DuplicateSalesOrderWizard(models.TransientModel):
                 'project_name': self.wizard_opportunity_id.project_name,
                 'forecast': self.wizard_opportunity_id.forecast,
                 'project_number': self.wizard_opportunity_id.project_num,
+                'document_name': self.wizard_opportunity_id.document_name,
+                'file_name': self.wizard_opportunity_id.file_name,
                 'proposals_engineer_id': self.wizard_opportunity_id.proposals_engineer_id.id,
                 'type_custom': self.wizard_opportunity_id.type_custom.id,
                 'type_custom_ids': self.wizard_opportunity_id.type_custom_ids.ids,
