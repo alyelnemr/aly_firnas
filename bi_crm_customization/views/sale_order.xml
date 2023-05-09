@@ -12,6 +12,8 @@
                 </xpath>
                 <xpath expr="//field[@name='pricelist_id']" position="replace">
                 </xpath>
+                <xpath expr="//field[@name='financial_proposal_title']" position="replace">
+                </xpath>
                 <xpath expr="//field[@name='payment_term_id']" position="replace">
                     <field name="payment_term_id" options="{'no_open':True,'no_create': True}"/>
                     <field name="pricelist_id" groups="product.group_product_pricelist" options="{'no_open':True,'no_create': True}"/>
@@ -31,7 +33,7 @@
                 </xpath>
                 <xpath expr="//field[@name='validity_date']" position="replace">
                     <field name="date_order" attrs="{'required': [('state', 'in', ['sale', 'done'])], 'invisible': [('state', 'in', ['draft', 'sent'])]}" nolabel="1"/>
-                    <field name="validity_date" attrs="{'invisible': [('state', 'in', ['sale', 'done'])]}"/>
+                    <field name="validity_date" />
                 </xpath>
                 <xpath expr="//field[@name='client_order_ref']" position="replace">
                 </xpath>
