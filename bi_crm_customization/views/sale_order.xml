@@ -12,8 +12,6 @@
                 </xpath>
                 <xpath expr="//field[@name='pricelist_id']" position="replace">
                 </xpath>
-                <xpath expr="//field[@name='financial_proposal_title']" position="replace">
-                </xpath>
                 <xpath expr="//field[@name='payment_term_id']" position="replace">
                     <field name="payment_term_id" options="{'no_open':True,'no_create': True}"/>
                     <field name="pricelist_id" groups="product.group_product_pricelist" options="{'no_open':True,'no_create': True}"/>
