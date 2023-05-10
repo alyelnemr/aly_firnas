@@ -124,7 +124,7 @@
                     <attribute name="optional">show</attribute>
                 </xpath>
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="before">
-                    <field name="is_printed" force_save="1"/>
+                    <field name="is_printed" optional="hide" force_save="1"/>
                     <field name="line_rank" string="Sn" width="12px" readonly="1" optional="show"/>
                 </xpath>
                 <xpath expr="//field[@name='line_ids']/tree/field[@name='product_id']" position="before">
