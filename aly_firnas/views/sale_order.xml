@@ -6,13 +6,54 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <field name="opportunity_id" invisible="1"/>
+                    <button class="oe_stat_button o_res_partner_tip_opp" type="object"
+                            name="action_view_opportunity"
+                            icon="fa-star" attrs="{'invisible': [('opportunity_id', '=', False)]}"
+                            context="{'default_partner_id': active_id}">
+                        <span>Opportunities</span>
+                    </button>
+                </xpath>
+                <xpath expr="//header/field[@name='state']" position="before">
+                    <button name="print_bundled_quotation" type="object" string="Print Bundled"
+                            class="oe_highlight" invisible="1"/>
+                </xpath>
+                <xpath expr="//group/group[2]" position="inside">
+<!--                    <field name="split_page"/>-->
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="before">
+                    <field name="is_printed" context="{'changed_id': id}" optional="show"/>
+                    <field name="is_offer_product" invisible="1"/>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_uom']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'in', ('sale','done', 'cancel'))], 'required': False}</attribute>
+                    <attribute name="optional">show</attribute>
+                </xpath>
                 <xpath expr="//group/group/field[@name='analytic_account_id']" position="replace">
                 </xpath>
-                <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
-                    <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}</attribute>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="attributes">
+                    <attribute name="optional">hide</attribute>
                 </xpath>
-                <xpath expr="//field[@name='order_line']/tree/field[@name='product_uom']" position="attributes">
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
+                    <field name="item_price" string="Total Price" optional="show"/>
+                    <field name="internal_notes" optional="show"/>
+                    <field name="parent_order_line" invisible="1"/>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
                     <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}</attribute>
+                    <attribute name="optional">show</attribute>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="before">
+                    <field name="section" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}" optional="show"/>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='customer_lead']" position="replace">
+                </xpath>
+
+
+
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_packaging']" position="attributes">
+                    <attribute name="optional">hide</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='partner_shipping_id']" position="after">
@@ -38,6 +79,7 @@
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='price_unit']" position="attributes">
                     <attribute name="attrs">{'readonly': [('state', 'in', ('sale'))]}</attribute>
+                    <attribute name="optional">show</attribute>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='tax_id']" position="attributes">
                     <attribute name="attrs">{'readonly': [('state', 'in', ('sale'))]}</attribute>
@@ -45,6 +87,20 @@
                 <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='product_uom_qty']" position="attributes">
                     <attribute name="attrs">{'readonly': [('state', 'in', ('sale'))]}</attribute>
                     <attribute name="optional">hide</attribute>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='discount']" position="replace">
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_unit']"
+                       position="after">
+                    <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line" optional="hide"
+                    attrs="{'readonly': [('state', 'in', ('sale'))]}"/>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_uom_qty']" position="before">
+                    <field
+                            name="customer_lead"
+                            optional="hide"
+                            attrs="{'readonly': [('parent.state', 'not in', ['draft', 'sent'])]}"
+                    />
                 </xpath>
             </field>
         </record>
