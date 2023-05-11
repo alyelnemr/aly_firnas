@@ -58,6 +58,7 @@
                                     <field name="sub_date" required="1"/>
                                     <field name="sub_type"/>
                                     <field name="actual_sub_date"/>
+                                    <field name="deadline_for_amendment"/>
                                     <field name="latest_proposal_submission_date"/>
                                     <field name="result_date" />
                                     <field name="contract_signature_date"/>

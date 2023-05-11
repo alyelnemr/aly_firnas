@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="assets_frontend" inherit_id="web.assets_frontend">
+            <xpath expr="script[last()]" position="after">
+                <script type="text/javascript" src="/aly_firnas/static/src/js/website_expense.js"></script>
+            </xpath>
+        </template>
+        <template id="portal_my_home_menu_expense" name="Portal layout : expense menu entries"
+                  inherit_id="portal.portal_breadcrumbs" priority="25">
+            <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+                <li t-if="page_name == 'expenses' or expense_request"
+                    t-attf-class="breadcrumb-item #{'active ' if not expense_request else ''}">
+                    <a t-if="expense_request" t-attf-href="/my/expenses?{{ keep_query() }}">Expense Requests</a>
+                    <t t-else="">Expense Requests</t>
+                </li>
+            </xpath>
+        </template>
+
+        <template id="portal_my_home_menu_expense_report" name="Portal layout : expense report menu entries"
+                  inherit_id="portal.portal_breadcrumbs" priority="25">
+            <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+                <li t-if="page_name == 'expenses_reports' or expense_report"
+                    t-attf-class="breadcrumb-item #{'active ' if not expense_report else ''}">
+                    <a t-if="expense_report" t-attf-href="/my/expenses_reports?{{ keep_query() }}">Expenses Reports</a>
+                    <t t-else="">Expense Reports</t>
+                </li>
+            </xpath>
+        </template>
+
+        <template id="portal_my_expense_request" name="Portal My Expense Request: Request Entries"
+                  inherit_id="portal.portal_my_home" priority="3">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                <t t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('aly_firnas.group_employee_expense_portal') or request.env['res.users'].browse(request.session.uid).user_has_groups('aly_firnas.group_employee_expense_manager_portal')">
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="title">Expense Requests</t>
+                        <t t-set="url" t-value="'/my/expenses'"/>
+                        <t t-set="count" t-value="expenses_count"/>
+                    </t>
+                </t>
+                <t t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('aly_firnas.group_employee_expense_portal') or request.env['res.users'].browse(request.session.uid).user_has_groups('aly_firnas.group_employee_expense_manager_portal')">
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="title">Expense Reports</t>
+                        <t t-set="url" t-value="'/my/expenses_reports'"/>
+                        <t t-set="count" t-value="expenses_reports_count"/>
+                    </t>
+                </t>
+            </xpath>
+        </template>
+
+        <template id="not_allowed_expense_request" name="Access Denied">
+            <t t-call="portal.portal_layout">
+                <div id="wrap">
+                    <div class="oe_structure"/>
+                    <div class="container">
+                        <h1>You are not allowed to access this document.</h1>
+                        <div>
+                            <a t-attf-href="/my/home" class="btn btn-lg btn-primary">
+                                Back
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </t>
+        </template>
+
+        <template id="thankyou_page">
+            <t t-call="portal.portal_layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h1 class="text-center">Done!</h1>
+                                    <p class="text-center">
+                                        Your request has been <b>created</b> successfully.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <template id="thankyou_report_page">
+            <t t-call="portal.portal_layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h1 class="text-center">Done!</h1>
+                                    <p class="text-center">
+                                        Your report has been <b>created</b> successfully.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <template id="delete_page">
+            <t t-call="portal.portal_layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h1 class="text-center">Done!</h1>
+                                    <p class="text-center">
+                                        Your request has been <b>deleted</b> successfully.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <template id="edit_page">
+            <t t-call="portal.portal_layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h1 class="text-center">Done!</h1>
+                                    <p class="text-center">
+                                        Your request has been <b>edited</b> successfully.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <template id="edit_report_page">
+            <t t-call="portal.portal_layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h1 class="text-center">Done!</h1>
+                                    <p class="text-center">
+                                        Your report has been <b>edited</b> successfully.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</odoo>
+

@@ -26,6 +26,7 @@ class Lead2OpportunityPartner(models.TransientModel):
     start_date = fields.Date(string="Request Date")
     sub_date = fields.Datetime(string="Submission Deadline")
     actual_sub_date = fields.Date(string="Actual Submission Date")
+    deadline_for_amendment = fields.Date(string="Deadline for Amendment")
     sub_type = fields.Many2one('project.submission', string="Submission Type")
     # source = fields.Char(string="Source")
     fund = fields.Many2one('project.fund', string="Funding")

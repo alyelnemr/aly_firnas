@@ -79,22 +79,13 @@ class HrExpenseSheet(models.Model):
         self.write({'state': 'cancel'})
         return True
 
-
     def approve_expense_sheets(self):
         if self.user_id.id != self.env.user.id:
             raise UserError(_("You are not allowed to approve these expenses"))
-        if not self.user_has_groups('hr_expense.group_hr_expense_team_approver'):
-            raise UserError(_("Only Managers and HR Officers can approve expenses"))
-        elif not self.user_has_groups('hr_expense.group_hr_expense_manager'):
-            current_managers = self.employee_id.expense_manager_id | self.employee_id.parent_id.user_id | self.employee_id.department_id.manager_id.user_id
-
-            if self.employee_id.user_id == self.env.user:
-                raise UserError(_("You cannot approve your own expenses"))
-
-            if not self.env.user in current_managers and not self.user_has_groups(
-                    'hr_expense.group_hr_expense_user') and self.employee_id.expense_manager_id != self.env.user:
-                raise UserError(_("You can only approve your department expenses"))
-
+        elif not self.env.user.expense_approve:
+            raise UserError(_("You don't have 'Expense Approve' permission to approve expenses"))
+        # elif not self.user_has_groups('aly_firnas.group_employee_expense_manager_portal'):
+        #     raise UserError(_("You are not part of 'Portal Employee Expense Manager' group to approve these expenses"))
         responsible_id = self.user_id.id or self.env.user.id
         self.write({'state': 'approve', 'user_id': responsible_id})
         self.activity_update()
@@ -138,6 +129,7 @@ class HrExpenseSheet(models.Model):
             if not rec.analytic_tag_ids and len(rec.expense_line_ids):
                 rec.analytic_tag_ids = rec.expense_line_ids[0].analytic_tag_ids
         return res
+
     def action_sheet_move_create(self):
         if any(sheet.state != 'approve' for sheet in self):
             raise UserError(_("You can only generate accounting entry for approved expense(s)."))
@@ -164,4 +156,28 @@ class HrExpenseSheet(models.Model):
             self.write({'state': 'done'})
         self.activity_update()
         return res
+
+    def action_submit_sheet(self):
+        for exp in self:
+            if not exp.user_id:
+                raise UserError(_("You cannot submit report with no manager selected."))
+        self.write({'state': 'submit'})
+        self.activity_update()
+
+    def refuse_sheet(self, reason):
+        if not self.user_has_groups('hr_expense.group_hr_expense_team_approver'):
+            raise UserError(_("Only Managers and HR Officers can approve expenses"))
+        elif not self.user_has_groups('hr_expense.group_hr_expense_manager'):
+            current_managers = self.employee_id.expense_manager_id | self.employee_id.parent_id.user_id | self.employee_id.department_id.manager_id.user_id
+
+            if self.employee_id.user_id == self.env.user:
+                raise UserError(_("You cannot refuse your own expenses"))
+
+            if not self.env.user in current_managers and not self.user_has_groups('hr_expense.group_hr_expense_user') and self.employee_id.expense_manager_id != self.env.user:
+                raise UserError(_("You can only refuse your department expenses"))
+
+        self.write({'state': 'refused'})
+        for sheet in self:
+            sheet.message_post_with_view('hr_expense.hr_expense_template_refuse_reason', values={'reason': reason, 'is_sheet': True, 'name': self.name})
+        self.activity_update()
 

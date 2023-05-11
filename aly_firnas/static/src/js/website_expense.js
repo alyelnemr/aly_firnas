@@ -14,6 +14,7 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
     events:{
         'change select[name="company_id"]': '_onChangeCurrency',
         'change select[name="partner_id"]': '_onChangeVendor',
+        'change input[name="to_select_all"]': '_onChangeSelectAll',
         'change input[name="name"]': '_onChangeDescription',
         'change select[name="project_id"]': '_onChangeProject',
         'change select[name="product_id"]': '_onChangeProduct',
@@ -30,10 +31,12 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
      */
     init: function () {
         this._super.apply(this, arguments);
+        this._changeCompanyForExpenseReport = _.debounce(this._changeCompanyForExpenseReport.bind(this), 500);
         this._changeCompany = _.debounce(this._changeCompany.bind(this), 500);
         this._changeVendor = _.debounce(this._changeVendor.bind(this), 500);
         this._changeProject = _.debounce(this._changeProject.bind(this), 500);
         this._changeDescription = _.debounce(this._changeDescription.bind(this), 500);
+        this._changeSelectAll = _.debounce(this._changeSelectAll.bind(this), 500);
         this._changeProduct = _.debounce(this._changeProduct.bind(this), 500);
         this._changeCurrency = _.debounce(this._changeCurrency.bind(this), 500);
         this._changePickingType = _.debounce(this._changePickingType.bind(this), 500);
@@ -141,6 +144,16 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
             }
         });
     },
+    _changeCompanyForExpenseReport: function () {
+//        var selectProducts = $("select[name='company_id']");
+//
+//        var vhref = "http://" + window.location.host + window.location.pathname + '?company=' + $("#company_id").val();
+//        alert(window.location.search);
+//        if (window.location.search === null || window.location.search === undefined || window.location.search !== '?company=' + $("#company_id").val())
+//        {
+//            $(location).prop('href', vhref);
+//        }
+    },
     _changeVendor: function () {
         this._rpc({
             route: '/expense/vendor_contacts',
@@ -172,6 +185,12 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
             } else {
                 selectVendorContacts.data('init', 0);
             }
+        });
+    },
+    _changeSelectAll: function () {
+        $("input[name='to_be_added_ids']").each(function(index){
+            alert('working.....' + $("#ch_name").prop("checked") + index.toString());
+            $(this).prop("checked", $("#ch_name").prop("checked"));
         });
     },
     _changeDescription: function () {
@@ -240,6 +259,11 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
                                                 display: "none",
                                                 visibility: "hidden"
                                               });
+                $("#div_show_location_dest_id").css(
+                    {
+                        display: "none",
+                        visibility: "hidden"
+                    });
             }
 
             // populate products and display
@@ -284,6 +308,11 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
                                                 display: "none",
                                                 visibility: "hidden"
                                               });
+                $("#div_show_location_dest_id").css(
+                {
+                    display: "none",
+                    visibility: "hidden"
+                });
             }
 
             // populate products and display
@@ -386,6 +415,12 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
         }
         this._changeDescription();
     },
+    _onChangeSelectAll: function (ev) {
+        if (!this.$('input[name="to_select_all"]').length) {
+            return;
+        }
+        this._changeSelectAll();
+    },
     _onChangeProduct: function (ev) {
         if (!this.$('select[name="product_id"]').length) {
             return;
@@ -393,10 +428,13 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
         this._changeProduct();
     },
     _onChangeCurrency: function (ev) {
-        if (!this.$('select[name="currency_id"]').length) {
-            return;
+        if (this.$('select[name="currency_id"]').length) {
+            this._changeCurrency();
         }
-        this._changeCurrency();
+        else {
+            this._changeCompanyForExpenseReport();
+        }
+
     },
     _onChangePickingType: function (ev) {
         if (!this.$('select[name="picking_type_id"]').length) {
