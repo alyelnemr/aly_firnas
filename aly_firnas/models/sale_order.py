@@ -287,7 +287,6 @@ class SaleOrder(models.Model):
                         'sub_lines': ol.get_orderline_sublines()
                     } for ol
                         in order_lines.filtered(lambda l: l.section.id == section.id and l.is_printed is True and not self.is_sub_product(l))]
-
                 }
                 # and l.bundle_status in ('bundle','bundel_of_bundle')
         return data

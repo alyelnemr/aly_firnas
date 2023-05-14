@@ -3,6 +3,7 @@
 
 from odoo import api, fields, models, _
 from odoo.tools import float_compare, float_round
+import textile
 
 
 class SaleOrderLine(models.Model):
