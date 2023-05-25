@@ -15,7 +15,7 @@
         'bi_expense_portal',
     ],
     'data': [
-        'views/website_portal_templates.xml',
+        'views/expense_views.xml',
     ],
     'installable': True,
     'auto_install': False,

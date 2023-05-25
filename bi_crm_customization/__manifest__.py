@@ -7,8 +7,8 @@
      """,
     'author': "BI Solutions Development Team",
     'category': 'CRM',
-    'version': '0.5',
-    'depends': ['base', 'crm', 'sale', 'sale_management', 'sale_crm', 'bi_crm_stage_notification'],
+    'version': '2.1',
+    'depends': ['base', 'crm', 'sale', 'sale_management', 'aly_firnas', 'sale_crm', 'bi_crm_stage_notification'],
     'data': [
         'data/service_cron.xml',
         'security/security.xml',

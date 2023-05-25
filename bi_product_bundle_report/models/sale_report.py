@@ -31,11 +31,12 @@ class SalesOrderReport(models.AbstractModel):
                 amount_tax += line.price_tax
             else:
                 amount_tax += line.price_tax
+        discount += docs.ks_amount_discount
         is_discounted = discount > 0
         is_taxed = amount_tax > 0
         is_taxed_optional = any(docs.sale_order_option_ids.filtered(lambda o: o.tax_id and not o.is_button_clicked))
         is_taxed_additional = any(docs.sale_order_additional_ids.filtered(lambda o: o.tax_id and not o.is_button_clicked))
-        amount_total = (amount_untaxed + amount_tax)
+        amount_total = (amount_untaxed + amount_tax) - docs.ks_amount_discount
         rep_pricelist = docs.pricelist_id.name if docs.pricelist_id else ''
         rep_payment_term = docs.payment_term_id.name if docs.payment_term_id else ''
         col_span = 4

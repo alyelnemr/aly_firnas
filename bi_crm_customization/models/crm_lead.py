@@ -27,6 +27,7 @@ class CRMLeadInherit(models.Model):
         res['context']['default_proposals_engineer_ids'] = self.proposals_engineer_ids.ids
         res['context']['default_document_name'] = self.proposal_subject
         res['context']['default_file_name'] = self.document_file_name
+        res['context']['default_analytic_account_id'] = self.analytic_account_id.id
         return res
 
     def _default_team_id(self, user_id):
@@ -69,6 +70,7 @@ class CRMLeadInherit(models.Model):
     start_date = fields.Date(string="Request Date", required=False)
     sub_date = fields.Datetime(string="Submission Deadline", required=False)
     actual_sub_date = fields.Date(string="Actual Submission Date")
+    deadline_for_amendment = fields.Date(string="Deadline for Amendment")
     sub_type = fields.Many2one('project.submission', string="Submission Type")
     # source = fields.Char(string="Source")
     fund = fields.Many2one('project.fund', string="Funding")
@@ -226,10 +228,15 @@ class CRMLeadInherit(models.Model):
                 'user_id': res.proposals_engineer_id.id
             })
             res.task_id = task_id.id
-            if not res.is_analytic_account_id_created and res.analytic_tag_ids_for_analytic_account:
+            if res.is_existing_opportunity:
+                parent_opp = self.env['crm.lead'].browse(vals['parent_opportunity_id'])
+                self.analytic_account_id = parent_opp.analytic_account_id.id
+                self.is_analytic_account_id_created = True
+            elif not res.is_analytic_account_id_created and res.analytic_tag_ids_for_analytic_account and not res.is_existing_opportunity:
                 analytic_account = self.env['account.analytic.account'].sudo().create({
                     'name': res.name,
                     'partner_id': res.partner_id.id,
+                    'analytic_tag_ids': res.analytic_tag_ids_for_analytic_account.ids,
                     'analytic_tag_ids': res.analytic_tag_ids_for_analytic_account.ids,
                     'company_id': False
                 })

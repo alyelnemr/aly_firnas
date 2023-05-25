@@ -7,7 +7,7 @@
      """,
     'author': "BI Solutions Development Team",
     'category': 'Tools',
-    'version': '0.1',
+    'version': '2.1',
     'depends': ['web'],
     'data': [
         'views/assets.xml'

@@ -1,4 +1,4 @@
-odoo.define('bi_expense_portal.website_expense', function (require) {
+odoo.define('aly_firnas.website_expense', function (require) {
 'use strict';
 
 var core = require('web.core');
@@ -14,6 +14,7 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
     events:{
         'change select[name="company_id"]': '_onChangeCurrency',
         'change select[name="partner_id"]': '_onChangeVendor',
+        'change input[name="to_select_all"]': '_onChangeSelectAll',
         'change input[name="name"]': '_onChangeDescription',
         'change select[name="project_id"]': '_onChangeProject',
         'change select[name="product_id"]': '_onChangeProduct',
@@ -34,6 +35,7 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
         this._changeVendor = _.debounce(this._changeVendor.bind(this), 500);
         this._changeProject = _.debounce(this._changeProject.bind(this), 500);
         this._changeDescription = _.debounce(this._changeDescription.bind(this), 500);
+        this._changeSelectAll = _.debounce(this._changeSelectAll.bind(this), 500);
         this._changeProduct = _.debounce(this._changeProduct.bind(this), 500);
         this._changeCurrency = _.debounce(this._changeCurrency.bind(this), 500);
         this._changePickingType = _.debounce(this._changePickingType.bind(this), 500);
@@ -174,6 +176,12 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
             }
         });
     },
+    _changeSelectAll: function () {
+        $("input[name='to_be_added_ids']").each(function(){
+        alert('working.....');
+            this.prop("checked", $("input[name='name']").prop("checked"));
+        });
+    },
     _changeDescription: function () {
         $("input[name='name1']").val($("input[name='name']").val());
     },
@@ -240,6 +248,11 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
                                                 display: "none",
                                                 visibility: "hidden"
                                               });
+                $("#div_show_location_dest_id").css(
+                    {
+                        display: "none",
+                        visibility: "hidden"
+                    });
             }
 
             // populate products and display
@@ -284,6 +297,11 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
                                                 display: "none",
                                                 visibility: "hidden"
                                               });
+                $("#div_show_location_dest_id").css(
+                {
+                    display: "none",
+                    visibility: "hidden"
+                });
             }
 
             // populate products and display
@@ -386,6 +404,12 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
         }
         this._changeDescription();
     },
+    _onChangeSelectAll: function (ev) {
+        if (!this.$('input[name="to_select_all"]').length) {
+            return;
+        }
+        this._changeSelectAll();
+    },
     _onChangeProduct: function (ev) {
         if (!this.$('select[name="product_id"]').length) {
             return;
@@ -393,10 +417,13 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
         this._changeProduct();
     },
     _onChangeCurrency: function (ev) {
-        if (!this.$('select[name="currency_id"]').length) {
-            return;
+        if (this.$('select[name="currency_id"]').length) {
+            this._changeCurrency();
         }
-        this._changeCurrency();
+        else {
+            this._changeCurrency();
+        }
+
     },
     _onChangePickingType: function (ev) {
         if (!this.$('select[name="picking_type_id"]').length) {

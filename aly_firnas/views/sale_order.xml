@@ -6,14 +6,51 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <field name="opportunity_id" invisible="1"/>
+                    <button class="oe_stat_button o_res_partner_tip_opp" type="object"
+                            name="action_view_opportunity"
+                            icon="fa-star" attrs="{'invisible': [('opportunity_id', '=', False)]}"
+                            context="{'default_partner_id': active_id}">
+                        <span>Opportunities</span>
+                    </button>
+                </xpath>
+                <xpath expr="//header/field[@name='state']" position="before">
+                    <button name="print_bundled_quotation" type="object" string="Print Bundled"
+                            class="oe_highlight" invisible="1"/>
+                </xpath>
+                <xpath expr="//group/group[2]" position="inside">
+<!--                    <field name="split_page"/>-->
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="before">
+                    <field name="is_printed" context="{'changed_id': id}" optional="show"/>
+                    <field name="is_offer_product" invisible="1"/>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_uom']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'in', ('sale','done', 'cancel'))], 'required': False}</attribute>
+                    <attribute name="optional">show</attribute>
+                </xpath>
                 <xpath expr="//group/group/field[@name='analytic_account_id']" position="replace">
                 </xpath>
-                <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
-                    <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}</attribute>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="attributes">
+                    <attribute name="optional">hide</attribute>
                 </xpath>
-                <xpath expr="//field[@name='order_line']/tree/field[@name='product_uom']" position="attributes">
-                    <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}</attribute>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
+                    <field name="item_price" string="Total Price" optional="show"/>
+                    <field name="internal_notes" optional="show"/>
+                    <field name="parent_order_line" invisible="1"/>
                 </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+                    <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}</attribute>
+                    <attribute name="optional">show</attribute>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="before">
+                    <field name="section" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}" optional="show"/>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='customer_lead']" position="replace">
+                </xpath>
+
+
 
                 <xpath expr="//field[@name='partner_shipping_id']" position="after">
                     <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
@@ -24,28 +61,215 @@
                            options="{'no_create': False, 'no_quick_create': False, 'no_create_edit':False}"/>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='analytic_tag_ids']" position="before">
-                    <field name="analytic_account_id" optional="show"/>
+                    <field name="analytic_account_id" attrs="{'readonly': [('state', 'in', ('sale'))]}" optional="hide"/>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='analytic_tag_ids']" position="attributes">
                     <attribute name="attrs">{'readonly': [('state', 'in', ('sale'))]}</attribute>
+                    <attribute name="optional">hide</attribute>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='tax_id']" position="attributes">
+                    <attribute name="optional">hide</attribute>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='name']" position="attributes">
                     <attribute name="attrs">{'readonly': [('state', 'in', ('sale'))]}</attribute>
                 </xpath>
-                <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='analytic_account_id']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('state', 'in', ('sale'))]}</attribute>
-                </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='price_unit']" position="attributes">
                     <attribute name="attrs">{'readonly': [('state', 'in', ('sale'))]}</attribute>
+                    <attribute name="optional">show</attribute>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='tax_id']" position="attributes">
                     <attribute name="attrs">{'readonly': [('state', 'in', ('sale'))]}</attribute>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']/tree//field[@name='product_uom_qty']" position="attributes">
                     <attribute name="attrs">{'readonly': [('state', 'in', ('sale'))]}</attribute>
+                    <attribute name="optional">hide</attribute>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='discount']" position="replace">
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_unit']"
+                       position="after">
+                    <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line" optional="hide"
+                    attrs="{'readonly': [('state', 'in', ('sale'))]}"/>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_uom_qty']" position="before">
+                    <field
+                            name="customer_lead"
+                            optional="hide"
+                            attrs="{'readonly': [('parent.state', 'not in', ['draft', 'sent'])]}"
+                    />
+                </xpath>
+            </field>
+        </record>
+        <record id="aly_view_order_form_inherit_sale_stock" model="ir.ui.view">
+            <field name="name">aly.sale.order.form.sale.stock</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_packaging']" position="attributes">
+                    <attribute name="optional">hide</attribute>
                 </xpath>
             </field>
         </record>
 
+        <record id="inherit_view_sale_order_add_section_fields" model="ir.ui.view">
+            <field name="name">inherit.view.sale.order.add.section.fields</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_management.sale_order_form_quote"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='optional_products']" position="attributes">
+                    <attribute name="attrs">
+                        {'invisible': False}
+                    </attribute>
+                </xpath>
+                <xpath expr="//page[@name='optional_products']" position="before">
+                    <page string="Additional Products" name="additional">
+                        <field name="sale_order_additional_ids" mode="tree,form,kanban">
+                            <form string="Additional Products">
+                                <group>
+                                    <field name="product_id"
+                                           domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"/>
+                                    <field name="name"/>
+                                    <field name="quantity"/>
+                                    <field name="product_uom_category_id" invisible="1"/>
+                                    <field name="uom_id" groups="uom.group_uom"/>
+                                    <field name="price_unit"/>
+                                    <field name="discount" groups="product.group_discount_per_so_line"/>
+                                    <field name="price_note"/>
+                                    <field name="is_present"/>
+                                </group>
+                            </form>
+                            <kanban class="o_kanban_mobile">
+                                <field name="product_id"/>
+                                <field name="quantity"/>
+                                <field name="uom_id" groups="uom.group_uom"/>
+                                <field name="price_unit"/>
+                                <field name="is_present"/>
+                                <templates>
+                                    <t t-name="kanban-box">
+                                        <div class="oe_kanban_card oe_kanban_global_click">
+                                            <div class="row">
+                                                <div class="col-10">
+                                                    <strong>
+                                                        <span>
+                                                            <t t-esc="record.product_id.value"/>
+                                                        </span>
+                                                    </strong>
+                                                </div>
+                                                <div class="col-2">
+                                                    <button name="button_add_to_order"
+                                                            class="btn btn-link oe_link fa fa-shopping-cart"
+                                                            title="Add to order lines" type="object"
+                                                            attrs="{'invisible': [('is_present', '=', True)]}"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 text-muted">
+                                                    <span>
+                                                        Quantity:
+                                                        <t t-esc="record.quantity.value"/>
+                                                        <t t-esc="record.uom_id.value"/>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 text-muted">
+                                                    <span>
+                                                        Unit Price:
+                                                        <t t-esc="record.price_unit.value"/>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </templates>
+                            </kanban>
+                            <tree string="Sales Additional Lines" editable="bottom"
+                                  delete="true"
+                                  decoration-success="is_present == True">
+                                <control>
+                                    <create name="add_product_control" string="Add a product"/>
+                                </control>
+                                <field name="sequence" widget="handle"
+                                       attrs="{'readonly': [('state', 'not in', ['draft', 'sent', 'sale'])]}"
+                                />
+                                <field name="section" optional="show"
+                                       attrs="{'readonly': [('state', 'in', ['sale'])]}"/>
+                                <field name="product_id" optional="show"
+                                       domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
+                                       options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"
+                                       attrs="{'readonly': [('state', 'in', ['sale'])]}"
+                                />
+                                <field name="name" optional="show" attrs="{'readonly': [('state', 'in', ['sale'])]}"/>
+                                <field name="quantity" optional="show" attrs="{'readonly': [('state', 'in', ['sale'])]}"/>
+                                <field name="uom_id" string="UoM" groups="uom.group_uom" optional="show"
+                                       attrs="{'readonly': [('state', 'in', ['sale'])]}"/>
+                                <field name="product_uom_category_id" invisible="1"/>
+                                <field name="price_unit" optional="show" attrs="{'readonly': [('state', 'in', ['sale'])]}"/>
+                                <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line"
+                                       attrs="{'readonly': [('state', 'in', ['sale'])]}"
+                                       optional="show"/>
+                                <field name="tax_id" widget="many2many_tags" options="{'no_create': True}"
+                                       domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]"
+                                       attrs="{'readonly': [('state', 'in', ['sale'])]}"
+                                       optional="show"/>
+                                <field name="price_total" widget="monetary" optional="show"
+                                       attrs="{'readonly': [('state', 'in', ['sale'])]}"/>
+                                <field name="price_note" optional="show" attrs="{'readonly': [('state', 'in', ['sale'])]}"/>
+                                <field name="internal_notes" optional="show"/>
+                                <field name="is_present" invisible="1"/>
+                                <field name="line_id" invisible="1"/>
+                                <field name="state" invisible="1"/>
+                                <button name="button_add_to_order" class="oe_link" icon="fa-shopping-cart"
+                                        title="Add to order lines" type="object"
+                                        attrs="{'invisible': [('is_present', '=', True)]}"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+
+                <xpath expr="//field[@name='sale_order_option_ids']/tree" position="replace">
+
+                    <tree string="Sales Optional Lines" editable="bottom" decoration-success="is_present == True">
+                        <control>
+                            <create name="add_product_control" string="Add a product"/>
+                        </control>
+                        <field name="sequence" widget="handle"
+                               attrs="{'readonly': [('state', 'not in', ['draft', 'sent', 'sale'])]}"
+                        />
+                        <field name="section" optional="show" attrs="{'readonly': [('state', 'in', ('sale'))]}"/>
+                        <field name="product_id" optional="show"
+                               domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
+                               options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"
+                               attrs="{'readonly': [('state', 'in', ('sale'))]}"
+                        />
+                        <field name="name" optional="show" attrs="{'readonly': [('state', 'in', ('sale'))]}"/>
+                        <field name="quantity" optional="show" attrs="{'readonly': [('state', 'in', ('sale'))]}"/>
+                        <field name="uom_id" string="UoM" groups="uom.group_uom" optional="show"
+                               attrs="{'readonly': [('state', 'in', ['sale'])]}"
+                        />
+                        <field name="product_uom_category_id" invisible="1"/>
+                        <field name="price_unit" optional="show" attrs="{'readonly': [('state', 'in', ('sale'))]}"/>
+                        <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line"
+                               optional="show" attrs="{'readonly': [('state', 'in', ('sale'))]}"
+                        />
+                        <field name="tax_id" widget="many2many_tags" options="{'no_create': True}"
+                               domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]"
+                               attrs="{'readonly': [('state', 'in', ('sale'))]}"
+                               optional="show"/>
+                        <field name="price_total" widget="monetary" optional="show"
+                               attrs="{'readonly': [('state', 'in', ('sale'))]}"
+                        />
+                        <field name="price_note" optional="show" attrs="{'readonly': [('state', 'in', ('sale'))]}"/>
+                        <field name="internal_notes" optional="show"/>
+                        <field name="is_present" invisible="1"/>
+                        <field name="line_id" invisible="1"/>
+                        <field name="state" invisible="1"/>
+                        <button name="button_add_to_order" class="oe_link" icon="fa-shopping-cart" title="Add to order lines"
+                                type="object" attrs="{'invisible': [('is_present', '=', True)]}"/>
+                    </tree>
+                </xpath>
+
+            </field>
+        </record>
     </data>
 </odoo>

@@ -19,7 +19,7 @@
     'data': [
       'security/security.xml',
       'security/ir.model.access.csv',
-      'views/website_portal_templates.xml',
+      'views/expense_views.xml',
      ],
     'installable': True,
     'application': False,

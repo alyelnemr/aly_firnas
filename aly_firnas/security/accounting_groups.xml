@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="aly_account_group_account_manager" model="res.groups">
+            <field name="name">Advisor For Current Company only</field>
+            <field name="implied_ids" eval="[(3, ref('account.group_account_invoice')), (4, ref('account.group_account_user'))]"/>
+            <field name="category_id" ref="base.module_category_accounting_accounting"/>
+            <field name="domain_force">[('company_id', '=', user.company_id.id)]</field>
+        </record>
+
+        <record id="aly_accountant_only_main_company_rule" model="ir.rule">
+            <field name="name">Main Company only for accounting Records</field>
+            <field ref="account.model_account_move" name="model_id"/>
+            <field name="domain_force">[('company_id', '=', user.company_id.id)]</field>
+            <field name="groups" eval="[(4, ref('aly_pharmacy.aly_group_pharmacy'))]"/>
+        </record>
+
+        <record id="medical_all_pharmacy_rule" model="ir.rule">
+            <field name="name">All Pharmacy for Managers</field>
+            <field ref="model_pharmacy_invoice" name="model_id"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="groups" eval="[(4, ref('aly_basic_hms.aly_group_medical_manager'))]"/>
+        </record>
+
+    </data>
+</odoo>

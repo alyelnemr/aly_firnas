@@ -7,7 +7,7 @@
      """,
     'author': "BI Solutions Development Team",
     'category': 'Sale',
-    'version': '0.1',
+    'version': '0.2',
     'depends': ['base', 'sale', 'sale_management', 'hr_payroll', 'crm', 'project', 'account_accountant', 'hr',
                 'sale_crm', 'bi_status_of_project'],
     'data': [

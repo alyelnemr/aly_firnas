@@ -8,20 +8,26 @@ from odoo.addons.web.controllers.main import Binary
 from odoo.tools import image_process
 from odoo import http, _, fields
 from odoo.http import request
-from datetime import datetime, timedelta
-from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager, get_records_pager
+from datetime import datetime
+from odoo.osv.expression import OR
+from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager
 from odoo.tools import float_compare, DEFAULT_SERVER_DATE_FORMAT
 from collections import OrderedDict
+from odoo.tools import groupby as groupbyelem
+from operator import itemgetter
+from collections import OrderedDict
+from odoo.exceptions import ValidationError
 
 
 class CustomerPortal(CustomerPortal):
+
 
     def _prepare_portal_layout_values(self):
         values = super(CustomerPortal, self)._prepare_portal_layout_values()
         employee = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)], limit=1)
         expenses_obj = request.env['hr.expense']
         expenses_reports_obj = request.env['hr.expense.sheet']
-        if request.env.user.has_group('bi_expense_portal.group_employee_expense_manager_portal'):
+        if request.env.user.has_group('aly_firnas.group_employee_expense_manager_portal'):
             expenses_count = expenses_obj.sudo().search_count([])
             expenses_reports_count = expenses_obj.sudo().search_count([])
         else:
@@ -40,8 +46,9 @@ class CustomerPortal(CustomerPortal):
                 'company_account': 'Company',
             },
             'request_states': {
-                'draft': 'To Submit',
-                'received': 'Received',
+                'draft': 'Draft',
+                'received': 'Receiving',
+                'to_submit': 'To Submit',
                 'reported': 'Submitted',
                 'approved': 'Approved',
                 'done': 'Paid',
@@ -49,29 +56,31 @@ class CustomerPortal(CustomerPortal):
                 'cancel': 'Cancelled',
             },
             'report_states': {
-                'draft': 'Draft',
-                'received': 'Received',
+                'draft': 'To Submit',
                 'submit': 'Submitted',
-                'post': 'Posted',
                 'approve': 'Approved',
+                'post': 'Posted',
                 'done': 'Paid',
-                'cancel': 'Refused',
+                'refused': 'Refused',
+                'cancel': 'Cancelled',
             },
         })
         return values
 
     @http.route(['/my/expenses', '/my/expenses/page/<int:page>'], type='http', auth="user", website=True)
-    def portal_my_expense_requests(self, page=1, sortby=None, filterby=None, **kw):
-        if not request.env.user.has_group('bi_expense_portal.group_employee_expense_portal') and not request.env.user.has_group('bi_expense_portal.group_employee_expense_manager_portal'):
-            return request.render("bi_expense_portal.not_allowed_expense_request")
+    def portal_my_expense_requests(self, page=1, date=None, sortby=None, filterby=None, search=None,
+                                     search_in='name', groupby='none', **kw):
+        if not request.env.user.has_group('aly_firnas.group_employee_expense_portal') and not request.env.user.has_group('aly_firnas.group_employee_expense_manager_portal'):
+            return request.render("aly_firnas.not_allowed_expense_request")
 
+        # content according to pager and archive selected
         response = super(CustomerPortal, self)
         values = self._prepare_portal_layout_values()
         expenses_obj = request.env['hr.expense']
 
         employee = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)], limit=1)
 
-        if request.env.user.has_group('bi_expense_portal.group_employee_expense_manager_portal'):
+        if request.env.user.has_group('aly_firnas.group_employee_expense_manager_portal'):
             domain = []
         else:
             if employee:
@@ -79,16 +88,73 @@ class CustomerPortal(CustomerPortal):
             else:
                 domain = [('employee_id', '=', False)]
 
-        searchbar_filters = {
-            'all': {'label': _('All'), 'domain': domain},
+        sortings = {
+            'date': {'label': _('Date'), 'order': 'date desc'},
+            'name': {'label': _('Description'), 'order': 'name'},
+            'project_id': {'label': _('Project'), 'order': 'project_id'},
+            'product_id': {'label': _('Product'), 'order': 'product_id'},
+            'employee_id': {'label': _('Employee'), 'order': 'employee_id'},
         }
-        for company in request.env.user.company_ids:
-            searchbar_filters.update({
-                str(company.id): {'label': company.name, 'domain': domain + [('company_id', '=', company.id)]}
-            })
+
+        searchbar_filters = {
+            '1all': {'label': _('All'), 'domain': domain},
+            '2draft': {'label': _('Draft'), 'domain': domain + [('state', '=', 'draft')]},
+            '3received': {'label': _('Receiving'), 'domain': domain + [('state', '=', 'received')]},
+            '4to_submit': {'label': _('To Submit'), 'domain': domain + [('state', '=', 'to_submit')]},
+            '5reported': {'label': _('Submitted'), 'domain': domain + [('state', '=', 'reported')]},
+            '6approved': {'label': _('Approved'), 'domain': domain + [('state', '=', 'approved')]},
+            '7done': {'label': _('Paid'), 'domain': domain + [('state', '=', 'done')]},
+            '8refused': {'label': _('Refused'), 'domain': domain + [('state', '=', 'refused')]},
+            '9cancel': {'label': _('Cancelled'), 'domain': domain + [('state', '=', 'cancel')]},
+        }
+
+
+        searchbar_inputs = {
+            'name': {'input': 'name', 'label': _('Search in Description')},
+            'project': {'input': 'project', 'label': _('Search in Projects')},
+            'product': {'input': 'product', 'label': _('Search in Products')},
+            'employee': {'input': 'employee', 'label': _('Search in Employees')},
+            'date': {'input': 'date', 'label': _('Search by Date')},
+        }
+        searchbar_groupby = {
+            'none': {'input': 'none', 'label': _('None')},
+            'project': {'input': 'project', 'label': _('Project')},
+            'employee': {'input': 'employee', 'label': _('Employee')},
+            'product': {'input': 'product', 'label': _('Product')},
+            'company': {'input': 'company', 'label': _('Company')},
+        }
+        # for company in request.env.user.company_ids:
+        #     searchbar_filters.update({
+        #         str(company.id): {'label': company.name, 'domain': domain + [('company_id', '=', company.id)]}
+        #     })
+
+        # default sortby order
+        if not sortby:
+            sortby = 'date'
+        order = sortings[sortby]['order']
+
         if not filterby:
-            filterby = 'all'
+            filterby = '1all'
         domain = searchbar_filters[filterby]['domain']
+
+        if date:
+            domain += [('date', '>', date)]
+
+        # search
+        if search and search_in:
+            search_domain = []
+            if search_in in ('name', 'all'):
+                search_domain = OR([search_domain, [('name', 'ilike', search)]])
+            if search_in in ('project', 'all'):
+                search_domain = OR([search_domain, [('project_id.name', 'ilike', search)]])
+            if search_in in ('product', 'all'):
+                search_domain = OR([search_domain, [('product_id.name', 'ilike', search)]])
+            if search_in in ('employee', 'all'):
+                search_domain = OR([search_domain, [('employee_id.name', 'ilike', search)]])
+            if search_in in ('date', 'all'):
+                search_domain = OR([search_domain, [('date', 'ilike', search)]])
+            domain += search_domain
+
         # count for pager
         expenses_count = expenses_obj.sudo().search_count(domain)
 
@@ -101,35 +167,51 @@ class CustomerPortal(CustomerPortal):
             page=page,
             step=self._items_per_page
         )
-
-        sortings = {
-            'date': {'label': _('Date'), 'order': 'date desc'},
-            'name': {'label': _('Description'), 'order': 'name'},
-            'stage': {'label': _('Stage'), 'order': 'state'},
-        }
-        # default sortby order
-        if not sortby:
-            sortby = 'date'
-        order = sortings[sortby]['order']
-
         # content according to pager and archive selected
+        if groupby == 'project':
+            order = "project_id, %s" % order  # force sort on project first to group by project in view
+
+
         expenses = expenses_obj.sudo().search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
+
+
+        if groupby == 'project':
+            grouped_expenses = [request.env['hr.expense'].concat(*g) for k, g in
+                                  groupbyelem(expenses, itemgetter('project_id'))]
+        elif groupby == 'product':
+            grouped_expenses = [request.env['hr.expense'].concat(*g) for k, g in
+                                groupbyelem(expenses, itemgetter('product_id'))]
+        elif groupby == 'employee':
+            grouped_expenses = [request.env['hr.expense'].concat(*g) for k, g in
+                                groupbyelem(expenses, itemgetter('employee_id'))]
+        elif groupby == 'company':
+            grouped_expenses = [request.env['hr.expense'].concat(*g) for k, g in
+                                groupbyelem(expenses, itemgetter('company_id'))]
+        else:
+            grouped_expenses = [expenses]
+
         values.update({
             'expenses': expenses,
             'page_name': 'expenses',
             'pager': pager,
-            'searchbar_filters': OrderedDict(sorted(searchbar_filters.items())),
-            'filterby': filterby,
             'searchbar_sortings': sortings,
             'sortby': sortby,
+            'date': date,
+            'grouped_expenses': grouped_expenses,
+            'searchbar_groupby': searchbar_groupby,
+            'searchbar_inputs': searchbar_inputs,
+            'search_in': search_in,
+            'groupby': groupby,
+            'searchbar_filters': OrderedDict(sorted(searchbar_filters.items())),
+            'filterby': filterby,
             'default_url': '/my/expenses',
         })
-        return request.render("bi_expense_portal.display_expense_requests", values)
+        return request.render("aly_firnas.display_expense_requests", values)
 
     @http.route(['/my/expenses_reports', '/my/expenses_reports/page/<int:page>'], type='http', auth="user", website=True)
     def portal_my_expense_reports(self, page=1, sortby=None, filterby=None, **kw):
-        if not request.env.user.has_group('bi_expense_portal.group_employee_expense_portal') and not request.env.user.has_group('bi_expense_portal.group_employee_expense_manager_portal'):
-            return request.render("bi_expense_portal.not_allowed_expense_request")
+        if not request.env.user.has_group('aly_firnas.group_employee_expense_portal') and not request.env.user.has_group('aly_firnas.group_employee_expense_manager_portal'):
+            return request.render("aly_firnas.not_allowed_expense_request")
 
         response = super(CustomerPortal, self)
         values = self._prepare_portal_layout_values()
@@ -137,7 +219,7 @@ class CustomerPortal(CustomerPortal):
 
         employee = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)], limit=1)
 
-        if request.env.user.has_group('bi_expense_portal.group_employee_expense_manager_portal'):
+        if request.env.user.has_group('aly_firnas.group_employee_expense_manager_portal'):
             domain = []
         else:
             if employee:
@@ -190,7 +272,7 @@ class CustomerPortal(CustomerPortal):
             'sortby': sortby,
             'default_url': '/my/expenses_reports',
         })
-        return request.render("bi_expense_portal.display_expense_reports", values)
+        return request.render("aly_firnas.display_expense_reports", values)
 
     @http.route(['/my/expenses/<int:expense_id>'], type='http', auth="public", website=True)
     def portal_expense_page(self, expense_id, report_type=None, access_token=None, message=False, download=False, **kw):
@@ -207,15 +289,18 @@ class CustomerPortal(CustomerPortal):
                 'company_account': 'Company',
             },
             'request_states': {
-                'draft': 'To Submit',
+                'draft': 'Draft',
+                'received': 'Receiving',
+                'to_submit': 'To Submit',
                 'reported': 'Submitted',
                 'approved': 'Approved',
                 'done': 'Paid',
                 'refused': 'Refused',
+                'cancel': 'Cancelled',
             },
         }
         values.update({
-            'expense_request': expense_sudo,
+            'expense_sudo': expense_sudo,
             'message': message,
             'token': access_token,
             'return_url': '/my/expenses',
@@ -231,7 +316,7 @@ class CustomerPortal(CustomerPortal):
             'resize_to_48': resize_to_48,
         })
 
-        return request.render('bi_expense_portal.display_expense_request', values)
+        return request.render('aly_firnas.display_expense_request', values)
 
     @http.route(['/my/expenses_reports/<int:expense_report_id>'], type='http', auth="public", website=True)
     def portal_expense_report_page(self, expense_report_id, report_type=None, access_token=None, message=False, download=False, **kw):
@@ -250,12 +335,13 @@ class CustomerPortal(CustomerPortal):
                 'company_account': 'Company',
             },
             'report_states': {
-                'draft': 'Draft',
+                'draft': 'To Submit',
                 'submit': 'Submitted',
-                'post': 'Posted',
                 'approve': 'Approved',
+                'post': 'Posted',
                 'done': 'Paid',
-                'cancel': 'Refused',
+                'refused': 'Refused',
+                'cancel': 'Cancelled',
             },
         }
         values.update({
@@ -275,23 +361,23 @@ class CustomerPortal(CustomerPortal):
             'resize_to_48': resize_to_48,
         })
 
-        return request.render('bi_expense_portal.display_expense_report', values)
+        return request.render('aly_firnas.display_expense_report', values)
 
     @http.route(['/expense_request_form'], type='http', auth="user", website=True)
     def portal_expense_request_form(self, **kw):
-        if not request.env.user.has_group('bi_expense_portal.group_employee_expense_portal') and not request.env.user.has_group('bi_expense_portal.group_employee_expense_manager_portal'):
-            return request.render("bi_expense_portal.not_allowed_expense_request")
+        if not request.env.user.has_group('aly_firnas.group_employee_expense_portal') and not request.env.user.has_group('aly_firnas.group_employee_expense_manager_portal'):
+            return request.render("aly_firnas.not_allowed_expense_request")
         picking_type_obj = request.env['stock.picking.type']
         values = {}
         currencies = request.env['res.currency'].sudo().search([])
-        projects = request.env['project.project'].sudo().search([])
+        projects = request.env['project.project'].sudo().search([], order='name')
         dest_address_id = request.env['res.partner'].sudo().search([], order='name')
         vendors = request.env['res.partner'].sudo().search([], order='name')
         vendor_id = vendors[0].id
         company = projects[0].company_id.id
         products = request.env['product.product'].sudo().search(
             [('can_be_expensed', '=', True), '|', ('company_id', '=', int(company)), ('company_id', '=', False)])
-        tax_ids = request.env['account.tax'].sudo().search([('company_id', '=', projects[0].company_id.id)])
+        tax_ids = request.env['account.tax'].sudo().search([('type_tax_use', '=', 'purchase'), ('company_id', '=', projects[0].company_id.id)])
         vendor_contact_id = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)], order='name')
         accounts = request.env['account.account'].sudo().search([('internal_type', '=', 'other')])
         analytic_accounts = request.env['account.analytic.account'].sudo().browse([projects[0].analytic_account_id.id])
@@ -331,20 +417,21 @@ class CustomerPortal(CustomerPortal):
             'today': str(fields.Date.today()),
             'error_fields': '',
         })
-        return request.render("bi_expense_portal.expense_request_submit", values)
+        return request.render("aly_firnas.expense_request_submit", values)
 
     @http.route(['/expense_report_form'], type='http', auth="user", website=True)
-    def portal_expense_report_form(self, **kw):
-        if not request.env.user.has_group('bi_expense_portal.group_employee_expense_portal') and not request.env.user.has_group('bi_expense_portal.group_employee_expense_manager_portal'):
-            return request.render("bi_expense_portal.not_allowed_expense_request")
+    def portal_expense_report_form(self, company=None, **kw):
+        if not request.env.user.has_group('aly_firnas.group_employee_expense_portal') and not request.env.user.has_group('aly_firnas.group_employee_expense_manager_portal'):
+            return request.render("aly_firnas.not_allowed_expense_request")
         values = {}
         employee = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)], limit=1)
         employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
         expenses_obj = request.env['hr.expense']
+        company_id = request.env.user.company_id if not company else request.env['res.company'].sudo().browse(company)
         expenses_to_be_added = expenses_obj.sudo().search(
             ['|', ('employee_id', '=', employee.id), ('employee_id.parent_id', '=', employee.id),
              ('state', '=', 'draft'),
-             ('company_id', '=', request.env.user.company_id.id),
+             # ('company_id', '=', company_id.id),
              ('sheet_id', '=', False)])
 
         default_managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
@@ -365,7 +452,7 @@ class CustomerPortal(CustomerPortal):
             'today': str(fields.Date.today()),
             'error_fields': '',
         })
-        return request.render("bi_expense_portal.expense_report_submit", values)
+        return request.render("aly_firnas.expense_report_submit", values)
 
     @http.route(['/expense_request_form/<int:expense_id>'], type='http', auth="user", website=True)
     def portal_expense_request_edit(self, expense_id, **kw):
@@ -374,18 +461,18 @@ class CustomerPortal(CustomerPortal):
         else:
             return request.redirect('/my/expenses')
 
-        if not request.env.user.has_group('bi_expense_portal.group_employee_expense_portal') and not request.env.user.has_group('bi_expense_portal.group_employee_expense_manager_portal'):
-            return request.render("bi_expense_portal.not_allowed_expense_request")
+        if not request.env.user.has_group('aly_firnas.group_employee_expense_portal') and not request.env.user.has_group('aly_firnas.group_employee_expense_manager_portal'):
+            return request.render("aly_firnas.not_allowed_expense_request")
         values = {}
         currencies = request.env['res.currency'].sudo().search([])
-        projects = request.env['project.project'].sudo().search([])
+        projects = request.env['project.project'].sudo().search([], order='name')
         vendors = request.env['res.partner'].sudo().search([], order='name')
         dest_address_id = request.env['res.partner'].sudo().search([], order='name')
         vendor_id = vendors[0].id
         company = projects[0].company_id.id
         products = request.env['product.product'].sudo().search(
             [('can_be_expensed', '=', True), '|', ('company_id', '=', int(company)), ('company_id', '=', False)])
-        tax_ids = request.env['account.tax'].sudo().search([('company_id', '=', projects[0].company_id.id)])
+        tax_ids = request.env['account.tax'].sudo().search([('type_tax_use', '=', 'purchase'), ('company_id', '=', projects[0].company_id.id)])
         vendor_contact_id = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)], order='name')
         accounts = request.env['account.account'].sudo().search([('internal_type', '=', 'other')])
         analytic_accounts = request.env['account.analytic.account'].sudo().browse([projects[0].analytic_account_id.id])
@@ -426,7 +513,68 @@ class CustomerPortal(CustomerPortal):
             'today': str(fields.Date.today()),
             'error_fields': '',
         })
-        return request.render("bi_expense_portal.expense_request_edit", values)
+        return request.render("aly_firnas.expense_request_edit", values)
+
+    @http.route(['/expense_view/<int:expense_id>'], type='http', auth="user", website=True)
+    def portal_expense_view(self, expense_id, **kw):
+        if expense_id:
+            expense_sudo = request.env['hr.expense'].sudo().browse([expense_id])
+        else:
+            return request.redirect('/my/expenses')
+
+        if not request.env.user.has_group('aly_firnas.group_employee_expense_portal') and not request.env.user.has_group('aly_firnas.group_employee_expense_manager_portal'):
+            return request.render("aly_firnas.not_allowed_expense_request")
+        values = {}
+        currencies = request.env['res.currency'].sudo().search([])
+        projects = request.env['project.project'].sudo().search([], order='name')
+        vendors = request.env['res.partner'].sudo().search([], order='name')
+        dest_address_id = request.env['res.partner'].sudo().search([], order='name')
+        vendor_id = vendors[0].id
+        company = projects[0].company_id.id
+        products = request.env['product.product'].sudo().search(
+            [('can_be_expensed', '=', True), '|', ('company_id', '=', int(company)), ('company_id', '=', False)])
+        tax_ids = request.env['account.tax'].sudo().search([('type_tax_use', '=', 'purchase'), ('company_id', '=', projects[0].company_id.id)])
+        vendor_contact_id = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)], order='name')
+        accounts = request.env['account.account'].sudo().search([('internal_type', '=', 'other')])
+        analytic_accounts = request.env['account.analytic.account'].sudo().browse([projects[0].analytic_account_id.id])
+        employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
+        analytic_tags = employees[0].analytic_tag_ids + analytic_accounts[0].analytic_tag_ids
+        picking_type_obj = request.env['stock.picking.type'].sudo()
+        picking_type_id = picking_type_obj.search(
+            [('code', '=', 'incoming'), ('company_id', '=', request.env.user.company_id.id)]
+        )
+
+        default_managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
+        for emp in employees:
+            if emp.parent_id and emp.parent_id.user_id:
+                default_managers += emp.parent_id.user_id
+        managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
+        if default_managers:
+            managers -= default_managers
+        values.update({
+            'expense_sudo': expense_sudo,
+            'products': products,
+            'vendors': vendors,
+            'projects': projects,
+            'vendor_contact_id': vendor_contact_id,
+            'currencies': currencies,
+            'tax_ids': tax_ids,
+            'dest_address_id': dest_address_id,
+            'picking_type_id': picking_type_id,
+            'companies': request.env.user.company_ids - request.env.user.company_id,
+            'default_currency': request.env.company.currency_id,
+            'default_company': request.env.user.company_id,
+            'employees': employees,
+            'managers': managers,
+            'default_managers': default_managers,
+            'accounts': accounts,
+            'default_account': request.env['ir.property'].sudo().get('property_account_expense_categ_id', 'product.category'),
+            'analytic_account_id': analytic_accounts,
+            'analytic_tag_id': analytic_tags,
+            'today': str(fields.Date.today()),
+            'error_fields': '',
+        })
+        return request.render("aly_firnas.display_expense_request", values)
 
     @http.route(['/expense_report_form/<int:expense_report_id>'], type='http', auth="user", website=True)
     def portal_expense_report_edit(self, expense_report_id, **kw):
@@ -435,8 +583,8 @@ class CustomerPortal(CustomerPortal):
         else:
             return request.redirect('/my/expenses_reports')
 
-        if not request.env.user.has_group('bi_expense_portal.group_employee_expense_portal') and not request.env.user.has_group('bi_expense_portal.group_employee_expense_manager_portal'):
-            return request.render("bi_expense_portal.not_allowed_expense_request")
+        if not request.env.user.has_group('aly_firnas.group_employee_expense_portal') and not request.env.user.has_group('aly_firnas.group_employee_expense_manager_portal'):
+            return request.render("aly_firnas.not_allowed_expense_request")
         values = {}
         employee = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)], limit=1)
         employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
@@ -466,7 +614,47 @@ class CustomerPortal(CustomerPortal):
             'today': str(fields.Date.today()),
             'error_fields': '',
         })
-        return request.render("bi_expense_portal.expense_report_edit", values)
+        return request.render("aly_firnas.expense_report_edit", values)
+
+    @http.route(['/expense_report_view/<int:expense_report_id>'], type='http', auth="user", website=True)
+    def portal_expense_report_view(self, expense_report_id, **kw):
+        if expense_report_id:
+            expense_sudo = request.env['hr.expense.sheet'].sudo().browse([expense_report_id])
+        else:
+            return request.redirect('/my/expenses_reports')
+
+        if not request.env.user.has_group('aly_firnas.group_employee_expense_portal') and not request.env.user.has_group('aly_firnas.group_employee_expense_manager_portal'):
+            return request.render("aly_firnas.not_allowed_expense_request")
+        values = {}
+        employee = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)], limit=1)
+        employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
+        expenses_obj = request.env['hr.expense']
+        expenses_to_be_added = expenses_obj.sudo().search(
+            ['|', ('employee_id', '=', employee.id), ('employee_id.parent_id', '=', employee.id),
+             ('state', '=', 'draft'),
+             ('company_id', '=', request.env.user.company_id.id),
+            ('sheet_id', '=', False)])
+
+        default_managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
+        for emp in employees:
+            if emp.parent_id and emp.parent_id.user_id:
+                default_managers += emp.parent_id.user_id
+        managers = request.env['res.users'].sudo().search([('expense_approve', '=', True)])
+        if default_managers:
+            managers -= default_managers
+        values.update({
+            'expense_sudo': expense_sudo,
+            'expenses_to_be_added': expenses_to_be_added - expense_sudo.expense_line_ids,
+            'companies': request.env.user.company_ids - request.env.user.company_id,
+            'default_currency': request.env.company.currency_id,
+            'default_company': request.env.user.company_id,
+            'employees': employees,
+            'managers': managers,
+            'default_managers': default_managers,
+            'today': str(fields.Date.today()),
+            'error_fields': '',
+        })
+        return request.render("aly_firnas.expense_report_view", values)
 
     @http.route(['/expense_request_delete/<int:expense_id>'], type='http', auth="user", website=True)
     def portal_expense_request_delete(self, expense_id, **kw):
@@ -475,7 +663,7 @@ class CustomerPortal(CustomerPortal):
             expense_sudo.sudo().unlink()
         else:
             return request.redirect('/my/expenses')
-        return request.render("bi_expense_portal.delete_page")
+        return request.render("aly_firnas.delete_page")
 
     @http.route(['/expense_report_delete/<int:expense_report_id>'], type='http', auth="user", website=True)
     def portal_expense_report_delete(self, expense_report_id, **kw):
@@ -484,7 +672,7 @@ class CustomerPortal(CustomerPortal):
             expense_sudo.sudo().unlink()
         else:
             return request.redirect('/my/expenses_reports')
-        return request.render("bi_expense_portal.delete_page")
+        return request.render("aly_firnas.delete_page")
 
     @http.route(['/expense_request_submit'], type='http', auth="user", website=True,methods=['POST'], csrf=False)
     def portal_expense_request_submit(self, **kw):
@@ -611,13 +799,13 @@ class CustomerPortal(CustomerPortal):
             values = {}
             currencies = request.env['res.currency'].sudo().search([])
             vendors = request.env['res.partner'].sudo().search([], order='name')
-            projects = request.env['project.project'].sudo().search([])
+            projects = request.env['project.project'].sudo().search([], order='name')
             vendor_id = vendors[0].id
             company = projects[0].company_id.id
             products = request.env['product.product'].sudo().search(
                 [('can_be_expensed', '=', True), '|', ('company_id', '=', int(company)), ('company_id', '=', False)])
             vendor_contact_id = request.env['res.partner'].sudo().search([('parent_id', '=', vendor_id)], order='name')
-            tax_ids = request.env['account.tax'].sudo().search([('company_id', '=', company)])
+            tax_ids = request.env['account.tax'].sudo().search([('type_tax_use', '=', 'purchase'), ('company_id', '=', company)])
             accounts = request.env['account.account'].sudo().search([('internal_type', '=', 'other')])
             analytic_accounts = request.env['account.analytic.account'].sudo().search([('id', '=', projects[0].analytic_account_id.id)])
             employees = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
@@ -652,7 +840,7 @@ class CustomerPortal(CustomerPortal):
                 'today': str(fields.Date.today()),
                 'error_fields': json.dumps(e.args[0]),
             })
-            return request.render("bi_expense_portal.expense_request_submit", values)
+            return request.render("aly_firnas.expense_request_submit", values)
 
         # this code for creating expense report, ignore this step by a request from Eng. Mostafa El Bedawy
         # if created_request:
@@ -673,7 +861,7 @@ class CustomerPortal(CustomerPortal):
         #     if created_request.sheet_id:
         #         created_request.sheet_id.action_submit_sheet()
 
-        return request.render("bi_expense_portal.thankyou_page") if not hdn_expense_id else request.render("bi_expense_portal.edit_page")
+        return request.render("aly_firnas.thankyou_page") if not hdn_expense_id else request.render("aly_firnas.edit_page")
 
     @http.route(['/expense_report_submit'], type='http', auth="user", website=True,methods=['POST'], csrf=False)
     def portal_expense_report_submit(self, **kw):
@@ -714,6 +902,8 @@ class CustomerPortal(CustomerPortal):
 
         created_request = False
         try:
+            if not list_all:
+                raise ValidationError(_("Please select at least one expense."))
             vals = self._onchange_product_id(vals)
 
             if hdn_expense_id:
@@ -746,9 +936,9 @@ class CustomerPortal(CustomerPortal):
                 'today': str(fields.Date.today()),
                 'error_fields': json.dumps(e.args[0]),
             })
-            return request.render("bi_expense_portal.expense_report_submit", values)
+            return request.render("aly_firnas.expense_report_submit", values)
 
-        return request.render("bi_expense_portal.thankyou_report_page") if not hdn_expense_id else request.render("bi_expense_portal.edit_report_page")
+        return request.render("aly_firnas.thankyou_report_page") if not hdn_expense_id else request.render("bi_expense_portal.edit_report_page")
 
     def _onchange_product_id(self, vals):
         product = request.env['product.product'].sudo().browse([int(vals.get('product_id'))]) if vals.get('product_id', False) else False
@@ -909,6 +1099,12 @@ class CustomerPortal(CustomerPortal):
             accounts=accounts,
         )
 
+    @http.route(['/expense_report/get_expenses_by_company'], type='json', auth="public", methods=['POST'], website=True)
+    def get_expenses_by_company(self, company, **kw):
+        return dict(
+            expenses=[]
+        )
+
     @http.route(['/expense/vendor_contacts'], type='json', auth="public", website=True)
     def vendor_contacts(self, vendor, **kw):
         vendor_contacts = []
@@ -935,7 +1131,7 @@ class CustomerPortal(CustomerPortal):
         if project_id_str and product_id_str:
             project_id = int(project_id_str)
             product_id = int(product_id_str)
-            res_project_data = request.env['project.project'].sudo().search([('id', '=', project_id)], limit=1)
+            res_project_data = request.env['project.project'].sudo().search([('id', '=', project_id)], limit=1, order='name')
             for item in res_project_data:
                 company_id = item.company_id.id
             for item in res_project_data:
@@ -948,7 +1144,7 @@ class CustomerPortal(CustomerPortal):
                 'expense']
             for item in product_accounts:
                 product_data.append((item.id, item.name))
-                show_picking_type_id = res_product_data.type in ('product', 'consu')
+            show_picking_type_id = res_product_data.type in ('product', 'consu')
         return dict(
             company_data=company_id,
             analytic_account_data=analytic_account_data,
@@ -969,7 +1165,7 @@ class CustomerPortal(CustomerPortal):
             product_accounts = res_product_data.product_tmpl_id.with_context(force_company=company_id.id)._get_product_accounts()['expense']
             for item in product_accounts:
                 product_data.append((item.id, item.name))
-                show_picking_type_id = res_product_data.type in ('product', 'consu')
+            show_picking_type_id = res_product_data.type in ('product', 'consu')
         return dict(
             default_account=product_data,
             show_picking_type_id=show_picking_type_id,
@@ -979,15 +1175,21 @@ class CustomerPortal(CustomerPortal):
     def compute_all(self, unit_amount_str=None, quantity_str=None, discount_str=None, tax_id_str=None, **kw):
         sub_total = 0
         total_amount = 0
-        if unit_amount_str and quantity_str and tax_id_str and discount_str:
+        discount_str = 0 if discount_str == '' else discount_str
+        if unit_amount_str and quantity_str:
             unit_amount = float(unit_amount_str)
             discount = float(discount_str)
             unit_amount = unit_amount - (unit_amount * discount / 100)
             quantity = float(quantity_str)
             sub_total = (unit_amount * quantity)
-            tax_id = int(tax_id_str)
-            tax_obj = request.env['account.tax'].sudo().search([('id', '=', tax_id)])
-            total_amount = round( sub_total + (unit_amount * quantity * (tax_obj.amount / 100)), 2)
+            tax_total = 0
+            taxes_obj = []
+            if len(tax_id_str):
+                taxes_obj = request.env['account.tax'].sudo().search([('type_tax_use', '=', 'purchase'), ('id', 'in', tax_id_str)])
+            for tax_obj in taxes_obj:
+                tax = (tax_obj.amount / 100)
+                tax_total += (unit_amount * quantity * tax)
+            total_amount = round(sub_total + tax_total, 2)
         return dict(
             sub_total=sub_total,
             total_amount=total_amount,

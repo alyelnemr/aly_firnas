@@ -39,6 +39,7 @@
                                 <field name="subcontractor_supplier_ids" widget="many2many_tags"/>
                             </group>
                             <group string="Project Naming">
+                                <field name="proposals_engineer_id" required="1"/>
                                 <field name="project_num"/>
                                 <field name="rfp_ref_number"/>
                                 <field name="type_custom" required="1"/>
@@ -57,6 +58,7 @@
                                 <field name="sub_date" required="1"/>
                                 <field name="sub_type"/>
                                 <field name="actual_sub_date"/>
+                                <field name="deadline_for_amendment"/>
                                 <field name="latest_proposal_submission_date"/>
                                 <field name="result_date" />
                                 <field name="contract_signature_date"/>
@@ -67,7 +69,6 @@
                                 <field name="currency_id"/>
                             </group>
                         <group string="Invisible Fields" invisible="1">
-                            <field name="proposals_engineer_id" required="1"/>
                             <field name="proposals_engineer_ids" widget="many2many_tags" />
                             <field name="type" invisible="1"/>
                             <field name="partner_name" invisible="1"/>

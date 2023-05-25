@@ -16,7 +16,7 @@
     ],
     'data': [
         'security/group_security.xml',
-        'views/website_portal_templates.xml',
+        'views/expense_views.xml',
     ],
     'installable': True,
     'auto_install': False,

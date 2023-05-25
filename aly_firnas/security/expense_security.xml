@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="group_employee_expense_portal" model="res.groups">
+            <field name="name">Portal Employee Expense_</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="comment">the user will have access to his own expense request in the account.</field>
+            <field name="share" eval="True"/>
+        </record>
+
+        <record id="group_employee_expense_manager_portal" model="res.groups">
+            <field name="name">Portal Employee Expense Manager_</field>
+            <field name="implied_ids" eval="[(4, ref('group_employee_expense_portal'))]"/>
+            <field name="comment">the user will have access to all employees expense requests.</field>
+            <field name="share" eval="True"/>
+        </record>
+
+    </data>
+</odoo>
+

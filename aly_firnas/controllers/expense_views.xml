@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="display_expense_requests" name="Display Expense Requests">
+            <t t-call="portal.portal_layout">
+                <style>
+                    #myInput {
+                    background-position: 10px 10px;
+                    background-repeat: no-repeat;
+                    width: 100%;
+                    font-size: 16px;
+                    padding: 12px 20px 12px 40px;
+                    border: 1px solid #ddd;
+                    margin-bottom: 12px;
+                    }
+                    .container {
+                    max-width: 100% !important;
+                    }
+                </style>
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Expenses</t>
+                </t>
+                <h3 class="page-header">
+                    Your Expense Requests
+                </h3>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <a t-attf-href="/expense_request_form" class="btn btn-info">New Expense Request</a>
+                    </div>
+                </div>
+                <t t-if="not expenses">
+                    <p>You don't have any expense requests yet.</p>
+                </t>
+                <t t-if="expenses">
+                    <table class="table table-hover o_my_status_table">
+                        <thead>
+                            <tr class="active">
+                                <th>Date</th>
+                                <th>Employee</th>
+                                <th>Product</th>
+                                <th>Description</th>
+                                <th>Project</th>
+                                <th>Company</th>
+                                <th>Vendor</th>
+                                <th>Bill Ref.</th>
+                                <th>Total</th>
+                                <th>Paid By</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <t t-foreach="expenses" t-as="exp">
+                            <tr>
+                                <td class="text-left">
+                                    <span t-field="exp.date"/>
+                                </td>
+                                <td class="text-left">
+                                    <span t-field="exp.employee_id.display_name"/>
+                                </td>
+                                <td class="text-left">
+                                    <span t-field="exp.product_id.name"/>
+                                </td>
+                                <td class="text-left">
+                                    <a t-attf-href="/expense_view/#{exp.id}?#{keep_query()}">
+                                        <span t-field="exp.name"/>
+                                    </a>
+                                </td>
+                                <td class="text-left">
+                                    <span t-field="exp.project_id.name"/>
+                                </td>
+                                <td class="text-left">
+                                    <span t-field="exp.company_id.display_name"/>
+                                </td>
+                                <td class="text-left">
+                                    <span t-field="exp.partner_id.name"/>
+                                </td>
+                                <td class="text-left">
+                                    <span t-field="exp.reference"/>
+                                </td>
+                                <td class="text-left">
+                                    <span t-field="exp.total_amount"/>
+                                </td>
+                                <td class="text-left">
+                                    <span t-esc="payment_modes[exp.payment_mode]"/>
+                                </td>
+                                <td class="text-left">
+                                    <span t-if="exp.state in ['approved', 'done']" t-esc="request_states[exp.state]"
+                                          class="badge badge-pill badge-success"/>
+                                    <span t-elif="exp.state in ['draft']" t-esc="request_states[exp.state]"
+                                          class="badge badge-pill badge-warning"/>
+                                    <span t-elif="exp.state in ['refused']" t-esc="request_states[exp.state]"
+                                          class="badge badge-pill badge-danger"/>
+                                    <span t-else="" t-esc="request_states[exp.state]"
+                                          class="badge badge-pill badge-info"/>
+                                </td>
+                                <td>
+                                    <t t-if="exp.state in ['draft']">
+                                        <a class="btn btn-info"
+                                           t-att-href="'/expense_request_form/%s' % (exp.id)">
+                                            Edit
+                                        </a>
+                                    </t>
+                                    <t t-if="exp.state in ['draft']">
+                                        <a class="btn btn-info"
+                                           t-att-href="'/expense_request_delete/%s' % (exp.id)">
+                                            Delete
+                                        </a>
+                                    </t>
+                                </td>
+                            </tr>
+                        </t>
+                    </table>
+                    <div t-if="pager" class="o_portal_pager text-center">
+                        <t t-call="portal.pager"/>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+        <template id="display_expense_request_old" name="Portal: My Expense Request">
+            <t t-call="portal.portal_layout">
+                <div class="container">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-lg-12 text-center">
+                                    <h4>
+                                        <span t-esc="expense_request.name"/>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row" style="margin-bottom: 10px;">
+                                <div class="col-lg-6">
+                                    <t t-if="expense_request.state in ['draft']">
+                                    </t>
+                                    <t t-if="expense_request.state in ['draft']">
+                                    </t>
+                                    <t t-if="expense_request.state in ['reported']">
+                                    </t>
+                                </div>
+                                <div class="col-lg-6 text-right">
+                                    <span t-if="expense_request.state in ['approved', 'done']"
+                                          t-esc="request_states[expense_request.state]"
+                                          class="badge badge-pill badge-success"/>
+                                    <span t-elif="expense_request.state in ['refused']"
+                                          t-esc="request_states[expense_request.state]"
+                                          class="badge badge-pill badge-danger"/>
+                                    <span t-elif="expense_request.state in ['draft']"
+                                          t-esc="request_states[expense_request.state]"
+                                          class="badge badge-pill badge-warning"/>
+                                    <span t-else="" t-esc="request_states[expense_request.state]"
+                                          class="badge badge-pill badge-info"/>
+                                </div>
+                            </div>
+                            <div class="mb8">
+                                <strong>Date:</strong>
+                                <span t-field="expense_request.date" t-options='{"widget": "date"}'/>
+                            </div>
+                            <div class="mb8">
+                                <strong>Employee:</strong>
+                                <span t-field="expense_request.employee_id.display_name"/>
+                            </div>
+                            <div class="mb8">
+                                <strong>Reference:</strong>
+                                <span t-field="expense_request.reference"/>
+                            </div>
+                            <div class="mb8">
+                                <strong>Paid By:</strong>
+                                <span t-esc="payment_modes[expense_request.payment_mode]"/>
+                            </div>
+                            <hr/>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <strong>Product</strong>
+                                </div>
+                                <div class="col-lg-2 text-right">
+                                    <strong>Unit Price</strong>
+                                </div>
+                                <div class="col-lg-2 text-right">
+                                    <strong>Quantity</strong>
+                                </div>
+                                <div class="col-lg-2 text-right">
+                                    <strong>Subtotal</strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-1 text-center">
+                                    <img t-att-src="image_data_uri(resize_to_48(expense_request.product_id.image_128))"
+                                         alt="Product"/>
+                                </div>
+                                <div id='product_name' class="col-lg-5">
+                                    <span t-esc="expense_request.product_id.name"/>
+                                </div>
+                                <div class="col-lg-2 text-right">
+                                    <span t-field="expense_request.unit_amount"
+                                          t-options='{"widget": "monetary", "display_currency": expense_request.currency_id}'/>
+                                </div>
+                                <div class="col-lg-2 text-right">
+                                    <span t-esc="expense_request.quantity"/>
+                                </div>
+                                <div class="col-lg-2 text-right">
+                                    <span t-field="expense_request.untaxed_amount"
+                                          t-options='{"widget": "monetary", "display_currency": expense_request.currency_id}'/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 text-right">
+                                    <div class="row">
+                                        <div class="col-lg-10 text-right">
+                                            Untaxed Amount:
+                                        </div>
+                                        <div class="col-lg-2 text-right">
+                                            <span t-field="expense_request.untaxed_amount"
+                                                  t-options='{"widget": "monetary", "display_currency": expense_request.currency_id}'/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-10 text-right">
+                                            Taxes:
+                                        </div>
+                                        <div class="col-lg-2 text-right">
+                                            <span t-esc="expense_request.total_amount - expense_request.untaxed_amount"
+                                                  t-options='{"widget": "monetary", "display_currency": expense_request.currency_id}'/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-10 text-right">
+                                            <strong>Total:</strong>
+                                        </div>
+                                        <div class="col-lg-2 text-right">
+                                            <strong>
+                                                <span t-field="expense_request.total_amount"
+                                                      t-options='{"widget": "monetary", "display_currency": expense_request.currency_id}'/>
+                                            </strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <strong>Notes:</strong>
+                                    <span t-field="expense_request.description"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="oe_structure mb32"/>
+            </t>
+        </template>
+    </data>
+</odoo>
+

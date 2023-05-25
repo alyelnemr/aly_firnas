@@ -21,7 +21,7 @@
     'data': [
         'security/holiday_security.xml',
         'security/ir.model.access.csv',
-        'views/website_portal_templates.xml',
+        'views/expense_views.xml',
     ],
     'installable': True,
     'auto_install': False,

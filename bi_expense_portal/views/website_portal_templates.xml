@@ -105,9 +105,7 @@
                                     <span t-field="exp.date"/>
                                 </td>
                                 <td class="text-left">
-                                    <a t-attf-href="/my/expenses/#{exp.id}?#{keep_query()}">
-                                        <span t-field="exp.name"/>
-                                    </a>
+                                    <span t-field="exp.name"/>
                                 </td>
                                 <td class="text-left">
                                     <span t-field="exp.employee_id.display_name"/>
@@ -132,13 +130,13 @@
                                           class="badge badge-pill badge-info"/>
                                 </td>
                                 <td>
-                                    <t t-if="exp.state in ['draft', 'reported']">
+                                    <t t-if="exp.state in ['draft']">
                                         <a class="btn btn-info"
                                            t-att-href="'/expense_request_form/%s' % (exp.id)">
                                             Edit
                                         </a>
                                     </t>
-                                    <t t-if="exp.state in ['draft', 'reported']">
+                                    <t t-if="exp.state in ['draft']">
                                         <a class="btn btn-info"
                                            t-att-href="'/expense_request_delete/%s' % (exp.id)">
                                             Delete
@@ -190,9 +188,10 @@
                     <table class="table table-hover o_my_status_table">
                         <thead>
                             <tr class="active">
-                                <th>Description</th>
-                                <th>Employee</th>
+                                <th>Summary</th>
                                 <th>Total</th>
+                                <th>Employee</th>
+                                <th>Manager</th>
                                 <th>Company</th>
                                 <th>Status</th>
                                 <th></th>
@@ -201,15 +200,16 @@
                         <t t-foreach="expenses_reports" t-as="exp">
                             <tr>
                                 <td class="text-left">
-                                    <a t-attf-href="/my/expenses_reports/#{exp.id}?#{keep_query()}">
-                                        <span t-field="exp.name"/>
-                                    </a>
+                                    <span t-field="exp.name"/>
+                                </td>
+                                <td class="text-left">
+                                    <span t-field="exp.total_amount"/>
                                 </td>
                                 <td class="text-left">
                                     <span t-field="exp.employee_id.display_name"/>
                                 </td>
                                 <td class="text-left">
-                                    <span t-field="exp.total_amount"/>
+                                    <span t-field="exp.user_id.display_name"/>
                                 </td>
                                 <td class="text-left">
                                     <span t-field="exp.company_id.display_name"/>
@@ -595,7 +595,7 @@
                                     </div>
                                     <div class="col-lg-4 col-md-4">
                                         <label class="col-form-label" for="description">Description</label>
-                                        <input type="text" class="form-control" name="name" required="1" readonly="1"/>
+                                        <input type="text" class="form-control" name="name1" required="1" readonly="1"/>
                                     </div>
                                 </div>
                                 <div class="form-group row form-field">
@@ -749,6 +749,10 @@
                                     </div>
                                 </div>
                                 <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="description">Notes</label>
+                                        <input type="text" class="form-control" id="description" name="description"/>
+                                    </div>
                                     <div t-if="default_account" class="col-lg-4 col-md-4">
                                         <label class="col-form-label" for="account_id">Account</label>
                                         <select class="form-control" id="account_id" name="account_id" required="1">
@@ -761,6 +765,10 @@
                                     </div>
                                 </div>
                                 <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
+                                        <label class="col-form-label" for="attachment">Attachment</label>
+                                        <input type="file" class="form-control o_website_form_input" name="attachment"/>
+                                    </div>
                                     <div id="div_show_picking_type_id" class="col-lg-4 col-md-4">
                                         <label class="col-form-label" for="picking_type_id">Deliver To</label>
                                         <select class="form-control" id="picking_type_id" name="picking_type_id">
@@ -770,6 +778,10 @@
                                                 </option>
                                             </t>
                                         </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row form-field">
+                                    <div class="col-lg-4 col-md-4">
                                     </div>
                                     <div id="div_show_location_dest_id" class="col-lg-4 col-md-4">
                                         <label class="col-form-label" for="dest_address_id">Dropship Address</label>
@@ -782,21 +794,11 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group row form-field">
-                                    <div class="col-lg-4 col-md-4">
-                                        <label class="col-form-label" for="attachment">Attachment</label>
-                                        <input type="file" class="form-control o_website_form_input" required="0" name="attachment"/>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4">
-                                        <label class="col-form-label" for="description">Notes</label>
-                                        <input type="text" class="form-control" id="description" name="description"/>
-                                    </div>
-                                </div>
                                 <div class="form-group row">
                                     <div class="col-md-8 col-lg-7">
                                         <button type="submit"
                                                 class="btn btn-primary btn-lg o_website_form_send o_default_snippet_text">
-                                            Submit
+                                            Save
                                         </button>
                                         <span style="color: red;">
                                             <t t-if="error_fields" t-esc="error_fields"/>
@@ -823,7 +825,7 @@
 <!--                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>-->
                                 <div class="form-group row form-field">
                                     <div class="col-lg-8 col-md-8">
-                                        <label class="col-form-label" for="description">Description</label>
+                                        <label class="col-form-label" for="description">Summary</label>
                                         <input type="text" class="form-control" name="name" required="1"/>
                                     </div>
                                 </div>
@@ -838,14 +840,14 @@
                                             </t>
                                         </select>
                                     </div>
-                                    <div class="col-lg-4 col-md-4">
-                                        <label class="col-form-label" for="payment_mode">Paid By</label>
-                                        <select class="form-control" id="payment_mode" name="payment_mode">
-                                            <option value="company_account">
-                                                Company
-                                            </option>
-                                        </select>
-                                    </div>
+<!--                                    <div class="col-lg-4 col-md-4">-->
+<!--                                        <label class="col-form-label" for="payment_mode">Paid By</label>-->
+<!--                                        <select class="form-control" id="payment_mode" name="payment_mode">-->
+<!--                                            <option value="company_account">-->
+<!--                                                Company-->
+<!--                                            </option>-->
+<!--                                        </select>-->
+<!--                                    </div>-->
                                 </div>
                                 <div class="form-group row form-field">
                                     <div class="col-lg-4 col-md-4">
@@ -866,7 +868,7 @@
                                     <div class="col-lg-4 col-md-4">
                                         <label class="col-form-label" for="company_id">Company</label>
                                         <select id="company_id" class="form-control company_autoformat" name="company_id"
-                                                disabled="disabled">
+                                                >
                                             <option t-att-value="default_company.id">
                                                 <t t-esc="default_company.name"/>
                                             </option>
@@ -886,16 +888,22 @@
                                         <strong>Date</strong>
                                     </div>
                                     <div class="col-lg-2">
-                                        <strong>Product</strong>
+                                        <strong>Vendor</strong>
                                     </div>
-                                    <div class="col-lg-2 text-right">
-                                        <strong>Unit Price</strong>
-                                    </div>
-                                    <div class="col-lg-2 text-right">
-                                        <strong>Quantity</strong>
+                                    <div class="col-lg-2">
+                                        <strong>Bill Reference</strong>
                                     </div>
                                     <div class="col-lg-2 text-right">
                                         <strong>Subtotal</strong>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <strong>Project</strong>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <strong>Product</strong>
+                                    </div>
+                                    <div class="col-lg-2 text-right">
+                                        <strong>Description</strong>
                                     </div>
                                 </div>
                                 <t t-set="to_be_added_index" t-value="1"/>
@@ -908,19 +916,24 @@
                                         <div class="col-lg-2 text-left">
                                             <span t-field="expense_request.date" t-options='{"widget": "date"}'/>
                                         </div>
-                                        <div id='product_name' class="col-lg-2">
-                                            <span t-esc="expense_request.product_id.name"/>
+                                        <div id='partner_id' class="col-lg-2">
+                                            <span t-esc="expense_request.partner_id.name"/>
                                         </div>
-                                        <div class="col-lg-2 text-right">
-                                            <span t-field="expense_request.unit_amount"
-                                                  t-options='{"widget": "monetary", "display_currency": expense_request.currency_id}'/>
-                                        </div>
-                                        <div class="col-lg-2 text-right">
-                                            <span t-esc="expense_request.quantity"/>
+                                        <div id='reference' class="col-lg-2">
+                                            <span t-esc="expense_request.reference"/>
                                         </div>
                                         <div class="col-lg-2 text-right">
                                             <span t-field="expense_request.untaxed_amount"
                                                   t-options='{"widget": "monetary", "display_currency": expense_request.currency_id}'/>
+                                        </div>
+                                        <div id='project_name' class="col-lg-2">
+                                            <span t-esc="expense_request.project_id.name"/>
+                                        </div>
+                                        <div id='product_name' class="col-lg-2">
+                                            <span t-esc="expense_request.product_id.name"/>
+                                        </div>
+                                        <div class="col-lg-2 text-right">
+                                            <span t-esc="expense_request.name"/>
                                         </div>
                                     </div>
                                     <t t-set="to_be_added_index" t-value="to_be_added_index+1"/>
@@ -930,7 +943,7 @@
                                     <div class="col-md-8 col-lg-7">
                                         <button type="submit"
                                                 class="btn btn-primary btn-lg o_website_form_send o_default_snippet_text">
-                                            Submit
+                                            Create Report
                                         </button>
                                         <span style="color: red;">
                                             <t t-if="error_fields" t-esc="error_fields"/>

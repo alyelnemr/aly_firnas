@@ -18,6 +18,8 @@ class SaleOrderCRMInherit(models.Model):
             opportunities links with this partner to merge all information together
         """
         result = super(SaleOrderCRMInherit, self).default_get(fields)
+        p_list = self.env['product.pricelist'].search([], limit=1, order='sequence')
+        result['pricelist_id'] = p_list.id
         if self._context.get('active_id') or self.opportunity_id:
 
             lead = self.env['crm.lead'].browse(self._context['active_id'])
@@ -85,6 +87,8 @@ class SaleOrderCRMInherit(models.Model):
                 result['analytic_account_id'] = lead.analytic_account_id.id
             if 'analytic_tag_ids' in fields and lead.analytic_tag_ids_for_analytic_account:
                 result['analytic_tag_ids'] = lead.analytic_tag_ids_for_analytic_account.ids
+            team = self.env['crm.team'].search([], limit=1).id
+            result['team_id'] = team
         return result
 
     is_manual = fields.Boolean('Manual Rate', default=False, readonly=False)
@@ -94,8 +98,8 @@ class SaleOrderCRMInherit(models.Model):
     file_name = fields.Char(string="Document/File  Name (Footer)")
     standard_payment_schedule = fields.Html(string="Standard Payment Schedule", default=_set_default_standard_payment)
     terms_and_conditions = fields.Html(string="Terms And Conditions", default=_set_default_terms_conditions)
-    is_print_payment_schedule = fields.Boolean('Print Standard Payment Schedule', default=True, readonly=False)
-    is_print_terms_and_conditions = fields.Boolean('Print Terms And Conditions', default=True, readonly=False)
+    is_print_payment_schedule = fields.Boolean('Standard Payment Schedule', default=True, readonly=False)
+    is_print_terms_and_conditions = fields.Boolean('Terms And Conditions', default=True, readonly=False)
 
     serial_num = fields.Char(string="Serial Number")
     project_number = fields.Char(string="Project Number", store=True, readonly=True)
@@ -132,8 +136,8 @@ class SaleOrderCRMInherit(models.Model):
     financial_proposal_number = fields.Char('Number', default='4')
 
     @api.model
-    def default_get(self, fields):
-        vals = super(SaleOrderCRMInherit, self).default_get(fields)
-        p_list = self.env['product.pricelist'].search([], limit=1, order='sequence')
-        vals['pricelist_id'] = p_list.id
-        return vals
+    def create(self, vals):
+        team_id = self.env['crm.team'].search([], limit=1).id
+        vals['team_id'] = team_id
+        result = super(SaleOrderCRMInherit, self).create(vals)
+        return result
