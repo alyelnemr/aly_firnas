@@ -17,6 +17,10 @@ class AlyResConfigSettings(models.TransientModel):
                                            readonly=False)
     aly_expense_bank_journal_id = fields.Many2one('account.journal', string='Default Bank Journal',
                                                   domain="[('type', 'in', ['cash', 'bank'])]", check_company=False)
+    aly_so_payment_schedule = fields.Html(string="Payment Schedule")
+    aly_so_terms_condition = fields.Html(string="Terms and Condition")
+    aly_inv_payment_schedule = fields.Html(string="Payment Schedule")
+    aly_inv_terms_condition = fields.Html(string="Terms and Condition")
 
     def get_values(self):
         aly_res = super(AlyResConfigSettings, self).get_values()
@@ -25,6 +29,10 @@ class AlyResConfigSettings(models.TransientModel):
             aly_po_payment_schedule=self.env['ir.config_parameter'].sudo().get_param('aly_po_payment_schedule'),
             aly_po_acceptance=self.env['ir.config_parameter'].sudo().get_param('aly_po_acceptance'),
             aly_complex_password=self.env['ir.config_parameter'].sudo().get_param('aly_complex_password'),
+            aly_so_payment_schedule=self.env['ir.config_parameter'].sudo().get_param('aly_so_payment_schedule'),
+            aly_so_terms_condition=self.env['ir.config_parameter'].sudo().get_param('aly_so_terms_condition'),
+            aly_inv_payment_schedule=self.env['ir.config_parameter'].sudo().get_param('aly_inv_payment_schedule'),
+            aly_inv_terms_condition=self.env['ir.config_parameter'].sudo().get_param('aly_inv_terms_condition'),
         )
         return aly_res
 
@@ -34,3 +42,7 @@ class AlyResConfigSettings(models.TransientModel):
         self.env['ir.config_parameter'].set_param('aly_po_payment_schedule', self.aly_po_payment_schedule)
         self.env['ir.config_parameter'].set_param('aly_po_acceptance', self.aly_po_acceptance)
         self.env['ir.config_parameter'].set_param('aly_complex_password', self.aly_complex_password)
+        self.env['ir.config_parameter'].set_param('aly_so_payment_schedule', self.aly_so_payment_schedule)
+        self.env['ir.config_parameter'].set_param('aly_so_terms_condition', self.aly_so_terms_condition)
+        self.env['ir.config_parameter'].set_param('aly_inv_payment_schedule', self.aly_inv_payment_schedule)
+        self.env['ir.config_parameter'].set_param('aly_inv_terms_condition', self.aly_inv_terms_condition)

@@ -24,6 +24,8 @@
         'wizard/purchase_advance_payment.xml',
         'wizard/create_duplicate_project_crm_wizard.xml',
         'views/aly_po_report.xml',
+        'views/account_settings.xml',
+        'views/sales_settings.xml',
         'views/account_invoice_report.xml',
         'views/res_company.xml',
         'views/aly_invoice_report.xml',
