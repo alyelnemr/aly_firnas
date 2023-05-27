@@ -17,6 +17,9 @@ from . import account_payment
 from . import sale_order_template
 from . import sale_order
 from . import sale_order_line
+from . import sale_order_additional
+from . import sale_order_line_section
+from . import sale_order_option
 from . import res_currency
 from . import hr_expense
 from . import hr_expense_sheet

@@ -15,10 +15,6 @@
         'hr_expense',
     ],
     'data': [
-        'security/expense_security.xml',
-        'security/ir.model.access.csv',
-        'views/expense_views.xml',
-        'views/website_portal_templates2.xml',
     ],
     'installable': True,
     'auto_install': False,

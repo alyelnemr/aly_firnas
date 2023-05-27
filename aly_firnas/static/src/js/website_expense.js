@@ -14,7 +14,10 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
     events:{
         'change select[name="company_id"]': '_onChangeCurrency',
         'change select[name="partner_id"]': '_onChangeVendor',
+<<<<<<<< HEAD:aly_firnas/static/src/js/website_expense.js
         'change input[name="to_select_all"]': '_onChangeSelectAll',
+========
+>>>>>>>> Test:bi_expense_portal/static/src/js/website_expense.js
         'change input[name="name"]': '_onChangeDescription',
         'change select[name="project_id"]': '_onChangeProject',
         'change select[name="product_id"]': '_onChangeProduct',
@@ -31,11 +34,15 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
      */
     init: function () {
         this._super.apply(this, arguments);
+        this._changeCompanyForExpenseReport = _.debounce(this._changeCompanyForExpenseReport.bind(this), 500);
         this._changeCompany = _.debounce(this._changeCompany.bind(this), 500);
         this._changeVendor = _.debounce(this._changeVendor.bind(this), 500);
         this._changeProject = _.debounce(this._changeProject.bind(this), 500);
         this._changeDescription = _.debounce(this._changeDescription.bind(this), 500);
+<<<<<<<< HEAD:aly_firnas/static/src/js/website_expense.js
         this._changeSelectAll = _.debounce(this._changeSelectAll.bind(this), 500);
+========
+>>>>>>>> Test:bi_expense_portal/static/src/js/website_expense.js
         this._changeProduct = _.debounce(this._changeProduct.bind(this), 500);
         this._changeCurrency = _.debounce(this._changeCurrency.bind(this), 500);
         this._changePickingType = _.debounce(this._changePickingType.bind(this), 500);
@@ -143,6 +150,16 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
             }
         });
     },
+    _changeCompanyForExpenseReport: function () {
+//        var selectProducts = $("select[name='company_id']");
+//
+//        var vhref = "http://" + window.location.host + window.location.pathname + '?company=' + $("#company_id").val();
+//        alert(window.location.search);
+//        if (window.location.search === null || window.location.search === undefined || window.location.search !== '?company=' + $("#company_id").val())
+//        {
+//            $(location).prop('href', vhref);
+//        }
+    },
     _changeVendor: function () {
         this._rpc({
             route: '/expense/vendor_contacts',
@@ -176,12 +193,15 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
             }
         });
     },
+<<<<<<<< HEAD:aly_firnas/static/src/js/website_expense.js
     _changeSelectAll: function () {
-        $("input[name='to_be_added_ids']").each(function(){
-        alert('working.....');
-            this.prop("checked", $("input[name='name']").prop("checked"));
+        $("input[name='to_be_added_ids']").each(function(index){
+            alert('working.....' + $("#ch_name").prop("checked") + index.toString());
+            $(this).prop("checked", $("#ch_name").prop("checked"));
         });
     },
+========
+>>>>>>>> Test:bi_expense_portal/static/src/js/website_expense.js
     _changeDescription: function () {
         $("input[name='name1']").val($("input[name='name']").val());
     },
@@ -404,12 +424,15 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
         }
         this._changeDescription();
     },
+<<<<<<<< HEAD:aly_firnas/static/src/js/website_expense.js
     _onChangeSelectAll: function (ev) {
         if (!this.$('input[name="to_select_all"]').length) {
             return;
         }
         this._changeSelectAll();
     },
+========
+>>>>>>>> Test:bi_expense_portal/static/src/js/website_expense.js
     _onChangeProduct: function (ev) {
         if (!this.$('select[name="product_id"]').length) {
             return;
@@ -421,7 +444,7 @@ publicWidget.registry.WebsiteExpense = publicWidget.Widget.extend({
             this._changeCurrency();
         }
         else {
-            this._changeCurrency();
+            this._changeCompanyForExpenseReport();
         }
 
     },

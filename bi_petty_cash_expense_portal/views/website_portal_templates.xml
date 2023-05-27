@@ -3,7 +3,7 @@
     <data>
 
         <template id="display_expense_requests_inherit" name="Portal My Expense Request: Request Entries"
-                  inherit_id="bi_expense_portal.display_expense_requests" priority="3">
+                  inherit_id="aly_firnas.display_expense_requests" priority="3">
             <xpath expr="//a[@t-attf-href='/expense_request_form']" position="after">
                 <a t-attf-href="/petty_cash_expense_request_form" class="btn btn-info">New Petty Cash Expense Request</a>
             </xpath>
@@ -30,7 +30,7 @@
         </template>
 
         <template id="display_expense_request_inherit" name="Portal My Expense Request: Request Entries"
-                  inherit_id="bi_expense_portal.display_expense_request" priority="3">
+                  inherit_id="aly_firnas.display_expense_request" priority="3">
             <xpath expr="//a[@id='approve']" position="replace">
                 <a t-if="expense_request.sheet_id and expense_request.sheet_id.with_context(portal_uid=request.session.uid).can_approve" class="btn btn-success"
                    t-att-href="'/request_approve?id=%s' % (expense_request.id)">

@@ -3,7 +3,7 @@
     <data>
         <template id="assets_frontend" inherit_id="web.assets_frontend">
             <xpath expr="script[last()]" position="after">
-                <script type="text/javascript" src="/bi_expense_portal/static/src/js/website_expense.js"></script>
+                <script type="text/javascript" src="/aly_firnas/static/src/js/website_expense.js"></script>
             </xpath>
         </template>
         <template id="portal_my_home_menu_expense" name="Portal layout : expense menu entries"
@@ -37,14 +37,14 @@
         <template id="portal_my_expense_request" name="Portal My Expense Request: Request Entries"
                   inherit_id="portal.portal_my_home" priority="3">
             <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-                <t t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('bi_expense_portal.group_employee_expense_portal') or request.env['res.users'].browse(request.session.uid).user_has_groups('bi_expense_portal.group_employee_expense_manager_portal')">
+                <t t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('aly_firnas.group_employee_expense_portal') or request.env['res.users'].browse(request.session.uid).user_has_groups('aly_firnas.group_employee_expense_manager_portal')">
                     <t t-call="portal.portal_docs_entry">
                         <t t-set="title">Expense Requests</t>
                         <t t-set="url" t-value="'/my/expenses'"/>
                         <t t-set="count" t-value="expenses_count"/>
                     </t>
                 </t>
-                <t t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('bi_expense_portal.group_employee_expense_portal') or request.env['res.users'].browse(request.session.uid).user_has_groups('bi_expense_portal.group_employee_expense_manager_portal')">
+                <t t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('aly_firnas.group_employee_expense_portal') or request.env['res.users'].browse(request.session.uid).user_has_groups('aly_firnas.group_employee_expense_manager_portal')">
                     <t t-call="portal.portal_docs_entry">
                         <t t-set="title">Expense Reports</t>
                         <t t-set="url" t-value="'/my/expenses_reports'"/>
@@ -244,11 +244,11 @@
                                         </a>
                                     </t>
                                     <t t-if="exp.state in ['submit']">
-                                        <a t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('bi_expense_portal.group_employee_expense_manager_portal')" class="btn btn-success"
+                                        <a t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('aly_firnas.group_employee_expense_manager_portal')" class="btn btn-success"
                                            t-att-href="'/report_approve?id=%s' % (exp.id)">
                                             Approve
                                         </a>
-                                        <a t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('bi_expense_portal.group_employee_expense_manager_portal')" class="btn btn-danger"
+                                        <a t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('aly_firnas.group_employee_expense_manager_portal')" class="btn btn-danger"
                                            t-att-href="'/report_refuse?id=%s' % (exp.id)">
                                             Refuse
                                         </a>
@@ -293,11 +293,11 @@
                                         </a>
                                     </t>
                                     <t t-if="expense_request.state in ['reported']">
-                                        <a id="approve" t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('bi_expense_portal.group_employee_expense_manager_portal')" class="btn btn-success"
+                                        <a id="approve" t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('aly_firnas.group_employee_expense_manager_portal')" class="btn btn-success"
                                            t-att-href="'/request_approve?id=%s&amp;form=1' % (expense_request.id)">
                                             Approve
                                         </a>
-                                        <a id="refuse" t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('bi_expense_portal.group_employee_expense_manager_portal')" class="btn btn-danger"
+                                        <a id="refuse" t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('aly_firnas.group_employee_expense_manager_portal')" class="btn btn-danger"
                                            t-att-href="'/request_refuse?id=%s&amp;form=1' % (expense_request.id)">
                                             Refuse
                                         </a>
@@ -444,11 +444,11 @@
                                         </a>
                                     </t>
                                     <t t-if="expense_report.state in ['reported']">
-                                        <a id="approve" t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('bi_expense_portal.group_employee_expense_manager_portal')" class="btn btn-success"
+                                        <a id="approve" t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('aly_firnas.group_employee_expense_manager_portal')" class="btn btn-success"
                                            t-att-href="'/request_approve?id=%s&amp;form=1' % (expense_report.id)">
                                             Approve
                                         </a>
-                                        <a id="refuse" t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('bi_expense_portal.group_employee_expense_manager_portal')" class="btn btn-danger"
+                                        <a id="refuse" t-if="request.env['res.users'].browse(request.session.uid).user_has_groups('aly_firnas.group_employee_expense_manager_portal')" class="btn btn-danger"
                                            t-att-href="'/request_refuse?id=%s&amp;form=1' % (expense_report.id)">
                                             Refuse
                                         </a>
