@@ -39,4 +39,4 @@ class Employee(models.Model):
     _inherit = "hr.employee.public"
 
     analytic_tag_ids = fields.Many2many('account.analytic.tag', readonly=True)
-    employee_code = fields.Char('Employee Code', required=False)
+    employee_code = fields.Char('Employee Code', readonly=True)
