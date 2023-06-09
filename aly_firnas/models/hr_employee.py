@@ -24,13 +24,14 @@ class MyEmployee(models.Model):
         return employee
 
     def write(self, vals):
-        employee_code = vals.get('employee_code') or self.employee_code
-        employee_name = vals.get('name') or self.name
-        tag_name = employee_code + ' - ' + employee_name if employee_code else employee_name
-        analytic_tag_exist = self.env['account.analytic.tag'].search([('name', '=', tag_name)])
-        if not analytic_tag_exist:
-            analytic_tag = self.env['account.analytic.tag'].create({'name': tag_name})
-            vals.update({'analytic_tag_ids': analytic_tag.ids})
+        if not self.employee_code and vals.get('employee_code'):
+            employee_code = vals.get('employee_code') or self.employee_code
+            employee_name = vals.get('name') or self.name
+            tag_name = employee_code + ' - ' + employee_name if employee_code else employee_name
+            analytic_tag_exist = self.env['account.analytic.tag'].search([('name', '=', tag_name)])
+            if not analytic_tag_exist:
+                analytic_tag = self.env['account.analytic.tag'].create({'name': tag_name})
+                vals.update({'analytic_tag_ids': analytic_tag.ids})
         res = super(MyEmployee, self).write(vals)
         return res
 
