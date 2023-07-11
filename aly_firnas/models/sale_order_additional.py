@@ -101,7 +101,7 @@ class SaleOrderAdditional(models.Model):
             'discount': self.discount,
             'tax_id': [(6, 0, self.tax_id.ids)],
             'company_id': self.order_id.company_id.id,
-            'section':self.section.id
+            'section': self.section.id
         }
 
     def action_update_factor(self):
